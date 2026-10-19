@@ -87,7 +87,7 @@ namespace ULDB.Shell
 			root.Children.Add(statusborder);
 			root.Children.Add(infopanel);
 			root.Children.Add(modesborder);
-			root.Children.Add(view);
+			root.Children.Add(CreateMiddle(view, modesborder));
 			Content = root;
 
 			HookInput();
@@ -103,6 +103,38 @@ namespace ULDB.Shell
 		}
 
 		#region ================== Parts
+
+		// The map view with the dockers beside it. Upstream reserves "dockersspace" (the collapsed
+		// tab strip, or the whole docker when it's pinned open) and lays "dockerspanel" over the
+		// map at that edge, so an auto-hiding docker expands over the map.
+		private Control CreateMiddle(Control view, Control modesborder)
+		{
+			DockersControl dockersmodel = Field<DockersControl>("dockerspanel");
+			WF.Panel dockersspace = Field<WF.Panel>("dockersspace");
+			WF.ToolStrip modestoolbar = Field<WF.ToolStrip>("modestoolbar");
+			DockersView dockers = new DockersView(dockersmodel);
+			Panel middle = new Panel();
+			middle.Children.Add(view);
+			middle.Children.Add(dockers);
+
+			string last = null;
+			void Layout()
+			{
+				bool right = dockersspace.Dock != WF.DockStyle.Left;
+				double space = dockersspace.Visible ? dockersspace.Width : 0;
+				string now = right + "|" + space + "|" + modestoolbar.Dock;
+				if(now == last) return;
+				last = now;
+				dockers.HorizontalAlignment = right ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+				view.Margin = right ? new Thickness(0, 0, space, 0) : new Thickness(space, 0, 0, 0);
+				DockPanel.SetDock(modesborder, modestoolbar.Dock == WF.DockStyle.Right ? Dock.Right : Dock.Left);
+			}
+			Layout();
+			// Upstream changes these without events (SetupInterface, the splitter); check regularly.
+			DispatcherTimer poll = new DispatcherTimer(TimeSpan.FromMilliseconds(100), DispatcherPriority.Background, (s, e) => Layout());
+			poll.Start();
+			return middle;
+		}
 
 		private Control CreateDisplay(ViewportControl gl)
 		{

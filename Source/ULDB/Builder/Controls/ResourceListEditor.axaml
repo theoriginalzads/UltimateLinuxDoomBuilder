@@ -16,7 +16,7 @@
 
     <Border BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" CornerRadius="3">
       <ListBox x:Name="resourceitems" SelectionMode="Multiple" DragDrop.AllowDrop="True"
-               ScrollViewer.HorizontalScrollBarVisibility="Auto" MinHeight="60">
+               ScrollViewer.HorizontalScrollBarVisibility="Auto" MinHeight="90" MaxHeight="220">
         <ListBox.ContextMenu>
           <ContextMenu x:Name="copypastemenu">
             <MenuItem x:Name="copyresources" Header="Copy"/>

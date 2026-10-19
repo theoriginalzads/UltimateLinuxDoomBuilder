@@ -168,4 +168,22 @@
     <Setter Property="FontSize" Value="10"/>
     <Setter Property="LineHeight" Value="14"/>
   </Style>
+
+  <!-- Dockers (side panel): tabs on the outer edge; the selected tab shows an accent bar. -->
+  <Style Selector="Border.uldb-dockers">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab">
+    <Setter Property="Opacity" Value="0.75"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab.selected">
+    <Setter Property="Opacity" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbCheckedLineBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab.notify">
+    <Setter Property="Opacity" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
 </Styles>

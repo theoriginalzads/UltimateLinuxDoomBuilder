@@ -13,6 +13,8 @@ namespace System.Windows.Forms
 	{
 		public Control ActiveControl { get; set; }
 		public SizeF AutoScaleDimensions { get; set; }
+		/// <summary>ULDB: no WinForms autoscaling; Avalonia scales the views, so this equals AutoScaleDimensions.</summary>
+		public SizeF CurrentAutoScaleDimensions => AutoScaleDimensions.IsEmpty ? new SizeF(96f, 96f) : AutoScaleDimensions;
 		public AutoScaleMode AutoScaleMode { get; set; }
 		public bool AutoScroll { get; set; }
 		public Form ParentForm
@@ -37,6 +39,62 @@ namespace System.Windows.Forms
 
 		/// <summary>ULDB: the view raises Load when it first shows the control.</summary>
 		public void RaiseLoad() => OnLoad(EventArgs.Empty);
+	}
+
+	public interface IContainerControl
+	{
+		Control ActiveControl { get; set; }
+		bool ActivateControl(Control active);
+	}
+
+	/// <summary>Text box state: text, selection and options. Views show and edit Text.</summary>
+	public class TextBoxBase : Control
+	{
+		public bool ReadOnly { get; set; }
+		public bool Multiline { get; set; }
+		public bool WordWrap { get; set; } = true;
+		public bool HideSelection { get; set; } = true;
+		public bool ShortcutsEnabled { get; set; } = true;
+		public int MaxLength { get; set; } = 32767;
+		public BorderStyle BorderStyle { get; set; } = BorderStyle.Fixed3D;
+		public int SelectionStart { get; set; }
+		public int SelectionLength { get; set; }
+		public string SelectedText { get; set; } = "";
+		public int TextLength => Text.Length;
+		public string[] Lines { get => Text.Split('\n'); set => Text = string.Join("\n", value ?? new string[0]); }
+		public void Clear() => Text = "";
+		public void AppendText(string text) => Text += text;
+		public void SelectAll() { SelectionStart = 0; SelectionLength = Text.Length; }
+		public void Select(int start, int length) { SelectionStart = start; SelectionLength = length; }
+		public void ScrollToCaret() { }
+	}
+
+	public class TextBox : TextBoxBase
+	{
+		public ScrollBars ScrollBars { get; set; }
+		public HorizontalAlignment TextAlign { get; set; }
+		public bool UseSystemPasswordChar { get; set; }
+		public char PasswordChar { get; set; }
+		public CharacterCasing CharacterCasing { get; set; }
+		public bool AcceptsReturn { get; set; }
+		public bool AcceptsTab { get; set; }
+	}
+
+	/// <summary>Rich text, kept as RTF; views render the subset they understand.</summary>
+	public class RichTextBox : TextBoxBase
+	{
+		private string rtf = "";
+
+		/// <summary>The content as RTF; setting Text stores plain text.</summary>
+		public string Rtf { get => rtf; set { rtf = value ?? ""; base.Text = value ?? ""; } }
+
+		/// <summary>Inserts RTF at the caret (ULDB: appends; upstream only uses it after Clear()).</summary>
+		public string SelectedRtf { get => ""; set => Rtf = string.IsNullOrEmpty(rtf) ? value : rtf + value; }
+
+		public override string Text { get => base.Text; set { rtf = ""; base.Text = value; } }
+		public bool DetectUrls { get; set; } = true;
+		public RichTextBoxScrollBars ScrollBars { get; set; } = RichTextBoxScrollBars.Both;
+		public bool AutoWordSelection { get; set; }
 	}
 
 	public class GroupBox : Control
@@ -138,6 +196,17 @@ namespace System.Windows.Forms
 		public bool Multiline { get; set; }
 		public bool ShowToolTips { get; set; }
 		public int TabCount => TabPages.Count;
+
+		/// <summary>ULDB: tab strip thickness the views use (vertical tabs are this wide).</summary>
+		public const int TabStripThickness = 26;
+
+		/// <summary>Tab bounds as a view lays them out: vertical tabs (Left/Right) are
+		/// <see cref="TabStripThickness"/> wide, horizontal ones that tall; tabs are 100 long.</summary>
+		public Rectangle GetTabRect(int index)
+		{
+			bool vertical = Alignment == TabAlignment.Left || Alignment == TabAlignment.Right;
+			return vertical ? new Rectangle(0, index * 100, TabStripThickness, 100) : new Rectangle(index * 100, 0, 100, TabStripThickness);
+		}
 
 		public int SelectedIndex
 		{

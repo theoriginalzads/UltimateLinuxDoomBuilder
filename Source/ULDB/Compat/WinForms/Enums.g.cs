@@ -68,6 +68,13 @@ namespace System.Windows.Forms
 		Solid = 3,
 	}
 
+	public enum CharacterCasing
+	{
+		Lower = 2,
+		Normal = 0,
+		Upper = 1,
+	}
+
 	public enum CheckState
 	{
 		Checked = 1,
@@ -478,6 +485,17 @@ namespace System.Windows.Forms
 		Normal = 0,
 		StretchImage = 1,
 		Zoom = 4,
+	}
+
+	public enum RichTextBoxScrollBars
+	{
+		Both = 3,
+		ForcedBoth = 19,
+		ForcedHorizontal = 17,
+		ForcedVertical = 18,
+		Horizontal = 1,
+		None = 0,
+		Vertical = 2,
 	}
 
 	public enum RightToLeft

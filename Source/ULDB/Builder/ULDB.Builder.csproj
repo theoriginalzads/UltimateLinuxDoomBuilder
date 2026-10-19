@@ -60,6 +60,11 @@
     <Compile Include="$(UpstreamCore)Controls/AngleControlEx.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/StatisticsControl.cs" />
     <Compile Include="$(UpstreamCore)Controls/StatisticsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DockersControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DockersControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/HintsPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/HintsPanel.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />
@@ -125,6 +130,7 @@
   <!-- Resources upstream's ported designer code reads through ComponentResourceManager. -->
   <ItemGroup>
     <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
+    <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Data files next to the program, laid out like upstream's Build folder

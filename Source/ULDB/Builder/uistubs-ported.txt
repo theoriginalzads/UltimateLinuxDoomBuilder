@@ -30,3 +30,7 @@ CodeImp.DoomBuilder.Controls.ConfigurablePictureBox
 CodeImp.DoomBuilder.Controls.TransparentListView
 CodeImp.DoomBuilder.Controls.AngleControlEx
 CodeImp.DoomBuilder.Controls.StatisticsControl
+CodeImp.DoomBuilder.Controls.DockersControl
+CodeImp.DoomBuilder.Controls.DockersTabsControl
+CodeImp.DoomBuilder.Controls.TransparentPanel
+CodeImp.DoomBuilder.Controls.HintsPanel
