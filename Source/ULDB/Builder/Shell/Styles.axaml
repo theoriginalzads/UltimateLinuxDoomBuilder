@@ -23,6 +23,9 @@
           <SolidColorBrush x:Key="UldbCheckedLineBrush" Color="#AA4C9BE8"/>
         </ResourceDictionary>
       </ResourceDictionary.ThemeDictionaries>
+      <!-- Fluent's tab headers are 24pt; UDB's dialogs use normal-sized tabs. -->
+      <x:Double x:Key="TabItemHeaderFontSize">14</x:Double>
+      <x:Double x:Key="TabItemMinHeight">32</x:Double>
     </ResourceDictionary>
   </Styles.Resources>
 

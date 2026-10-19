@@ -1,0 +1,63 @@
+<!-- ULDB: the window for ResourceOptionsForm (Windows/ResourceOptionsForm.cs), the
+     "Add Resource" / "Resource Options" dialog. Same controls and names as upstream. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ResourceOptionsView"
+        Title="Resource Options" Width="520" SizeToContent="Height" CanResize="False"
+        ShowInTaskbar="False">
+  <DockPanel Margin="16">
+    <!-- OK / Cancel -->
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto" Margin="0,16,0,0">
+      <StackPanel x:Name="checkingloader" Orientation="Horizontal" Spacing="8" IsVisible="False" VerticalAlignment="Center">
+        <ProgressBar IsIndeterminate="True" Width="60"/>
+        <TextBlock Text="Please wait, checking the archive..." VerticalAlignment="Center"/>
+      </StackPanel>
+      <Button x:Name="apply" Grid.Column="1" Content="OK" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent" Margin="0,0,8,0"/>
+      <Button x:Name="cancel" Grid.Column="2" Content="Cancel" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+    </Grid>
+
+    <CheckBox x:Name="notfortesting" DockPanel.Dock="Bottom" Content="Exclude this resource from testing parameters" Margin="0,12,0,0"/>
+
+    <!-- Tab order matches DataLocation.RESOURCE_WAD (0), RESOURCE_DIRECTORY (1), RESOURCE_PK3 (2). -->
+    <TabControl x:Name="tabs" Padding="0,8,0,0">
+      <TabItem x:Name="wadfiletab" Header="From WAD File">
+        <StackPanel Spacing="8" Margin="4">
+          <TextBlock Text="WAD File Resource:"/>
+          <DockPanel>
+            <Button x:Name="browsewad" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>
+            <TextBox x:Name="wadlocation" IsReadOnly="True" Watermark="No file selected"/>
+          </DockPanel>
+          <CheckBox x:Name="strictpatches" Content="Strictly load patches between P_START and P_END only"/>
+        </StackPanel>
+      </TabItem>
+      <TabItem x:Name="directorytab" Header="From Directory">
+        <StackPanel Spacing="8" Margin="4">
+          <TextBlock Text="Directory Resource:"/>
+          <DockPanel>
+            <Button x:Name="browsedir" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>
+            <TextBox x:Name="dirlocation" IsReadOnly="True" Watermark="No directory selected"/>
+          </DockPanel>
+          <CheckBox x:Name="dir_textures" Content="Load images in directory root as textures"/>
+          <CheckBox x:Name="dir_flats" Content="Load images in directory root as flats"/>
+          <TextBlock TextWrapping="Wrap" Opacity="0.75">
+            The directory may use the ZDoom PK3 directory structure, or you can choose to use the options above to load texture or flat images from the directory root.
+          </TextBlock>
+          <HyperlinkButton x:Name="pk3_directorylink" Content="About the ZDoom PK3 directory structure" Padding="0"/>
+        </StackPanel>
+      </TabItem>
+      <TabItem x:Name="pk3filetab" Header="From PK3/PKE/PK7">
+        <StackPanel Spacing="8" Margin="4">
+          <TextBlock Text="PK3, PKE, or PK7 File Resource:"/>
+          <DockPanel>
+            <Button x:Name="browsepk3" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>
+            <TextBox x:Name="pk3location" IsReadOnly="True" Watermark="No file selected"/>
+          </DockPanel>
+          <TextBlock TextWrapping="Wrap" Opacity="0.75">
+            PK3 and PK7 archive files are expected to use the ZDoom archive directory structure.
+          </TextBlock>
+          <HyperlinkButton x:Name="pk3link" Content="About the ZDoom archive directory structure" Padding="0"/>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

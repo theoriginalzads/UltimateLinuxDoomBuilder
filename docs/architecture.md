@@ -60,6 +60,9 @@ Upstream's BuilderNative creates its own GLX/WGL context on a native window. ULD
 
 1. **Model port: upstream's files compile unchanged.** When a window's designer code only builds things compat models (menus, toolbars, labels, panels), upstream's `X.cs` and `X.Designer.cs` are compiled as they are. The WinForms objects become a state-only model, and a ULDB Avalonia view shows it and feeds input back (`Raise…` methods on compat controls, `Changed` events on ToolStrip items). Upstream logic keeps running exactly as written, so merges stay trivial. Used for `MainForm` (about 8,000 lines, zero edits) and BuilderModes' `MenusForm`.
 2. **Avalonia port:** for dialogs whose layout is the point (edit forms, preferences), the designer layout is rebuilt as `.axaml`, keeping class and handler names.
+   - The form class (`Windows/X.cs`) still derives from the compat `DelayedForm`/`Form`, so callers keep `ShowDialog(owner)` / `DialogResult`. It owns an `XView : Window` (`Windows/XView.axaml`, fields from `x:Name`). `InitializeComponent()` takes the controls from the view and wires upstream's handler names.
+   - The form overrides `CreateView()` to return the view. Compat `Form.Show`/`ShowDialog` hand it to `WinFormsHost.ShowForm`. `AvaloniaHost` then shows the window (modal over its owner), applies `DelayedForm`'s saved geometry, and routes closing through `Form.RequestClose`. Setting `DialogResult` on a modal form closes it, as in WinForms.
+   - User controls (such as `ResourceListEditor`) are plain Avalonia `UserControl`s with upstream's public API.
 
 Designer code that loads values through `ComponentResourceManager` (`resources.GetObject("$this.Icon")`) gets a ULDB `.resx` from `tools/resxgen/formresx.py` (in `FormResources/`). It keeps only the entries the designer reads, typed as compat's `Bitmap`/`Icon`; the project compiles it as preserialized resources, and `System.Resources.Extensions` creates the objects from a stream at runtime.
 

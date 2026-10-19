@@ -1,0 +1,45 @@
+<!-- ULDB: the window for OpenMapOptionsForm (Windows/OpenMapOptionsForm.cs): choose the
+     game configuration, the map in the WAD, its script type and resources. Same controls
+     and names as upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:CodeImp.DoomBuilder.Controls"
+        x:Class="CodeImp.DoomBuilder.Windows.OpenMapOptionsView"
+        Title="Open Map Options" Width="560" Height="680" MinWidth="460" MinHeight="520"
+        ShowInTaskbar="False">
+  <DockPanel Margin="16">
+    <!-- OK / Cancel -->
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,16,0,0">
+      <Button x:Name="apply" Content="OK" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" Content="Cancel" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,*,Auto,Auto" >
+      <!-- Game configuration -->
+      <TextBlock Grid.Row="0" Text="Game Configuration:" VerticalAlignment="Center" Margin="0,0,12,0"/>
+      <ComboBox x:Name="config" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"/>
+
+      <!-- Maps in the WAD -->
+      <TextBlock Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" Margin="0,14,0,6" Opacity="0.8"
+                 Text="With the above selected configuration, the maps shown below were found in the chosen WAD file. Please select the map to load for editing."/>
+      <Border Grid.Row="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" CornerRadius="3" MinHeight="90">
+        <ListBox x:Name="mapslist" SelectionMode="Single"/>
+      </Border>
+
+      <!-- Script type -->
+      <TextBlock x:Name="scriptcompilerlabel" Grid.Row="3" Text="Script Type:" VerticalAlignment="Center" Margin="0,12,12,0"/>
+      <ComboBox x:Name="scriptcompiler" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,12,0,0"/>
+
+      <!-- Resources -->
+      <HeaderedContentControl Grid.Row="4" Grid.ColumnSpan="2" Margin="0,16,0,0" Header="Resources">
+        <StackPanel Spacing="8">
+          <TextBlock TextWrapping="Wrap" Opacity="0.75" FontSize="12"
+                     Text="Drag &amp; drop resources to add them. Drag items to change order (lower items override higher items). Use the context menu to cut, copy, paste or remove items."/>
+          <controls:ResourceListEditor x:Name="datalocations" Height="200"/>
+          <CheckBox x:Name="strictpatches" Content="Strictly load patches between P_START and P_END only for this file"/>
+          <CheckBox x:Name="longtexturenames" Content="Use long texture names"/>
+        </StackPanel>
+      </HeaderedContentControl>
+    </Grid>
+  </DockPanel>
+</Window>

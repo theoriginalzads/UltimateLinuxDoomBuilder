@@ -61,6 +61,8 @@
     <Compile Include="Scope/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
     <Compile Include="Rendering/**/*.cs" />
+    <!-- Avalonia ports of upstream windows and controls (.axaml), same names and namespaces. -->
+    <Compile Include="Windows/**/*.cs;Controls/**/*.cs" />
     <!-- Avalonia app: entry point, IWinFormsHost, main loop. -->
     <Compile Include="Shell/**/*.cs" />
   </ItemGroup>

@@ -253,7 +253,24 @@ namespace System.Windows.Forms
 		/// <summary>The UI's active window, if it's one of the compat forms.</summary>
 		public static Form ActiveForm => WinFormsHost.Current.ActiveForm;
 
-		public DialogResult DialogResult { get; set; }
+		private DialogResult dialogresult;
+
+		/// <summary>Like WinForms: setting a result on a form shown with ShowDialog closes it.</summary>
+		public DialogResult DialogResult
+		{
+			get => dialogresult;
+			set
+			{
+				dialogresult = value;
+				if(Modal && value != DialogResult.None) Close();
+			}
+		}
+
+		/// <summary>True while the form is shown with ShowDialog.</summary>
+		public bool Modal { get; private set; }
+		public bool ControlBox { get; set; } = true;
+		public IButtonControl AcceptButton { get; set; }
+		public IButtonControl CancelButton { get; set; }
 		public FormWindowState WindowState { get; set; }
 		public Form Owner { get; set; }
 		public bool TopMost { get; set; }
@@ -335,7 +352,7 @@ namespace System.Windows.Forms
 		}
 
 		public void Activate() { }
-		public void Show(IWin32Window owner) => Show();
+		public void Show(IWin32Window owner) { if(owner is Form f) Owner = f; Show(); }
 
 		public virtual DialogResult ShowDialog() => ShowDialog(null);
 
@@ -345,10 +362,37 @@ namespace System.Windows.Forms
 		/// </summary>
 		public virtual DialogResult ShowDialog(IWin32Window owner)
 		{
-			WinFormsHost.Current.ShowMessageBox(owner, "The \"" + GetType().Name + "\" window isn't available in this version of " + Application.ProductName + " yet.",
-				Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-			return DialogResult = DialogResult.Cancel;
+			object view = GetView();
+			if(view == null)
+			{
+				WinFormsHost.Current.ShowMessageBox(owner, "The \"" + GetType().Name + "\" window isn't available in this version of " + Application.ProductName + " yet.",
+					Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+				return dialogresult = DialogResult.Cancel;
+			}
+
+			dialogresult = DialogResult.None;
+			Modal = true;
+			try { WinFormsHost.Current.ShowForm(this, view, owner, true); }
+			finally { Modal = false; }
+			if(dialogresult == DialogResult.None) dialogresult = DialogResult.Cancel; // Closed with the title bar
+			return dialogresult;
 		}
+
+		public override void Show()
+		{
+			object view = GetView();
+			if(view != null) WinFormsHost.Current.ShowForm(this, view, Owner, false);
+			base.Show();
+		}
+
+		/// <summary>
+		/// ULDB: an Avalonia port of this form returns its window (an Avalonia Window) here.
+		/// Forms without one (generated placeholders) say they aren't available yet.
+		/// </summary>
+		protected virtual object CreateView() => null;
+
+		private object view;
+		private object GetView() => view ??= CreateView();
 	}
 
 	public enum CloseReason

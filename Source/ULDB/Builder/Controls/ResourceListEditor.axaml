@@ -1,0 +1,47 @@
+<!-- ULDB: Avalonia port of upstream Controls/ResourceListEditor (the resource list in the
+     Open Map, Map Options and Game Configurations windows). Logic: ResourceListEditor.axaml.cs. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CodeImp.DoomBuilder.Controls"
+             x:Class="CodeImp.DoomBuilder.Controls.ResourceListEditor">
+  <DockPanel>
+    <!-- Warnings about missing or duplicate required archives, and maps without resources. -->
+    <StackPanel x:Name="warningspanel" DockPanel.Dock="Top" Spacing="6"/>
+
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,*,*" Margin="0,6,0,0">
+      <Button x:Name="addresource" Grid.Column="0" Content="Add resource..." HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,3,0"/>
+      <Button x:Name="editresource" Grid.Column="1" Content="Resource options..." IsEnabled="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="3,0"/>
+      <Button x:Name="deleteresources" Grid.Column="2" Content="Remove" IsEnabled="False" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="3,0,0,0"/>
+    </Grid>
+
+    <Border BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" CornerRadius="3">
+      <ListBox x:Name="resourceitems" SelectionMode="Multiple" DragDrop.AllowDrop="True"
+               ScrollViewer.HorizontalScrollBarVisibility="Auto" MinHeight="60">
+        <ListBox.ContextMenu>
+          <ContextMenu x:Name="copypastemenu">
+            <MenuItem x:Name="copyresources" Header="Copy"/>
+            <MenuItem x:Name="cutresources" Header="Cut"/>
+            <MenuItem x:Name="pasteresources" Header="Paste"/>
+            <MenuItem x:Name="replaceresources" Header="Replace"/>
+            <Separator/>
+            <MenuItem x:Name="removeresources" Header="Remove"/>
+          </ContextMenu>
+        </ListBox.ContextMenu>
+        <ListBox.Styles>
+          <!-- Upstream: MistyRose background for missing resources -->
+          <Style Selector="TextBlock.invalid">
+            <Setter Property="Foreground" Value="IndianRed"/>
+          </Style>
+        </ListBox.Styles>
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="local:ResourceListEditor+Item">
+            <StackPanel Orientation="Horizontal" Spacing="6" Background="Transparent" ToolTip.Tip="{Binding Tooltip}">
+              <PathIcon Data="{Binding Icon}" Width="16" Height="16" Opacity="{Binding IconOpacity}"/>
+              <TextBlock Text="{Binding Location}" Opacity="{Binding TextOpacity}" Classes.invalid="{Binding !Valid}" VerticalAlignment="Center"/>
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </DockPanel>
+</UserControl>

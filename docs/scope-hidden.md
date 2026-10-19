@@ -40,4 +40,6 @@ A map whose saved settings name a hidden config opens with the closest visible o
 
 | Where | What | Reason |
 |---|---|---|
-| *(Filled in as UI lands in Phase 3, and in the Phase 5 audit pass.)* | | |
+| Open Map dialog | Game configurations list shows only visible configurations; a map whose saved settings name a hidden configuration gets the closest visible one suggested | Scope filter |
+| Open Map dialog | Script type list shows only visible script compilers | Scope filter |
+| *(More filled in as UI lands in Phase 3, and in the Phase 5 audit pass.)* | | |

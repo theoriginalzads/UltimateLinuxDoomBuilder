@@ -98,6 +98,61 @@ namespace ULDB.Shell
 
 		#region ================== Dialogs
 
+		public void ShowForm(Form form, object view, IWin32Window owner, bool modal)
+		{
+			OnUIThread(() =>
+			{
+				Window window = (Window)view;
+				Window ownerwindow = OwnerWindow(owner);
+				double scale = ownerwindow?.RenderScaling ?? 1.0;
+				FormWindows.Register(form, window);
+
+				// Title follows the form's Text.
+				if(!string.IsNullOrEmpty(form.Text)) window.Title = form.Text;
+				form.TextChanged += (s, e) => Dispatcher.UIThread.Post(() => window.Title = form.Text);
+
+				// Load first (upstream's DelayedForm restores the saved size and position), then apply it.
+				form.RaiseLoad();
+				bool sizable = form.FormBorderStyle == FormBorderStyle.Sizable || form.FormBorderStyle == FormBorderStyle.SizableToolWindow;
+				if(sizable && form.Width > 0 && form.Height > 0)
+				{
+					window.Width = form.Width / scale;
+					window.Height = form.Height / scale;
+				}
+				window.CanResize = window.CanResize && sizable;
+				if(form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty)
+				{
+					window.WindowStartupLocation = WindowStartupLocation.Manual;
+					window.Position = new Avalonia.PixelPoint(form.Location.X, form.Location.Y);
+				}
+				else
+				{
+					window.WindowStartupLocation = ownerwindow != null ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen;
+				}
+
+				window.Opened += (s, e) => form.RaiseShown();
+				window.Activated += (s, e) => form.RaiseActivated();
+				window.Deactivated += (s, e) => form.RaiseDeactivate();
+
+				// Closing the window (title bar, Escape, Close()) asks the form, like WinForms.
+				bool closed = false;
+				window.Closing += (s, e) =>
+				{
+					if(closed) return;
+					double sc = window.RenderScaling;
+					form.Location = new System.Drawing.Point(window.Position.X, window.Position.Y);
+					form.Size = new System.Drawing.Size((int)(window.Bounds.Width * sc), (int)(window.Bounds.Height * sc));
+					form.RaiseResizeEnd();
+					if(!form.RequestClose(CloseReason.UserClosing)) e.Cancel = true;
+					else closed = true;
+				};
+
+				if(modal) Modal.ShowDialog(window, ownerwindow);
+				else if(ownerwindow != null) window.Show(ownerwindow);
+				else window.Show();
+			});
+		}
+
 		public DialogResult ShowMessageBox(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
 		{
 			return OnUIThread(() =>

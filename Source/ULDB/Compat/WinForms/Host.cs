@@ -20,6 +20,11 @@ namespace System.Windows.Forms
 		/// <summary>Shows a color picker. Returns the chosen color, or null when cancelled.</summary>
 		Color? ShowColorDialog(IWin32Window owner, Color initial, int[] customColors);
 
+		/// <summary>
+		/// Shows a ported form's window (view, an Avalonia Window). Modal: returns when it closes.
+		/// </summary>
+		void ShowForm(Form form, object view, IWin32Window owner, bool modal);
+
 		void SetCursor(Cursor cursor);
 		void SetClipboard(DataObject data);
 		DataObject GetClipboard();
@@ -97,6 +102,11 @@ namespace System.Windows.Forms
 		{
 			WinFormsHost.Log?.Invoke("[headless] File dialog '" + request.Title + "' cancelled");
 			return null;
+		}
+
+		public void ShowForm(Form form, object view, IWin32Window owner, bool modal)
+		{
+			WinFormsHost.Log?.Invoke("[headless] Form '" + form.GetType().Name + "' not shown");
 		}
 
 		public Color? ShowColorDialog(IWin32Window owner, Color initial, int[] customColors) => null;
