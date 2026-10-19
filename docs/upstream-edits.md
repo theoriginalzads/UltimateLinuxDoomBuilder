@@ -9,6 +9,9 @@ New ULDB code lives in its own files (`Source/ULDB/`, `tools/`, `docs/`) and isn
 | File | Where | Why |
 |---|---|---|
 | `Source/Core/General/General.cs` | `-PORTABLE` argument handling | Windows ACL permission check replaced with a direct write test (`ULDB.Platform.Paths.IsDirectoryWritable`) |
+| `Source/Core/General/General.cs` | `Main`: `settingspath` | Settings go to `$XDG_CONFIG_HOME/UltimateLinuxDoomBuilder`, not `~/.local/share/Doom Builder` (which upstream's Mono build uses) |
+| `Source/Core/General/General.cs` | `OpenWebsite` | `Process.Start(url)` no longer opens URLs on .NET Core+; use `UseShellExecute = true` (xdg-open on Linux) |
+| `Source/Core/General/MapManager.cs` | `ExecuteExternalCommand` | User pre/post commands run as a `/bin/sh` script (argument as `$1`) instead of a `cmd.exe` batch file |
 
 ## Bug fixes
 

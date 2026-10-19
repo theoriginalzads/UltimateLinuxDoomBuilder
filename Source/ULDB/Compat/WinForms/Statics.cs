@@ -123,8 +123,10 @@ namespace System.Windows.Forms
 			}
 		}
 
-		public static string ExecutablePath => Environment.ProcessPath ?? Path.Combine(AppContext.BaseDirectory, "uldb");
-		public static string StartupPath => Path.GetDirectoryName(ExecutablePath);
+		// The program's own folder, even when started as "dotnet Builder.dll" (where the
+		// process path is the dotnet host). UDB finds Configurations/ etc. next to it.
+		public static string StartupPath => AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
+		public static string ExecutablePath => Path.Combine(StartupPath, (Assembly.GetEntryAssembly()?.GetName().Name ?? "Builder") + ".dll");
 
 		/// <summary>Raised for exceptions on the UI thread. The UI forwards its unhandled exceptions here.</summary>
 		public static event ThreadExceptionEventHandler ThreadException;
