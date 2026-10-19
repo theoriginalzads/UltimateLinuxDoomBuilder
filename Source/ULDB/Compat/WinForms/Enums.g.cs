@@ -1033,6 +1033,14 @@ namespace System.Windows.Forms
 		TextBeforeImage = 8,
 	}
 
+	public enum TickStyle
+	{
+		Both = 3,
+		BottomRight = 2,
+		None = 0,
+		TopLeft = 1,
+	}
+
 	public enum ToolStripDropDownCloseReason
 	{
 		AppClicked = 1,

@@ -63,3 +63,16 @@ CodeImp.DoomBuilder.Controls.ColoredComboBox
 CodeImp.DoomBuilder.Controls.ColoredComboBoxItem
 CodeImp.DoomBuilder.Controls.PairedFloatControl
 CodeImp.DoomBuilder.Windows.ActionBrowserForm
+CodeImp.DoomBuilder.Windows.SectorEditFormUDMF
+CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF
+CodeImp.DoomBuilder.Controls.PairedFieldsControl
+CodeImp.DoomBuilder.Controls.SidedefPartLightControl
+CodeImp.DoomBuilder.Controls.SlopePivotMode
+CodeImp.DoomBuilder.Controls.SectorSlopeControl
+CodeImp.DoomBuilder.Controls.TagsSelector
+CodeImp.DoomBuilder.Controls.PairedIntControl
+CodeImp.DoomBuilder.Controls.FlatSelectorControl
+CodeImp.DoomBuilder.Controls.TextureSelectorControl
+CodeImp.DoomBuilder.Controls.ImageSelectorControl
+CodeImp.DoomBuilder.Controls.TransparentTrackBar
+CodeImp.DoomBuilder.Controls.TransparentLabel

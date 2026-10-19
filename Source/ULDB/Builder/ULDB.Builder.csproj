@@ -82,6 +82,26 @@
     <Compile Include="$(UpstreamCore)Windows/TextEditForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.cs" />
     <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditFormUDMF.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditFormUDMF.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditFormUDMF.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditFormUDMF.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFieldsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFieldsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SidedefPartLightControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SidedefPartLightControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorSlopeControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorSlopeControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagsSelector.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagsSelector.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedIntControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedIntControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/FlatSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TextureSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageSelectorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentTrackBar.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentLabel.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/ThingBrowserControl.cs" />
@@ -176,6 +196,8 @@
     <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
     <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
     <EmbeddedResource Update="FormResources/ThingBrowserControl.resx" LogicalName="CodeImp.DoomBuilder.Controls.ThingBrowserControl.resources" />
+    <EmbeddedResource Update="FormResources/SectorEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.SectorEditFormUDMF.resources" />
+    <EmbeddedResource Update="FormResources/LinedefEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF.resources" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Data files next to the program, laid out like upstream's Build folder

@@ -71,6 +71,9 @@ namespace System.Windows.Forms
 
 	public class TextBox : TextBoxBase
 	{
+		public AutoCompleteMode AutoCompleteMode { get; set; }
+		public AutoCompleteSource AutoCompleteSource { get; set; } = AutoCompleteSource.None;
+		public AutoCompleteStringCollection AutoCompleteCustomSource { get; set; } = new AutoCompleteStringCollection();
 		public ScrollBars ScrollBars { get; set; }
 		public HorizontalAlignment TextAlign { get; set; }
 		public bool UseSystemPasswordChar { get; set; }
@@ -110,16 +113,45 @@ namespace System.Windows.Forms
 		public event LinkLabelLinkClickedEventHandler LinkClicked;
 		protected virtual void OnLinkClicked(LinkLabelLinkClickedEventArgs e) => LinkClicked?.Invoke(this, e);
 
-		/// <summary>ULDB: the user clicked the link in the view.</summary>
-		public void RaiseLinkClicked(MouseButtons button = MouseButtons.Left) => OnLinkClicked(new LinkLabelLinkClickedEventArgs(new Link(), button));
+		/// <summary>Links within the text (upstream's TagsSelector makes each tag a link).
+		/// Without any, the whole text is one link.</summary>
+		public LinkCollection Links { get; }
+
+		public LinkLabel() { Links = new LinkCollection(this); }
+
+		/// <summary>ULDB: the user clicked a link (null: the whole label) in the view.</summary>
+		public void RaiseLinkClicked(Link link = null, MouseButtons button = MouseButtons.Left)
+		{
+			OnLinkClicked(new LinkLabelLinkClickedEventArgs(link ?? (Links.Count > 0 ? Links[0] : new Link(0, Text.Length)), button));
+		}
 
 		public class Link
 		{
+			public Link() { }
+			public Link(int start, int length) { Start = start; Length = length; }
+			public Link(int start, int length, object linkData) : this(start, length) { LinkData = linkData; }
+			public int Start { get; set; }
+			public int Length { get; set; }
 			public object LinkData { get; set; }
 			public string Name { get; set; } = "";
+			public string Description { get; set; } = "";
 			public bool Visited { get; set; }
 			public bool Enabled { get; set; } = true;
+			public object Tag { get; set; }
 		}
+
+		public class LinkCollection : List<Link>
+		{
+			private readonly LinkLabel owner;
+			internal LinkCollection(LinkLabel owner) { this.owner = owner; }
+			public new Link Add(Link link) { base.Add(link); owner.NotifyLinksChanged(); return link; }
+			public Link Add(int start, int length) => Add(new Link(start, length));
+			public Link Add(int start, int length, object linkData) => Add(new Link(start, length, linkData));
+			public new void Clear() { base.Clear(); owner.NotifyLinksChanged(); }
+			public new void Remove(Link link) { base.Remove(link); owner.NotifyLinksChanged(); }
+		}
+
+		internal void NotifyLinksChanged() => NotifyStylesChanged();
 	}
 
 	public struct LinkArea
@@ -322,6 +354,7 @@ namespace System.Windows.Forms
 		public bool Multiline { get; set; }
 		public bool ShowToolTips { get; set; }
 		public int TabCount => TabPages.Count;
+		public ImageList ImageList { get; set; }
 
 		/// <summary>ULDB: raised when pages are added or removed, so views show the right tabs.</summary>
 		public event EventHandler TabPagesChanged;

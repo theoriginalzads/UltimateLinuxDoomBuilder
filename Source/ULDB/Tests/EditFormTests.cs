@@ -66,6 +66,28 @@ namespace ULDB.Tests
 		}
 
 		[SkippableFact]
+		public void SectorEditFormUDMFSetsUp()
+		{
+			WithMap(manager =>
+			{
+				using(SectorEditFormUDMF f = new SectorEditFormUDMF())
+					f.Setup(new List<Sector> { System.Linq.Enumerable.First(manager.Map.Sectors) });
+			});
+		}
+
+		[SkippableFact]
+		public void LinedefEditFormUDMFSetsUp()
+		{
+			WithMap(manager =>
+			{
+				// A two-sided line, so both sides' controls are filled.
+				Linedef line = System.Linq.Enumerable.First(manager.Map.Linedefs, l => l.Back != null);
+				using(LinedefEditFormUDMF f = new LinedefEditFormUDMF(false, false))
+					f.Setup(new List<Linedef> { line }, false, false);
+			});
+		}
+
+		[SkippableFact]
 		public void ActionBrowserFormBuildsItsTree()
 		{
 			WithMap(manager =>

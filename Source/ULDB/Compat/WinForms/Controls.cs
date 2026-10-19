@@ -232,6 +232,7 @@ namespace System.Windows.Forms
 		// only for Win32 tweaks such as BufferedTreeView's double buffering).
 		protected virtual void OnHandleCreated(EventArgs e) => HandleCreated?.Invoke(this, e);
 		protected virtual void OnHandleDestroyed(EventArgs e) => HandleDestroyed?.Invoke(this, e);
+		protected virtual void OnCreateControl() { }
 		public virtual void Refresh() { Refreshed?.Invoke(this, EventArgs.Empty); }
 		public virtual void Update() { }
 		public virtual void Show() { Visible = true; Refreshed?.Invoke(this, EventArgs.Empty); }
@@ -617,6 +618,45 @@ namespace System.Windows.Forms
 	}
 
 	public class VScrollBar : ScrollBar { }
+
+	/// <summary>A slider's state (value, range, ticks); views drag it and set Value.</summary>
+	public class TrackBar : Control, ComponentModel.ISupportInitialize
+	{
+		private int value;
+		public int Minimum { get; set; }
+		public int Maximum { get; set; } = 10;
+		public int SmallChange { get; set; } = 1;
+		public int LargeChange { get; set; } = 5;
+		public int TickFrequency { get; set; } = 1;
+		public TickStyle TickStyle { get; set; } = TickStyle.BottomRight;
+		public Orientation Orientation { get; set; } = Orientation.Horizontal;
+		public bool AutoSize { get; set; } = true;
+		public int Value
+		{
+			get => value;
+			set
+			{
+				if(this.value == value) return;
+				if(value < Minimum || value > Maximum) throw new ArgumentOutOfRangeException(nameof(value));
+				this.value = value;
+				OnValueChanged(EventArgs.Empty);
+			}
+		}
+		public event EventHandler ValueChanged;
+		public event EventHandler Scroll;
+		protected virtual void OnValueChanged(EventArgs e) => ValueChanged?.Invoke(this, e);
+		protected virtual void OnScroll(EventArgs e) => Scroll?.Invoke(this, e);
+
+		/// <summary>ULDB: the user moved the slider in the view.</summary>
+		public void RaiseScroll(int newValue)
+		{
+			Value = Math.Max(Minimum, Math.Min(Maximum, newValue));
+			OnScroll(EventArgs.Empty);
+		}
+
+		public void BeginInit() { }
+		public void EndInit() { }
+	}
 	public class HScrollBar : ScrollBar { }
 
 	public class CreateParams
