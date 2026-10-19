@@ -16,6 +16,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using CodeImp.DoomBuilder;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Windows;
 using ULDB.Input;
@@ -28,6 +29,7 @@ namespace ULDB.Shell
 		private readonly MainForm form;
 		private readonly RenderTargetControl display;
 		private readonly ViewportControl viewport;
+		private Panel input;
 		private WF.Keys modifiers;
 		private Point lastpointer;
 		private bool closing;
@@ -117,9 +119,12 @@ namespace ULDB.Shell
 			UpdateSplash();
 			display.StylesChanged += (s, e) => Dispatcher.UIThread.Post(UpdateSplash);
 
-			Panel layers = new Panel();
+			// The OpenGL control draws itself and isn't hit-testable, so pointer input is taken
+			// by this transparent panel over the same area.
+			Panel layers = new Panel { Background = Brushes.Transparent, Focusable = true };
 			layers.Children.Add(gl);
 			layers.Children.Add(splashlayer);
+			input = layers;
 			Border frame = new Border { Child = layers, BorderThickness = new Thickness(1) };
 			frame.Classes.Add("uldb-display");
 			return frame;
@@ -161,6 +166,30 @@ namespace ULDB.Shell
 
 		#region ================== Input
 
+		// ULDB_TRACE_INPUT=1 logs the input events passed to upstream (for diagnosing input issues).
+		private static readonly bool traceinput = Environment.GetEnvironmentVariable("ULDB_TRACE_INPUT") == "1";
+
+		private static void Trace(string what, WF.MouseEventArgs e)
+		{
+			if(!traceinput) return;
+			CodeImp.DoomBuilder.Actions.Action[] actions = General.Actions?.GetActionsByKey(KeyFor(e)) ?? new CodeImp.DoomBuilder.Actions.Action[0];
+			General.WriteLogLine("[input] " + what + " button=" + e.Button + " clicks=" + e.Clicks + " at " + e.X + "," + e.Y + " delta=" + e.Delta +
+				" actions=" + string.Join(",", Array.ConvertAll(actions, a => a.Name)));
+		}
+
+		private static int KeyFor(WF.MouseEventArgs e)
+		{
+			if(e.Delta > 0) return (int)SpecialKeys.MScrollUp;
+			if(e.Delta < 0) return (int)SpecialKeys.MScrollDown;
+			switch(e.Button)
+			{
+				case WF.MouseButtons.Left: return (int)WF.Keys.LButton;
+				case WF.MouseButtons.Right: return (int)WF.Keys.RButton;
+				case WF.MouseButtons.Middle: return (int)WF.Keys.MButton;
+				default: return 0;
+			}
+		}
+
 		private void HookInput()
 		{
 			WF.Control.ModifierKeysProvider = () => modifiers;
@@ -170,23 +199,25 @@ namespace ULDB.Shell
 				return new System.Drawing.Point(p.X, p.Y);
 			};
 
-			viewport.PointerEntered += (s, e) => { Track(e); display.RaiseMouseEnter(); };
-			viewport.PointerExited += (s, e) => { Track(e); display.RaiseMouseLeave(); };
-			viewport.PointerMoved += (s, e) => display.RaiseMouseMove(MouseArgs(e, 0, 0));
+			input.PointerEntered += (s, e) => { Track(e); display.RaiseMouseEnter(); };
+			input.PointerExited += (s, e) => { Track(e); display.RaiseMouseLeave(); };
+			input.PointerMoved += (s, e) => display.RaiseMouseMove(MouseArgs(e, 0, 0));
 
-			viewport.PointerPressed += (s, e) =>
+			input.PointerPressed += (s, e) =>
 			{
-				viewport.Focus();
-				e.Pointer.Capture(viewport);
+				input.Focus();
+				e.Pointer.Capture(input);
 				WF.MouseEventArgs args = MouseArgs(e, e.ClickCount, 0, KeyMapping.ToMouseButton(e.GetCurrentPoint(viewport).Properties.PointerUpdateKind.GetMouseButton()));
+				Trace("down", args);
 				display.RaiseMouseDown(args);
 				if(e.ClickCount == 2) display.RaiseMouseDoubleClick(args);
 				e.Handled = true;
 			};
 
-			viewport.PointerReleased += (s, e) =>
+			input.PointerReleased += (s, e) =>
 			{
 				WF.MouseEventArgs args = MouseArgs(e, 1, 0, KeyMapping.ToMouseButton(e.InitialPressMouseButton));
+				Trace("up", args);
 				display.RaiseMouseUp(args);
 				if(new Rect(viewport.Bounds.Size).Contains(e.GetPosition(viewport))) display.RaiseMouseClick(args);
 				e.Pointer.Capture(null);
@@ -194,11 +225,13 @@ namespace ULDB.Shell
 			};
 
 			// Upstream handles the wheel on the form (MainForm.OnMouseWheel), one notch = 120.
-			viewport.PointerWheelChanged += (s, e) =>
+			input.PointerWheelChanged += (s, e) =>
 			{
 				Track(e);
 				int delta = (int)Math.Round(e.Delta.Y * 120);
-				if(delta != 0) form.RaiseMouseWheel(MouseArgs(e, 0, delta));
+				WF.MouseEventArgs wheel = MouseArgs(e, 0, delta);
+				Trace("wheel", wheel);
+				if(delta != 0) form.RaiseMouseWheel(wheel);
 				e.Handled = true;
 			};
 
@@ -271,7 +304,7 @@ namespace ULDB.Shell
 				try { await ViewportContext.InitializeAsync(viewport); }
 				catch(Exception) { } // Reported by the viewport; the editor runs without a map view
 				form.RaiseShown();
-				viewport.Focus();
+				input.Focus();
 			};
 			Activated += (s, e) => form.RaiseActivated();
 			Deactivated += (s, e) => form.RaiseDeactivate();

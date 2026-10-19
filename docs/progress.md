@@ -87,7 +87,10 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Avalonia app entry point | ✅ | `Source/ULDB/Builder/Shell/Program.cs`: `Builder` is now an executable (`uldb` launcher script next to it). Avalonia is set up first (`SetupWithoutStarting`), then upstream's `General.Main` runs unchanged; `Application.Run` runs Avalonia's main loop |
 | `IWinFormsHost` | ✅ (untested by hand) | `Shell/AvaloniaHost.cs`: message boxes, portal file dialogs, colour dialog (ColorView), clipboard (text to the desktop, UDB formats in-process), cursors, timers, `Invoke`/`BeginInvoke`, `ActiveForm`. `Shell/FormWindows.cs` links compat `Form`s to Avalonia windows |
 | Temporary main window | ✅ | `Shell/TemporaryMainWindow.cs` stands in for `MainForm` until it's ported; closing it saves settings like upstream. Delete it with the `MainForm` port |
-| Main window port, viewport | ⬜ | Next (below) |
+| Viewport | ✅ | `ViewportContext` (UDB's own GL context, shared with Avalonia's; renders into an FBO) and `ViewportControl` (blits it). Present callback added to `HostedContext` |
+| BuilderModes plugin | ✅ (logic) | Builds with generated placeholders for `Interface/`; upstream `MenusForm` compiles unchanged. UI ports are Phase 4 |
+| Main window | 🟨 | **Model port**: upstream `MainForm.cs`/`.Designer.cs` compile unchanged on compat models; `Shell/MainWindow.cs` + `ToolStripViews.cs` show menus, toolbars, modes toolbar, status bar, map view. Info panels and dockers still placeholders |
+| Input | ✅ 2D / 🟨 3D | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook needs pointer warping (`Cursor.PositionSetter`) |
 
 **Tests:** 137 passing.
 
@@ -95,7 +98,13 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
-Steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). The user confirmed the window appears (dark theme followed, text renders; app icon added: **Cacky, the ULDB Cacodemon**, `Source/ULDB/Assets/Icons/` (SVG source plus PNGs; 16 px is a text-free variant), approved by the user. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; the plan wants it to match the app ID, so revisit with the `.desktop` file). It reports 51 configs loaded: the scope filter applies once the config UI is ported. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
+**State on 20 Oct 2026 (user tested):** a map opened from the command line (`uldb small.wad -map MAP01 -cfg UZDoom_DoomUDMF.cfg -scriptconfig zdoom_acs.cfg -resource wad ~/.local/share/doom/freedoom2.wad`) draws in 2D and 3D; zoom, selection, editing, keyboard shortcuts, menus and mode switching work. Pan is Space + mouse (UDB's default; middle button is paint-select). Next, in order:
+1. 3D mouselook: implement `Cursor.PositionSetter` (XWarpPointer via P/Invoke on X11), check `Cursor.Clip`/hide.
+2. Open Map dialog (`OpenMapForm`) and game configuration UI, with `ScopeFilter` — needed to open maps without the command line. Then `ErrorsForm`.
+3. Info panels (linedef/sector/thing/vertex) and dockers: **ask the user first** whether to port them as model ports with a generic WinForms-layout renderer (exact UDB look) or as `.axaml` (modern look). Same question decides the approach for Phase 5 dialogs.
+4. Save (Ctrl+S) end to end in the UI; window geometry persistence.
+
+Older notes: steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). The user confirmed the window appears (dark theme followed, text renders; app icon added: **Cacky, the ULDB Cacodemon**, `Source/ULDB/Assets/Icons/` (SVG source plus PNGs; 16 px is a text-free variant), approved by the user. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; the plan wants it to match the app ID, so revisit with the `.desktop` file). It reports 51 configs loaded: the scope filter applies once the config UI is ported. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
 
 1. ~~**Avalonia app entry point:**~~ done
    - The UI lives in the `Builder` assembly; it already references Avalonia 12.1.4.
