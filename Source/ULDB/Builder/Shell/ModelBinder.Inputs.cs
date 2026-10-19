@@ -23,6 +23,8 @@ namespace ULDB.Shell
 			{
 				case TextBox tb when model is WF.TextBoxBase m: BindTextBox(tb, m); return true;
 				case CheckBox cb when model is WF.CheckBox m: BindCheckBox(cb, m); return true;
+				case RadioButton rb when model is WF.RadioButton m: BindRadioButton(rb, m); return true;
+				case Button link when model is WF.LinkLabel m: BindLink(link, m); return true;
 				case ComboBox combo when model is WF.ComboBox m: BindComboBox(combo, m); return true;
 				case NumericUpDown num when model is WF.NumericUpDown m: BindNumericUpDown(num, m); return true;
 				case TabControl tabs when model is WF.TabControl m: BindTabs(tabs, m); return true;
@@ -39,13 +41,70 @@ namespace ULDB.Shell
 			}
 		}
 
-		/// <summary>Visibility and enabled state.</summary>
+		/// <summary>Visibility, enabled state and tooltip.</summary>
 		public ModelBinder BindState(Control view, WF.Control m)
 		{
 			return Custom(() =>
 			{
 				view.IsVisible = m.Visible;
 				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
+			}, m);
+		}
+
+		/// <summary>Shows the tooltip upstream gave the model (ToolTip.SetToolTip), if any.</summary>
+		public static void ApplyTip(Control view, WF.Control m)
+		{
+			if(m.UldbToolTip != null) ToolTip.SetTip(view, m.UldbToolTip);
+		}
+
+		private static string Mnemonicless(string text) => (text ?? "").Replace("&&", "\u0001").Replace("&", "").Replace("\u0001", "&");
+
+		private static object ImageOrText(WF.Control m, System.Drawing.Image image, string text)
+		{
+			if(image != null && string.IsNullOrEmpty(text?.Trim()))
+				return new Image { Source = AvaloniaImages.From(image), Width = image.Width, Height = image.Height };
+			if(image != null)
+			{
+				StackPanel both = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
+				both.Children.Add(new Image { Source = AvaloniaImages.From(image), Width = image.Width, Height = image.Height });
+				both.Children.Add(new TextBlock { Text = text, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
+				return both;
+			}
+			return text;
+		}
+
+		public ModelBinder BindRadioButton(RadioButton view, WF.RadioButton m)
+		{
+			// The model checks itself and unchecks its siblings; the view shows the result.
+			view.Click += (s, e) => { m.RaiseClick(); Schedule(s, e); };
+			bool hascontent = view.Content != null;
+			System.Drawing.Image shown = null;
+			return Custom(() =>
+			{
+				if(view.IsChecked != m.Checked) view.IsChecked = m.Checked;
+				if(!hascontent && (m.Image != shown || view.Content == null))
+				{
+					shown = m.Image;
+					view.Content = ImageOrText(m, m.Image, Mnemonicless(m.Text));
+				}
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
+			}, m);
+		}
+
+		/// <summary>A LinkLabel as a link-styled button.</summary>
+		public ModelBinder BindLink(Button view, WF.LinkLabel m)
+		{
+			view.Classes.Add("uldb-link");
+			view.Click += (s, e) => m.RaiseLinkClicked();
+			return Custom(() =>
+			{
+				view.Content = m.Text;
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
 			}, m);
 		}
 
@@ -134,9 +193,10 @@ namespace ULDB.Shell
 				bool? want = m.CheckState == WF.CheckState.Indeterminate ? null : m.Checked;
 				if(view.IsChecked != want) view.IsChecked = want;
 				view.IsThreeState = m.ThreeState || m.CheckState == WF.CheckState.Indeterminate;
-				if(!string.IsNullOrEmpty(m.Text)) view.Content = m.Text.Replace("&&", "\u0001").Replace("&", "").Replace("\u0001", "&");
+				if(!string.IsNullOrEmpty(m.Text)) view.Content = Mnemonicless(m.Text);
 				view.IsVisible = m.Visible;
 				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
 			}, m);
 		}
 
@@ -212,18 +272,20 @@ namespace ULDB.Shell
 		{
 			view.Click += (s, e) => m.PerformClick();
 			bool hascontent = view.Content != null;
+			System.Drawing.Image shownimage = null;
+			string showntext = null;
 			return Custom(() =>
 			{
-				if(!hascontent)
+				string text = Mnemonicless(m.Text);
+				if(!hascontent && (m.Image != shownimage || text != showntext))
 				{
-					string text = m.Text.Replace("&&", "\u0001").Replace("&", "").Replace("\u0001", "&");
-					if(m.Image != null && string.IsNullOrEmpty(text))
-						view.Content = new Image { Source = AvaloniaImages.From(m.Image), Width = m.Image.Width, Height = m.Image.Height };
-					else
-						view.Content = text;
+					shownimage = m.Image;
+					showntext = text;
+					view.Content = ImageOrText(m, m.Image, text);
 				}
 				view.IsVisible = m.Visible;
 				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
 			}, m);
 		}
 

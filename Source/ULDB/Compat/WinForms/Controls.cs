@@ -236,6 +236,10 @@ namespace System.Windows.Forms
 		public virtual void Update() { }
 		public virtual void Show() { Visible = true; Refreshed?.Invoke(this, EventArgs.Empty); }
 
+		/// <summary>ULDB: the tooltip a ToolTip component gave this control (views show it).</summary>
+		public string UldbToolTip { get => uldbtooltip; set { if(uldbtooltip == value) return; uldbtooltip = value; NotifyStylesChanged(); } }
+		private string uldbtooltip;
+
 		/// <summary>ULDB: raised by Show() and Refresh(), which upstream calls after filling a
 		/// control; views re-read the model's state then.</summary>
 		public event EventHandler Refreshed;
@@ -656,7 +660,8 @@ namespace System.Windows.Forms
 
 	public class Button : Control, IButtonControl
 	{
-		public Image Image { get; set; }
+		private Image image;
+		public Image Image { get => image; set { if(image == value) return; image = value; NotifyStylesChanged(); } }
 		public ContentAlignment ImageAlign { get; set; } = ContentAlignment.MiddleCenter;
 		public ContentAlignment TextAlign { get; set; } = ContentAlignment.MiddleCenter;
 		public TextImageRelation TextImageRelation { get; set; }

@@ -1,0 +1,29 @@
+<!-- ULDB: the view of upstream's ArgumentsControl (model-ported): an action's five arguments, in
+     two columns as upstream's split container shows them. Argument 1's alternatives (script
+     number, script name, string) share its cell; upstream shows the one that applies. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ArgumentsControlView">
+  <Grid ColumnDefinitions="*,16,*">
+    <Grid x:Name="panel1" ColumnDefinitions="Auto,Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+      <CheckBox x:Name="cbuseargstr" Margin="0,0,8,0" VerticalAlignment="Center"/>
+      <TextBlock x:Name="arg0label" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <Panel Grid.Column="2">
+        <ContentControl x:Name="arg0"/>
+        <ComboBox x:Name="arg0int" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+        <ComboBox x:Name="arg0named" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+        <TextBox x:Name="arg0str"/>
+      </Panel>
+      <TextBlock x:Name="arg1label" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg1" Grid.Row="1" Grid.Column="2"/>
+      <TextBlock x:Name="arg2label" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg2" Grid.Row="2" Grid.Column="2"/>
+    </Grid>
+    <Grid x:Name="panel2" Grid.Column="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="6" VerticalAlignment="Top">
+      <TextBlock x:Name="arg3label" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg3" Grid.Column="1"/>
+      <TextBlock x:Name="arg4label" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg4" Grid.Row="1" Grid.Column="1"/>
+    </Grid>
+  </Grid>
+</UserControl>

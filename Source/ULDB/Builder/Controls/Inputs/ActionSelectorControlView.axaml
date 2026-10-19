@@ -1,0 +1,12 @@
+<!-- ULDB: the view of upstream's ActionSelectorControl (model-ported): an action special: its number and a list of actions.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ActionSelectorControlView">
+  <Grid ColumnDefinitions="64,*" ColumnSpacing="6">
+    <Border x:Name="numberpanel">
+      <TextBox x:Name="number" HorizontalContentAlignment="Right"/>
+    </Border>
+    <ComboBox x:Name="list" Grid.Column="1" HorizontalAlignment="Stretch" MaxDropDownHeight="420"/>
+  </Grid>
+</UserControl>

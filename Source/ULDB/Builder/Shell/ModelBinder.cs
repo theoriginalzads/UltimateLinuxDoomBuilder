@@ -75,6 +75,7 @@ namespace ULDB.Shell
 			{
 				target.Text = c.Text.Trim();
 				target.IsVisible = c.Visible;
+				ApplyTip(target, c);
 				target.Classes.Set("uldb-disabled", !c.Enabled); // dimmed by Styles.axaml
 				SetForeground(target, c.ForeColor);
 			}, c);
@@ -83,7 +84,7 @@ namespace ULDB.Shell
 		/// <summary>Shows <paramref name="target"/> only while the model control is visible.</summary>
 		public ModelBinder Visible(Control target, string field) => Visible(target, Field<WF.Control>(field));
 
-		public ModelBinder Visible(Control target, WF.Control c) => Custom(() => target.IsVisible = c.Visible, c);
+		public ModelBinder Visible(Control target, WF.Control c) => Custom(() => { target.IsVisible = c.Visible; ApplyTip(target, c); }, c);
 
 		/// <summary>Dims <paramref name="target"/> while the model control is disabled.</summary>
 		public ModelBinder Enabled(Control target, string field)
@@ -100,6 +101,8 @@ namespace ULDB.Shell
 			{
 				SD.Image image = (c as WF.PictureBox)?.Image ?? c.BackgroundImage;
 				target.Source = AvaloniaImages.From(image);
+				target.IsVisible = c.Visible;
+				ApplyTip(target, c);
 			}, c);
 		}
 
@@ -127,7 +130,7 @@ namespace ULDB.Shell
 		public ModelBinder BindByName(Control root)
 		{
 			if(model is WF.Control self) Watch(self);
-			foreach(ILogical logical in root.GetLogicalDescendants().Prepend(root))
+			foreach(ILogical logical in OwnDescendants(root))
 			{
 				if(!(logical is Control c) || string.IsNullOrEmpty(c.Name)) continue;
 				string name = c.Name;
@@ -143,6 +146,25 @@ namespace ULDB.Shell
 				else Visible(c, name);
 			}
 			return this;
+		}
+
+		/// <summary>
+		/// The root and its logical descendants, without going into embedded views (other
+		/// UserControls and windows): those belong to their own models, whose fields may share
+		/// names with this model's (upstream designers reuse names like "label1").
+		/// </summary>
+		private static IEnumerable<ILogical> OwnDescendants(Control root)
+		{
+			Stack<ILogical> todo = new Stack<ILogical>();
+			todo.Push(root);
+			while(todo.Count > 0)
+			{
+				ILogical item = todo.Pop();
+				yield return item;
+				if(item != root && (item is UserControl || item is Window)) continue;
+				IReadOnlyList<ILogical> children = item.LogicalChildren;
+				for(int i = children.Count - 1; i >= 0; i--) todo.Push(children[i]);
+			}
 		}
 
 		/// <summary>One ListView item, as shown by a view.</summary>

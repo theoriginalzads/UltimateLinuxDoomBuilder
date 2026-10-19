@@ -18,6 +18,18 @@ namespace ULDB.Shell
 			Register<HintsPanel>(m => new HintsView(m));
 			Register<ButtonsNumericTextbox>(m => new ButtonsNumericTextboxView(m));
 			Register<FieldsEditorControl>(m => new FieldsEditorView(m));
+			Register<PairedFloatControl>(m => new PairedFloatControlView(m));
+			Register<ColorControl>(m => new ColorControlView(m));
+			Register<ColorFieldsControl>(m => new ColorFieldsControlView(m));
+			Register<ActionSpecialHelpButton>(m => new ActionSpecialHelpButtonView(m));
+			Register<ActionSelectorControl>(m => new ActionSelectorControlView(m));
+			Register<ArgumentBox>(m => new ArgumentBoxView(m));
+			Register<ArgumentsControl>(m => new ArgumentsControlView(m));
+			Register<TagSelector>(m => new TagSelectorView(m));
+			Register<CommentEditor>(m => new CommentEditorView(m));
+			Register<CheckboxArrayControl>(m => new CheckboxArrayControlView(m));
+			Register<ThingBrowserControl>(m => new ThingBrowserControlView(m));
+			Register<AngleControlEx>(m => new ULDB.Controls.AngleEditor(m));
 		}
 
 		/// <summary>Registers the view for a model control type (and types derived from it).</summary>

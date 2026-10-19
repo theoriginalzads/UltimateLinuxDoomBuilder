@@ -84,6 +84,10 @@ Plugins work the same way: each has its own `UIStubs/`, `uistubs-*.txt` and `UIS
 
 It regenerates the placeholders, prunes what doesn't compile, and prints the errors left in upstream files.
 
+## Language version
+
+Projects that compile upstream code (`ULDB.Builder`, plugin projects) use **C# 13** (`<LangVersion>13</LangVersion>`). C# 14, the .NET 10 default, makes `field` a keyword inside property accessors; upstream code like `ColorFieldsControl.Field { get { return field; } }` (with a member named `field`) would then compile to a different backing field without any warning. ULDB's own projects can use the default.
+
 ## Edits to upstream files
 
 Kept to a minimum, always wrapped in `#if ULDB … #else <original> #endif` so the original code stays visible and merges conflict as little as possible. Each one is listed in [`upstream-edits.md`](upstream-edits.md).

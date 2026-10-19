@@ -12,6 +12,10 @@
     <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older. C# 14 (the .NET 10 default) makes `field` a keyword inside
+         property accessors, which silently changes upstream properties that use a member named
+         `field` (ColorFieldsControl.Field). -->
+    <LangVersion>13</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -76,6 +80,8 @@
     <Compile Include="$(UpstreamCore)Windows/VertexEditForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Windows/TextEditForm.cs" />
     <Compile Include="$(UpstreamCore)Windows/TextEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/ThingBrowserControl.cs" />
@@ -169,6 +175,7 @@
   <ItemGroup>
     <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
     <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
+    <EmbeddedResource Update="FormResources/ThingBrowserControl.resx" LogicalName="CodeImp.DoomBuilder.Controls.ThingBrowserControl.resources" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Data files next to the program, laid out like upstream's Build folder
@@ -214,6 +221,7 @@
     <Exec Command="cmake --build &quot;$(NativeBuildDir)&quot;" />
     <ItemGroup>
       <None Include="$(NativeBuildDir)/libBuilderNative.so" Link="libBuilderNative.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(NativeBuildDir)/libuser32.so" Link="libuser32.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
   </Target>
   <!-- Script compilers and node builder, built from source (tools/compilers, git submodules). -->

@@ -62,3 +62,4 @@ CodeImp.DoomBuilder.Controls.BufferedTreeView
 CodeImp.DoomBuilder.Controls.ColoredComboBox
 CodeImp.DoomBuilder.Controls.ColoredComboBoxItem
 CodeImp.DoomBuilder.Controls.PairedFloatControl
+CodeImp.DoomBuilder.Windows.ActionBrowserForm

@@ -21,6 +21,9 @@ namespace ULDB.Controls
 
 		public int Angle { get => GetValue(AngleProperty); set => SetValue(AngleProperty, value); }
 
+		/// <summary>Draws marks every 45° (the editor's dials, as UDB's AngleControlEx).</summary>
+		public bool ShowMarks { get; set; }
+
 		public override void Render(DrawingContext context)
 		{
 			double size = Math.Min(Bounds.Width, Bounds.Height);
@@ -29,7 +32,20 @@ namespace ULDB.Controls
 			double radius = size / 2 - 1;
 
 			IBrush ink = TryBrush("TextFillColorPrimaryBrush") ?? Brushes.Gray;
-			context.DrawEllipse(null, new Pen(ink, 1) { Brush = ink }, center, radius, radius);
+			// Transparent fill so the whole dial takes pointer input (AngleEditor).
+			context.DrawEllipse(Brushes.Transparent, new Pen(ink, 1) { Brush = ink }, center, radius, radius);
+
+			if(ShowMarks)
+			{
+				Pen marks = new Pen(ink, 1) { Brush = ink };
+				double inner = radius * 0.8;
+				for(int a = 0; a < 360; a += 45)
+				{
+					double r = a * Math.PI / 180.0;
+					context.DrawLine(marks, new Point(center.X + Math.Cos(r) * inner, center.Y - Math.Sin(r) * inner), new Point(center.X + Math.Cos(r) * (radius - 2), center.Y - Math.Sin(r) * (radius - 2)));
+				}
+				context.DrawEllipse(ink, null, center, 2, 2);
+			}
 
 			if(Angle != int.MinValue)
 			{

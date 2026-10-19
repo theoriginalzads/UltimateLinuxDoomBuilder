@@ -1,0 +1,11 @@
+<!-- ULDB: the view of upstream's ColorControl (model-ported): a colour swatch; clicking it opens the colour picker.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ColorControlView">
+  <Grid ColumnDefinitions="*,Auto">
+    <TextBlock x:Name="label" Classes="uldb-field" HorizontalAlignment="Right"/>
+    <Border x:Name="panel" Grid.Column="1" Classes="uldb-swatch" Width="44" Height="24" CornerRadius="4"
+            BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" Cursor="Hand" ToolTip.Tip="Choose colour..."/>
+  </Grid>
+</UserControl>

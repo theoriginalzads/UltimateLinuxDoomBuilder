@@ -8,6 +8,10 @@
     <RootNamespace>CodeImp.DoomBuilder.BuilderModes</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older. C# 14 (the .NET 10 default) makes `field` a keyword inside
+         property accessors, which silently changes upstream properties that use a member named
+         `field` (ColorFieldsControl.Field). -->
+    <LangVersion>13</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

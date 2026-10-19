@@ -465,6 +465,7 @@ namespace System.Windows.Forms
 			if(string.IsNullOrEmpty(caption)) tips.Remove(control);
 			else tips[control] = caption;
 			TipChanged?.Invoke(control, caption);
+			if(control != null) control.UldbToolTip = string.IsNullOrEmpty(caption) ? null : caption;
 		}
 
 		public string GetToolTip(Control control) => tips.TryGetValue(control, out string t) ? t : "";

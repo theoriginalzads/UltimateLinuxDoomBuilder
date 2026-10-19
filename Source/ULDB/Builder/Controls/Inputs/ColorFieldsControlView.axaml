@@ -1,0 +1,11 @@
+<!-- ULDB: the view of upstream's ColorFieldsControl (model-ported): a colour field: swatch, hex text and reset.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ColorFieldsControlView">
+  <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+    <ContentControl x:Name="cpColor"/>
+    <TextBox x:Name="tbColor" Grid.Column="1" MinWidth="80"/>
+    <Button x:Name="bReset" Grid.Column="2" Classes="uldb-tool"/>
+  </Grid>
+</UserControl>
