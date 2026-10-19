@@ -1,7 +1,7 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 2 done (branch `phase-2/renderer`, based on `phase-1/core`). Next: Phase 3. Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 3 started (branch `phase-3/shell`): the non-visual groundwork is done; the Avalonia window itself is next, best done with the user at their machine. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -77,7 +77,18 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 **Tests:** 106 passing.
 
-## Next: Phase 3 (Avalonia shell)
+## Phase 3: Avalonia shell 🚧 (branch `phase-3/shell`)
+
+| Item | Status | Notes |
+|---|---|---|
+| Branding | ✅ | `ULDB.Branding`; a module initializer brands `Application.ProductName`, so upstream's message boxes say "Ultimate Linux Doom Builder" |
+| Scope filter | ✅ | `ULDB.Scope.ScopeFilter`: 14 visible configs, ZDBSP only, ACC/ZT-BCC/BCC; closest-config suggestion. `docs/scope-hidden.md` |
+| Key mapping | ✅ | `ULDB.Input.KeyMapping`: Avalonia keys/modifiers/mouse buttons to WinForms codes; every default shortcut in the in-scope Actions.cfg files is reachable |
+| Avalonia app, `IWinFormsHost`, main window, viewport | ⬜ | Next (below) |
+
+**Tests:** 137 passing.
+
+### Remaining Phase 3 work
 
 1. `UDB.Avalonia` app (or the UI in the `Builder` assembly) with Avalonia 12.1.4. It installs an `IWinFormsHost`, `Application.RunHandler` and a `HostedGL` context shared with Avalonia's, whose FBO it displays.
 2. `MainForm` port: menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.

@@ -30,6 +30,8 @@
     <Compile Include="Platform/**/*.cs" />
     <!-- ULDB-only code at the project root (Branding). -->
     <Compile Include="*.cs" />
+    <!-- Input mapping between Avalonia and UDB's WinForms-style key codes. -->
+    <Compile Include="Input/**/*.cs" />
     <!-- GZDoom/UZDoom-only scope filter. -->
     <Compile Include="Scope/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
@@ -39,6 +41,8 @@
     <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
     <!-- Same SharpCompress version as the DLL upstream ships in Assets/Common. -->
     <PackageReference Include="SharpCompress" Version="0.20.0" />
+    <!-- UI toolkit (Phase 3+). Keep in step with Avalonia.Skia's SkiaSharp (ULDB.Compat). -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
   </ItemGroup>
   <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
