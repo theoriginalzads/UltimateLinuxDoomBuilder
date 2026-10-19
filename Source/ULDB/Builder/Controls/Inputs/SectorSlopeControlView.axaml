@@ -14,16 +14,16 @@
       <ComboBox x:Name="pivotmodeselector" Grid.Column="1" Width="190" HorizontalAlignment="Left"/>
       <TextBlock x:Name="label24" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
       <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="10">
-        <ContentControl x:Name="sloperotation" Width="110" VerticalAlignment="Center"/>
+        <ContentControl x:Name="sloperotation" Width="92" VerticalAlignment="Center"/>
         <CheckBox x:Name="cbuselineangles" VerticalAlignment="Center"/>
       </StackPanel>
       <TextBlock x:Name="label23" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
       <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="10">
-        <ContentControl x:Name="slopeangle" Width="110" VerticalAlignment="Center"/>
+        <ContentControl x:Name="slopeangle" Width="92" VerticalAlignment="Center"/>
         <Slider x:Name="angletrackbar" Width="150" VerticalAlignment="Center" Margin="0,-8"/>
       </StackPanel>
       <TextBlock x:Name="label18" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
-      <ContentControl x:Name="slopeoffset" Grid.Row="3" Grid.Column="1" Width="110" HorizontalAlignment="Left"/>
+      <ContentControl x:Name="slopeoffset" Grid.Row="3" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
       <Button x:Name="reset" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
     </Grid>
   </Grid>

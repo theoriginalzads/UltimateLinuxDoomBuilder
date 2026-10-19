@@ -4,6 +4,9 @@
 import re
 from xml.sax.saxutils import quoteattr
 TEXTS = {}
+
+# Width of every number box (ButtonsNumericTextbox) in dialogs; the paired-field views use it too.
+NUMBER_WIDTH = 92
 def load_texts(designer):
     """Static texts from an upstream designer (labels held in locals aren't bound, so the layout carries them)."""
     src = open(designer, encoding="utf-8-sig").read()
@@ -26,9 +29,9 @@ def ctl(spec, col, row, extra=""):
     if kind == "textbox": return f'<TextBox x:Name="{name}" {pos}{extra}/>'
     if kind == "image": return f'<Image x:Name="{name}" {pos} Width="16" Height="16" Margin="4,0" VerticalAlignment="Center"{extra}/>'
     if kind == "wide": return f'<ContentControl x:Name="{name}" {pos}{extra}/>'
-    if kind == "pair": return f'<ContentControl x:Name="{name}" {pos} Width="250"{extra}/>'
-    # Number boxes and other small controls keep a compact width.
-    return f'<ContentControl x:Name="{name}" {pos} Width="130"{extra}/>'
+    if kind == "pair": return f'<ContentControl x:Name="{name}" {pos}{extra}/>'  # two NUMBER_WIDTH boxes (the pair views)
+    # Number boxes: one width everywhere (a minus sign, digits and the arrows), so rows line up.
+    return f'<ContentControl x:Name="{name}" {pos} Width="{NUMBER_WIDTH}"{extra}/>'
 
 def rows(items, ind, extracols=0):
     """items: list of (label, control, *extras); label may be None. Extras follow the control."""

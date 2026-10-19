@@ -3,7 +3,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.PairedFloatControlView">
-  <Grid ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="4">
+  <Grid ColumnDefinitions="92,92,Auto,Auto" ColumnSpacing="4" HorizontalAlignment="Left">
     <ContentControl x:Name="value1"/>
     <ContentControl x:Name="value2" Grid.Column="1"/>
     <Button x:Name="bLink" Grid.Column="2" Classes="uldb-tool"/>

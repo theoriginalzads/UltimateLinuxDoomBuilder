@@ -17,7 +17,7 @@ props = f'''{I}<StackPanel Spacing="6">
 {B}  <TextBlock x:Name="labelrenderstyle"{text("labelrenderstyle")} Classes="uldb-field" HorizontalAlignment="Right"/>
 {B}  <ComboBox x:Name="renderStyle" Grid.Column="1" Width="170"/>
 {B}  <TextBlock x:Name="label6"{text("label6")} Grid.Column="2" Classes="uldb-field" Margin="16,0,8,0"/>
-{B}  <ContentControl x:Name="alpha" Grid.Column="3" Width="100"/>
+{B}  <ContentControl x:Name="alpha" Grid.Column="3" Width="92"/>
 {B}  <Button x:Name="resetalpha" Grid.Column="4" Classes="uldb-tool" VerticalAlignment="Center"/>
 {B}  <TextBlock x:Name="labellockpick"{text("labellockpick")} Grid.Column="6" Classes="uldb-field"/>
 {B}  <ComboBox x:Name="lockpick" Grid.Column="7" Width="200"/>
