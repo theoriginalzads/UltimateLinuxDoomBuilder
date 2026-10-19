@@ -468,6 +468,8 @@ None. All decisions are settled; GitHub repo: `theoriginalzads/UltimateLinuxDoom
 
 *Settled:* settings import from existing UDB installs (Phase 7), public repo with AI disclosure (section 6), BCS support with ZT-BCC and BCC (Phase 2b), plugin scope (section 0), dropping DeePBSP and the vanilla-only node builders, GZDoom/UZDoom-only target with other targets hidden in the UI (section 3), UI style (section 4), syncing only on major releases, GZDoom Doom-format and Hexen-format configs stay visible (new maps default to UDMF), project name "Ultimate Linux Doom Builder" (section 3), **windowing uses Avalonia's X11 backend**: native on X11 sessions, XWayland on Wayland sessions, so X11 and Wayland users get the same supported build. Native Wayland may be offered as an optional, experimental switch later, never as the default.
 
+*Settled 20 Oct 2026, window porting approach (user's decision):* **a mix.** Every window first gets a *model port* (upstream's `.cs` and `.Designer.cs` compiled unchanged on ULDB.Compat, shown by a generic Avalonia renderer of the WinForms layout), so the whole editor works quickly and merges stay cheap. The **main, most-used windows are then rebuilt in `.axaml` as soon as possible**, keeping upstream's class and handler names: the info panels, the linedef/sector/thing/vertex edit forms, the Open Map and map options dialogs, preferences, the texture browser and the script editor. Less-used dialogs may stay model ports. See `docs/architecture.md`, "Two ways to port a window".
+
 ## 8. Main risks
 
 | Risk | What we do about it |
