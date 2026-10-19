@@ -15,6 +15,7 @@ namespace
 		ULDB_GetProcAddressFn getproc = nullptr;
 		ULDB_MakeCurrentFn makecurrent = nullptr;
 		ULDB_ClearCurrentFn clearcurrent = nullptr;
+		ULDB_PresentFn present = nullptr;
 		void* user = nullptr;
 		unsigned int framebuffer = 0;
 		int width = 1;
@@ -56,7 +57,7 @@ namespace
 
 		void MakeCurrent() override { host.makecurrent(host.user); }
 		void ClearCurrent() override { if (host.clearcurrent) host.clearcurrent(host.user); }
-		void SwapBuffers() override { } // The host presents the frame
+		void SwapBuffers() override { if (host.present) host.present(host.user); } // The host presents the frame
 		bool IsCurrent() override { return true; }
 
 		int GetWidth() const override { return host.width; }
@@ -77,6 +78,11 @@ extern "C"
 		host.makecurrent = makecurrent;
 		host.clearcurrent = clearcurrent;
 		host.user = user;
+	}
+
+	void ULDB_SetHostPresent(ULDB_PresentFn present)
+	{
+		host.present = present;
 	}
 
 	void ULDB_ClearHostContext()
