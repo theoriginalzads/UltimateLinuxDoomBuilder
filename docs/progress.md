@@ -1,7 +1,7 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 1 done (branch `phase-1/core`). Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 2 done (branch `phase-2/renderer`, based on `phase-1/core`). Next: Phase 3. Phase 0 steps marked *(user)* still need the user's machine.
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -53,11 +53,33 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 - `ExecuteExternalCommand` and anything else that opens a window go through placeholders until Phase 3/5. The placeholder `Form.ShowDialog()` throws `NotSupportedException` ("no ULDB implementation yet").
 - `General.Main` still contains WinForms startup (`Application.Run`). In Phase 3 it runs through `Application.RunHandler`, which the Avalonia app installs.
 
-## Next: Phase 2
+## Phase 2: Renderer and build tools ✅ (branch `phase-2/renderer`)
 
-1. **2a, renderer:**
-   - CMake build of BuilderNative.
-   - An "external context" implementation of `IOpenGLContext` that targets Avalonia's FBO.
-   - An off-screen EGL context for tests.
-   - Resource loading tests with Freedoom.
-2. **2b, tools:** source builds of ACC, ZDBSP, ZT-BCC and BCC in `tools/`, with compile tests.
+| Item | Status | Notes |
+|---|---|---|
+| CMake build of BuilderNative | ✅ | `Source/ULDB/Native/CMakeLists.txt`; run by `dotnet build`; `-p:UldbArch=generic\|x86-64-v3\|x86-64-v4\|znver4\|native` |
+| Hosted OpenGL context | ✅ | `HostedContext.cpp` and `ULDB.Rendering.HostedGL`; three `#ifdef ULDB` hooks in upstream native code |
+| Off-screen renderer for tests | ✅ | `OffscreenGL`: Mesa surfaceless EGL with GL 3.3 core; no display needed |
+| Resource loading tests | ✅ | Freedoom 2 plus the test PK3: textures, flats, sprites, ZScript actor, GLDEFS light, MAPINFO sky and skybox, with no warnings |
+| ACC, ZDBSP, ZT-BCC, BCC from source | ✅ | Git submodules in `tools/compilers/src`, built by `dotnet build` |
+| End-to-end open and save | ✅ | Upstream `InitializeOpenMap` and `SaveMap` headless: ZDBSP nodes plus BEHAVIOR from ACC, ZT-BCC and BCC |
+| RawMouse replacement (3D mouselook) | ➡ Phase 3 | Needs the Avalonia window |
+
+**Linux bugs found and fixed:**
+- `Process.StartTime` after exit throws on Linux. This broke every compile and node build (`AccCompiler`, `NodesCompiler`, `Launcher`).
+- Upstream's BCS setup:
+  - ZT-BCC's config didn't list its documented header.
+  - BCC was given `.tmp` files without `-x bcs`.
+  - Upstream's BCC library files match no BCC release.
+
+  ULDB ships fixed configs and BCC's own `lib/`. Details in `upstream-edits.md`.
+- **Placeholders that must do real work:** `MainForm.RunOnUIThread` (image loading) and `MainForm.Display` (renderer). See `uistubs-manual.txt`.
+
+**Tests:** 106 passing.
+
+## Next: Phase 3 (Avalonia shell)
+
+1. `UDB.Avalonia` app (or the UI in the `Builder` assembly) with Avalonia 12.1.4. It installs an `IWinFormsHost`, `Application.RunHandler` and a `HostedGL` context shared with Avalonia's, whose FBO it displays.
+2. `MainForm` port: menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.
+3. Viewport: render UDB into the shared context's FBO and show it in an `OpenGlControlBase`. Input goes into UDB's action system, with key code mapping.
+4. Scope filter (GZDoom/UZDoom only) and branding, as the first config UI lands.

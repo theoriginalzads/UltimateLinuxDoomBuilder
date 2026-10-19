@@ -34,7 +34,7 @@ The code for other targets stays in the source tree, so updates from upstream UD
 |---|---|---|
 | 0 | Fork, plan, toolchain, test maps | ✅ Done |
 | 1 | Editor core on .NET 10 without WinForms; load/save tests | ✅ Done |
-| 2 | 3D renderer on Avalonia's OpenGL; ACC/ZDBSP/BCS compilers built from source | 🚧 In progress |
+| 2 | 3D renderer on a host-provided OpenGL context; ACC/ZDBSP/ZT-BCC/BCC built from source | ✅ Done |
 | 3 | Avalonia main window, menus, 2D/3D view | ⬜ |
 | 4 | Editing modes | ⬜ |
 | 5 | Dialogs (about 160) | ⬜ |
@@ -48,8 +48,9 @@ Details: [`docs/ULDB-Plan.md`](docs/ULDB-Plan.md) is the plan, and [`docs/progre
 There's nothing to run yet. You can build the core and run its tests:
 
 ```sh
-# Arch/CachyOS: sudo pacman -S dotnet-sdk python   (Ubuntu: apt install dotnet-sdk-10.0 python3)
-git clone https://github.com/theoriginalzads/UltimateLinuxDoomBuilder.git
+# Arch/CachyOS: sudo pacman -S dotnet-sdk python cmake ninja base-devel libx11 libxfixes mesa zlib freedoom
+# Ubuntu:       apt install dotnet-sdk-10.0 python3 cmake ninja-build build-essential libx11-dev libxfixes-dev libgl-dev zlib1g-dev freedoom
+git clone --recurse-submodules https://github.com/theoriginalzads/UltimateLinuxDoomBuilder.git
 cd UltimateLinuxDoomBuilder
 dotnet build Builder.Linux.sln
 dotnet test Builder.Linux.sln

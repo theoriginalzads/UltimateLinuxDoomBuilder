@@ -88,8 +88,6 @@ namespace CodeImp.DoomBuilder.Windows
 		new public MouseButtons MouseButtons { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.MouseInDisplay#48
 		public bool MouseInDisplay { get => default; }
-		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.Display#49
-		public RenderTargetControl Display { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.SnapToGrid#50
 		public bool SnapToGrid { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AutoMerge#51

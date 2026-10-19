@@ -17,7 +17,9 @@ namespace System.Windows.Forms
 		public object Tag { get; set; }
 		public bool Visible { get; set; } = true;
 		public bool Enabled { get; set; } = true;
-		public virtual Font Font { get; set; }
+		private Font font;
+		/// <summary>Like WinForms: falls back to the default font when none is set.</summary>
+		public virtual Font Font { get => font ?? SystemFonts.DefaultFont; set => font = value; }
 		public Color BackColor { get; set; }
 		public Color ForeColor { get; set; }
 		public Cursor Cursor { get; set; } = Cursors.Default;

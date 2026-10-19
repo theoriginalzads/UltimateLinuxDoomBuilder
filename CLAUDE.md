@@ -6,7 +6,7 @@ An unofficial native Linux fork of [Ultimate Doom Builder](https://github.com/Ul
 
 1. `docs/ULDB-Plan.md`: the plan and every decision made so far. Section 0 has the background.
 2. `docs/progress.md`: where the work is now, and what's next.
-3. `docs/architecture.md`: how the fork is built (compat layer, single Builder assembly, UI placeholders).
+3. `docs/architecture.md`: how the fork is built (compat layer, single Builder assembly, UI placeholders, hosted rendering, compilers).
 4. `docs/port-map.md`: which upstream WinForms file maps to which Avalonia file.
 
 ## Rules
@@ -27,7 +27,8 @@ An unofficial native Linux fork of [Ultimate Doom Builder](https://github.com/Ul
 ## Build and run
 
 ```sh
-dotnet build Builder.Linux.sln          # ULDB.Compat + Builder (the upstream core on .NET 10)
+git submodule update --init            # once: compiler/node builder sources (tools/compilers/src)
+dotnet build Builder.Linux.sln          # ULDB.Compat + Builder + libBuilderNative.so + compilers (-p:UldbArch=znver4 optional)
 dotnet test Builder.Linux.sln           # upstream's tests + ULDB's (generates tests/maps if missing; needs python3)
 python3 tools/uistubgen/prune.py        # regenerate UI placeholders; prints remaining upstream errors
 ```

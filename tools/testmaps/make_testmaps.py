@@ -251,7 +251,7 @@ def acs_map():
 
 BCS_SOURCE = b"""#include "zcommon.h.bcs"
 
-// Test script for ULDB: BCS (ZT-BCC) syntax.
+// Test script for ULDB: BCS syntax (ZT-BCC and BCC).
 script 1 open {
     Print(s: "ULDB BCS test map loaded");
 }
@@ -377,8 +377,7 @@ def main():
         print("warning: acc not found, acs.wad gets source only", file=sys.stderr)
     write_wad(out("acs.wad"), map_lumps("MAP01", acs_map(), behavior or b"", ACS_SOURCE))
 
-    # BCS compilers aren't built for Linux until Phase 2b, so this map carries source only.
-    # UDB compiles it on save once ZT-BCC is configured.
+    # BCS maps carry source only; UDB compiles them on save (ZT-BCC / BCC).
     write_wad(out("bcs.wad"), map_lumps("MAP01", bcs_map(), b"", BCS_SOURCE))
 
     write_wad(out("3dfloors_slopes.wad"), map_lumps("MAP01", floors3d_slopes_map()))

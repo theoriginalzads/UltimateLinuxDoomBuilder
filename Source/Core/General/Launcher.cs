@@ -393,6 +393,9 @@ namespace CodeImp.DoomBuilder
 						{
 							// Start the program
 							Process process = Process.Start(processinfo);
+#if ULDB
+							ULDB.Platform.Processes.Started(process); // ULDB: Linux can't read StartTime after exit
+#endif
 							process.EnableRaisingEvents = true; //mxd
 							process.Exited += ProcessOnExited; //mxd
 							processes.Add(process, tempwad); //mxd
@@ -438,7 +441,11 @@ namespace CodeImp.DoomBuilder
 		private void TestingFinished(Process process) 
 		{
 			// Done
+#if ULDB
+			TimeSpan deltatime = ULDB.Platform.Processes.RunTime(process); // ULDB: Linux can't read StartTime after exit
+#else
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+#endif
 			General.WriteLogLine("Testing with \"" + process.StartInfo.FileName + "\" has finished.");
 			General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
 

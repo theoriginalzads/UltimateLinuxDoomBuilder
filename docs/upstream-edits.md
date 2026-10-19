@@ -6,6 +6,14 @@ Every change ULDB makes inside an upstream UDB source file, for checking during 
 
 **`README.md`** is fully replaced with ULDB's own. Upstream's version is kept as `docs/upstream-README.md`. When merging an upstream release, keep ULDB's `README.md` and copy upstream's new README over `docs/upstream-README.md`.
 
+**ULDB-owned replacements for upstream asset files.** These are copied to the build instead of upstream's version, so re-check them against upstream's file after a merge:
+
+| ULDB file | Replaces | Change |
+|---|---|---|
+| `Source/ULDB/Assets/Scripting/BCS.cfg` | `Assets/Windows/Scripting/BCS.cfg` | Adds `-x bcs` to BCC's parameters. UDB passes scripts as `.tmp` files, and BCC picks the language from the extension. Probably broken upstream too |
+| `Source/ULDB/Assets/Compilers/ZT-BCC/zt-bcc.cfg` | `Assets/Windows/Compilers/ZT-BCC/zt-bcc.cfg` | Linux program name. Lists `zcommon.h.bcs` (the header ZT-BCC's docs say to include) so UDB's include pre-check accepts it |
+| `Source/ULDB/Assets/Compilers/BCC/bcc.cfg` | `Assets/Windows/Compilers/BCC/bcc.cfg` | Linux program name. BCC ships with its **own** `lib/`, because upstream's BCC `std.acs`/`zcommon.bcs` use a syntax no BCC release accepts |
+
 New ULDB code lives in its own files (`Source/ULDB/`, `tools/`, `docs/`) and isn't listed here.
 
 | File | Where | Why |
@@ -16,6 +24,9 @@ New ULDB code lives in its own files (`Source/ULDB/`, `tools/`, `docs/`) and isn
 | `Source/Native/OpenGL/OpenGLContext.cpp` | `IOpenGLContext::Create`, `GL_GetProcAddress` | Use the host's OpenGL context and loader when one is registered (`Source/ULDB/Native/HostedContext.cpp`). `ULDBHost.h` is force-included by the CMake build |
 | `Source/Native/OpenGL/GLRenderDevice.cpp` | `StartRendering` | Bind the host's framebuffer instead of 0 |
 | `Source/Native/OpenGL/GLTexture.cpp` | `GetFramebuffer` | Bind the host's framebuffer instead of 0 |
+| `Source/Core/Compilers/AccCompiler.cs` | `Run` | Process timing via `ULDB.Platform.Processes`: `Process.StartTime` throws on Linux once the process has exited, which broke every ACS/BCS compile |
+| `Source/Core/Compilers/NodesCompiler.cs` | `Run` | Same timing fix (broke every node build) |
+| `Source/Core/General/Launcher.cs` | Test map start and `TestingFinished` | Same timing fix (would have thrown when the test engine exits) |
 | `Source/Core/General/MapManager.cs` | `ExecuteExternalCommand` | User pre/post commands run as a `/bin/sh` script (argument as `$1`) instead of a `cmd.exe` batch file |
 
 ## Bug fixes

@@ -1,0 +1,12 @@
+[submodule "tools/compilers/src/acc"]
+	path = tools/compilers/src/acc
+	url = https://github.com/ZDoom/acc.git
+[submodule "tools/compilers/src/zdbsp"]
+	path = tools/compilers/src/zdbsp
+	url = https://github.com/ZDoom/zdbsp.git
+[submodule "tools/compilers/src/zt-bcc"]
+	path = tools/compilers/src/zt-bcc
+	url = https://github.com/zeta-group/zt-bcc.git
+[submodule "tools/compilers/src/bcc"]
+	path = tools/compilers/src/bcc
+	url = https://github.com/wormt/bcc.git

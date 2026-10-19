@@ -78,8 +78,21 @@
     <None Include="$(UpstreamAssets)Common/**/*"
           Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- Upstream's prebuilt Linux ACC and ZDBSP are replaced by source builds (tools/compilers). -->
     <None Include="$(UpstreamAssets)Linux/**/*"
+          Exclude="$(UpstreamAssets)Linux/Compilers/*/acc;$(UpstreamAssets)Linux/Compilers/Nodebuilders/zdbsp"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- BCS support: upstream only ships it for Windows. ZT-BCC's libraries and the syntax
+         definitions are platform-neutral text; the compiler configs are ULDB's Linux versions
+         (Source/ULDB/Assets). -->
+    <!-- BCC: its own library files, matching the source-built compiler. Upstream's BCC
+         std.acs/zcommon.bcs use a syntax no BCC release accepts. -->
+    <None Include="$(MSBuildThisFileDirectory)../../../tools/compilers/src/bcc/lib/**/*"
+          Link="Compilers/BCC/lib/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(UpstreamAssets)Windows/Compilers/ZT-BCC/**/*" Exclude="$(UpstreamAssets)Windows/Compilers/ZT-BCC/*.exe;$(UpstreamAssets)Windows/Compilers/ZT-BCC/*.cfg"
+          Link="Compilers/ZT-BCC/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(UpstreamAssets)Windows/Scripting/*.cfg" Exclude="$(UpstreamAssets)Windows/Scripting/BCS.cfg" Link="Scripting/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)../Assets/**/*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
   <!-- Native renderer (libBuilderNative.so), built with CMake from upstream's Source/Native
        plus Source/ULDB/Native. CPU target: dotnet build -p:UldbArch=znver4 (default generic). -->
@@ -95,6 +108,24 @@
     <Exec Command="cmake --build &quot;$(NativeBuildDir)&quot;" />
     <ItemGroup>
       <None Include="$(NativeBuildDir)/libBuilderNative.so" Link="libBuilderNative.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    </ItemGroup>
+  </Target>
+  <!-- Script compilers and node builder, built from source (tools/compilers, git submodules). -->
+  <PropertyGroup>
+    <CompilersSourceDir>$(MSBuildThisFileDirectory)../../../tools/compilers</CompilersSourceDir>
+    <CompilersBuildDir>$(MSBuildThisFileDirectory)obj/compilers/$(UldbArch)</CompilersBuildDir>
+  </PropertyGroup>
+  <Target Name="BuildCompilers" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="cmake -S &quot;$(CompilersSourceDir)&quot; -B &quot;$(CompilersBuildDir)&quot; -G Ninja -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
+    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; /dev/null" />
+    <ItemGroup>
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDoom/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Zandronum/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDaemon/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Hexen/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/zdbsp" Link="Compilers/Nodebuilders/zdbsp" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/zt-bcc" Link="Compilers/ZT-BCC/zt-bcc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/bcc" Link="Compilers/BCC/bcc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
   </Target>
 </Project>

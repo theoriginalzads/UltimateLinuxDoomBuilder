@@ -130,7 +130,11 @@ Each phase ends with a milestone you can test. Work happens on a `phase-N/...` b
 
 **Moved to Phase 2:** resource loading tests (WAD/PK3 textures, using Freedoom). Loading textures creates GPU textures, so these need the renderer's off-screen mode (Phase 2a).
 
-### Phase 2 — Native renderer and external tools
+### Phase 2 — Native renderer and external tools ✅
+
+**Done** (see `progress.md`). The renderer runs on a **host-provided** OpenGL context, which is more general than "render into Avalonia's context": Phase 3's Avalonia view and the headless tests both use it. All four compilers build from source.
+
+One change from the table below: **BCC is built from `wormt/bcc` master and ships with BCC's own `lib/`**. Upstream's BCC library files match no BCC release.
 
 **2a. BuilderNative**
 

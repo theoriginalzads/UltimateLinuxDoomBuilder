@@ -62,6 +62,7 @@ namespace ULDB.Tests
 				// The generated MainForm placeholder: a main window that does nothing.
 				SetField("mainwindow", new CodeImp.DoomBuilder.Windows.MainForm());
 				SetField("toastmanager", new ToastManager(new Control()));
+				SetField("autosaver", new AutoSaver());
 
 				MapSet.Initialize();
 
@@ -138,6 +139,9 @@ namespace ULDB.Tests
 			}
 			return path;
 		}
+
+		/// <summary>Sets one of General's private static fields (e.g. "map").</summary>
+		public static void SetGeneralField(string name, object value) => SetField(name, value);
 
 		private static void SetField(string name, object value)
 		{

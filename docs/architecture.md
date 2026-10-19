@@ -74,3 +74,11 @@ Upstream files use **CRLF line endings**. Edits must preserve them, or the whole
 ## Platform helpers (`Source/ULDB/Builder/Platform`)
 
 Linux replacements for Windows-only logic, called from the `#if ULDB` blocks: XDG paths, write-permission checks and so on.
+
+## Script compilers and node builder (`tools/compilers`)
+
+ACC 1.60, ZDBSP 1.19, ZT-BCC 0.10.0-alpha.8 and BCC (master) are **git submodules** in `tools/compilers/src`, pinned to those versions. `tools/compilers/CMakeLists.txt` builds them out of tree, so the submodules stay clean. `dotnet build` runs it and copies the binaries into `Compilers/…` in the output, where upstream's game configurations expect them. These replace upstream's prebuilt Linux ACC and ZDBSP binaries; ZenNode and ELFBSP are still the prebuilt ones (low priority, since they're vanilla node builders).
+
+BCS (ZT-BCC and BCC) support was Windows-only upstream. ULDB adds Linux compiler configs and fixes found while testing; see `upstream-edits.md`.
+
+`OpenSaveMapTests` checks the whole chain through upstream's own `MapManager.InitializeOpenMap` and `SaveMap`: it opens a UZDoom map with Freedoom, saves it, and verifies the output has `ZNODES` from ZDBSP and `BEHAVIOR` from each compiler.

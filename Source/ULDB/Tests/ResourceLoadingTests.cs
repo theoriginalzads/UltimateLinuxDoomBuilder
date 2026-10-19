@@ -18,18 +18,10 @@ namespace ULDB.Tests
 
 		public ResourceLoadingTests(Xunit.Abstractions.ITestOutputHelper output) { this.output = output; }
 
-		// Debian/Ubuntu and Arch package paths; override with ULDB_TEST_IWAD.
-		private static readonly string[] IWAD_PATHS =
-		{
-			Environment.GetEnvironmentVariable("ULDB_TEST_IWAD") ?? "",
-			"/usr/share/games/doom/freedoom2.wad",
-			"/usr/share/doom/freedoom2.wad",
-		};
-
 		[SkippableFact]
 		public void LoadsFreedoomAndPk3Resources()
 		{
-			string iwad = IWAD_PATHS.FirstOrDefault(File.Exists);
+			string iwad = TestResources.FreedoomIwad;
 			Skip.If(iwad == null, "Freedoom 2 IWAD not found; install the freedoom package or set ULDB_TEST_IWAD");
 
 			MapManager manager = HeadlessEditor.CreateMapManager("UZDoom_DoomUDMF.cfg");
