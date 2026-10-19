@@ -19,7 +19,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(UpstreamCore)**/*.cs"
-             Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**" />
+             Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**;$(UpstreamCore)Properties/Resources.Designer.cs" />
+    <!-- Replacement for upstream's Properties/Resources.Designer.cs (tools/resxgen). -->
+    <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />
     <!-- Hand-written partial additions to placeholders (members inherited from WinForms bases). -->
@@ -33,4 +35,35 @@
     <PackageReference Include="SharpCompress" Version="0.20.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
   </ItemGroup>
+  <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Actions.cfg" LogicalName="CodeImp.DoomBuilder.Resources.Actions.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Black.png" LogicalName="CodeImp.DoomBuilder.Resources.Black.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentInfo.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentInfo.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentProblem.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentProblem.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentQuestion.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentQuestion.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentRegular.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentRegular.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentSmile.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentSmile.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Crosshair.png" LogicalName="CodeImp.DoomBuilder.Resources.Crosshair.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CrosshairBusy.png" LogicalName="CodeImp.DoomBuilder.Resources.CrosshairBusy.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Folder96.png" LogicalName="CodeImp.DoomBuilder.Resources.Folder96.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Folder96Up.png" LogicalName="CodeImp.DoomBuilder.Resources.Folder96Up.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Hourglass3D.png" LogicalName="CodeImp.DoomBuilder.Resources.Hourglass3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Lexers.cfg" LogicalName="CodeImp.DoomBuilder.Resources.Lexers.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingSky3D.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingSky3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingTexture3D.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingTexture3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingThing.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingThing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Nothing.png" LogicalName="CodeImp.DoomBuilder.Resources.Nothing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/SkySphere.md3" LogicalName="CodeImp.DoomBuilder.Resources.SkySphere.md3" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/ThingTexture2D.png" LogicalName="CodeImp.DoomBuilder.Resources.ThingTexture2D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UDMF.cfg" LogicalName="CodeImp.DoomBuilder.Resources.UDMF.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UnknownTexture3D.png" LogicalName="CodeImp.DoomBuilder.Resources.UnknownTexture3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UnknownThing.png" LogicalName="CodeImp.DoomBuilder.Resources.UnknownThing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/White.png" LogicalName="CodeImp.DoomBuilder.Resources.White.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/display2d.shader" LogicalName="CodeImp.DoomBuilder.Resources.display2d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/things2d.shader" LogicalName="CodeImp.DoomBuilder.Resources.things2d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/world3d.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/world3d_skybox.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d_skybox.shader" />
+  </ItemGroup>
+  <Import Project="Properties/Resources.g.props" />
 </Project>
