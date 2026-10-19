@@ -14,7 +14,7 @@
     </Grid>
     <TabControl x:Name="tabs" Padding="0,10,0,0">
       <TabItem x:Name="tabproperties">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.IsSharedSizeScope="True">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                 <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" x:Name="groupBox3" Classes="uldb-group">
                   <StackPanel Spacing="6">
@@ -25,7 +25,8 @@
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" x:Name="groupfloorceiling" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupfloorceilingTitle" Text="Heights" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <TextBlock x:Name="label6" Text="Ceiling height:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="ceilingheight"  Width="130"/>
@@ -48,7 +49,8 @@
                 <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" x:Name="groupdamage" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupdamageTitle" Text="Sector damage" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <TextBlock x:Name="label16" Text="Type:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ComboBox x:Name="damagetype"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
@@ -78,7 +80,8 @@
                       <Button x:Name="browseeffect" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0"/>
                     </Grid>
                     <Grid ColumnDefinitions="Auto,*">
-                      <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                      <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <TextBlock x:Name="label9" Text="Brightness:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                           <ContentControl x:Name="brightness"  Width="130"/>
@@ -88,7 +91,8 @@
                           <ContentControl x:Name="gravity"  Width="130"/>
                         </StackPanel>
                       </Grid>
-                      <Grid Grid.Column="1" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                      <Grid Grid.Column="1" RowDefinitions="Auto,Auto" RowSpacing="4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <TextBlock x:Name="label14" Text="Sound sequence:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                           <ComboBox x:Name="soundsequence"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
@@ -112,14 +116,15 @@
         </ScrollViewer>
       </TabItem>
       <TabItem x:Name="tabColors">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.IsSharedSizeScope="True">
             <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                 <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" x:Name="groupBox8" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupBox8Title" Text="Global sector colors" Classes="uldb-group-title"/>
                     <ContentControl x:Name="lightColor"/>
                     <ContentControl x:Name="fadeColor"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <TextBlock x:Name="label13" Text="Desaturation:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="desaturation"  Width="130"/>
@@ -140,7 +145,8 @@
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" x:Name="groupBox10" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <CheckBox x:Name="ceilingGlowEnabled" FontWeight="SemiBold"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="ceilingglowcolor"  Width="250"/>
                       </StackPanel>
@@ -156,7 +162,8 @@
                 <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" x:Name="groupBox11" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <CheckBox x:Name="floorGlowEnabled" FontWeight="SemiBold"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="floorglowcolor"  Width="250"/>
                       </StackPanel>
@@ -173,106 +180,98 @@
         </ScrollViewer>
       </TabItem>
       <TabItem x:Name="tabSurfaces">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <Panel Grid.IsSharedSizeScope="True">
             <Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                 <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" x:Name="groupBox1" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupBox1Title" Text="Ceiling" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                      <ContentControl x:Name="ceilAngleControl" VerticalAlignment="Bottom" Margin="0,0,0,40"/>
-                      <Border Grid.Column="1">
-                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
-                          <TextBlock x:Name="labelCeilOffsets" Text="Texture offsets:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="ceilOffsets"  Width="250"/>
-                          </StackPanel>
-                          <TextBlock x:Name="labelCeilScale" Text="Texture scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="ceilScale"  Width="250"/>
-                          </StackPanel>
-                          <TextBlock x:Name="labelceilrenderstyle" Text="Render style:" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ComboBox x:Name="ceilRenderStyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label7" Text="Terrain:" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ComboBox x:Name="ceilterrain"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
-                            <Button x:Name="resetceilterrain"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="labelLightFront" Text="Brightness:" Grid.Row="4" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="ceilBrightness"  Width="130"/>
-                            <CheckBox x:Name="ceilLightAbsolute"  Margin="6,0,0,0" VerticalAlignment="Center"/>
-                            <Button x:Name="resetceillight"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label1" Text="Rotation:" Grid.Row="5" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="ceilRotation"  Width="130"/>
-                            <CheckBox x:Name="cbUseCeilLineAngles"  Margin="6,0,0,0" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label20" Text="Reflectivity:" Grid.Row="6" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="ceiling_reflect"  Width="130"/>
-                            <Button x:Name="reset_ceiling_reflect"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                        </Grid>
-                      </Border>
-                      <ContentControl x:Name="ceilingtex" Grid.Column="2" VerticalAlignment="Top"/>
+                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="0">
+                      <ContentControl x:Name="ceilAngleControl" Grid.Row="3" Grid.RowSpan="4" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                      <TextBlock x:Name="labelCeilOffsets" Text="Texture offsets:" Grid.Row="0" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="ceilOffsets"  Width="250"/>
+                      </StackPanel>
+                      <TextBlock x:Name="labelCeilScale" Text="Texture scale:" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="ceilScale"  Width="250"/>
+                      </StackPanel>
+                      <TextBlock x:Name="labelceilrenderstyle" Text="Render style:" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ComboBox x:Name="ceilRenderStyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label7" Text="Terrain:" Grid.Row="3" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ComboBox x:Name="ceilterrain"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                        <Button x:Name="resetceilterrain"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="labelLightFront" Text="Brightness:" Grid.Row="4" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="ceilBrightness"  Width="130"/>
+                        <CheckBox x:Name="ceilLightAbsolute"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        <Button x:Name="resetceillight"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label1" Text="Rotation:" Grid.Row="5" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="ceilRotation"  Width="130"/>
+                        <CheckBox x:Name="cbUseCeilLineAngles"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label20" Text="Reflectivity:" Grid.Row="6" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="ceiling_reflect"  Width="130"/>
+                        <Button x:Name="reset_ceiling_reflect"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <ContentControl x:Name="ceilingtex" Grid.Column="3" Grid.RowSpan="7" Width="200" Margin="12,0,0,0"/>
                     </Grid>
                   </StackPanel>
                 </Border>
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="1" x:Name="groupBox2" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupBox2Title" Text="Floor" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                      <ContentControl x:Name="floorAngleControl" VerticalAlignment="Bottom" Margin="0,0,0,40"/>
-                      <Border Grid.Column="1">
-                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="5">
-                          <TextBlock x:Name="labelFloorOffsets" Text="Texture offsets:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="floorOffsets"  Width="250"/>
-                          </StackPanel>
-                          <TextBlock x:Name="labelFloorScale" Text="Texture scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="floorScale"  Width="250"/>
-                          </StackPanel>
-                          <TextBlock x:Name="labelfloorrenderstyle" Text="Render style:" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ComboBox x:Name="floorRenderStyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label3" Text="Terrain:" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ComboBox x:Name="floorterrain"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
-                            <Button x:Name="resetfloorterrain"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label12" Text="Brightness:" Grid.Row="4" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="floorBrightness"  Width="130"/>
-                            <CheckBox x:Name="floorLightAbsolute"  Margin="6,0,0,0" VerticalAlignment="Center"/>
-                            <Button x:Name="resetfloorlight"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label11" Text="Rotation:" Grid.Row="5" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="floorRotation"  Width="130"/>
-                            <CheckBox x:Name="cbUseFloorLineAngles"  Margin="6,0,0,0" VerticalAlignment="Center"/>
-                          </StackPanel>
-                          <TextBlock x:Name="label23" Text="Reflectivity:" Grid.Row="6" Classes="uldb-field" HorizontalAlignment="Right"/>
-                          <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                            <ContentControl x:Name="floor_reflect"  Width="130"/>
-                            <Button x:Name="reset_floor_reflect"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                          </StackPanel>
-                        </Grid>
-                      </Border>
-                      <ContentControl x:Name="floortex" Grid.Column="2" VerticalAlignment="Top"/>
+                    <Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="0">
+                      <ContentControl x:Name="floorAngleControl" Grid.Row="3" Grid.RowSpan="4" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                      <TextBlock x:Name="labelFloorOffsets" Text="Texture offsets:" Grid.Row="0" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="floorOffsets"  Width="250"/>
+                      </StackPanel>
+                      <TextBlock x:Name="labelFloorScale" Text="Texture scale:" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="floorScale"  Width="250"/>
+                      </StackPanel>
+                      <TextBlock x:Name="labelfloorrenderstyle" Text="Render style:" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ComboBox x:Name="floorRenderStyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label3" Text="Terrain:" Grid.Row="3" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="3" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ComboBox x:Name="floorterrain"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                        <Button x:Name="resetfloorterrain"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label12" Text="Brightness:" Grid.Row="4" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="floorBrightness"  Width="130"/>
+                        <CheckBox x:Name="floorLightAbsolute"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                        <Button x:Name="resetfloorlight"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label11" Text="Rotation:" Grid.Row="5" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="floorRotation"  Width="130"/>
+                        <CheckBox x:Name="cbUseFloorLineAngles"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <TextBlock x:Name="label23" Text="Reflectivity:" Grid.Row="6" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="6" Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="floor_reflect"  Width="130"/>
+                        <Button x:Name="reset_floor_reflect"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <ContentControl x:Name="floortex" Grid.Column="3" Grid.RowSpan="7" Width="200" Margin="12,0,0,0"/>
                     </Grid>
                   </StackPanel>
                 </Border>
             </Grid>
-        </ScrollViewer>
+        </Panel>
       </TabItem>
       <TabItem x:Name="tabslopes">
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+        <Panel Grid.IsSharedSizeScope="True">
+            <Grid ColumnDefinitions="3*,2*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                 <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" x:Name="gbCeilingSLope" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="gbCeilingSLopeTitle" Text="Ceiling slope" Classes="uldb-group-title"/>
@@ -282,10 +281,11 @@
                 <Border Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" x:Name="groupBox6" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupBox6Title" Text="Ceiling portal" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <TextBlock x:Name="ceilportalrenderstylelabel" Text="Render style:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                        <ComboBox x:Name="ceilportalrenderstyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                        <ComboBox x:Name="ceilportalrenderstyle"  HorizontalAlignment="Left" Width="160" MaxDropDownHeight="400"/>
                       </StackPanel>
                       <TextBlock x:Name="label21" Text="Alpha:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
@@ -305,10 +305,11 @@
                 <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" x:Name="groupBox7" Classes="uldb-group">
                   <StackPanel Spacing="6">
                     <TextBlock x:Name="groupBox7Title" Text="Floor portal" Classes="uldb-group-title"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <TextBlock x:Name="floorportalrenderstylelabel" Text="Render style:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
-                        <ComboBox x:Name="floorportalrenderstyle"  HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"/>
+                        <ComboBox x:Name="floorportalrenderstyle"  HorizontalAlignment="Left" Width="160" MaxDropDownHeight="400"/>
                       </StackPanel>
                       <TextBlock x:Name="label22" Text="Alpha:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
                       <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
@@ -320,7 +321,7 @@
                   </StackPanel>
                 </Border>
             </Grid>
-        </ScrollViewer>
+        </Panel>
       </TabItem>
       <TabItem x:Name="tabcomment">
         <ContentControl x:Name="commenteditor"/>

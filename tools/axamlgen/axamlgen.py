@@ -18,6 +18,7 @@ def ctl(spec, col, row, extra=""):
     name, _, kind = spec.partition(":")
     pos = f'Grid.Row="{row}" Grid.Column="{col}"' if col is not None else ""
     if kind == "combo": return f'<ComboBox x:Name="{name}" {pos} HorizontalAlignment="Left" Width="230" MaxDropDownHeight="400"{extra}/>'
+    if kind == "smallcombo": return f'<ComboBox x:Name="{name}" {pos} HorizontalAlignment="Left" Width="160" MaxDropDownHeight="400"{extra}/>'
     if kind == "widecombo": return f'<ComboBox x:Name="{name}" {pos} HorizontalAlignment="Stretch" MaxDropDownHeight="400"{extra}/>'
     if kind == "check": return f'<CheckBox x:Name="{name}" {pos} Margin="6,0,0,0" VerticalAlignment="Center"{extra}/>'
     if kind == "button": return f'<Button x:Name="{name}" {pos} Classes="uldb-tool" VerticalAlignment="Center"{extra}/>'
@@ -49,7 +50,7 @@ def rows(items, ind, extracols=0):
     return "\n".join(out)
 
 def group(name, body, ind, title=None, extra=""):
-    t = title or f'<TextBlock x:Name="{name}Title"{text(name)} Classes="uldb-group-title"/>'
+    t = title if title is not None else f'<TextBlock x:Name="{name}Title"{text(name)} Classes="uldb-group-title"/>'
     return f'''{ind}<Border x:Name="{name}" Classes="uldb-group"{extra}>
 {ind}  <StackPanel Spacing="6">
 {ind}    {t}

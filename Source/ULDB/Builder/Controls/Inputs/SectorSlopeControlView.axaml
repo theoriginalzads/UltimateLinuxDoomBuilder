@@ -3,18 +3,28 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.SectorSlopeControlView">
-  <Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6" ColumnSpacing="6">
-    <ContentControl x:Name="rotationcontrol" Grid.RowSpan="4" VerticalAlignment="Top" Margin="0,0,8,0"/>
-    <TextBlock x:Name="label1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-    <ComboBox x:Name="pivotmodeselector" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="200"/>
-    <TextBlock x:Name="label24" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-    <ContentControl x:Name="sloperotation" Grid.Row="1" Grid.Column="2" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-    <CheckBox x:Name="cbuselineangles" Grid.Row="1" Grid.Column="3" Margin="6,0,0,0"/>
-    <TextBlock x:Name="label23" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-    <ContentControl x:Name="slopeangle" Grid.Row="2" Grid.Column="2" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-    <Slider x:Name="angletrackbar" Grid.Row="2" Grid.Column="3" MinWidth="120" VerticalAlignment="Center"/>
-    <TextBlock x:Name="label18" Grid.Row="3" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-    <ContentControl x:Name="slopeoffset" Grid.Row="3" Grid.Column="2" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-    <Button x:Name="reset" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Left"/>
+  <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+    <ContentControl x:Name="rotationcontrol" VerticalAlignment="Top" Margin="0,2,0,0"/>
+    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="4">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ComboBox x:Name="pivotmodeselector" Grid.Column="1" Width="190" HorizontalAlignment="Left"/>
+      <TextBlock x:Name="label24" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="10">
+        <ContentControl x:Name="sloperotation" Width="110" VerticalAlignment="Center"/>
+        <CheckBox x:Name="cbuselineangles" VerticalAlignment="Center"/>
+      </StackPanel>
+      <TextBlock x:Name="label23" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="10">
+        <ContentControl x:Name="slopeangle" Width="110" VerticalAlignment="Center"/>
+        <Slider x:Name="angletrackbar" Width="150" VerticalAlignment="Center" Margin="0,-8"/>
+      </StackPanel>
+      <TextBlock x:Name="label18" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="slopeoffset" Grid.Row="3" Grid.Column="1" Width="110" HorizontalAlignment="Left"/>
+      <Button x:Name="reset" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+    </Grid>
   </Grid>
 </UserControl>

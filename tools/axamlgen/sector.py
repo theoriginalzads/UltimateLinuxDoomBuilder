@@ -30,33 +30,42 @@ colors = grid2([
     (1, 1, 1, group("groupBox11", glow("floor", "Floor", "floorGlowEnabled"), G, title='<CheckBox x:Name="floorGlowEnabled" FontWeight="SemiBold"/>')),
 ], I)
 
-def surface(gname, p, P, offs, scale, rs, rslabel, terrain, tlabel, bright, blabel, babs, angle, rot, uselines, rotlabel, refl, reflreset, refllabel, tex, offlabel, scalelabel, lightreset):
-    fields = rows([(offlabel, offs + ":pair"), (scalelabel, scale + ":pair"), (rslabel, f"{rs}:combo"), (tlabel, f"{terrain}:combo", f"reset{p}terrain:button"),
-                   (blabel, bright, f"{babs}:check", f"{lightreset}:button"), (rotlabel, rot, f"{uselines}:check"), (refllabel, refl, f"{reflreset}:button")], B + "    ", 2)
-    body = f'''{B}<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-{B}  <ContentControl x:Name="{angle}" VerticalAlignment="Bottom" Margin="0,0,0,40"/>
-{B}  <Border Grid.Column="1">
-{fields}
-{B}  </Border>
-{B}  <ContentControl x:Name="{tex}" Grid.Column="2" VerticalAlignment="Top"/>
+def surface(gname, p, offs, scale, rs, rslabel, terrain, tlabel, bright, blabel, babs, angle, rot, uselines, rotlabel, refl, reflreset, refllabel, tex, offlabel, scalelabel, lightreset):
+    """One surface: a field column (shared labels), the rotation dial beside Brightness/Rotation,
+    and a large preview on the right, as UDB's Surfaces tab arranges them."""
+    C = B + "  "
+    def row(r, label, *ctls):
+        out = [f'{C}<TextBlock x:Name="{label}"{text(label)} Grid.Row="{r}" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>',
+               f'{C}<StackPanel Grid.Row="{r}" Grid.Column="2" Orientation="Horizontal" Spacing="4">']
+        out += [f'{C}  ' + ctl(c, None, None) for c in ctls]
+        out.append(f'{C}</StackPanel>')
+        return "\n".join(out)
+    rowsxml = "\n".join([
+        row(0, offlabel, offs + ":pair"), row(1, scalelabel, scale + ":pair"), row(2, rslabel, rs + ":combo"),
+        row(3, tlabel, terrain + ":combo", f"reset{p}terrain:button"), row(4, blabel, bright, babs + ":check", lightreset + ":button"),
+        row(5, rotlabel, rot, uselines + ":check"), row(6, refllabel, refl, reflreset + ":button")])
+    body = f'''{B}<Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="0">
+{C}<ContentControl x:Name="{angle}" Grid.Row="3" Grid.RowSpan="4" VerticalAlignment="Center" Margin="0,0,10,0"/>
+{rowsxml}
+{C}<ContentControl x:Name="{tex}" Grid.Column="3" Grid.RowSpan="7" Width="200" Margin="12,0,0,0"/>
 {B}</Grid>'''
     return group(gname, body, G)
 
 surfaces = grid2([
-    (0, 0, 1, surface("groupBox1", "ceil", "Ceil", "ceilOffsets", "ceilScale", "ceilRenderStyle", "labelceilrenderstyle", "ceilterrain", "label7", "ceilBrightness", "labelLightFront", "ceilLightAbsolute", "ceilAngleControl", "ceilRotation", "cbUseCeilLineAngles", "label1", "ceiling_reflect", "reset_ceiling_reflect", "label20", "ceilingtex", "labelCeilOffsets", "labelCeilScale", "resetceillight")),
-    (1, 0, 1, surface("groupBox2", "floor", "Floor", "floorOffsets", "floorScale", "floorRenderStyle", "labelfloorrenderstyle", "floorterrain", "label3", "floorBrightness", "label12", "floorLightAbsolute", "floorAngleControl", "floorRotation", "cbUseFloorLineAngles", "label11", "floor_reflect", "reset_floor_reflect", "label23", "floortex", "labelFloorOffsets", "labelFloorScale", "resetfloorlight")),
+    (0, 0, 1, surface("groupBox1", "ceil", "ceilOffsets", "ceilScale", "ceilRenderStyle", "labelceilrenderstyle", "ceilterrain", "label7", "ceilBrightness", "labelLightFront", "ceilLightAbsolute", "ceilAngleControl", "ceilRotation", "cbUseCeilLineAngles", "label1", "ceiling_reflect", "reset_ceiling_reflect", "label20", "ceilingtex", "labelCeilOffsets", "labelCeilScale", "resetceillight")),
+    (1, 0, 1, surface("groupBox2", "floor", "floorOffsets", "floorScale", "floorRenderStyle", "labelfloorrenderstyle", "floorterrain", "label3", "floorBrightness", "label12", "floorLightAbsolute", "floorAngleControl", "floorRotation", "cbUseFloorLineAngles", "label11", "floor_reflect", "reset_floor_reflect", "label23", "floortex", "labelFloorOffsets", "labelFloorScale", "resetfloorlight")),
 ], I, "*")
 
-portal = lambda g, p, flags: group(g, rows([(f"{p}portalrenderstylelabel", f"{p}portalrenderstyle:combo"), ("label21" if p == "ceil" else "label22", f"alpha{p if p=='floor' else 'ceiling'}", f"resetalpha{p if p=='floor' else 'ceiling'}:button")], B, 1) + f'\n{B}<ContentControl x:Name="{flags}"/>', G)
+portal = lambda g, p, flags: group(g, rows([(f"{p}portalrenderstylelabel", f"{p}portalrenderstyle:smallcombo"), ("label21" if p == "ceil" else "label22", f"alpha{p if p=='floor' else 'ceiling'}", f"resetalpha{p if p=='floor' else 'ceiling'}:button")], B, 1) + f'\n{B}<ContentControl x:Name="{flags}"/>', G)
 slopes = grid2([
     (0, 0, 1, group("gbCeilingSLope", f'{B}<ContentControl x:Name="ceilingslopecontrol"/>', G)),
     (0, 1, 1, portal("groupBox6", "ceil", "ceilportalflags")),
     (1, 0, 1, group("gbFloorSlope", f'{B}<ContentControl x:Name="floorslopecontrol"/>', G)),
     (1, 1, 1, portal("groupBox7", "floor", "floorportalflags")),
-], I)
+], I, "3*,2*")
 
 tabs = "\n".join([
-    tab("tabproperties", props), tab("tabColors", colors), tab("tabSurfaces", surfaces), tab("tabslopes", slopes),
+    tab("tabproperties", props), tab("tabColors", colors), fixedtab("tabSurfaces", surfaces), fixedtab("tabslopes", slopes),
     plaintab("tabcomment", '        <ContentControl x:Name="commenteditor"/>'),
     plaintab("tabcustom", '        <ContentControl x:Name="fieldslist"/>'),
 ])

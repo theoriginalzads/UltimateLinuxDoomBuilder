@@ -34,37 +34,40 @@ props = f'''{I}<StackPanel Spacing="6">
     group("idgroup", f'{B}<ContentControl x:Name="tagsselector"/>', G),
 ]) + f"\n{I}</StackPanel>"
 
-def side(S, s, box, sector, seclabel, light, lightreset, lightabs, lightlabel, custombtn, offgroup, scalegroup, flagsgroup, flags):
+def side(S, s, box, sector, seclabel, light, lightreset, lightabs, lightlabel, custombtn, flagsgroup, flags):
+    """A side: its own settings, then Upper/Middle/Lower parts like Edit Sector's surfaces (fields
+    on the left, that part's texture on the right), then the side's flags."""
     C = I + "    "
-    lights = "\n".join(f'{C}      <ContentControl x:Name="light{s}{p}" HorizontalAlignment="Left"/>' for p in ["upper", "middle", "lower"])
-    left = "\n".join([
-        group(box, rows([(seclabel, sector), (lightlabel, light, f"{lightabs}:check", f"{lightreset}:button")], C + "    ", 0) +
-              f'\n{lights}\n{C}    <Button x:Name="{custombtn}" HorizontalAlignment="Left"/>',
-              C, title='<TextBlock Text="Sector and light" Classes="uldb-group-title"/>'),
-        group(offgroup, rows([(f"label{S}TextureOffset", f"{s}TextureOffset:pair"), (f"label{S}OffsetTop", f"pfc{S}OffsetTop:pair"), (f"label{S}OffsetMid", f"pfc{S}OffsetMid:pair"), (f"label{S}OffsetBottom", f"pfc{S}OffsetBottom:pair")], C + "    ", 0), C),
-        group(scalegroup, rows([(f"label{S}ScaleTop", f"pfc{S}ScaleTop:pair"), (f"label{S}ScaleMid", f"pfc{S}ScaleMid:pair"), (f"label{S}ScaleBottom", f"pfc{S}ScaleBottom:pair")], C + "    ", 0), C),
-        group(flagsgroup, f'{C}    <ContentControl x:Name="{flags}"/>', C),
-    ])
-    textures = "\n".join(f'''{C}  <DockPanel Grid.Row="{r}" Margin="0,0,0,{0 if r == 2 else 8}">
-{C}    <TextBlock DockPanel.Dock="Top" Text="{t}" Opacity="0.7" FontSize="12" Margin="2,0,0,2"/>
-{C}    <ContentControl x:Name="{s}{n}"/>
-{C}  </DockPanel>''' for r, (t, n) in enumerate([("Upper", "high"), ("Middle", "mid"), ("Lower", "low")]))
+    top = group(box, rows([(seclabel, sector), (lightlabel, light, f"{lightabs}:check", f"{lightreset}:button"),
+                           (f"label{S}TextureOffset", f"{s}TextureOffset:pair")], C + "    ", 0) +
+                f'\n{C}    <Button x:Name="{custombtn}" HorizontalAlignment="Left"/>',
+                C, title="")
+    def part(title, P, p, tex):
+        fields = rows([(f"label{S}Offset{P}", f"pfc{S}Offset{P}:pair"), (f"label{S}Scale{P}" if P != "Bottom" else f"label{S}ScaleBottom", f"pfc{S}Scale{P}:pair")], C + "      ", 0)
+        return f'''{C}<Border Classes="uldb-group">
+{C}  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+{C}    <StackPanel Spacing="4">
+{C}      <TextBlock Text="{title}" Classes="uldb-group-title" Margin="0,0,0,2"/>
+{fields}
+{C}      <ContentControl x:Name="light{s}{p}" HorizontalAlignment="Left"/>
+{C}    </StackPanel>
+{C}    <ContentControl x:Name="{s}{tex}" Grid.Column="1" Width="150" Height="150"/>
+{C}  </Grid>
+{C}</Border>'''
+    parts = "\n".join([part("Upper", "Top", "upper", "high"), part("Middle", "Mid", "middle", "mid"), part("Lower", "Bottom", "lower", "low")])
     return f'''{I}<DockPanel>
 {I}  <CheckBox x:Name="{s}side" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,6"/>
-{I}  <Grid x:Name="{s}group" ColumnDefinitions="*,250" ColumnSpacing="12">
-{I}    <StackPanel Spacing="6">
-{left}
-{I}    </StackPanel>
-{I}    <Grid Grid.Column="1" RowDefinitions="*,*,*">
-{textures}
-{I}    </Grid>
-{I}  </Grid>
+{I}  <StackPanel x:Name="{s}group" Spacing="6">
+{top}
+{parts}
+{group(flagsgroup, f'{C}    <ContentControl x:Name="{flags}"/>', C)}
+{I}  </StackPanel>
 {I}</DockPanel>'''
 
 tabs = "\n".join([
     fixedtab("tabproperties", props),
-    fixedtab("tabfront", side("Front", "front", "groupBox5", "frontsector", "label11", "lightFront", "resetfrontlight", "cbLightAbsoluteFront", "labelLightFront", "customfrontbutton", "groupBox6", "frontscalegroup", "frontflagsgroup", "flagsFront")),
-    fixedtab("tabback", side("Back", "back", "groupBox4", "backsector", "label12", "lightBack", "resetbacklight", "cbLightAbsoluteBack", "labelLightBack", "custombackbutton", "groupBox1", "backscalegroup", "backflagsgroup", "flagsBack")),
+    fixedtab("tabfront", side("Front", "front", "groupBox5", "frontsector", "label11", "lightFront", "resetfrontlight", "cbLightAbsoluteFront", "labelLightFront", "customfrontbutton", "frontflagsgroup", "flagsFront")),
+    fixedtab("tabback", side("Back", "back", "groupBox4", "backsector", "label12", "lightBack", "resetbacklight", "cbLightAbsoluteBack", "labelLightBack", "custombackbutton", "backflagsgroup", "flagsBack")),
     plaintab("tabcomment", '        <ContentControl x:Name="commenteditor"/>'),
     plaintab("tabcustom", '        <ContentControl x:Name="fieldslist"/>'),
 ])
