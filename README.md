@@ -1,93 +1,64 @@
-# Ultimate Doom Builder
+# Ultimate Linux Doom Builder
 
-## System requirements
-- 2.4 GHz CPU or faster (multi-core recommended)
-- Windows 7, 8, 10, or 11
-- Graphics card with OpenGL 3.2 support
+> [!IMPORTANT]
+> **This is an unofficial fork of [Ultimate Doom Builder](https://github.com/UltimateDoomBuilder/UltimateDoomBuilder), and the port is AI-coded.**
+> The Linux port was written largely by an AI coding assistant (Claude, by Anthropic) under the direction of the maintainer ([@theoriginalzads](https://github.com/theoriginalzads)). Every AI-authored commit carries a `Co-Authored-By: Claude` line. Please review it with that in mind.
+>
+> ULDB is not affiliated with or endorsed by the Ultimate Doom Builder team. **Please report ULDB problems [here](https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/issues), not to the UDB team.**
 
-### Required software on Windows
-- [Microsoft .Net Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472)
+> [!WARNING]
+> **Work in progress: not usable as an editor yet.** The editor core runs on Linux and passes its tests, but there's no user interface yet. See [Status](#status).
 
-## Building on Linux
+Ultimate Linux Doom Builder (ULDB) is a **native Linux** map editor for **GZDoom and UZDoom**, based on Ultimate Doom Builder.
 
-__Note:__ this is experimental. None of the main developers are using Linux as a desktop OS, so you're pretty much on your own if you encounter any problems with running the application.
+Upstream UDB is a Windows application. Its Linux build runs on Mono's WinForms, which is slow and doesn't fit into the Linux desktop. ULDB replaces that:
 
-### Manual build
+- **.NET 10** instead of Mono, and **[Avalonia](https://avaloniaui.net/)** instead of WinForms.
+- **Desktop integration:** follows your desktop's dark/light mode and accent colour, with HiDPI scaling and the native file dialogs. It's aimed at KDE Plasma and also works on GNOME and others.
+- **X11 and Wayland:** runs natively on X11 and through XWayland on Wayland sessions.
+- **Familiar UI:** the same windows, menus and shortcuts as UDB, so existing users feel at home. It's cleaned up and more responsive, but not reinvented. See [`docs/ux-changes.md`](docs/ux-changes.md) for every difference.
+- **Settings import:** imports your existing UDB settings (from the Mono build, the Flatpak, Wine or Windows).
+- **Build tools from source:** node builders and script compilers (ZDBSP, ACC, ZT-BCC, BCC) are built from source for Linux.
 
-These instructions are for Debian-based distros and were tested with Ubuntu 24.04 LTS and Arch.
+## Scope: GZDoom and UZDoom only
 
-- Install Mono
-  - **Ubuntu:** The `mono-complete` package from the Debian repo doesn't include `msbuild`, so you have to install `mono-complete` by following the instructions on the Mono project's website: https://www.mono-project.com/download/stable/#download-lin
-  - **Arch:** mono (and msbuild which is also required) is in the *extra/* repo, which is enabled by default. `sudo pacman -S mono mono-msbuild`
-- Install additional required packages
-  - **Ubuntu:** `sudo apt install make g++ git libx11-dev libxfixes-dev mesa-common-dev`
-  - **Arch:** `sudo pacman -S base-devel`
-    - If you're using X11 display manager you may need to install these packages: `libx11 libxfixes`
-    - If you are not using the proprietary nvidia driver you may need to install `mesa`
-- Go to a directory of your choice and clone the repository (it'll automatically create an `UltimateDoomBuilder` directory in the current directory): `git clone https://github.com/UltimateDoomBuilder/UltimateDoomBuilder.git`
-- Compile UDB: `cd UltimateDoomBuilder && make`
-- Run UDB: `cd Build && ./builder`
-- Alternatively, to compile UDB in debug mode:
-  - Run `make BUILDTYPE=Debug` in the root project directory
-  - This includes a debug output terminal in the bottom panel
+ULDB is deliberately **not** a vanilla, Boom/MBF21 or other-port editor. Only the GZDoom and UZDoom game configurations are offered (UDMF, plus the older Doom and Hexen formats for existing GZDoom projects). Vanilla-only node builders are left out.
 
-### Flatpak build
+The code for other targets stays in the source tree, so updates from upstream UDB keep merging cleanly, but it's hidden in the UI. [`docs/scope-hidden.md`](docs/scope-hidden.md) lists what's hidden.
 
-The advantage of using Flatpak to build a package is that you do not need to install Mono directly into your system, since everything in the build process will be self-contained. This also means that this works on Linux distributions that do not have `msbuild` in their repository.
+**If you map for vanilla, Boom or other ports, use [upstream Ultimate Doom Builder](https://github.com/UltimateDoomBuilder/UltimateDoomBuilder).**
 
-- To build UDB using Flatpak you need both **Flatpak** and **Flatpak Builder**. How they are installed depends on your distribution. For example on Debian-based distributions they can be installed using `sudo apt install flatpak flatpak-builder`. Check your distro's documentation for information on how to install them.
-- Go to a directory of your choice and clone the repository (it'll automatically create an UltimateDoomBuilder directory in the current directory):
-  ```
-  git clone https://github.com/UltimateDoomBuilder/UltimateDoomBuilder.git
-  ``` 
-- Go to the cloned directory:
-  ```
-  cd UltimateDoomBuilder
-  ```
+## Status
 
-- Build the Flatpak. This will also download all required dependencies:
-  ```
-  ./build_flatpak.sh
-  ```
+| Phase | What | Status |
+|---|---|---|
+| 0 | Fork, plan, toolchain, test maps | ✅ Done |
+| 1 | Editor core on .NET 10 without WinForms; load/save tests | ✅ Done |
+| 2 | 3D renderer on Avalonia's OpenGL; ACC/ZDBSP/BCS compilers built from source | 🚧 In progress |
+| 3 | Avalonia main window, menus, 2D/3D view | ⬜ |
+| 4 | Editing modes | ⬜ |
+| 5 | Dialogs (about 160) | ⬜ |
+| 6 | Plugins: 3D floors and slopes, stairs, effects, tag range, sound propagation | ⬜ |
+| 7 | Desktop integration, settings import, Flatpak, AUR package | ⬜ |
 
-- This will create a file in the format `ultimatedoombuilder-<version>.flatpak` in the `Releases` directory. You can now install and run the Flatpak:
+Details: [`docs/ULDB-Plan.md`](docs/ULDB-Plan.md) is the plan, and [`docs/progress.md`](docs/progress.md) tracks progress.
 
-  ```
-  flatpak install --user Releases/ultimatedoombuilder-<version>.flatpak
-  flatpak run io.github.ultimatedoombuilder.ultimatedoombuilder
-  ```
-### Flatpak build using WSL2
+## Building (developers)
 
-You can also build the flatpak on Windows using WSL2.
+There's nothing to run yet. You can build the core and run its tests:
 
-#### Initial setup
-- Create the instance. Requires entering a user name and password:
-  ```powershell
-  wsl --install Ubuntu-24.04 --name udb-flatpak-builder
-  ```
-- Install required Flatpak packages and clone the repository, then exit the insance. Requires entering the user password from the previous step:
-  ```bash
-  sudo apt update && sudo apt -y install flatpak flatpak-builder
-  cd ~
-  git clone https://github.com/UltimateDoomBuilder/UltimateDoomBuilder.git
-  exit
-  ```
+```sh
+# Arch/CachyOS: sudo pacman -S dotnet-sdk python   (Ubuntu: apt install dotnet-sdk-10.0 python3)
+git clone https://github.com/theoriginalzads/UltimateLinuxDoomBuilder.git
+cd UltimateLinuxDoomBuilder
+dotnet build Builder.Linux.sln
+dotnet test Builder.Linux.sln
+```
 
-#### Building the flatpak
-- Update the repository and build the flatpak:
-  ```powershell
-  wsl --distribution udb-flatpak-builder --cd ~/UltimateDoomBuilder -- git pull `&`& ./build_flatpak.sh
-  ```
-- Get the flatpak from the UNC path `\\wsl.localhost\udb-flatpak-builder\home\$env:username\UltimateDoomBuilder\Releases`.
-- Stop the instance (optional, it should shut itself down after some time):
-  ```powershell
-  wsl --terminate udb-flatpak-builder
-  ```
+[`docs/architecture.md`](docs/architecture.md) explains how the fork is put together.
 
+## Credits and licence
 
-# Links
-- [Official thread link](https://forum.zdoom.org/viewtopic.php?f=232&t=66745)
-- [Git builds at DRDTeam.org](https://devbuilds.drdteam.org/ultimatedoombuilder/) 
+ULDB is built on the work of the Ultimate Doom Builder, GZDoom Builder and Doom Builder 2 authors and contributors. All credit for the editor itself goes to them. Upstream's original README is kept in [`docs/upstream-README.md`](docs/upstream-README.md).
 
-More detailed info can be found in the **editor documentation** (Refmanual.chm)
-
+Licensed under the **GNU General Public License v3.0**, the same as upstream. See [`LICENSE.txt`](LICENSE.txt).

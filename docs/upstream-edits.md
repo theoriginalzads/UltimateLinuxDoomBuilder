@@ -4,6 +4,8 @@ Every change ULDB makes inside an upstream UDB source file, for checking during 
 - is wrapped in `#if ULDB … #else <original> #endif`
 - keeps the file's CRLF line endings
 
+**`README.md`** is fully replaced with ULDB's own. Upstream's version is kept as `docs/upstream-README.md`. When merging an upstream release, keep ULDB's `README.md` and copy upstream's new README over `docs/upstream-README.md`.
+
 New ULDB code lives in its own files (`Source/ULDB/`, `tools/`, `docs/`) and isn't listed here.
 
 | File | Where | Why |
