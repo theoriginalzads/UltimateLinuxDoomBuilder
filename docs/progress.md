@@ -84,7 +84,10 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Branding | ✅ | `ULDB.Branding`; a module initializer brands `Application.ProductName`, so upstream's message boxes say "Ultimate Linux Doom Builder" |
 | Scope filter | ✅ | `ULDB.Scope.ScopeFilter`: 14 visible configs, ZDBSP only, ACC/ZT-BCC/BCC; closest-config suggestion. `docs/scope-hidden.md` |
 | Key mapping | ✅ | `ULDB.Input.KeyMapping`: Avalonia keys/modifiers/mouse buttons to WinForms codes; every default shortcut in the in-scope Actions.cfg files is reachable |
-| Avalonia app, `IWinFormsHost`, main window, viewport | ⬜ | Next (below) |
+| Avalonia app entry point | ✅ | `Source/ULDB/Builder/Shell/Program.cs`: `Builder` is now an executable (`uldb` launcher script next to it). Avalonia is set up first (`SetupWithoutStarting`), then upstream's `General.Main` runs unchanged; `Application.Run` runs Avalonia's main loop |
+| `IWinFormsHost` | ✅ (untested by hand) | `Shell/AvaloniaHost.cs`: message boxes, portal file dialogs, colour dialog (ColorView), clipboard (text to the desktop, UDB formats in-process), cursors, timers, `Invoke`/`BeginInvoke`, `ActiveForm`. `Shell/FormWindows.cs` links compat `Form`s to Avalonia windows |
+| Temporary main window | ✅ | `Shell/TemporaryMainWindow.cs` stands in for `MainForm` until it's ported; closing it saves settings like upstream. Delete it with the `MainForm` port |
+| Main window port, viewport | ⬜ | Next (below) |
 
 **Tests:** 137 passing.
 
@@ -92,11 +95,13 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
-1. **Avalonia app entry point:**
+Steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). **Not yet confirmed by the user that the window appeared**; ask first. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
+
+1. ~~**Avalonia app entry point:**~~ done
    - The UI lives in the `Builder` assembly; it already references Avalonia 12.1.4.
    - Add the `uldb` launcher and an Avalonia `App`. Set up Avalonia before `General.Main` creates windows: `General.Main` builds `MainForm` and then calls `Application.Run`.
    - Install `Application.RunHandler`/`ExitHandler`, and set `ULDB.Branding` names in the window title.
-2. **`IWinFormsHost` implementation** (`Source/ULDB/Compat/WinForms/Host.cs` defines the interface):
+2. ~~**`IWinFormsHost` implementation**~~ done (`Source/ULDB/Compat/WinForms/Host.cs` defines the interface):
    - message boxes, portal file and colour dialogs, clipboard, cursors
    - `Invoke`/`BeginInvoke`/`CheckAccess` via Avalonia's `Dispatcher`
    - UI-thread timers, `ActiveForm`
@@ -128,6 +133,7 @@ The user wants this done **on their machine**, with them watching the window. Wo
   - the Mono reference build, reference screenshots in `docs/reference-screenshots/`
   - own maps in `tests/maps/user/` (optional)
 - **On the user's machine the window is real:** the Avalonia app runs on their KDE Plasma (X11 backend; XWayland on Wayland sessions). Use `-p:UldbArch=znver4` for their builds if they want it.
+- **User's machine (CachyOS):** VS Code runs as a **Flatpak**, so the agent's shell is sandboxed: run `dotnet`, `git push` and the app through `flatpak-spawn --host sh -c "cd '$PWD' && …"`. The sandbox's `/tmp` is private; put files the host must write (screenshots: `spectacle -b -n -a -o ~/.cache/uldb-shots/x.png`) under `$HOME`. Freedoom is in `~/.local/share/doom/`.
 - **GitHub from cloud sessions:**
   - `gh` GraphQL is blocked; use `gh api` (REST).
   - The repo is a fork, so always target `theoriginalzads/UltimateLinuxDoomBuilder` explicitly when opening PRs, never upstream.

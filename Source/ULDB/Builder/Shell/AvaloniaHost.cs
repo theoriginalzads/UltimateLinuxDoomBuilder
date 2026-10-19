@@ -1,0 +1,295 @@
+// ULDB: the real IWinFormsHost. Upstream's MessageBox, file and colour dialogs,
+// clipboard, cursors, timers and cross-thread calls land here (through the compat
+// layer) and are answered with Avalonia.
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using DrawingColor = System.Drawing.Color;
+using Avalonia.Input.Platform;
+using DataFormats = System.Windows.Forms.DataFormats;
+using DataObject = System.Windows.Forms.DataObject;
+using WfCursor = System.Windows.Forms.Cursor;
+
+namespace ULDB.Shell
+{
+	internal sealed class AvaloniaHost : IWinFormsHost
+	{
+		private DataObject clipboard = new DataObject();
+		private Avalonia.Input.Cursor cursor;
+		private System.Threading.CancellationTokenSource mainloop;
+
+		/// <summary>Installs the host and the main loop handlers. Call once Avalonia is set up.</summary>
+		public static void Install()
+		{
+			AvaloniaHost host = new AvaloniaHost();
+			WinFormsHost.Current = host;
+			FormWindows.TrackOpenWindows();
+
+			System.Windows.Forms.Application.RunHandler = host.Run;
+			System.Windows.Forms.Application.ExitHandler = host.Exit;
+
+			// Exceptions on the UI thread go to upstream's handler (its error dialog), when
+			// it installed one; otherwise they crash the program as usual.
+			Dispatcher.UIThread.UnhandledException += (s, e) =>
+			{
+				if(System.Windows.Forms.Application.RaiseThreadException(e.Exception)) e.Handled = true;
+			};
+		}
+
+		#region ================== Main loop
+
+		private void Run(object mainwindow)
+		{
+			Form form = mainwindow as Form;
+			Window window = FormWindows.WindowFor(form);
+
+			// Until MainForm is ported, its placeholder has no window of its own.
+			if(window == null)
+			{
+				window = new TemporaryMainWindow(form);
+				FormWindows.Register(form, window);
+			}
+
+			mainloop = new System.Threading.CancellationTokenSource();
+			window.Closed += (s, e) => mainloop.Cancel();
+			if(!window.IsVisible) window.Show();
+			Dispatcher.UIThread.MainLoop(mainloop.Token);
+		}
+
+		private void Exit()
+		{
+			mainloop?.Cancel();
+		}
+
+		#endregion
+
+		#region ================== Dialogs
+
+		public DialogResult ShowMessageBox(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
+		{
+			return OnUIThread(() =>
+			{
+				MessageBoxWindow box = new MessageBoxWindow(text, caption, buttons, icon, defaultButton);
+				Modal.ShowDialog(box, OwnerWindow(owner));
+				return box.Result;
+			});
+		}
+
+		public DrawingColor? ShowColorDialog(IWin32Window owner, DrawingColor initial, int[] customColors)
+		{
+			return OnUIThread<DrawingColor?>(() =>
+			{
+				ColorDialogWindow dialog = new ColorDialogWindow(initial);
+				Modal.ShowDialog(dialog, OwnerWindow(owner));
+				return dialog.Accepted ? dialog.Color : null;
+			});
+		}
+
+		public string[] ShowFileDialog(IWin32Window owner, FileDialogRequest request)
+		{
+			return OnUIThread(() =>
+			{
+				TopLevel top = OwnerWindow(owner);
+				if(top == null) return null; // No window to attach the picker to yet
+				return Modal.Wait(ShowFileDialogAsync(top.StorageProvider, request));
+			});
+		}
+
+		private static async Task<string[]> ShowFileDialogAsync(IStorageProvider storage, FileDialogRequest request)
+		{
+			IStorageFolder start = null;
+			if(!string.IsNullOrEmpty(request.InitialDirectory) && System.IO.Directory.Exists(request.InitialDirectory))
+				start = await storage.TryGetFolderFromPathAsync(new Uri(System.IO.Path.GetFullPath(request.InitialDirectory)));
+			else if(!string.IsNullOrEmpty(request.FileName) && System.IO.Path.IsPathRooted(request.FileName))
+			{
+				string dir = System.IO.Path.GetDirectoryName(request.FileName);
+				if(System.IO.Directory.Exists(dir)) start = await storage.TryGetFolderFromPathAsync(new Uri(dir));
+			}
+
+			if(request.SelectFolder)
+			{
+				IReadOnlyList<IStorageFolder> folders = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
+				{
+					Title = request.Title,
+					SuggestedStartLocation = start,
+					AllowMultiple = request.Multiselect,
+				});
+				return LocalPaths(folders);
+			}
+
+			List<FilePickerFileType> types = request.ParseFilter()
+				.Select(f => new FilePickerFileType(f.Key) { Patterns = f.Value })
+				.ToList();
+
+			// WinForms' FilterIndex is 1-based and picks the initially selected filter. The
+			// portal shows the first one first, so move the chosen filter to the front.
+			int index = request.FilterIndex - 1;
+			if(index > 0 && index < types.Count)
+			{
+				FilePickerFileType chosen = types[index];
+				types.RemoveAt(index);
+				types.Insert(0, chosen);
+			}
+
+			if(request.Save)
+			{
+				IStorageFile file = await storage.SaveFilePickerAsync(new FilePickerSaveOptions
+				{
+					Title = request.Title,
+					SuggestedStartLocation = start,
+					SuggestedFileName = string.IsNullOrEmpty(request.FileName) ? null : System.IO.Path.GetFileName(request.FileName),
+					DefaultExtension = request.DefaultExt,
+					FileTypeChoices = types,
+					ShowOverwritePrompt = request.OverwritePrompt,
+				});
+				string path = file?.TryGetLocalPath();
+				if(path == null) return null;
+
+				// WinForms adds the default extension when the name has none.
+				if(!string.IsNullOrEmpty(request.DefaultExt) && string.IsNullOrEmpty(System.IO.Path.GetExtension(path)))
+					path += "." + request.DefaultExt.TrimStart('.');
+				return new[] { path };
+			}
+
+			IReadOnlyList<IStorageFile> files = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+			{
+				Title = request.Title,
+				SuggestedStartLocation = start,
+				SuggestedFileName = string.IsNullOrEmpty(request.FileName) ? null : System.IO.Path.GetFileName(request.FileName),
+				AllowMultiple = request.Multiselect,
+				FileTypeFilter = types,
+			});
+			return LocalPaths(files);
+		}
+
+		private static string[] LocalPaths(IEnumerable<IStorageItem> items)
+		{
+			string[] paths = items?.Select(i => i.TryGetLocalPath()).Where(p => p != null).ToArray();
+			return paths == null || paths.Length == 0 ? null : paths;
+		}
+
+		public void ShowHelp(IWin32Window owner, string url, string topic)
+		{
+			// Upstream's help is a Windows .chm file; ULDB opens the online documentation.
+			if(string.IsNullOrEmpty(url) || !url.Contains("://")) return;
+			try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+			catch(Exception e) { Trace.WriteLine("Unable to open " + url + ": " + e.Message); }
+		}
+
+		private static Window OwnerWindow(IWin32Window owner)
+		{
+			Window w = FormWindows.WindowFor(owner);
+			if(w != null && w.IsVisible) return w;
+			return FormWindows.Active;
+		}
+
+		#endregion
+
+		#region ================== Cursor and clipboard
+
+		public void SetCursor(WfCursor value)
+		{
+			OnUIThread(() =>
+			{
+				cursor = value == null || value == Cursors.Default || value == Cursors.Arrow ? null : new Avalonia.Input.Cursor(CursorType(value));
+				foreach(Window w in FormWindows.Open) w.Cursor = cursor;
+			});
+		}
+
+		private static StandardCursorType CursorType(WfCursor c)
+		{
+			switch(c.Name)
+			{
+				case "WaitCursor": return StandardCursorType.Wait;
+				case "AppStarting": return StandardCursorType.AppStarting;
+				case "Cross": return StandardCursorType.Cross;
+				case "Hand": return StandardCursorType.Hand;
+				case "IBeam": return StandardCursorType.Ibeam;
+				case "No": return StandardCursorType.No;
+				case "SizeAll": return StandardCursorType.SizeAll;
+				case "SizeNESW": return StandardCursorType.BottomLeftCorner;
+				case "SizeNS": return StandardCursorType.SizeNorthSouth;
+				case "SizeNWSE": return StandardCursorType.TopLeftCorner;
+				case "SizeWE": return StandardCursorType.SizeWestEast;
+				case "Help": return StandardCursorType.Help;
+				default: return StandardCursorType.Arrow;
+			}
+		}
+
+		// UDB's own formats (copied geometry, prefabs) stay in this process; text also goes
+		// to the desktop clipboard, so it can be pasted into other programs and back.
+		public void SetClipboard(DataObject data)
+		{
+			clipboard = data ?? new DataObject();
+			string text = clipboard.GetData(DataFormats.Text) as string ?? clipboard.GetData(DataFormats.UnicodeText) as string;
+			OnUIThread(() =>
+			{
+				IClipboard system = FormWindows.Active?.Clipboard;
+				if(system == null) return;
+				if(text != null) system.SetTextAsync(text);
+				else system.ClearAsync();
+			});
+		}
+
+		public DataObject GetClipboard()
+		{
+			return OnUIThread(() =>
+			{
+				IClipboard system = FormWindows.Active?.Clipboard;
+				if(system == null) return clipboard;
+
+				string systemtext = Modal.Wait(system.TryGetTextAsync());
+				string owntext = clipboard.GetData(DataFormats.Text) as string;
+				if(systemtext == null || systemtext == owntext) return clipboard;
+
+				// Something else was copied since: that's what pasting should use.
+				return new DataObject(DataFormats.Text, systemtext);
+			});
+		}
+
+		#endregion
+
+		#region ================== Threads and timers
+
+		public void DoEvents() => OnUIThread(() => Dispatcher.UIThread.RunJobs());
+		public bool CheckAccess() => Dispatcher.UIThread.CheckAccess();
+		public void Invoke(Action action) => Dispatcher.UIThread.Invoke(action);
+		public void BeginInvoke(Action action) => Dispatcher.UIThread.Post(action);
+
+		public IDisposable StartTimer(int interval, Action tick)
+		{
+			return OnUIThread(() =>
+			{
+				DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, (s, e) => tick());
+				timer.Start();
+				return new Stopper(timer);
+			});
+		}
+
+		private sealed class Stopper : IDisposable
+		{
+			private readonly DispatcherTimer timer;
+			public Stopper(DispatcherTimer timer) { this.timer = timer; }
+			public void Dispose() => Dispatcher.UIThread.Post(timer.Stop);
+		}
+
+		public Form ActiveForm => OnUIThread(() =>
+		{
+			foreach(Window w in FormWindows.Open) if(w.IsActive) return FormWindows.FormFor(w);
+			return null;
+		});
+
+		private static T OnUIThread<T>(Func<T> f) => Dispatcher.UIThread.CheckAccess() ? f() : Dispatcher.UIThread.Invoke(f);
+		private static void OnUIThread(Action a) { if(Dispatcher.UIThread.CheckAccess()) a(); else Dispatcher.UIThread.Invoke(a); }
+
+		#endregion
+	}
+}

@@ -5,6 +5,10 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>Builder</AssemblyName>
+    <!-- An executable like upstream's Builder.exe. Upstream's General.Main is also a Main,
+         so name the entry point: ULDB's sets up Avalonia, then calls General.Main. -->
+    <OutputType>Exe</OutputType>
+    <StartupObject>ULDB.Shell.Program</StartupObject>
     <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>disable</Nullable>
@@ -36,6 +40,8 @@
     <Compile Include="Scope/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
     <Compile Include="Rendering/**/*.cs" />
+    <!-- Avalonia app: entry point, IWinFormsHost, main loop. -->
+    <Compile Include="Shell/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
@@ -43,6 +49,9 @@
     <PackageReference Include="SharpCompress" Version="0.20.0" />
     <!-- UI toolkit (Phase 3+). Keep in step with Avalonia.Skia's SkiaSharp (ULDB.Compat). -->
     <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
   </ItemGroup>
   <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
@@ -86,6 +95,9 @@
     <None Include="$(UpstreamAssets)Common/**/*"
           Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- The Plugins folder and its load order; the plugins themselves are built from Phase 4 on.
+         Jint/Esprima (Plugins/Dependencies) are only used by UDBScript, which is out of scope. -->
+    <None Include="$(UpstreamAssets)Common/Plugins/Loadorder.cfg" Link="Plugins/Loadorder.cfg" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <!-- Upstream's prebuilt Linux ACC and ZDBSP are replaced by source builds (tools/compilers). -->
     <None Include="$(UpstreamAssets)Linux/**/*"
           Exclude="$(UpstreamAssets)Linux/Compilers/*/acc;$(UpstreamAssets)Linux/Compilers/Nodebuilders/zdbsp"
