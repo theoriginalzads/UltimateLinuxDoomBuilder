@@ -91,12 +91,13 @@ namespace ULDB.Tests
 
 	internal static class TestResources
 	{
-		// Debian/Ubuntu and Arch package paths; override with ULDB_TEST_IWAD.
+		// Debian/Ubuntu and AUR package paths, then ~/.local/share/doom; override with ULDB_TEST_IWAD.
 		public static string FreedoomIwad => new[]
 		{
 			Environment.GetEnvironmentVariable("ULDB_TEST_IWAD") ?? "",
 			"/usr/share/games/doom/freedoom2.wad",
 			"/usr/share/doom/freedoom2.wad",
+			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "doom", "freedoom2.wad"),
 		}.FirstOrDefault(File.Exists);
 	}
 }
