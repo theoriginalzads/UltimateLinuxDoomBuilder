@@ -97,6 +97,132 @@ namespace System.Windows.Forms
 		public bool AutoWordSelection { get; set; }
 	}
 
+	/// <summary>A label with a link; views raise LinkClicked when it's clicked.</summary>
+	public class LinkLabel : Label
+	{
+		public Color LinkColor { get; set; } = Color.Blue;
+		public Color ActiveLinkColor { get; set; } = Color.Red;
+		public Color VisitedLinkColor { get; set; } = Color.Purple;
+		public Color DisabledLinkColor { get; set; } = Color.Gray;
+		public LinkBehavior LinkBehavior { get; set; }
+		public LinkArea LinkArea { get; set; }
+		public bool LinkVisited { get; set; }
+		public event LinkLabelLinkClickedEventHandler LinkClicked;
+		protected virtual void OnLinkClicked(LinkLabelLinkClickedEventArgs e) => LinkClicked?.Invoke(this, e);
+
+		/// <summary>ULDB: the user clicked the link in the view.</summary>
+		public void RaiseLinkClicked(MouseButtons button = MouseButtons.Left) => OnLinkClicked(new LinkLabelLinkClickedEventArgs(new Link(), button));
+
+		public class Link
+		{
+			public object LinkData { get; set; }
+			public string Name { get; set; } = "";
+			public bool Visited { get; set; }
+			public bool Enabled { get; set; } = true;
+		}
+	}
+
+	public struct LinkArea
+	{
+		public LinkArea(int start, int length) { Start = start; Length = length; }
+		public int Start { get; set; }
+		public int Length { get; set; }
+	}
+
+	public delegate void LinkLabelLinkClickedEventHandler(object sender, LinkLabelLinkClickedEventArgs e);
+	public class LinkLabelLinkClickedEventArgs : EventArgs
+	{
+		public LinkLabelLinkClickedEventArgs(LinkLabel.Link link) : this(link, MouseButtons.Left) { }
+		public LinkLabelLinkClickedEventArgs(LinkLabel.Link link, MouseButtons button) { Link = link; Button = button; }
+		public LinkLabel.Link Link { get; }
+		public MouseButtons Button { get; }
+	}
+
+	/// <summary>A radio button: checking one unchecks the others with the same parent.</summary>
+	public class RadioButton : Control
+	{
+		private bool check;
+		public bool AutoCheck { get; set; } = true;
+		public bool AutoSize { get; set; }
+		public Appearance Appearance { get; set; }
+		public ContentAlignment CheckAlign { get; set; } = ContentAlignment.MiddleLeft;
+		public ContentAlignment TextAlign { get; set; } = ContentAlignment.MiddleLeft;
+		public ContentAlignment ImageAlign { get; set; } = ContentAlignment.MiddleCenter;
+		public FlatStyle FlatStyle { get; set; } = FlatStyle.Standard;
+		public Image Image { get; set; }
+		public bool UseVisualStyleBackColor { get; set; }
+
+		public bool Checked
+		{
+			get => check;
+			set
+			{
+				if(check == value) return;
+				check = value;
+				if(value && Parent != null)
+					foreach(Control c in Parent.Controls)
+						if(c != this && c is RadioButton r && r.AutoCheck) r.Checked = false;
+				CheckedChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		public event EventHandler CheckedChanged;
+
+		protected override void OnClick(EventArgs e)
+		{
+			if(AutoCheck) Checked = true;
+			base.OnClick(e);
+		}
+	}
+
+	/// <summary>Two panels with a splitter; views lay them out (SplitterDistance is the first panel's size).</summary>
+	public class SplitContainer : ContainerControl, ISupportInitialize
+	{
+		private bool collapse1, collapse2;
+
+		public SplitContainer()
+		{
+			Panel1 = new SplitterPanel(this);
+			Panel2 = new SplitterPanel(this);
+			Controls.Add(Panel1);
+			Controls.Add(Panel2);
+		}
+
+		public SplitterPanel Panel1 { get; }
+		public SplitterPanel Panel2 { get; }
+		public Orientation Orientation { get; set; } = Orientation.Vertical;
+		public int SplitterDistance { get; set; } = 50;
+		public int SplitterWidth { get; set; } = 4;
+		public int SplitterIncrement { get; set; } = 1;
+		public int Panel1MinSize { get; set; } = 25;
+		public int Panel2MinSize { get; set; } = 25;
+		public FixedPanel FixedPanel { get; set; }
+		public bool IsSplitterFixed { get; set; }
+		public BorderStyle BorderStyle { get; set; }
+		public bool Panel1Collapsed { get => collapse1; set { collapse1 = value; NotifyStylesChanged(); } }
+		public bool Panel2Collapsed { get => collapse2; set { collapse2 = value; NotifyStylesChanged(); } }
+		public event SplitterEventHandler SplitterMoved;
+		public void RaiseSplitterMoved(int distance) { SplitterDistance = distance; SplitterMoved?.Invoke(this, new SplitterEventArgs(0, 0, distance, distance)); }
+		public void BeginInit() { }
+		public void EndInit() { }
+	}
+
+	public sealed class SplitterPanel : Panel
+	{
+		internal SplitterPanel(SplitContainer owner) { Owner = owner; }
+		public SplitContainer Owner { get; }
+	}
+
+	public delegate void SplitterEventHandler(object sender, SplitterEventArgs e);
+	public class SplitterEventArgs : EventArgs
+	{
+		public SplitterEventArgs(int x, int y, int splitX, int splitY) { X = x; Y = y; SplitX = splitX; SplitY = splitY; }
+		public int X { get; }
+		public int Y { get; }
+		public int SplitX { get; set; }
+		public int SplitY { get; set; }
+	}
+
 	public class GroupBox : Control
 	{
 		public FlatStyle FlatStyle { get; set; } = FlatStyle.Standard;

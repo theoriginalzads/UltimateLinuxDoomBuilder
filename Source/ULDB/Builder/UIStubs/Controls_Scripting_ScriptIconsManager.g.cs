@@ -22,6 +22,10 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 		internal int ScriptGroupIconsOffset { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager.ScriptGroupOpenIconsOffset#6
 		internal int ScriptGroupOpenIconsOffset { get => default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager.Icons#7
+		public ImageList Icons { get => default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager..ctor#8
+		public ScriptIconsManager(ImageList icons) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager.GetResourceIcon#9
 		public int GetResourceIcon(int datalocationtype) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager.GetScriptIcon#10

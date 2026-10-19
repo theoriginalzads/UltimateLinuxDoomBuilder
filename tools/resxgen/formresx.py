@@ -9,6 +9,7 @@ writes a ULDB .resx with just the entries the designer reads:
   - file references (icons, bitmaps): pointed at the same files, typed as
     ULDB.Compat's System.Drawing.Bitmap/Icon
   - inline images (PNG bytes): written next to the output and referenced
+  - ImageList streams: null (they can't be read on Linux; views draw their own icons)
 The project compiles it with GenerateResourceUsePreserializedResources, so at
 runtime Bitmap/Icon are created from a stream (System.Resources.Extensions).
 
@@ -60,7 +61,11 @@ def main():
         attrs, value = m.group(1), m.group(2)
         typ = re.search(r'type="([^"]+)"', attrs)
         mime = re.search(r'mimetype="([^"]+)"', attrs)
-        if typ is None:
+        if name.endswith(".ImageStream") or (typ is not None and typ.group(1).startswith("System.Windows.Forms.ImageListStreamer")):
+            # Serialized ImageList data can't be read on Linux; the designer gets null and
+            # ULDB's views draw their own icons for those image indexes.
+            entries.append('  <data name="%s" type="System.Resources.ResXNullRef, System.Windows.Forms"><value /></data>' % escape(name))
+        elif typ is None:
             entries.append('  <data name="%s" xml:space="preserve"><value>%s</value></data>' % (escape(name), value))
         elif typ.group(1).startswith("System.Resources.ResXFileRef"):
             path, reftype = value.split(";")[0:2]

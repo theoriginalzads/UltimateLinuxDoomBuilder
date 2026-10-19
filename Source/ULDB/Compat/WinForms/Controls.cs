@@ -210,6 +210,10 @@ namespace System.Windows.Forms
 		public virtual void Invalidate() { }
 		public void Invalidate(bool invalidateChildren) => Invalidate();
 		public void Invalidate(Rectangle rc) => Invalidate();
+		public void Invalidate(Rectangle rc, bool invalidateChildren) => Invalidate();
+
+		/// <summary>ULDB: views do the drawing, so this draws onto an off-screen surface of the control's size.</summary>
+		public Graphics CreateGraphics() => Graphics.FromImage(new Bitmap(Math.Max(1, Width), Math.Max(1, Height)));
 		public void SendToBack() { }
 
 		// Painting style flags: kept as state; the Avalonia views decide how to draw.
@@ -224,6 +228,10 @@ namespace System.Windows.Forms
 		protected void NotifyStylesChanged() => StylesChanged?.Invoke(this, EventArgs.Empty);
 		public event EventHandler HandleCreated;
 		public event EventHandler HandleDestroyed;
+		// ULDB: there are no native window handles, so these are never raised (upstream uses them
+		// only for Win32 tweaks such as BufferedTreeView's double buffering).
+		protected virtual void OnHandleCreated(EventArgs e) => HandleCreated?.Invoke(this, e);
+		protected virtual void OnHandleDestroyed(EventArgs e) => HandleDestroyed?.Invoke(this, e);
 		public virtual void Refresh() { Refreshed?.Invoke(this, EventArgs.Empty); }
 		public virtual void Update() { }
 		public virtual void Show() { Visible = true; Refreshed?.Invoke(this, EventArgs.Empty); }
@@ -553,6 +561,8 @@ namespace System.Windows.Forms
 		public int ItemHeight { get; set; }
 		public int ItemWidth { get; set; }
 	}
+
+	public delegate void MethodInvoker();
 
 	public delegate void LayoutEventHandler(object sender, LayoutEventArgs e);
 	public class LayoutEventArgs : EventArgs

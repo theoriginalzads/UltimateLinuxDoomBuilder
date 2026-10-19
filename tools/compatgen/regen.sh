@@ -20,6 +20,8 @@ dotnet run --project tools/compatgen -- $REF/System.Windows.Forms.dll \
   ScrollEventType ScrollOrientation DataGridViewDataErrorContexts DataGridViewRowHeadersWidthSizeMode DataGridViewImageCellLayout \
   DataGridViewElementStates DataGridViewHitTestType DataGridViewPaintParts \
   DrawMode AutoCompleteMode AutoCompleteSource ImeMode DrawItemState \
+  TreeViewAction TreeViewDrawMode TreeViewHitTestLocations TreeNodeStates ColorDepth \
+  LinkBehavior FixedPanel Orientation \
   > $C/WinForms/Enums.g.cs.new && mv $C/WinForms/Enums.g.cs.new $C/WinForms/Enums.g.cs
 dotnet run --project tools/compatgen -- $REF/System.Drawing.dll \
   RotateFlipType GraphicsUnit FontStyle PixelFormat ImageLockMode SmoothingMode InterpolationMode \

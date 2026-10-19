@@ -103,6 +103,15 @@ namespace System.Windows.Forms
 		Unchecked = 0,
 	}
 
+	public enum ColorDepth
+	{
+		Depth16Bit = 16,
+		Depth24Bit = 24,
+		Depth32Bit = 32,
+		Depth4Bit = 4,
+		Depth8Bit = 8,
+	}
+
 	public enum ColumnHeaderStyle
 	{
 		Clickable = 2,
@@ -393,6 +402,13 @@ namespace System.Windows.Forms
 		OwnerDrawVariable = 2,
 	}
 
+	public enum FixedPanel
+	{
+		None = 0,
+		Panel1 = 1,
+		Panel2 = 2,
+	}
+
 	public enum FlatStyle
 	{
 		Flat = 0,
@@ -679,6 +695,14 @@ namespace System.Windows.Forms
 		Right = 1,
 	}
 
+	public enum LinkBehavior
+	{
+		AlwaysUnderline = 1,
+		HoverUnderline = 2,
+		NeverUnderline = 3,
+		SystemDefault = 0,
+	}
+
 	public enum MergeAction
 	{
 		Append = 0,
@@ -736,6 +760,12 @@ namespace System.Windows.Forms
 		Right = 2097152,
 		XButton1 = 8388608,
 		XButton2 = 16777216,
+	}
+
+	public enum Orientation
+	{
+		Horizontal = 0,
+		Vertical = 1,
 	}
 
 	public enum PictureBoxSizeMode
@@ -1090,6 +1120,52 @@ namespace System.Windows.Forms
 		Info = 1,
 		None = 0,
 		Warning = 2,
+	}
+
+	[Flags]
+	public enum TreeNodeStates
+	{
+		Checked = 8,
+		Default = 32,
+		Focused = 16,
+		Grayed = 2,
+		Hot = 64,
+		Indeterminate = 256,
+		Marked = 128,
+		Selected = 1,
+		ShowKeyboardCues = 512,
+	}
+
+	public enum TreeViewAction
+	{
+		ByKeyboard = 1,
+		ByMouse = 2,
+		Collapse = 3,
+		Expand = 4,
+		Unknown = 0,
+	}
+
+	public enum TreeViewDrawMode
+	{
+		Normal = 0,
+		OwnerDrawAll = 2,
+		OwnerDrawText = 1,
+	}
+
+	[Flags]
+	public enum TreeViewHitTestLocations
+	{
+		AboveClientArea = 256,
+		BelowClientArea = 512,
+		Image = 2,
+		Indent = 8,
+		Label = 4,
+		LeftOfClientArea = 2048,
+		None = 1,
+		PlusMinus = 16,
+		RightOfClientArea = 1024,
+		RightOfLabel = 32,
+		StateImage = 64,
 	}
 
 	public enum View

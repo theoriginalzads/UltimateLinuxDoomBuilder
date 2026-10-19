@@ -28,6 +28,8 @@ namespace CodeImp.DoomBuilder.Controls
 		protected virtual void OnDragOver(DragEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragEnter#6
 		protected virtual void OnDragEnter(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnItemDrag#7
+		protected virtual void OnItemDrag(ItemDragEventArgs e) { }
 	}
 }
 

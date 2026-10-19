@@ -10,6 +10,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using HorizontalAlignment = Avalonia.Layout.HorizontalAlignment;
 using Button = Avalonia.Controls.Button;
+using Orientation = Avalonia.Layout.Orientation;
 
 namespace ULDB.Shell
 {
