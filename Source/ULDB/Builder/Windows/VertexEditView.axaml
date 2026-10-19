@@ -4,7 +4,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="CodeImp.DoomBuilder.Windows.VertexEditView"
-        Title="Edit Vertex" Width="480" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+        Title="Edit Vertex" Width="440" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
   <DockPanel Margin="14">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
       <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
@@ -14,20 +14,20 @@
     <TabControl x:Name="tabs" Padding="0,10,0,0">
       <TabItem x:Name="tabproperties" Header="Properties">
         <Border x:Name="groupposition" Classes="uldb-group">
-          <StackPanel Spacing="10">
+          <StackPanel Spacing="6">
             <TextBlock x:Name="grouppositionTitle" Classes="uldb-group-title"/>
-            <Grid ColumnDefinitions="Auto,*,Auto,*" Margin="0,0,0,2">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*" Margin="0,0,0,2">
               <TextBlock Text="X:" Classes="uldb-field"/>
-              <ContentControl x:Name="positionx" Grid.Column="1" Margin="0,0,14,0"/>
+              <ContentControl x:Name="positionx" Grid.Column="1" Width="92" HorizontalAlignment="Left" Margin="0,0,16,0"/>
               <TextBlock Text="Y:" Grid.Column="2" Classes="uldb-field"/>
-              <ContentControl x:Name="positiony" Grid.Column="3"/>
+              <ContentControl x:Name="positiony" Grid.Column="3" Width="92" HorizontalAlignment="Left"/>
             </Grid>
-            <Grid x:Name="panelHeightControls" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8">
+            <Grid x:Name="panelHeightControls" ColumnDefinitions="Auto,Auto,Auto,*" RowDefinitions="Auto,Auto" RowSpacing="4">
               <TextBlock Text="Absolute ceiling height:" Classes="uldb-field"/>
-              <ContentControl x:Name="zceiling" Grid.Column="1"/>
+              <ContentControl x:Name="zceiling" Grid.Column="1" Width="92"/>
               <Button x:Name="clearZCeiling" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0" ToolTip.Tip="Clear ceiling height"/>
               <TextBlock Text="Absolute floor height:" Grid.Row="1" Classes="uldb-field"/>
-              <ContentControl x:Name="zfloor" Grid.Row="1" Grid.Column="1"/>
+              <ContentControl x:Name="zfloor" Grid.Row="1" Grid.Column="1" Width="92"/>
               <Button x:Name="clearZFloor" Grid.Row="1" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0" ToolTip.Tip="Clear floor height"/>
             </Grid>
           </StackPanel>
