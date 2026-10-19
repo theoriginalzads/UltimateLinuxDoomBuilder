@@ -14,6 +14,8 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// stub-key: CodeImp.DoomBuilder.Windows.PluginToolbarButton.section#0
 		public ToolbarSection section;
+		// stub-key: CodeImp.DoomBuilder.Windows.PluginToolbarButton.button#1
+		public ToolStripItem button;
 	}
 }
 

@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ToolStripCheckBox
-	public partial class ToolStripCheckBox : System.Windows.Forms.Control
+	public partial class ToolStripCheckBox : System.Windows.Forms.ToolStripControlHost
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ToolStripCheckBox.CheckedChanged#0
 		public event EventHandler CheckedChanged;

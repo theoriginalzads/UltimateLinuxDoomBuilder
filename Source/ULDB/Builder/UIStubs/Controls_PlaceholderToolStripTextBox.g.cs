@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.PlaceholderToolStripTextBox
-	public partial class PlaceholderToolStripTextBox : System.Windows.Forms.Control
+	public partial class PlaceholderToolStripTextBox : System.Windows.Forms.ToolStripTextBox
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.PlaceholderToolStripTextBox.PlaceholderText#3
 		public string PlaceholderText { get => default; set { } }

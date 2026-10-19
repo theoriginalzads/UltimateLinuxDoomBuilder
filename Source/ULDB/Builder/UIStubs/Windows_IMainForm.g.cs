@@ -130,8 +130,24 @@ namespace CodeImp.DoomBuilder.Windows
 		string BrowseFlat(IWin32Window owner, string initialvalue);
 		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.BrowseThingType#52
 		int BrowseThingType(IWin32Window owner, int initialvalue);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddMenu#53
+		void AddMenu(ToolStripItem menu);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddMenu#54
+		void AddMenu(ToolStripItem menu, MenuSection section);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddModesMenu#55
+		void AddModesMenu(ToolStripItem menu, string group);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.RemoveMenu#56
+		void RemoveMenu(ToolStripItem menu);
 		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.InvokeTaggedAction#57
 		void InvokeTaggedAction(object sender, EventArgs e);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddButton#58
+		void AddButton(ToolStripItem button);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddButton#59
+		void AddButton(ToolStripItem button, ToolbarSection section);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.AddModesButton#60
+		void AddModesButton(ToolStripItem toolbarButton, string group);
+		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.RemoveButton#61
+		void RemoveButton(ToolStripItem button);
 		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.BeginToolbarUpdate#62
 		void BeginToolbarUpdate();
 		// stub-key: CodeImp.DoomBuilder.Windows.IMainForm.EndToolbarUpdate#63

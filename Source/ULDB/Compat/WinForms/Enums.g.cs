@@ -17,6 +17,42 @@ namespace System.Windows.Forms
 		Top = 1,
 	}
 
+	public enum AutoScaleMode
+	{
+		Dpi = 2,
+		Font = 1,
+		Inherit = 3,
+		None = 0,
+	}
+
+	public enum Border3DStyle
+	{
+		Adjust = 8192,
+		Bump = 9,
+		Etched = 6,
+		Flat = 16394,
+		Raised = 5,
+		RaisedInner = 4,
+		RaisedOuter = 1,
+		Sunken = 10,
+		SunkenInner = 8,
+		SunkenOuter = 2,
+	}
+
+	public enum CheckState
+	{
+		Checked = 1,
+		Indeterminate = 2,
+		Unchecked = 0,
+	}
+
+	public enum ComboBoxStyle
+	{
+		DropDown = 1,
+		DropDownList = 2,
+		Simple = 0,
+	}
+
 	public enum DialogResult
 	{
 		Abort = 3,
@@ -37,6 +73,26 @@ namespace System.Windows.Forms
 		None = 0,
 		Right = 4,
 		Top = 1,
+	}
+
+	public enum FormBorderStyle
+	{
+		Fixed3D = 2,
+		FixedDialog = 3,
+		FixedSingle = 1,
+		FixedToolWindow = 5,
+		None = 0,
+		Sizable = 4,
+		SizableToolWindow = 6,
+	}
+
+	public enum FormStartPosition
+	{
+		CenterParent = 4,
+		CenterScreen = 1,
+		Manual = 0,
+		WindowsDefaultBounds = 3,
+		WindowsDefaultLocation = 2,
 	}
 
 	public enum FormWindowState
@@ -265,6 +321,15 @@ namespace System.Windows.Forms
 		Zoom = 251,
 	}
 
+	public enum MergeAction
+	{
+		Append = 0,
+		Insert = 1,
+		MatchOnly = 4,
+		Remove = 3,
+		Replace = 2,
+	}
+
 	public enum MessageBoxButtons
 	{
 		AbortRetryIgnore = 2,
@@ -471,6 +536,103 @@ namespace System.Windows.Forms
 		ShiftF8 = 65655,
 		ShiftF9 = 65656,
 		ShiftIns = 65581,
+	}
+
+	public enum SizeGripStyle
+	{
+		Auto = 0,
+		Hide = 2,
+		Show = 1,
+	}
+
+	public enum TextImageRelation
+	{
+		ImageAboveText = 1,
+		ImageBeforeText = 4,
+		Overlay = 0,
+		TextAboveImage = 2,
+		TextBeforeImage = 8,
+	}
+
+	public enum ToolStripDropDownCloseReason
+	{
+		AppClicked = 1,
+		AppFocusChange = 0,
+		CloseCalled = 4,
+		ItemClicked = 2,
+		Keyboard = 3,
+	}
+
+	public enum ToolStripDropDownDirection
+	{
+		AboveLeft = 0,
+		AboveRight = 1,
+		BelowLeft = 2,
+		BelowRight = 3,
+		Default = 7,
+		Left = 4,
+		Right = 5,
+	}
+
+	public enum ToolStripGripStyle
+	{
+		Hidden = 0,
+		Visible = 1,
+	}
+
+	public enum ToolStripItemAlignment
+	{
+		Left = 0,
+		Right = 1,
+	}
+
+	public enum ToolStripItemDisplayStyle
+	{
+		Image = 2,
+		ImageAndText = 3,
+		None = 0,
+		Text = 1,
+	}
+
+	public enum ToolStripItemImageScaling
+	{
+		None = 0,
+		SizeToFit = 1,
+	}
+
+	public enum ToolStripItemOverflow
+	{
+		Always = 1,
+		AsNeeded = 2,
+		Never = 0,
+	}
+
+	public enum ToolStripLayoutStyle
+	{
+		Flow = 3,
+		HorizontalStackWithOverflow = 1,
+		StackWithOverflow = 0,
+		Table = 4,
+		VerticalStackWithOverflow = 2,
+	}
+
+	public enum ToolStripRenderMode
+	{
+		Custom = 0,
+		ManagerRenderMode = 3,
+		Professional = 2,
+		System = 1,
+	}
+
+	[Flags]
+	public enum ToolStripStatusLabelBorderSides
+	{
+		All = 15,
+		Bottom = 8,
+		Left = 1,
+		None = 0,
+		Right = 4,
+		Top = 2,
 	}
 
 	public enum View

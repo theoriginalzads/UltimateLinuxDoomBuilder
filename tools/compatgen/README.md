@@ -12,10 +12,14 @@ C=Source/ULDB/Compat
 dotnet run --project tools/compatgen -- $REF/System.Windows.Forms.dll \
   Keys MouseButtons DialogResult MessageBoxButtons MessageBoxIcon MessageBoxDefaultButton \
   MessageBoxOptions FormWindowState View ImageLayout Shortcut HelpNavigator DockStyle AnchorStyles \
+  CheckState ToolStripItemDisplayStyle ToolStripItemImageScaling ToolStripItemAlignment ToolStripGripStyle \
+  ToolStripDropDownDirection ToolStripDropDownCloseReason ToolStripStatusLabelBorderSides Border3DStyle \
+  TextImageRelation ToolStripItemOverflow ToolStripLayoutStyle ToolStripRenderMode MergeAction \
+  AutoScaleMode FormBorderStyle ComboBoxStyle FormStartPosition SizeGripStyle \
   > $C/WinForms/Enums.g.cs
 dotnet run --project tools/compatgen -- $REF/System.Drawing.dll \
   RotateFlipType GraphicsUnit FontStyle PixelFormat ImageLockMode SmoothingMode InterpolationMode \
   CompositingQuality CompositingMode PixelOffsetMode LinearGradientMode TextRenderingHint WrapMode FillMode \
-  StringAlignment StringFormatFlags StringTrimming ContentAlignment \
+  StringAlignment StringFormatFlags StringTrimming ContentAlignment MatrixOrder ColorMatrixFlag ColorAdjustType \
   > $C/Drawing/Enums.g.cs
 ```

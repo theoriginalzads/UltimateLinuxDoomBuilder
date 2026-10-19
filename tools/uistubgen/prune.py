@@ -6,7 +6,7 @@ Runs uistubgen, builds the Builder project, and adds every placeholder member
 until the placeholders compile. Prints the errors left in upstream files, which
 are the real porting work.
 
-Usage: tools/uistubgen/prune.py
+Usage: tools/uistubgen/prune.py [TARGET...]   (default: every target; see TARGETS)
 """
 
 import os
@@ -15,20 +15,45 @@ import subprocess
 import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-STUBS = os.path.join(REPO, "Source", "ULDB", "Builder", "UIStubs")
-PRUNE = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-prune.txt")
-PORTED = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-ported.txt")
-MANUAL = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-manual.txt")
-PROJECT = os.path.join(REPO, "Source", "ULDB", "Builder", "ULDB.Builder.csproj")
-UPSTREAM = os.path.join(REPO, "Source", "Core")
+
+# Each target: ULDB's project, the upstream source it compiles, upstream's Mono project
+# (whose compile list is authoritative) and the upstream folders holding WinForms UI.
+TARGETS = {
+    "Builder": dict(dir="Source/ULDB/Builder", project="ULDB.Builder.csproj",
+                    upstream="Source/Core", mono="BuilderMono.csproj", ui=["Windows", "Controls"]),
+    "BuilderModes": dict(dir="Source/ULDB/Plugins/BuilderModes", project="ULDB.BuilderModes.csproj",
+                         upstream="Source/Plugins/BuilderModes", mono="BuilderModesMono.csproj", ui=["Interface"]),
+}
+
+STUBS = PRUNE = PORTED = MANUAL = PROJECT = UPSTREAM = MONO = None
+UI_DIRS = []
+
+
+def select(name):
+    global STUBS, PRUNE, PORTED, MANUAL, PROJECT, UPSTREAM, MONO, UI_DIRS
+    t = TARGETS[name]
+    d = os.path.join(REPO, t["dir"])
+    STUBS = os.path.join(d, "UIStubs")
+    PRUNE = os.path.join(d, "uistubs-prune.txt")
+    PORTED = os.path.join(d, "uistubs-ported.txt")
+    MANUAL = os.path.join(d, "uistubs-manual.txt")
+    PROJECT = os.path.join(d, t["project"])
+    UPSTREAM = os.path.join(REPO, t["upstream"])
+    MONO = t["mono"]
+    UI_DIRS = [os.path.join(UPSTREAM, u) for u in t["ui"]]
+    for f in (PORTED, MANUAL):
+        if not os.path.exists(f):
+            open(f, "w").close()
+
+
 ERROR = re.compile(r"^(?P<file>/[^(]+)\((?P<line>\d+),\d+\): error (?P<code>CS\d+): (?P<msg>.*?)(?: \[.*\])?$")
 
 
 def compiled_files():
     """Files upstream's Linux (Mono) project actually compiles; some stale files on disk don't."""
-    with open(os.path.join(UPSTREAM, "BuilderMono.csproj"), encoding="utf-8-sig") as f:
+    with open(os.path.join(UPSTREAM, MONO), encoding="utf-8-sig") as f:
         files = re.findall(r'<Compile Include="([^"]+)"', f.read())
-    path = os.path.join(REPO, "Source", "ULDB", "Builder", "obj", "uistubgen-files.txt")
+    path = os.path.join(os.path.dirname(PROJECT), "obj", "uistubgen-files.txt")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         f.write("\n".join(x.replace("\\", "/") for x in files))
@@ -39,8 +64,7 @@ def generate():
     subprocess.run(["dotnet", "run", "--project", os.path.join(REPO, "tools", "uistubgen"), "--",
                     "--out", STUBS, "--prune", PRUNE, "--ported", PORTED, "--manual", MANUAL, "--root", UPSTREAM,
                     "--winforms-types", os.path.join(REPO, "tools", "uistubgen", "winforms-types.txt"),
-                    "--files-from", compiled_files(),
-                    os.path.join(UPSTREAM, "Windows"), os.path.join(UPSTREAM, "Controls")],
+                    "--files-from", compiled_files()] + UI_DIRS,
                    check=True, stdout=subprocess.DEVNULL)
 
 
@@ -73,6 +97,16 @@ def write_prune(prune):
 
 
 def main():
+    names = sys.argv[1:] or list(TARGETS)
+    status = 0
+    for name in names:
+        print(f"== {name}")
+        select(name)
+        status |= run()
+    return status
+
+
+def run():
     # Start from scratch each run, so entries that compile again (after ports or
     # compat additions) drop off the list automatically.
     prune = set()

@@ -190,6 +190,14 @@ namespace CodeImp.DoomBuilder.Windows
 		public void BeginToolbarUpdate() { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.EndToolbarUpdate#148
 		public void EndToolbarUpdate() { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddButton#149
+		public void AddButton(ToolStripItem button) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddButton#150
+		public void AddButton(ToolStripItem button, ToolbarSection section) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddModesButton#152
+		public void AddModesButton(ToolStripItem button, string group) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.RemoveButton#153
+		public void RemoveButton(ToolStripItem button) { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.UpdateSeparators#155
 		internal void UpdateSeparators() { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.CheckEditModeButton#158
@@ -202,6 +210,14 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void AddEditModeButton(EditModeInfo modeinfo) { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.UpdateGZDoomPanel#163
 		public void UpdateGZDoomPanel() { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddMenu#179
+		public void AddMenu(ToolStripItem menu) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddMenu#180
+		public void AddMenu(ToolStripItem menu, MenuSection section) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddModesMenu#182
+		public void AddModesMenu(ToolStripItem menu, string group) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.RemoveMenu#183
+		public void RemoveMenu(ToolStripItem menu) { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.ApplyShortcutKeys#184
 		internal void ApplyShortcutKeys() { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.AddRecentFile#190

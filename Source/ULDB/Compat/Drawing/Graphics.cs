@@ -103,6 +103,28 @@ namespace System.Drawing
 			DrawImageCore(image, new RectangleF(srcX, srcY, srcWidth, srcHeight), destRect, imageAttr);
 		}
 
+		// destPoints: where the source's upper-left, upper-right and lower-left corners go
+		// (a parallelogram: rotation, skew, flips).
+		public void DrawImage(Image image, Point[] destPoints) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), new RectangleF(0, 0, image.Width, image.Height), GraphicsUnit.Pixel, null);
+		public void DrawImage(Image image, PointF[] destPoints) => DrawImage(image, destPoints, new RectangleF(0, 0, image.Width, image.Height), GraphicsUnit.Pixel, null);
+		public void DrawImage(Image image, Point[] destPoints, Rectangle srcRect, GraphicsUnit srcUnit) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), srcRect, srcUnit, null);
+		public void DrawImage(Image image, Point[] destPoints, Rectangle srcRect, GraphicsUnit srcUnit, ImageAttributes imageAttr) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), srcRect, srcUnit, imageAttr);
+
+		public void DrawImage(Image image, PointF[] destPoints, RectangleF srcRect, GraphicsUnit srcUnit, ImageAttributes imageAttr)
+		{
+			if(destPoints == null || destPoints.Length != 3) throw new ArgumentException("Expected three destination points", nameof(destPoints));
+			PointF p0 = destPoints[0], p1 = destPoints[1], p2 = destPoints[2];
+			float w = srcRect.Width, h = srcRect.Height;
+			SKMatrix map = new SKMatrix(
+				(p1.X - p0.X) / w, (p2.X - p0.X) / h, p0.X,
+				(p1.Y - p0.Y) / w, (p2.Y - p0.Y) / h, p0.Y,
+				0, 0, 1);
+			canvas.Save();
+			canvas.Concat(in map);
+			DrawImageCore(image, srcRect, new RectangleF(0, 0, w, h), imageAttr);
+			canvas.Restore();
+		}
+
 		public void DrawImageUnscaled(Image image, int x, int y) => DrawImage(image, x, y);
 		public void DrawImageUnscaled(Image image, Point point) => DrawImage(image, point.X, point.Y);
 		public void DrawImageUnscaled(Image image, Rectangle rect) => DrawImage(image, rect.X, rect.Y); // GDI+ ignores the size here
@@ -118,7 +140,8 @@ namespace System.Drawing
 		{
 			using(SKBitmap source = Bitmap.ToPremul(image.Native))
 			using(SKImage skimage = SKImage.FromBitmap(source))
-			using(SKPaint paint = new SKPaint { BlendMode = BlendMode, IsAntialias = Antialias })
+			using(SKColorFilter filter = attributes?.CreateColorFilter())
+			using(SKPaint paint = new SKPaint { BlendMode = BlendMode, IsAntialias = Antialias, ColorFilter = filter })
 			{
 				// GDI+ samples edge pixels from outside the source rect unless told to
 				// wrap (UDB uses TileFlipXY to avoid dark edges when scaling skies).
@@ -455,6 +478,12 @@ namespace System.Drawing.Drawing2D
 		public void CloseFigure()
 		{
 			Native.Close();
+			started = false;
+		}
+
+		public void Reset()
+		{
+			Native.Reset();
 			started = false;
 		}
 

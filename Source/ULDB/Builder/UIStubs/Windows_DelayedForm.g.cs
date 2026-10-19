@@ -4,6 +4,8 @@
 // </auto-generated>
 #pragma warning disable CS0067, CS0108, CS0114, CS0169, CS0414, CS0649, CS0659, CS0661, CS0660, CS1998
 
+// stub-key: using:Action = CodeImp.DoomBuilder.Actions.Action
+using Action = CodeImp.DoomBuilder.Actions.Action;
 // stub-key: using:CodeImp.DoomBuilder.Actions
 using CodeImp.DoomBuilder.Actions;
 // stub-key: using:System

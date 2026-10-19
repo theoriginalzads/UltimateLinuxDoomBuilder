@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown
-	public partial class ToolStripNumericUpDown : System.Windows.Forms.Control
+	public partial class ToolStripNumericUpDown : System.Windows.Forms.ToolStripControlHost
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown.ValueChanged#0
 		public event EventHandler ValueChanged;

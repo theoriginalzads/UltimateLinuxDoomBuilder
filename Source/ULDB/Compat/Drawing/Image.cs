@@ -480,9 +480,60 @@ namespace System.Drawing.Imaging
 	public sealed class ImageAttributes : IDisposable
 	{
 		internal WrapMode WrapMode { get; private set; } = WrapMode.Clamp;
+		internal ColorMatrix ColorMatrix { get; private set; }
 
 		public void SetWrapMode(WrapMode mode) { WrapMode = mode; }
 		public void SetWrapMode(WrapMode mode, Color color) { WrapMode = mode; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix) { ColorMatrix = newColorMatrix; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix, ColorMatrixFlag flags) { ColorMatrix = newColorMatrix; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix, ColorMatrixFlag mode, ColorAdjustType type) { ColorMatrix = newColorMatrix; }
+		public void ClearColorMatrix() { ColorMatrix = null; }
 		public void Dispose() { }
+
+		/// <summary>The colour matrix as a Skia colour filter (null if none).</summary>
+		internal SKColorFilter CreateColorFilter()
+		{
+			if(ColorMatrix == null) return null;
+
+			// GDI+: [r g b a 1] x M (row vector, 5x5, offsets in row 4 on a 0..1 scale).
+			// Skia: 4x5, one row per output channel, offsets in column 4 (also 0..1).
+			float[] m = new float[20];
+			for(int output = 0; output < 4; output++)
+			{
+				for(int input = 0; input < 4; input++) m[output * 5 + input] = ColorMatrix[input, output];
+				m[output * 5 + 4] = ColorMatrix[4, output];
+			}
+			return SKColorFilter.CreateColorMatrix(m);
+		}
+	}
+
+	/// <summary>A 5x5 matrix that transforms colours (RGBA plus an offset row), as in GDI+.</summary>
+	public sealed class ColorMatrix
+	{
+		private readonly float[,] m = new float[5, 5];
+
+		/// <summary>The identity matrix.</summary>
+		public ColorMatrix()
+		{
+			for(int i = 0; i < 5; i++) m[i, i] = 1f;
+		}
+
+		public ColorMatrix(float[][] newColorMatrix)
+		{
+			for(int row = 0; row < 5; row++)
+				for(int col = 0; col < 5; col++)
+					m[row, col] = newColorMatrix[row][col];
+		}
+
+		public float this[int row, int column] { get => m[row, column]; set => m[row, column] = value; }
+
+		public float Matrix00 { get => m[0, 0]; set => m[0, 0] = value; }
+		public float Matrix11 { get => m[1, 1]; set => m[1, 1] = value; }
+		public float Matrix22 { get => m[2, 2]; set => m[2, 2] = value; }
+		public float Matrix33 { get => m[3, 3]; set => m[3, 3] = value; }
+		public float Matrix40 { get => m[4, 0]; set => m[4, 0] = value; }
+		public float Matrix41 { get => m[4, 1]; set => m[4, 1] = value; }
+		public float Matrix42 { get => m[4, 2]; set => m[4, 2] = value; }
+		public float Matrix43 { get => m[4, 3]; set => m[4, 3] = value; }
 	}
 }

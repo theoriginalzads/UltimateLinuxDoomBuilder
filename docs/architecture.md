@@ -7,7 +7,8 @@ How the fork is put together. The aim throughout is that upstream UDB source fil
 | Project | Assembly | What it is |
 |---|---|---|
 | `Source/ULDB/Compat/ULDB.Compat.csproj` | `ULDB.Compat` | Compatibility layer: the parts of `System.Drawing` and `System.Windows.Forms` that UDB uses, reimplemented for .NET 10 on Linux |
-| `Source/ULDB/Builder/ULDB.Builder.csproj` | `Builder` | Upstream's `Source/Core/**/*.cs`, included by glob, plus ULDB's own code. Same assembly name as upstream's `Builder.exe`, so plugins reference it the same way |
+| `Source/ULDB/Builder/ULDB.Builder.csproj` | `Builder` | Upstream's `Source/Core/**/*.cs`, included by glob, plus ULDB's own code. Same assembly name as upstream's `Builder.exe`, so plugins reference it the same way. An executable: `ULDB.Shell.Program` sets up Avalonia, then runs upstream's `General.Main` |
+| `Source/ULDB/Plugins/<Name>/ULDB.<Name>.csproj` | `<Name>` | An in-scope plugin: upstream's `Source/Plugins/<Name>`, by glob, minus its WinForms UI (placeholders instead). Copied into `Plugins/` next to `Builder`, where upstream's plugin manager loads it |
 
 Upstream's `Builder.sln`, `BuilderMono.sln` and `*.csproj` files are left untouched.
 
@@ -31,6 +32,7 @@ On modern .NET, `System.Drawing.Common` is Windows-only and WinForms doesn't exi
 - **Enums** (`Keys`, `MouseButtons`, `DialogResult`…) are generated from the real WinForms reference assembly by `tools/compatgen`, so stored values (shortcut keys in settings files) stay compatible.
 - **Services** (`MessageBox`, `Cursor`, `Clipboard`, `Timer`, file/colour dialogs, `Application.Run`) all go through `WinFormsHost.Current` (`IWinFormsHost`). The Avalonia UI installs a real host at startup. Tests use the `HeadlessWinFormsHost`, which answers with defaults.
 - **`Control`, `Form`, `ComboBox`, `Panel`…** are state-only stand-ins. They draw nothing. They exist because upstream core code refers to them.
+- **Menus and toolbars** (`ToolStrip`, `MenuStrip`, `ToolStripMenuItem`, `ToolStripButton`, …, in `ToolStrip.cs`) are a state-only model too. Upstream and plugins build their menus with them (plugins through `General.Interface.AddButton`/`AddMenu`); the Avalonia main window renders them and follows their `Changed` events (a ULDB addition). With this model, a designer file that only builds menu items (BuilderModes' `MenusForm`) compiles unchanged.
 - **`System.Media.SystemSounds`**: routed to a UI-installed player.
 
 ## UI placeholders (`Source/ULDB/Builder/UIStubs`)
@@ -46,7 +48,7 @@ Until each window is ported, `tools/uistubgen` generates a **placeholder** for e
 ## Rendering (`Source/ULDB/Native`, `Source/ULDB/Builder/Rendering`)
 
 Upstream's BuilderNative creates its own GLX/WGL context on a native window. ULDB adds a **hosted context**: the host registers OpenGL callbacks and a target framebuffer with `ULDB.Rendering.HostedGL`, and BuilderNative renders with them.
-- **The Avalonia UI** (Phase 3) will use a context shared with Avalonia's and an FBO it displays. UDB issues GL calls at any time (texture uploads, redraws), not only inside Avalonia's render callback, so it needs its own current context.
+- **The Avalonia UI** (`Shell/ViewportContext.cs`, `Shell/ViewportControl.cs`): UDB issues GL calls at any time on the UI thread (texture uploads, redraws), not only inside Avalonia's render callback, so it gets its **own context, shared with Avalonia's** (`IOpenGlTextureSharingRenderInterfaceContextFeature.CreateSharedContext`). It renders into a framebuffer object (colour texture plus depth/stencil). `Present()` calls the host's present callback (`ULDB_SetHostPresent`), which `glFinish`es and asks the `ViewportControl` (an `OpenGlControlBase`) for a frame; the control blits the shared texture into Avalonia's framebuffer. Both run on the UI thread, so no other synchronisation is needed. The view renders in device pixels; upstream's `RenderTargetControl.ClientSize` is kept at that size.
 - **Tests** use `OffscreenGL`: Mesa's surfaceless EGL platform, no display needed.
 
 **Build:** `Source/ULDB/Native/CMakeLists.txt`, run automatically by `dotnet build`.
@@ -60,8 +62,11 @@ Upstream's BuilderNative creates its own GLX/WGL context on a native window. ULD
 **To regenerate everything** (after an upstream merge, for example):
 
 ```sh
-python3 tools/uistubgen/prune.py
+python3 tools/uistubgen/prune.py               # every target
+python3 tools/uistubgen/prune.py BuilderModes  # one target (see TARGETS in the script)
 ```
+
+Plugins work the same way: each has its own `UIStubs/`, `uistubs-*.txt` and `UIStubFixes/` under `Source/ULDB/Plugins/<Name>/`, and a `TARGETS` entry in `prune.py`. Its `Properties.Resources` comes from `tools/resxgen`, like the core's.
 
 It regenerates the placeholders, prunes what doesn't compile, and prints the errors left in upstream files.
 

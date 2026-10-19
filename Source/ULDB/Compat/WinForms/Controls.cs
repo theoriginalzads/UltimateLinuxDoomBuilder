@@ -80,6 +80,9 @@ namespace System.Windows.Forms
 		public void SuspendLayout() { }
 		public void ResumeLayout() { }
 		public void ResumeLayout(bool performLayout) { }
+		public void PerformLayout() { }
+		public int TabIndex { get; set; }
+		public bool TabStop { get; set; } = true;
 		public Rectangle RectangleToScreen(Rectangle r) => r;
 		public Point PointToScreen(Point p) => p;
 		public Point PointToClient(Point p) => p;
@@ -101,10 +104,14 @@ namespace System.Windows.Forms
 			return null;
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
+			if(IsDisposed) return;
+			Dispose(true);
 			IsDisposed = true;
 		}
+
+		protected virtual void Dispose(bool disposing) { }
 
 		public class ControlCollection : List<Control>
 		{
@@ -127,6 +134,18 @@ namespace System.Windows.Forms
 		public bool TopMost { get; set; }
 		public bool ShowInTaskbar { get; set; } = true;
 		public Icon Icon { get; set; }
+
+		// Designer settings: kept for upstream's InitializeComponent code; the Avalonia port decides.
+		public SizeF AutoScaleDimensions { get; set; }
+		public AutoScaleMode AutoScaleMode { get; set; }
+		public FormBorderStyle FormBorderStyle { get; set; } = FormBorderStyle.Sizable;
+		public FormStartPosition StartPosition { get; set; }
+		public SizeGripStyle SizeGripStyle { get; set; }
+		public MenuStrip MainMenuStrip { get; set; }
+		public bool MaximizeBox { get; set; } = true;
+		public bool MinimizeBox { get; set; } = true;
+		public bool ShowIcon { get; set; } = true;
+		public bool KeyPreview { get; set; }
 
 		public event FormClosingEventHandler FormClosing;
 		public event FormClosedEventHandler FormClosed;
@@ -195,6 +214,7 @@ namespace System.Windows.Forms
 		}
 		public int DropDownWidth { get; set; }
 		public int ItemHeight { get; set; }
+		public ComboBoxStyle DropDownStyle { get; set; } = ComboBoxStyle.DropDown;
 		public void BeginUpdate() { }
 		public void EndUpdate() { }
 

@@ -24,6 +24,15 @@ static class Program
 	static HashSet<string> winformsTypes = new();
 	static HashSet<string> onlyFiles; // Relative paths upstream's project compiles (null = all)
 
+	// The menu/toolbar model ULDB.Compat provides (Compat/WinForms/ToolStrip.cs): kept as bases.
+	static readonly HashSet<string> compatToolStripTypes = new()
+	{
+		"ToolStrip", "MenuStrip", "StatusStrip", "ToolStripDropDown", "ToolStripDropDownMenu", "ContextMenuStrip",
+		"ToolStripItem", "ToolStripButton", "ToolStripLabel", "ToolStripStatusLabel", "ToolStripSeparator",
+		"ToolStripDropDownItem", "ToolStripMenuItem", "ToolStripDropDownButton", "ToolStripSplitButton",
+		"ToolStripControlHost", "ToolStripTextBox", "ToolStripComboBox",
+	};
+
 	static int Main(string[] args)
 	{
 		for(int i = 0; i < args.Length; i++)
@@ -60,7 +69,10 @@ static class Program
 				if(onlyFiles != null && !onlyFiles.Contains(Path.GetRelativePath(root, file).Replace('\\', '/'))) continue;
 				var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.Preview, preprocessorSymbols: new[] { "NO_SCINTILLA", "NO_WIN32", "NO_UPDATER", "ULDB" }));
 				var rootNode = tree.GetCompilationUnitRoot();
-				var usings = rootNode.Usings.Select(u => u.Name.ToString()).ToList();
+				// Keep aliases ("X = A.B") and static usings, not just the name.
+				var usings = rootNode.Usings.Select(u =>
+					(u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) ? "static " : "") +
+					(u.Alias != null ? u.Alias.Name.Identifier.Text + " = " : "") + u.Name.ToString()).ToList();
 				foreach(var t in rootNode.DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
 				{
 					if(t.Parent is BaseTypeDeclarationSyntax) continue; // Nested: handled by the parent
@@ -173,7 +185,7 @@ static class Program
 			else if(name == "IWin32Window") bases.Add("System.Windows.Forms.IWin32Window");
 			else if(name.StartsWith("I") && name.Length > 1 && char.IsUpper(name[1])) continue;
 			else if(name == "Form") bases.Add("System.Windows.Forms.Form");
-			else if(name is "Panel" or "ComboBox" or "ListView") bases.Add("System.Windows.Forms." + name);
+			else if(name is "Panel" or "ComboBox" or "ListView" || compatToolStripTypes.Contains(name)) bases.Add("System.Windows.Forms." + name);
 			else if(IsControlType(name)) bases.Add("System.Windows.Forms.Control");
 		}
 		// A class's base class must come first.

@@ -20,7 +20,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ToolStripActionButton
-	public partial class ToolStripActionButton : System.Windows.Forms.Control
+	public partial class ToolStripActionButton : System.Windows.Forms.ToolStripButton
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ToolStripActionButton..ctor#2
 		public ToolStripActionButton() { }
