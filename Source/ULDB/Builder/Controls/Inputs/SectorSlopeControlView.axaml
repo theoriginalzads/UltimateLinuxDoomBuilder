@@ -9,7 +9,7 @@
     <ComboBox x:Name="pivotmodeselector" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="200"/>
     <TextBlock x:Name="label24" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
     <ContentControl x:Name="sloperotation" Grid.Row="1" Grid.Column="2" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-    <CheckBox x:Name="cbuselineangles" Grid.Row="1" Grid.Column="3"/>
+    <CheckBox x:Name="cbuselineangles" Grid.Row="1" Grid.Column="3" Margin="6,0,0,0"/>
     <TextBlock x:Name="label23" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
     <ContentControl x:Name="slopeangle" Grid.Row="2" Grid.Column="2" Width="110" HorizontalAlignment="Left" VerticalAlignment="Center"/>
     <Slider x:Name="angletrackbar" Grid.Row="2" Grid.Column="3" MinWidth="120" VerticalAlignment="Center"/>

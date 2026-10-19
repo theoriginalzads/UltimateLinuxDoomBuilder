@@ -48,8 +48,10 @@ namespace CodeImp.DoomBuilder.Controls
 			for(int r = 0; r < rows; r++) grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
 			for(int i = 0; i < boxes.Count; i++)
 			{
-				CheckBox view = new CheckBox { Margin = new Thickness(0, 0, 8, model.VerticalSpacing), MinHeight = 26, Padding = new Thickness(6, 0, 0, 0) };
+				CheckBox view = new CheckBox { Margin = new Thickness(0, 0, 8, 1) };
+				view.Classes.Add("uldb-flag");
 				new ModelBinder(boxes[i]).BindCheckBox(view, boxes[i]).UpdateNow();
+				ToolTip.SetTip(view, boxes[i].Text); // long names are trimmed
 				Grid.SetRow(view, rows > 0 ? i % rows : 0);
 				Grid.SetColumn(view, rows > 0 ? i / rows : 0);
 				grid.Children.Add(view);

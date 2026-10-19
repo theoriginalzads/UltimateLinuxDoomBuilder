@@ -14,4 +14,6 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 | Open Map dialog | Larger minimum size (500×700) so the maps list and resources never overlap | Fix after user testing |
 | Edit dialogs (Edit Vertex first) | Same tabs, groups, fields and order; groups are rounded outlines with a bold title; number boxes have slim up/down buttons; the custom fields grid has flat headers with a sort arrow and inline editors | Modernisation (plan section 4); approved by the user, 20 Oct 2026 |
 | Thing type tree | Thing icons are coloured dots (things) and folders (categories) in the editor's thing colours, instead of UDB's bitmaps; rows are compact | ImageList data in .resx can't be loaded on Linux; user liked the tighter list |
+| Edit dialogs: action help button | Removed (the book icon beside the action) | ULDB isn't reworking the help file; user decision, 20 Oct 2026 |
+| Edit dialogs: density and alignment | Compact controls app-wide (13 px text, 26 px fields, 22 px flag rows); one shared label column per tab; texture previews fill the Front/Back tabs' right column; Linedef Properties fits without scrolling | User review with UDB screenshots, 20 Oct 2026 |
 | *(More entries are added as UI work continues in Phase 3.)* | | |

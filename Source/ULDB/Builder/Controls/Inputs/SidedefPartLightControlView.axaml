@@ -3,10 +3,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.SidedefPartLightControlView">
-  <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" ColumnSpacing="6">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+      <ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
     <TextBlock x:Name="lbLight" Classes="uldb-field" HorizontalAlignment="Right"/>
     <ContentControl x:Name="light" Grid.Column="1" Width="130" HorizontalAlignment="Left"/>
-    <CheckBox x:Name="cbAbsolute" Grid.Column="2"/>
-    <Button x:Name="reset" Grid.Column="3" Classes="uldb-tool"/>
+    <CheckBox x:Name="cbAbsolute" Grid.Column="2" Margin="10,0,0,0"/>
+    <Button x:Name="reset" Grid.Column="3" Classes="uldb-tool" Margin="4,0,0,0"/>
   </Grid>
 </UserControl>

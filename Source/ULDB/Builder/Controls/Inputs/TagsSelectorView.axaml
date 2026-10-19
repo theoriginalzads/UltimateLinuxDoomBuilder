@@ -3,7 +3,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.TagsSelectorView">
-  <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto" RowSpacing="6" ColumnSpacing="4">
+  <Grid RowDefinitions="Auto,Auto" RowSpacing="5" ColumnSpacing="4">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+      <ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
     <TextBlock x:Name="curtaglabel" Classes="uldb-field" HorizontalAlignment="Right"/>
     <ComboBox x:Name="tagpicker" Grid.Column="1" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
     <ContentControl x:Name="spin" Grid.Column="2"/>

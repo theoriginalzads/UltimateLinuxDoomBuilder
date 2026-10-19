@@ -284,10 +284,24 @@
   </Style>
   <!-- Texture/flat pickers: highlight on hover. -->
   <Style Selector="Border.uldb-picker">
+    <Setter Property="Background" Value="{DynamicResource UldbTileBrush}"/>
+    <Setter Property="CornerRadius" Value="4"/>
+    <Setter Property="ClipToBounds" Value="True"/>
     <Setter Property="BorderThickness" Value="1"/>
     <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
   </Style>
   <Style Selector="Border.uldb-picker:pointerover">
     <Setter Property="BorderBrush" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
+
+  <!-- Flag lists (CheckboxArrayControl): compact rows, like UDB's. -->
+  <Style Selector="CheckBox.uldb-flag">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Height" Value="22"/>
+    <Setter Property="Padding" Value="5,0,0,0"/>
+  </Style>
+  <Style Selector="CheckBox.uldb-flag /template/ ContentPresenter">
+    <Setter Property="TextBlock.TextWrapping" Value="NoWrap"/>
+    <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
   </Style>
 </Styles>

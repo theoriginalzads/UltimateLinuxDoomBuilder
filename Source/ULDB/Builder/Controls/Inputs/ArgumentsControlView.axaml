@@ -5,21 +5,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.ArgumentsControlView">
   <Grid ColumnDefinitions="*,16,*">
-    <Grid x:Name="panel1" ColumnDefinitions="Auto,Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
-      <CheckBox x:Name="cbuseargstr" Margin="0,0,8,0" VerticalAlignment="Center"/>
-      <TextBlock x:Name="arg0label" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-      <Panel Grid.Column="2">
-        <ContentControl x:Name="arg0"/>
-        <ComboBox x:Name="arg0int" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
-        <ComboBox x:Name="arg0named" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
-        <TextBox x:Name="arg0str"/>
-      </Panel>
-      <TextBlock x:Name="arg1label" Grid.Row="1" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-      <ContentControl x:Name="arg1" Grid.Row="1" Grid.Column="2"/>
-      <TextBlock x:Name="arg2label" Grid.Row="2" Grid.Column="1" Classes="uldb-field" HorizontalAlignment="Right"/>
-      <ContentControl x:Name="arg2" Grid.Row="2" Grid.Column="2"/>
+    <Grid x:Name="panel1" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <TextBlock x:Name="arg0label" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <DockPanel Grid.Column="1">
+        <CheckBox x:Name="cbuseargstr" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center"/>
+        <Panel>
+          <ContentControl x:Name="arg0"/>
+          <ComboBox x:Name="arg0int" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+          <ComboBox x:Name="arg0named" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+          <TextBox x:Name="arg0str"/>
+        </Panel>
+      </DockPanel>
+      <TextBlock x:Name="arg1label" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg1" Grid.Row="1" Grid.Column="1"/>
+      <TextBlock x:Name="arg2label" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="arg2" Grid.Row="2" Grid.Column="1"/>
     </Grid>
-    <Grid x:Name="panel2" Grid.Column="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="6" VerticalAlignment="Top">
+    <Grid x:Name="panel2" Grid.Column="2" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="5" VerticalAlignment="Top">
       <TextBlock x:Name="arg3label" Classes="uldb-field" HorizontalAlignment="Right"/>
       <ContentControl x:Name="arg3" Grid.Column="1"/>
       <TextBlock x:Name="arg4label" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
