@@ -898,6 +898,10 @@ namespace CodeImp.DoomBuilder
 				else if(string.Compare(curarg, "-PORTABLE", true) == 0)
 				{
 					// Can we write stuff to apppath?
+#if ULDB
+					// ULDB: Windows ACLs don't exist on Linux; test writability directly.
+					portablemode = ULDB.Platform.Paths.IsDirectoryWritable(apppath);
+#else
 					try
 					{
 						WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -927,6 +931,7 @@ namespace CodeImp.DoomBuilder
 						}
 					} 
 					catch(Exception) { }
+#endif
 
 					// Warn the user?
 					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for \"" + apppath + "\" directory.", MessageBoxButtons.OK);

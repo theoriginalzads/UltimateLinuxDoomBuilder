@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The Builder assembly: upstream Source/Core files plus ULDB's UI layer.
+       Upstream files are included by glob and never moved or edited for the
+       project structure; WinForms UI (Controls/, Windows/) is excluded. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Builder</AssemblyName>
+    <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamCore>$(MSBuildThisFileDirectory)../../Core/</UpstreamCore>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UpstreamCore)**/*.cs"
+             Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**" />
+    <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
+    <Compile Include="UIStubs/**/*.cs" />
+    <!-- Hand-written partial additions to placeholders (members inherited from WinForms bases). -->
+    <Compile Include="UIStubFixes/**/*.cs" />
+    <!-- ULDB platform helpers (Linux replacements for Windows-only code). -->
+    <Compile Include="Platform/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
+    <!-- Same SharpCompress version as the DLL upstream ships in Assets/Common. -->
+    <PackageReference Include="SharpCompress" Version="0.20.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
+  </ItemGroup>
+</Project>

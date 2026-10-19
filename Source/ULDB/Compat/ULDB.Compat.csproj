@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Compatibility layer so upstream UDB code compiles unchanged on .NET 10/Linux:
+       - System.Drawing image/drawing types implemented on SkiaSharp
+         (System.Drawing.Common is Windows-only on modern .NET).
+       - The non-visual parts of System.Windows.Forms used by the editor core
+         (enums, event args, message boxes, dialogs, clipboard, cursors), routed
+         through WinFormsHost so the Avalonia UI can implement them. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ULDB.Compat</AssemblyName>
+    <RootNamespace>ULDB.Compat</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.4" />
+  </ItemGroup>
+</Project>

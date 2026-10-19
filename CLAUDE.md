@@ -6,11 +6,16 @@ An unofficial native Linux fork of [Ultimate Doom Builder](https://github.com/Ul
 
 1. `docs/ULDB-Plan.md`: the plan and every decision made so far. Section 0 has the background.
 2. `docs/progress.md`: where the work is now, and what's next.
-3. `docs/port-map.md`: which upstream WinForms file maps to which Avalonia file.
+3. `docs/architecture.md`: how the fork is built (compat layer, single Builder assembly, UI placeholders).
+4. `docs/port-map.md`: which upstream WinForms file maps to which Avalonia file.
 
 ## Rules
 
-- **Don't move, rename or delete upstream files.** New code goes in new places: `Source/Avalonia/`, `Source/Platform/`, `tools/`, `docs/`. Exclude WinForms files from new projects with globs instead. This keeps merges from upstream UDB releases clean.
+- **Don't move, rename or delete upstream files.** New code goes in new places: `Source/ULDB/`, `tools/`, `docs/`. Exclude WinForms files from new projects with globs instead. This keeps merges from upstream UDB releases clean.
+- **Prefer the compat layer over editing upstream code.** If upstream uses a WinForms or `System.Drawing` API, add it to `Source/ULDB/Compat`. Edit an upstream file only when shimming would be contorted, then:
+  - wrap the edit in `#if ULDB … #else <original> #endif`
+  - **preserve CRLF line endings** (most upstream files use them; read and write with `newline=''` in Python)
+  - list it in `docs/upstream-edits.md`
 - **Leave upstream project files alone** (`Builder.sln`, `BuilderMono.sln`, `*.csproj`). The fork builds from its own solution and project files.
 - **Port windows one-to-one:** same class names and event-handler names, with the `*.Designer.cs` layout rebuilt as `.axaml`. Record each port in `docs/port-map.md`.
 - **Hide, don't delete:** non-GZDoom/UZDoom targets are hidden in the UI through one fork-owned filter. Record each hidden item in `docs/scope-hidden.md`.
@@ -21,7 +26,10 @@ An unofficial native Linux fork of [Ultimate Doom Builder](https://github.com/Ul
 
 ## Build and run
 
-The new build doesn't exist yet. Phase 1 creates `Builder.Linux.sln`. Commands will be added here as they appear.
+```sh
+dotnet build Builder.Linux.sln          # ULDB.Compat + Builder (the upstream core on .NET 10)
+python3 tools/uistubgen/prune.py        # regenerate UI placeholders; prints remaining upstream errors
+```
 
 Reference (upstream Mono) build, on a machine with Mono's `msbuild` (Arch/CachyOS: `mono mono-msbuild`):
 
