@@ -72,6 +72,21 @@ namespace ULDB.Shell
 			statusborder.Classes.Add("uldb-bar");
 			Control infopanel = CreateInfoPanel();
 
+			// Status bar icons show a state: which of upstream's status images is showing, and
+			// whether there are warnings.
+			ToolStripViews.IconKeyProvider = item =>
+			{
+				if(item.Name == "statuslabel" && item.Image != null)
+				{
+					string[] names = { "ready", "loading", "busy", "warning" };
+					for(int flash = 0; flash < 2; flash++)
+						for(int i = 0; i < 4; i++)
+							if(ReferenceEquals(form.STATUS_IMAGES[flash, i], item.Image)) return "status:" + names[i] + (flash == 1 ? ":dim" : "");
+				}
+				if(item.Name == "warnsLabel") return item.Text == "0" ? "warns:off" : "warns:on";
+				return null;
+			};
+
 			// Middle: the map view, with upstream's splash logo while no map is open.
 			viewport = new ViewportControl(display);
 			Control view = CreateDisplay(viewport);
@@ -387,7 +402,8 @@ namespace ULDB.Shell
 		#region ================== Lifecycle
 
 		/// <summary>
-		/// Development aid: ULDB_SHOW_FORM=vertex|linedef|sector|thing[:tab] opens that edit dialog
+		/// Development aid: ULDB_SHOW_FORM=vertex|linedef|sector|thing[:tab] opens that edit dialog, or
+		/// ULDB_SHOW_FORM=action:name runs an action (e.g. switching mode)
 		/// on the first such map element once a map is open (optionally on the given tab index),
 		/// so dialogs can be checked and captured without clicking through the editor.
 		/// </summary>
@@ -407,6 +423,7 @@ namespace ULDB.Shell
 					case "linedef": form.ShowEditLinedefs(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); break;
 					case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
 					case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
+					case "action": General.Actions.InvokeAction(parts[1]); break; // e.g. action:buildermodes_sectorsmode
 				}
 			}, DispatcherPriority.Background);
 		}
@@ -422,6 +439,8 @@ namespace ULDB.Shell
 				form.RaiseShown();
 				input.Focus();
 				ShowFormForDevelopment();
+				// Main window capture, unless a dialog opens first (it's scheduled sooner after opening).
+				DevCapture.Schedule(this, TimeSpan.FromSeconds(4));
 				if(Environment.GetEnvironmentVariable("ULDB_DUMP_TOOLBARS") == "1")
 					foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar" })
 						foreach(WF.ToolStripItem item in Field<WF.ToolStrip>(bar).Items)

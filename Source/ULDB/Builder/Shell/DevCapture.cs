@@ -1,0 +1,43 @@
+// ULDB: development aid. With ULDB_CAPTURE=<file.png>, ULDB renders its own window (the dialog
+// opened by ULDB_SHOW_FORM, else the main window) to that file a moment after it appears. This
+// never captures the screen, so nothing else on the desktop can end up in the image.
+
+using System;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+
+namespace ULDB.Shell
+{
+	internal static class DevCapture
+	{
+		private static readonly string path = Environment.GetEnvironmentVariable("ULDB_CAPTURE");
+		private static bool done;
+
+		public static bool Enabled => !string.IsNullOrEmpty(path);
+
+		/// <summary>Renders the window to ULDB_CAPTURE after the given delay (first call wins).</summary>
+		public static void Schedule(Window window, TimeSpan delay)
+		{
+			if(!Enabled) return;
+			DispatcherTimer.RunOnce(() =>
+			{
+				if(done) return;
+				done = true;
+				try
+				{
+					double scale = window.RenderScaling;
+					PixelSize size = new PixelSize((int)(window.Bounds.Width * scale), (int)(window.Bounds.Height * scale));
+					using(RenderTargetBitmap bitmap = new RenderTargetBitmap(size, new Vector(96 * scale, 96 * scale)))
+					{
+						bitmap.Render(window);
+						bitmap.Save(path);
+					}
+					Console.WriteLine("[capture] saved " + path);
+				}
+				catch(Exception e) { Console.WriteLine("[capture] failed: " + e.Message); }
+			}, delay);
+		}
+	}
+}

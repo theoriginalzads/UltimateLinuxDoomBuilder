@@ -323,15 +323,15 @@ namespace ULDB.Shell
 				{
 					StackPanel p = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 0) };
 					p.Classes.Add("uldb-label");
-					Image img = new Image { Width = ICON_SIZE, Height = ICON_SIZE };
+					ContentControl img = new ContentControl { Width = ICON_SIZE, Height = ICON_SIZE };
 					TextBlock tb = new TextBlock { VerticalAlignment = VerticalAlignment.Center, TextTrimming = TextTrimming.CharacterEllipsis };
 					p.Children.Add(img);
 					p.Children.Add(tb);
 					p.PointerPressed += (s, e) => item.PerformClick();
 					Follow(item, () =>
 					{
-						img.Source = AvaloniaImages.From(item.Image);
-						img.IsVisible = img.Source != null && item.DisplayStyle != WF.ToolStripItemDisplayStyle.Text;
+						img.Content = item.Image != null ? IconFor(item) : null;
+						img.IsVisible = img.Content != null && item.DisplayStyle != WF.ToolStripItemDisplayStyle.Text;
 						tb.Text = item.DisplayStyle == WF.ToolStripItemDisplayStyle.Image ? "" : item.Text;
 						if(item.ForeColor.A > 0 && !item.ForeColor.IsSystemColor)
 							tb.Foreground = new SolidColorBrush(Color.FromArgb(item.ForeColor.A, item.ForeColor.R, item.ForeColor.G, item.ForeColor.B));
@@ -370,8 +370,13 @@ namespace ULDB.Shell
 		/// <summary>The item's icon: ULDB's Breeze-style icon for its action (Tag) or name, else upstream's bitmap.</summary>
 		private static Control IconFor(WF.ToolStripItem item)
 		{
-			return BreezeIcons.Create(item.Tag, ICON_SIZE) ?? BreezeIcons.Create(item.Name, ICON_SIZE) ?? IconFor(item.Image);
+			string key = IconKeyProvider?.Invoke(item);
+			return (key != null ? BreezeIcons.Create(key, ICON_SIZE) : null)
+				?? BreezeIcons.Create(item.Tag, ICON_SIZE) ?? BreezeIcons.Create(item.Name, ICON_SIZE) ?? IconFor(item.Image);
 		}
+
+		/// <summary>Set by the main window: an icon key for items whose icon shows a state (status bar), or null.</summary>
+		public static Func<WF.ToolStripItem, string> IconKeyProvider { get; set; }
 
 		private static Image IconFor(System.Drawing.Image image)
 		{
