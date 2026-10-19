@@ -156,6 +156,13 @@ namespace System.Windows.Forms
 		protected virtual void OnMouseCaptureChanged(EventArgs e) => MouseCaptureChanged?.Invoke(this, e);
 
 		public DockStyle Dock { get; set; }
+
+		/// <summary>The form this control is on (following Parent), or null.</summary>
+		public Form FindForm()
+		{
+			for(Control c = Parent; c != null; c = c.Parent) if(c is Form f) return f;
+			return null;
+		}
 		public ImeMode ImeMode { get; set; }
 		public bool CausesValidation { get; set; } = true;
 		public bool CanFocus => Visible && Enabled;
@@ -282,8 +289,20 @@ namespace System.Windows.Forms
 		{
 			private readonly Control owner;
 			public ControlCollection(Control owner) { this.owner = owner; }
-			public new void Add(Control c) { c.Parent = owner; base.Add(c); }
-			public new bool Remove(Control c) { if(c.Parent == owner) c.Parent = null; return base.Remove(c); }
+			public new void Add(Control c)
+			{
+				c.Parent = owner;
+				base.Add(c);
+				// WinForms: adding a TabPage to a TabControl's Controls adds it to TabPages (designers do this).
+				if(owner is TabControl tabs && c is TabPage page && !tabs.TabPages.Contains(page)) tabs.TabPages.Add(page);
+			}
+
+			public new bool Remove(Control c)
+			{
+				if(c.Parent == owner) c.Parent = null;
+				if(owner is TabControl tabs && c is TabPage page) tabs.TabPages.Remove(page);
+				return base.Remove(c);
+			}
 			public void SetChildIndex(Control c, int index) { base.Remove(c); Insert(Math.Clamp(index, 0, Count), c); }
 		}
 	}
@@ -431,8 +450,14 @@ namespace System.Windows.Forms
 		/// </summary>
 		protected virtual object CreateView() => null;
 
+		/// <summary>
+		/// ULDB: creates views for model-ported forms (upstream's form code compiled unchanged, with a
+		/// separate Avalonia view). Installed by the UI; returns null for forms it has no view for.
+		/// </summary>
+		public static Func<Form, object> ViewFactory { get; set; }
+
 		private object view;
-		private object GetView() => view ??= CreateView();
+		private object GetView() => view ??= CreateView() ?? ViewFactory?.Invoke(this);
 	}
 
 	public enum CloseReason
@@ -631,6 +656,13 @@ namespace System.Windows.Forms
 		public DialogResult DialogResult { get; set; }
 		public void NotifyDefault(bool value) { }
 		public void PerformClick() { if(Enabled && Visible) OnClick(EventArgs.Empty); }
+
+		// WinForms: a button with a DialogResult closes its (modal) form with that result.
+		protected override void OnClick(EventArgs e)
+		{
+			base.OnClick(e);
+			if(DialogResult != DialogResult.None && FindForm() is Form f) f.DialogResult = DialogResult;
+		}
 	}
 
 	public interface IButtonControl

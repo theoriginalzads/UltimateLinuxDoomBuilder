@@ -48,7 +48,7 @@ namespace System.Windows.Forms
 		}
 
 		/// <summary>Index of the trailing "new row", or -1 when users can't add rows.</summary>
-		public int NewRowIndex => allowusertoaddrows ? Rows.Count - 1 : -1;
+		public int NewRowIndex => allowusertoaddrows && Rows.Count > 0 && Rows[Rows.Count - 1].IsNewRow ? Rows.Count - 1 : -1;
 
 		public bool AllowUserToDeleteRows { get; set; } = true;
 		public bool AllowUserToResizeColumns { get; set; } = true;
@@ -238,6 +238,16 @@ namespace System.Windows.Forms
 			if(cell != null)
 			{
 				if(!Equals(cell.Value, EditingValue)) cell.Value = EditingValue;
+
+				// WinForms: editing the "new row" commits it as a normal row and appends a fresh new row.
+				DataGridViewRow row = cell.OwningRow;
+				if(row != null && row.IsNewRow && !string.IsNullOrEmpty(cell.Value?.ToString()))
+				{
+					row.IsNewRow = false;
+					Rows.EnsureNewRow();
+					UserAddedRow?.Invoke(this, new DataGridViewRowEventArgs(Rows[NewRowIndex]));
+				}
+
 				CellEndEdit?.Invoke(this, new DataGridViewCellEventArgs(cell.ColumnIndex, cell.RowIndex));
 			}
 			OnGridChanged();
@@ -417,7 +427,7 @@ namespace System.Windows.Forms
 		public DataGridViewRow this[int index] => rows[index];
 
 		// Index where new rows go: before the trailing "new row".
-		private int AppendIndex => owner.NewRowIndex >= 0 ? rows.Count - 1 : rows.Count;
+		private int AppendIndex => rows.Count > 0 && rows[rows.Count - 1].IsNewRow ? rows.Count - 1 : rows.Count;
 
 		internal void EnsureNewRow()
 		{
@@ -490,7 +500,8 @@ namespace System.Windows.Forms
 		public void Insert(int index, DataGridViewRow row)
 		{
 			Attach(row);
-			rows.Insert(Math.Max(0, Math.Min(index, rows.Count)), row);
+			// Nothing goes after the "new row" (WinForms throws; inserting at its index is fine).
+			rows.Insert(Math.Max(0, Math.Min(index, AppendIndex)), row);
 			Reindex();
 			owner.OnRowsAdded(row.Index, 1);
 			owner.OnGridChanged();
@@ -565,9 +576,11 @@ namespace System.Windows.Forms
 
 	public class DataGridViewBand
 	{
+		private bool readonlyflag, visible = true;
+
 		public DataGridViewCellStyle DefaultCellStyle { get; set; } = new DataGridViewCellStyle();
-		public bool ReadOnly { get; set; }
-		public bool Visible { get; set; } = true;
+		public bool ReadOnly { get => readonlyflag; set { if(readonlyflag == value) return; readonlyflag = value; Owner?.OnGridChanged(); } }
+		public bool Visible { get => visible; set { if(visible == value) return; visible = value; Owner?.OnGridChanged(); } }
 		public bool Frozen { get; set; }
 		public DataGridViewTriState Resizable { get; set; } = DataGridViewTriState.NotSet;
 		public object Tag { get; set; }

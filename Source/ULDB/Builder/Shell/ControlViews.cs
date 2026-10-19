@@ -16,6 +16,8 @@ namespace ULDB.Shell
 		static ControlViews()
 		{
 			Register<HintsPanel>(m => new HintsView(m));
+			Register<ButtonsNumericTextbox>(m => new ButtonsNumericTextboxView(m));
+			Register<FieldsEditorControl>(m => new FieldsEditorView(m));
 		}
 
 		/// <summary>Registers the view for a model control type (and types derived from it).</summary>
@@ -28,7 +30,17 @@ namespace ULDB.Shell
 		public static Control Create(WF.Control model)
 		{
 			for(Type t = model.GetType(); t != null; t = t.BaseType)
-				if(factories.TryGetValue(t, out Func<WF.Control, Control> create)) return create(model);
+			{
+				if(!factories.TryGetValue(t, out Func<WF.Control, Control> create)) continue;
+				Control view = create(model);
+				// WinForms raises a UserControl's Load when it's first shown.
+				if(model is WF.UserControl uc)
+				{
+					bool loaded = false;
+					view.AttachedToVisualTree += (s, e) => { if(!loaded) { loaded = true; uc.RaiseLoad(); } };
+				}
+				return view;
+			}
 			return null;
 		}
 	}

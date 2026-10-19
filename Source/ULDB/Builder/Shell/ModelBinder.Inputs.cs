@@ -1,0 +1,281 @@
+// ULDB: two-way bindings for ModelBinder: input controls in a view drive the model-ported
+// WinForms controls of the same name, so upstream's handlers (TextChanged, CheckedChanged,
+// SelectedIndexChanged, Click, KeyPress filtering, Validating, …) run exactly as they would in
+// WinForms, and whatever upstream sets on the models shows in the view.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using ULDB.Input;
+using WF = System.Windows.Forms;
+
+namespace ULDB.Shell
+{
+	internal sealed partial class ModelBinder
+	{
+		/// <summary>Binds an input control to its model; false when this isn't an input pair.</summary>
+		private bool BindInput(Control view, object model)
+		{
+			switch(view)
+			{
+				case TextBox tb when model is WF.TextBoxBase m: BindTextBox(tb, m); return true;
+				case CheckBox cb when model is WF.CheckBox m: BindCheckBox(cb, m); return true;
+				case ComboBox combo when model is WF.ComboBox m: BindComboBox(combo, m); return true;
+				case NumericUpDown num when model is WF.NumericUpDown m: BindNumericUpDown(num, m); return true;
+				case TabControl tabs when model is WF.TabControl m: BindTabs(tabs, m); return true;
+				case TabItem _ when model is WF.TabPage: return true; // bound by BindTabs
+				case Button button when model is WF.Button m: BindButton(button, m); return true;
+				case ContentControl host when model is WF.Control m && !(view is Button):
+					Control content = ControlViews.Create(m);
+					if(content == null) return false;
+					host.Content = content;
+					BindState(host, m);
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>Visibility and enabled state.</summary>
+		public ModelBinder BindState(Control view, WF.Control m)
+		{
+			return Custom(() =>
+			{
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+			}, m);
+		}
+
+		#region ================== Keyboard and focus
+
+		/// <summary>Routes keys, typed characters and focus to the model, like WinForms would.</summary>
+		public static void RouteKeyboard(Control view, WF.Control m)
+		{
+			view.AddHandler(InputElement.KeyDownEvent, (s, e) =>
+			{
+				WF.KeyEventArgs args = new WF.KeyEventArgs(KeyMapping.ToKeys(e.Key, e.KeyModifiers));
+				m.RaiseKeyDown(args);
+				if(args.Handled || args.SuppressKeyPress) e.Handled = true;
+			}, RoutingStrategies.Tunnel);
+			view.AddHandler(InputElement.KeyUpEvent, (s, e) =>
+			{
+				WF.KeyEventArgs args = new WF.KeyEventArgs(KeyMapping.ToKeys(e.Key, e.KeyModifiers));
+				m.RaiseKeyUp(args);
+				if(args.Handled) e.Handled = true;
+			}, RoutingStrategies.Tunnel);
+			// Upstream filters typed characters in KeyPress (NumericTextbox); rejected ones never arrive.
+			view.AddHandler(InputElement.TextInputEvent, (s, e) =>
+			{
+				if(string.IsNullOrEmpty(e.Text)) return;
+				string accepted = "";
+				foreach(char ch in e.Text)
+				{
+					WF.KeyPressEventArgs args = new WF.KeyPressEventArgs(ch);
+					m.RaiseKeyPress(args);
+					if(!args.Handled) accepted += args.KeyChar;
+				}
+				if(accepted.Length == 0) e.Handled = true;
+				else e.Text = accepted;
+			}, RoutingStrategies.Tunnel);
+			view.GotFocus += (s, e) => m.RaiseGotFocus();
+			view.LostFocus += (s, e) =>
+			{
+				m.RaiseLostFocus();
+				m.RaiseValidation();
+			};
+		}
+
+		#endregion
+
+		#region ================== Inputs
+
+		public ModelBinder BindTextBox(TextBox view, WF.TextBoxBase m)
+		{
+			bool fromview = false;
+			view.IsReadOnly = m.ReadOnly;
+			view.AcceptsReturn = m.Multiline;
+			view.TextWrapping = m.Multiline && m.WordWrap ? Avalonia.Media.TextWrapping.Wrap : Avalonia.Media.TextWrapping.NoWrap;
+			view.TextChanged += (s, e) =>
+			{
+				if((view.Text ?? "") == m.Text) return;
+				fromview = true;
+				try { m.Text = view.Text ?? ""; }
+				finally { fromview = false; }
+			};
+			view.GotFocus += (s, e) =>
+			{
+				// Upstream's AutoSelectTextbox selects everything on focus; show the model's selection.
+				if(m.SelectionLength > 0) { view.SelectionStart = m.SelectionStart; view.SelectionEnd = m.SelectionStart + m.SelectionLength; }
+			};
+			RouteKeyboard(view, m);
+			return Custom(() =>
+			{
+				if(!fromview && (view.Text ?? "") != m.Text) view.Text = m.Text;
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				view.IsReadOnly = m.ReadOnly;
+				SetForeground(view, m.ForeColor);
+			}, m);
+		}
+
+		public ModelBinder BindCheckBox(CheckBox view, WF.CheckBox m)
+		{
+			// The model toggles (WinForms' AutoCheck, including three-state order); the view shows the result.
+			view.Click += (s, e) =>
+			{
+				m.RaiseClick();
+				Schedule(s, e);
+			};
+			return Custom(() =>
+			{
+				bool? want = m.CheckState == WF.CheckState.Indeterminate ? null : m.Checked;
+				if(view.IsChecked != want) view.IsChecked = want;
+				view.IsThreeState = m.ThreeState || m.CheckState == WF.CheckState.Indeterminate;
+				if(!string.IsNullOrEmpty(m.Text)) view.Content = m.Text.Replace("&&", "\u0001").Replace("&", "").Replace("\u0001", "&");
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+			}, m);
+		}
+
+		public ModelBinder BindComboBox(ComboBox view, WF.ComboBox m)
+		{
+			bool updating = false;
+			List<string> shown = null;
+			m.ItemsChanged += (s, e) => Schedule(s, e);
+			m.SelectedItemChanged += (s, e) => Schedule(s, e);
+			view.IsTextSearchEnabled = true;
+			view.SelectionChanged += (s, e) =>
+			{
+				if(updating || view.SelectedIndex == m.SelectedIndex || view.SelectedIndex >= m.Items.Count) return;
+				m.RaiseSelectionChangeCommitted(view.SelectedIndex);
+			};
+			view.PropertyChanged += (s, e) =>
+			{
+				if(updating || e.Property != ComboBox.TextProperty || !view.IsEditable) return;
+				string text = view.Text ?? "";
+				if(text != m.Text) m.RaiseTextUpdate(text);
+			};
+			view.DropDownOpened += (s, e) => m.RaiseDropDown();
+			view.DropDownClosed += (s, e) => m.RaiseDropDownClosed();
+			RouteKeyboard(view, m);
+			return Custom(() =>
+			{
+				updating = true;
+				try
+				{
+					List<string> items = m.Items.Cast<object>().Select(m.GetItemText).ToList();
+					if(shown == null || !shown.SequenceEqual(items))
+					{
+						shown = items;
+						view.ItemsSource = items;
+					}
+					view.IsEditable = m.DropDownStyle != WF.ComboBoxStyle.DropDownList;
+					if(view.SelectedIndex != m.SelectedIndex) view.SelectedIndex = m.SelectedIndex;
+					if(view.IsEditable && (view.Text ?? "") != m.Text) view.Text = m.Text;
+					view.IsVisible = m.Visible;
+					view.IsEnabled = m.Enabled;
+				}
+				finally { updating = false; }
+			}, m);
+		}
+
+		public ModelBinder BindNumericUpDown(NumericUpDown view, WF.NumericUpDown m)
+		{
+			bool updating = false;
+			view.ValueChanged += (s, e) =>
+			{
+				if(updating || view.Value == null || view.Value.Value == m.Value) return;
+				m.Value = Math.Max(m.Minimum, Math.Min(m.Maximum, view.Value.Value));
+			};
+			RouteKeyboard(view, m);
+			return Custom(() =>
+			{
+				updating = true;
+				try
+				{
+					view.Minimum = m.Minimum;
+					view.Maximum = m.Maximum;
+					view.Increment = m.Increment;
+					view.FormatString = "F" + m.DecimalPlaces;
+					if(view.Value != m.Value) view.Value = m.Value;
+					view.IsVisible = m.Visible;
+					view.IsEnabled = m.Enabled;
+				}
+				finally { updating = false; }
+			}, m);
+		}
+
+		public ModelBinder BindButton(Button view, WF.Button m)
+		{
+			view.Click += (s, e) => m.PerformClick();
+			bool hascontent = view.Content != null;
+			return Custom(() =>
+			{
+				if(!hascontent)
+				{
+					string text = m.Text.Replace("&&", "\u0001").Replace("&", "").Replace("\u0001", "&");
+					if(m.Image != null && string.IsNullOrEmpty(text))
+						view.Content = new Image { Source = AvaloniaImages.From(m.Image), Width = m.Image.Width, Height = m.Image.Height };
+					else
+						view.Content = text;
+				}
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+			}, m);
+		}
+
+		/// <summary>
+		/// Tabs: each TabItem named like an upstream TabPage shows while that page is in the model's
+		/// TabPages (upstream removes pages it doesn't need); selection is two-way; headers follow the
+		/// pages' texts.
+		/// </summary>
+		public ModelBinder BindTabs(TabControl view, WF.TabControl m)
+		{
+			bool updating = false;
+			List<(TabItem item, WF.TabPage page)> pairs = new List<(TabItem, WF.TabPage)>();
+			foreach(TabItem item in view.Items.OfType<TabItem>())
+				if(!string.IsNullOrEmpty(item.Name) && HasField(item.Name) && Field<object>(item.Name) is WF.TabPage page)
+					pairs.Add((item, page));
+
+			m.TabPagesChanged += (s, e) => Schedule(s, e);
+			m.SelectedIndexChanged += (s, e) => Schedule(s, e);
+			view.SelectionChanged += (s, e) =>
+			{
+				if(updating || !(view.SelectedItem is TabItem item)) return;
+				(TabItem item, WF.TabPage page) pair = pairs.FirstOrDefault(p => p.item == item);
+				int index = pair.page != null ? m.TabPages.IndexOf(pair.page) : -1;
+				if(index >= 0 && index != m.SelectedIndex) m.SelectedIndex = index;
+			};
+			return Custom(() =>
+			{
+				updating = true;
+				try
+				{
+					foreach((TabItem item, WF.TabPage page) in pairs)
+					{
+						item.IsVisible = m.TabPages.Contains(page);
+						if(!string.IsNullOrEmpty(page.Text)) item.Header = page.Text.Trim();
+					}
+					WF.TabPage selected = m.SelectedTab;
+					TabItem want = pairs.FirstOrDefault(p => p.page == selected).item;
+					if(want != null && view.SelectedItem != want) view.SelectedItem = want;
+					view.IsVisible = m.Visible;
+					view.IsEnabled = m.Enabled;
+				}
+				finally { updating = false; }
+			}, m);
+		}
+
+		#endregion
+
+		/// <summary>Colours for input text (TextBox): like SetForeground for labels.</summary>
+		private static void SetForeground(Avalonia.Controls.Primitives.TemplatedControl target, System.Drawing.Color c)
+		{
+			bool red = !c.IsEmpty && !c.IsKnownColor && c.R > 0x7F && c.G < 0x60 && c.B < 0x60 || c == System.Drawing.Color.Red || c == System.Drawing.Color.DarkRed;
+			target.Classes.Set("uldb-red", red);
+		}
+	}
+}

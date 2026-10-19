@@ -12,4 +12,5 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 | Info panel, nothing highlighted | Shows the mode name and map statistics also in Debug builds (upstream Debug builds show a debug console there) | ULDB doesn't show the debug console |
 | Dockers (side panel) | Same place, tabs and behaviour (auto-hide, pin, resize); tabs are flat buttons with an accent highlight, the selected docker's name is shown as a heading, and the pin button shows a pushpin (upright = stays open, tilted = auto-hide) instead of arrows | Modernisation; pin icon chosen by the user, 20 Oct 2026 |
 | Open Map dialog | Larger minimum size (500×700) so the maps list and resources never overlap | Fix after user testing |
+| Edit dialogs (Edit Vertex first) | Same tabs, groups, fields and order; groups are rounded outlines with a bold title; number boxes have slim up/down buttons; the custom fields grid has flat headers with a sort arrow and inline editors | Modernisation (plan section 4); approved by the user, 20 Oct 2026 |
 | *(More entries are added as UI work continues in Phase 3.)* | | |

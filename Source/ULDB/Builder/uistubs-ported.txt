@@ -41,3 +41,4 @@ CodeImp.DoomBuilder.Controls.FieldsEditorControl
 CodeImp.DoomBuilder.Windows.VertexEditForm
 CodeImp.DoomBuilder.Controls.FieldsEditorRow
 CodeImp.DoomBuilder.Controls.FieldsEditorRowType
+CodeImp.DoomBuilder.Windows.TextEditForm

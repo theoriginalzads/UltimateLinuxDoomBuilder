@@ -197,6 +197,10 @@ namespace System.Windows.Forms
 		public bool ShowToolTips { get; set; }
 		public int TabCount => TabPages.Count;
 
+		/// <summary>ULDB: raised when pages are added or removed, so views show the right tabs.</summary>
+		public event EventHandler TabPagesChanged;
+		internal void OnTabPagesChanged() => TabPagesChanged?.Invoke(this, EventArgs.Empty);
+
 		/// <summary>ULDB: tab strip thickness the views use (vertical tabs are this wide).</summary>
 		public const int TabStripThickness = 26;
 
@@ -249,6 +253,7 @@ namespace System.Windows.Forms
 				page.Parent = owner;
 				base.Add(page);
 				if(owner.selectedindex < 0) owner.selectedindex = 0;
+				owner.OnTabPagesChanged();
 			}
 
 			public void Add(string text) => Add(new TabPage(text));
@@ -258,8 +263,13 @@ namespace System.Windows.Forms
 			{
 				bool removed = base.Remove(page);
 				if(owner.selectedindex >= Count) owner.selectedindex = Count - 1;
+				owner.OnTabPagesChanged();
 				return removed;
 			}
+
+			public new void RemoveAt(int index) => Remove(this[index]);
+			public new void Insert(int index, TabPage page) { page.Parent = owner; base.Insert(index, page); owner.OnTabPagesChanged(); }
+			public new void Clear() { base.Clear(); owner.selectedindex = -1; owner.OnTabPagesChanged(); }
 		}
 	}
 

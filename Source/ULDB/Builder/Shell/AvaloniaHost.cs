@@ -32,6 +32,7 @@ namespace ULDB.Shell
 			AvaloniaHost host = new AvaloniaHost();
 			WinFormsHost.Current = host;
 			FormWindows.TrackOpenWindows();
+			FormViews.Install();
 
 			System.Windows.Forms.Application.RunHandler = host.Run;
 			System.Windows.Forms.Application.ExitHandler = host.Exit;

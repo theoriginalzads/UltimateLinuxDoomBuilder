@@ -1,0 +1,19 @@
+<!-- ULDB: the view of upstream's ButtonsNumericTextbox (model-ported): a number box with up/down
+     buttons. Upstream's logic (steps, modifier keys, relative values like "++8") runs on the model. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ButtonsNumericTextboxView">
+  <Grid ColumnDefinitions="*,Auto">
+    <TextBox x:Name="textbox" MinWidth="40" MinHeight="28" Padding="6,3" VerticalContentAlignment="Center"/>
+    <Grid x:Name="buttons" Grid.Column="1" RowDefinitions="*,*" Width="18" Margin="2,0,0,0">
+      <RepeatButton x:Name="buttonup" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+        <PathIcon Data="M0,4 L4,0 L8,4 Z" Width="8" Height="4"/>
+      </RepeatButton>
+      <RepeatButton x:Name="buttondown" Grid.Row="1" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+        <PathIcon Data="M0,0 L8,0 L4,4 Z" Width="8" Height="4"/>
+      </RepeatButton>
+    </Grid>
+  </Grid>
+</UserControl>

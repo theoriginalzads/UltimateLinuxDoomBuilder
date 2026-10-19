@@ -16,7 +16,7 @@ using WF = System.Windows.Forms;
 
 namespace ULDB.Shell
 {
-	internal sealed class ModelBinder
+	internal sealed partial class ModelBinder
 	{
 		private readonly object model;
 		private readonly List<Action> updates = new List<Action>();
@@ -117,6 +117,8 @@ namespace ULDB.Shell
 
 		/// <summary>
 		/// Binds every named control under <paramref name="root"/> to the model field of the same name:
+		/// inputs (TextBox, CheckBox, ComboBox, Button, NumericUpDown, TabControl) → two-way, see
+		/// ModelBinder.Inputs.cs; ContentControl → the model control's registered view (ControlViews);
 		/// TextBlock → label text, state and colour; "<i>name</i>Title" TextBlock → a group's text;
 		/// Image → picture box image; Border with class uldb-swatch → background colour;
 		/// ItemsControl → a ListView's items (as <see cref="ListItem"/>s); anything else → visibility.
@@ -133,6 +135,7 @@ namespace ULDB.Shell
 				if(c is TextBlock title && name.EndsWith("Title") && HasField(name.Substring(0, name.Length - 5)))
 					Text(title, Field<WF.Control>(name.Substring(0, name.Length - 5)));
 				else if(!HasField(name)) continue;
+				else if(BindInput(c, Field<object>(name))) continue;
 				else if(c is TextBlock tb) Text(tb, name);
 				else if(c is Image img) Image(img, name);
 				else if(c is Border sw && sw.Classes.Contains("uldb-swatch")) Swatch(sw, name);

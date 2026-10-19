@@ -186,4 +186,60 @@
     <Setter Property="Opacity" Value="1"/>
     <Setter Property="Background" Value="{DynamicResource UldbHotTextBrush}"/>
   </Style>
+
+  <!-- Small up/down buttons beside number boxes. -->
+  <Style Selector="RepeatButton.uldb-spin">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="CornerRadius" Value="3"/>
+    <Setter Property="Margin" Value="0,0,0,1"/>
+  </Style>
+
+  <!-- Dialog groups (upstream's GroupBoxes): a rounded outline with a title. -->
+  <Style Selector="Border.uldb-group">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Padding" Value="12,8,12,12"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-group-title">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <!-- A field's name in a dialog ("X:", "Absolute floor height:"). -->
+  <Style Selector="TextBlock.uldb-field">
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Margin" Value="0,0,8,0"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-field.uldb-disabled">
+    <Setter Property="Opacity" Value="0.45"/>
+  </Style>
+  <Style Selector="TextBox.uldb-red">
+    <Setter Property="Foreground" Value="{DynamicResource UldbRedTextBrush}"/>
+  </Style>
+
+  <!-- Grids (custom fields editor). -->
+  <Style Selector="Border.uldb-grid">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+    <Setter Property="Background" Value="{DynamicResource UldbCardBrush}"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-header">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-grid-headercell">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Padding" Value="6,4"/>
+    <Setter Property="MinHeight" Value="0"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row:pointerover">
+    <Setter Property="Background" Value="{DynamicResource UldbHoverBrush}"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row.selected">
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+  </Style>
 </Styles>

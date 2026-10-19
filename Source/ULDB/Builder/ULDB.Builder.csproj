@@ -74,6 +74,8 @@
     <Compile Include="$(UpstreamCore)Controls/FieldsEditorRow.cs" />
     <Compile Include="$(UpstreamCore)Windows/VertexEditForm.cs" />
     <Compile Include="$(UpstreamCore)Windows/VertexEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextEditForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />
