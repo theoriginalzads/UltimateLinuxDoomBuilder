@@ -91,7 +91,7 @@ namespace ULDB.Shell
 			mi.Header = MenuText(item.Text);
 			mi.IsVisible = item.Available;
 			mi.IsEnabled = item.Enabled;
-			mi.Icon = IconFor(item.Image);
+			mi.Icon = IconFor(item);
 			ToolTip.SetTip(mi, string.IsNullOrEmpty(item.ToolTipText) || item.ToolTipText == item.Text ? null : item.ToolTipText);
 
 			if(item is WF.ToolStripMenuItem m)
@@ -348,12 +348,12 @@ namespace ULDB.Shell
 		{
 			bool showimage = item.Image != null && item.DisplayStyle != WF.ToolStripItemDisplayStyle.Text && item.DisplayStyle != WF.ToolStripItemDisplayStyle.None;
 			bool showtext = !string.IsNullOrEmpty(item.Text) && (item.DisplayStyle == WF.ToolStripItemDisplayStyle.Text || item.DisplayStyle == WF.ToolStripItemDisplayStyle.ImageAndText || !showimage);
-			if(showimage && !showtext) b.Content = IconFor(item.Image);
+			if(showimage && !showtext) b.Content = IconFor(item);
 			else if(!showimage) b.Content = item.Text;
 			else
 			{
 				StackPanel p = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
-				p.Children.Add(IconFor(item.Image));
+				p.Children.Add(IconFor(item));
 				p.Children.Add(new TextBlock { Text = item.Text, VerticalAlignment = VerticalAlignment.Center });
 				b.Content = p;
 			}
@@ -366,6 +366,12 @@ namespace ULDB.Shell
 		#endregion
 
 		#region ================== Helpers
+
+		/// <summary>The item's icon: ULDB's Breeze-style icon for its action (Tag) or name, else upstream's bitmap.</summary>
+		private static Control IconFor(WF.ToolStripItem item)
+		{
+			return BreezeIcons.Create(item.Tag, ICON_SIZE) ?? BreezeIcons.Create(item.Name, ICON_SIZE) ?? IconFor(item.Image);
+		}
 
 		private static Image IconFor(System.Drawing.Image image)
 		{

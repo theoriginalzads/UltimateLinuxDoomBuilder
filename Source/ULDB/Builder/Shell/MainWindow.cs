@@ -422,6 +422,10 @@ namespace ULDB.Shell
 				form.RaiseShown();
 				input.Focus();
 				ShowFormForDevelopment();
+				if(Environment.GetEnvironmentVariable("ULDB_DUMP_TOOLBARS") == "1")
+					foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar" })
+						foreach(WF.ToolStripItem item in Field<WF.ToolStrip>(bar).Items)
+							Console.WriteLine($"[toolbar] {bar} {item.GetType().Name} tag={item.Tag} name={item.Name} tip={item.ToolTipText ?? item.Text} img={(item.Image != null)}");
 			};
 			Activated += (s, e) => form.RaiseActivated();
 			Deactivated += (s, e) => form.RaiseDeactivate();
