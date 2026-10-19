@@ -201,9 +201,15 @@ namespace System.Windows.Forms
 		public void PerformLayout() { }
 		public int TabIndex { get; set; }
 		public bool TabStop { get; set; } = true;
-		public Rectangle RectangleToScreen(Rectangle r) => r;
-		public Point PointToScreen(Point p) => p;
-		public Point PointToClient(Point p) => p;
+		// Client <-> screen coordinates. The UI installs a ScreenMapper on controls it shows;
+		// without one, client and screen coordinates are the same.
+		public Rectangle RectangleToScreen(Rectangle r) => new Rectangle(PointToScreen(r.Location), r.Size);
+		public Rectangle RectangleToClient(Rectangle r) => new Rectangle(PointToClient(r.Location), r.Size);
+		public Point PointToScreen(Point p) => ScreenMapper?.ToScreen(p) ?? p;
+		public Point PointToClient(Point p) => ScreenMapper?.ToClient(p) ?? p;
+
+		/// <summary>ULDB: set by the UI to map this control's coordinates (device pixels) to the screen.</summary>
+		public IScreenMapper ScreenMapper { get; set; }
 
 		/// <summary>Runs a delegate on the UI thread and waits for it.</summary>
 		public object Invoke(Delegate method, params object[] args)
@@ -355,6 +361,13 @@ namespace System.Windows.Forms
 
 	public delegate void FormClosingEventHandler(object sender, FormClosingEventArgs e);
 	public delegate void FormClosedEventHandler(object sender, FormClosedEventArgs e);
+
+	/// <summary>ULDB: maps a control's client coordinates to screen coordinates and back.</summary>
+	public interface IScreenMapper
+	{
+		Point ToScreen(Point client);
+		Point ToClient(Point screen);
+	}
 
 	public class Panel : Control
 	{

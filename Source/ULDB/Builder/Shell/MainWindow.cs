@@ -193,11 +193,18 @@ namespace ULDB.Shell
 		private void HookInput()
 		{
 			WF.Control.ModifierKeysProvider = () => modifiers;
+
+			// Screen coordinates are device pixels, as in X11. Upstream's visual mode reads the
+			// pointer and warps it back to the middle of the window every frame (mouselook).
+			display.ScreenMapper = new VisualMapper(viewport);
+			form.ScreenMapper = new VisualMapper(this);
 			WF.Cursor.PositionProvider = () =>
 			{
+				if(X11Pointer.GetPosition() is (int x, int y)) return new System.Drawing.Point(x, y);
 				PixelPoint p = viewport.PointToScreen(lastpointer);
 				return new System.Drawing.Point(p.X, p.Y);
 			};
+			WF.Cursor.PositionSetter = p => X11Pointer.SetPosition(p.X, p.Y);
 
 			input.PointerEntered += (s, e) => { Track(e); display.RaiseMouseEnter(); };
 			input.PointerExited += (s, e) => { Track(e); display.RaiseMouseLeave(); };
@@ -333,7 +340,7 @@ namespace ULDB.Shell
 		private void SyncFormGeometry()
 		{
 			form.Location = new System.Drawing.Point(Position.X, Position.Y);
-			form.Size = new System.Drawing.Size((int)Width, (int)Height);
+			form.Size = new System.Drawing.Size((int)(ClientSize.Width * RenderScaling), (int)(ClientSize.Height * RenderScaling));
 			form.WindowState = WindowState switch
 			{
 				WindowState.Maximized => WF.FormWindowState.Maximized,
@@ -343,5 +350,26 @@ namespace ULDB.Shell
 		}
 
 		#endregion
+
+		/// <summary>Maps a visual's device-pixel client coordinates to screen pixels and back.</summary>
+		private sealed class VisualMapper : WF.IScreenMapper
+		{
+			private readonly Visual visual;
+			public VisualMapper(Visual visual) { this.visual = visual; }
+
+			private double Scale => TopLevel.GetTopLevel(visual)?.RenderScaling ?? 1.0;
+
+			public System.Drawing.Point ToScreen(System.Drawing.Point client)
+			{
+				PixelPoint p = visual.PointToScreen(new Point(client.X / Scale, client.Y / Scale));
+				return new System.Drawing.Point(p.X, p.Y);
+			}
+
+			public System.Drawing.Point ToClient(System.Drawing.Point screen)
+			{
+				Point p = visual.PointToClient(new PixelPoint(screen.X, screen.Y));
+				return new System.Drawing.Point((int)Math.Round(p.X * Scale), (int)Math.Round(p.Y * Scale));
+			}
+		}
 	}
 }

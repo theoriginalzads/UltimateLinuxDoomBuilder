@@ -90,7 +90,7 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Viewport | ✅ | `ViewportContext` (UDB's own GL context, shared with Avalonia's; renders into an FBO) and `ViewportControl` (blits it). Present callback added to `HostedContext` |
 | BuilderModes plugin | ✅ (logic) | Builds with generated placeholders for `Interface/`; upstream `MenusForm` compiles unchanged. UI ports are Phase 4 |
 | Main window | 🟨 | **Model port**: upstream `MainForm.cs`/`.Designer.cs` compile unchanged on compat models; `Shell/MainWindow.cs` + `ToolStripViews.cs` show menus, toolbars, modes toolbar, status bar, map view. Info panels and dockers still placeholders |
-| Input | ✅ 2D / 🟨 3D | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook needs pointer warping (`Cursor.PositionSetter`) |
+| Input | ✅ | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook: `Shell/X11Pointer.cs` (XQueryPointer/XWarpPointer) + screen mappers; user-tested on KDE Wayland (XWayland): "feels just like the original" |
 
 **Tests:** 137 passing.
 
@@ -99,7 +99,7 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
 **State on 20 Oct 2026 (user tested):** a map opened from the command line (`uldb small.wad -map MAP01 -cfg UZDoom_DoomUDMF.cfg -scriptconfig zdoom_acs.cfg -resource wad ~/.local/share/doom/freedoom2.wad`) draws in 2D and 3D; zoom, selection, editing, keyboard shortcuts, menus and mode switching work. Pan is Space + mouse (UDB's default; middle button is paint-select). Next, in order:
-1. 3D mouselook: implement `Cursor.PositionSetter` (XWarpPointer via P/Invoke on X11), check `Cursor.Clip`/hide.
+1. ~~3D mouselook~~ done (no pointer grab for `Cursor.Clip`; add one via Avalonia's X connection if users report the pointer escaping).
 2. Open Map dialog (`OpenMapForm`) and game configuration UI, with `ScopeFilter` — needed to open maps without the command line. Then `ErrorsForm`.
 3. Info panels (linedef/sector/thing/vertex) and dockers: rebuild in `.axaml` (main windows, per the user's decision of 20 Oct 2026 in plan section 7: model ports for everything first, `.axaml` for the main windows as soon as possible).
 4. Save (Ctrl+S) end to end in the UI; window geometry persistence.
