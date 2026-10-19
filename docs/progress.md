@@ -1,7 +1,7 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 3 started (branch `phase-3/shell`): the non-visual groundwork is done; the Avalonia window itself is next, best done with the user at their machine. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 3 (branch `phase-3/shell`): **milestone reached on 20 Oct 2026** (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -86,50 +86,31 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Key mapping | ✅ | `ULDB.Input.KeyMapping`: Avalonia keys/modifiers/mouse buttons to WinForms codes; every default shortcut in the in-scope Actions.cfg files is reachable |
 | Avalonia app entry point | ✅ | `Source/ULDB/Builder/Shell/Program.cs`: `Builder` is now an executable (`uldb` launcher script next to it). Avalonia is set up first (`SetupWithoutStarting`), then upstream's `General.Main` runs unchanged; `Application.Run` runs Avalonia's main loop |
 | `IWinFormsHost` | ✅ (untested by hand) | `Shell/AvaloniaHost.cs`: message boxes, portal file dialogs, colour dialog (ColorView), clipboard (text to the desktop, UDB formats in-process), cursors, timers, `Invoke`/`BeginInvoke`, `ActiveForm`. `Shell/FormWindows.cs` links compat `Form`s to Avalonia windows |
-| Temporary main window | ✅ | `Shell/TemporaryMainWindow.cs` stands in for `MainForm` until it's ported; closing it saves settings like upstream. Delete it with the `MainForm` port |
 | Viewport | ✅ | `ViewportContext` (UDB's own GL context, shared with Avalonia's; renders into an FBO) and `ViewportControl` (blits it). Present callback added to `HostedContext` |
 | BuilderModes plugin | ✅ (logic) | Builds with generated placeholders for `Interface/`; upstream `MenusForm` compiles unchanged. UI ports are Phase 4 |
 | Main window | 🟨 | **Model port**: upstream `MainForm.cs`/`.Designer.cs` compile unchanged on compat models; `Shell/MainWindow.cs` + `ToolStripViews.cs` show menus, toolbars, modes toolbar, status bar, map view. Info panels and dockers still placeholders |
+| Open Map dialog | ✅ | `.axaml` ports of `OpenMapOptionsForm`, `ResourceOptionsForm`, `ResourceListEditor` (user tested). Ported forms show through `Form.CreateView` → `AvaloniaHost.ShowForm` (`docs/architecture.md`) |
+| Save | ✅ | Ctrl+S in the UI: ZDBSP runs, `TEXTMAP` + `ZNODES` written (user tested 20 Oct 2026) |
 | Input | ✅ | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook: `Shell/X11Pointer.cs` (XQueryPointer/XWarpPointer) + screen mappers; user-tested on KDE Wayland (XWayland): "feels just like the original" |
 
-**Tests:** 137 passing.
+**Tests:** 149 passing.
 
 ### Remaining Phase 3 work (pick up here)
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
-**State on 20 Oct 2026 (user tested):** a map opened from the command line (`uldb small.wad -map MAP01 -cfg UZDoom_DoomUDMF.cfg -scriptconfig zdoom_acs.cfg -resource wad ~/.local/share/doom/freedoom2.wad`) draws in 2D and 3D; zoom, selection, editing, keyboard shortcuts, menus and mode switching work. Pan is Space + mouse (UDB's default; middle button is paint-select). Next, in order:
-1. ~~3D mouselook~~ done (no pointer grab for `Cursor.Clip`; add one via Avalonia's X connection if users report the pointer escaping).
-2. Open Map dialog (`OpenMapForm`) and game configuration UI, with `ScopeFilter` — needed to open maps without the command line. Then `ErrorsForm`.
-3. Info panels (linedef/sector/thing/vertex) and dockers: rebuild in `.axaml` (main windows, per the user's decision of 20 Oct 2026 in plan section 7: model ports for everything first, `.axaml` for the main windows as soon as possible).
-4. Save (Ctrl+S) end to end in the UI; window geometry persistence.
-5. Startup polish (user report): the window shows empty (see-through) for 1–2 s at launch while upstream's `Shown` handler loads the command-line map before the first frame is painted. Let the window render once (e.g. raise `Shown` at background priority after the first frame) and/or show a splash.
-6. Builds are Debug: upstream's `#if DEBUG` assertions are active (e.g. Renderer2D throws on an unfinished layer; Release skips the frame). Keep Debug while porting, but UI-thread exceptions are now logged and reported instead of crashing (`AvaloniaHost.ReportException`).
+**State on 20 Oct 2026 (user tested):** the milestone works without the command line: File → Open → Open Map dialog (resources, scope-filtered configs) → map in 2D/3D → edit → Ctrl+S (ZDBSP nodes). Pan is Space + mouse (UDB's default; middle button is paint-select). Next, in order:
+1. `ErrorsForm` (shown after loading when there are resource warnings; currently a "not ported" message).
+2. Info panels (linedef/sector/thing/vertex) and dockers in `.axaml`, then the edit forms (linedef, sector, thing, vertex), Map Options, game configurations (`ConfigForm`, with `ScopeFilter`), preferences, texture browser, script editor. Per the user's decision (plan section 7): `.axaml` for the main windows as soon as possible.
+3. Window geometry persistence for the main window.
+4. Startup polish (user report): the window shows empty (see-through) for 1–2 s at launch while upstream's `Shown` handler loads before the first frame is painted. Let the window render once (raise `Shown` after the first frame) and/or show a splash.
+5. Resource list: drop-position marker when reordering; the duplicate-resource warning shows in the main status bar, behind the dialog (upstream does the same; consider showing it in the dialog).
+6. Builds are Debug: upstream's `#if DEBUG` assertions are active. UI-thread exceptions are logged and reported instead of crashing (`AvaloniaHost.ReportException`).
+7. 3D mouselook has no pointer grab for `Cursor.Clip`; add one if users report the pointer escaping.
 
-Older notes: steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). The user confirmed the window appears (dark theme followed, text renders; app icon added: **Cacky, the ULDB Cacodemon**, `Source/ULDB/Assets/Icons/` (SVG source plus PNGs; 16 px is a text-free variant), approved by the user. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; the plan wants it to match the app ID, so revisit with the `.desktop` file). It reports 51 configs loaded: the scope filter applies once the config UI is ported. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
+App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
 
-1. ~~**Avalonia app entry point:**~~ done
-   - The UI lives in the `Builder` assembly; it already references Avalonia 12.1.4.
-   - Add the `uldb` launcher and an Avalonia `App`. Set up Avalonia before `General.Main` creates windows: `General.Main` builds `MainForm` and then calls `Application.Run`.
-   - Install `Application.RunHandler`/`ExitHandler`, and set `ULDB.Branding` names in the window title.
-2. ~~**`IWinFormsHost` implementation**~~ done (`Source/ULDB/Compat/WinForms/Host.cs` defines the interface):
-   - message boxes, portal file and colour dialogs, clipboard, cursors
-   - `Invoke`/`BeginInvoke`/`CheckAccess` via Avalonia's `Dispatcher`
-   - UI-thread timers, `ActiveForm`
-3. **Viewport:**
-   - A context shared with Avalonia's (`IOpenGlTextureSharingRenderInterfaceContextFeature`), registered with `ULDB.Rendering.HostedGL`.
-   - UDB renders into an FBO texture at any time; an `OpenGlControlBase` blits the latest frame.
-   - Set `HostedGL.SetFramebuffer` on resize.
-   - Input through `ULDB.Input.KeyMapping` into UDB's action system.
-   - 3D mouselook needs pointer capture plus `Cursor.PositionSetter`, replacing RawMouse (`Actions/MouseInput.cs`).
-4. **`MainForm` port** (first real port; see the procedure in `docs/architecture.md`):
-   - Add `CodeImp.DoomBuilder.Windows.MainForm` to `Source/ULDB/Builder/uistubs-ported.txt`, rerun `tools/uistubgen/prune.py`, and move `UIStubFixes/MainForm.cs` logic into the port.
-   - Menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.
-   - Familiar layout (plan section 4). Screenshot to the user before any major layout change.
-   - Record it in `docs/port-map.md` and `docs/ux-changes.md`.
-5. **First config UI** (Open Map / game configurations): use `ULDB.Scope.ScopeFilter`, and add entries to `docs/scope-hidden.md`.
-
-**Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save.
+**Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
 
 ## Handoff notes (for the next session)
 
@@ -140,7 +121,7 @@ Older notes: steps 1 and 2 are done (first run on the user's machine 19 Oct 2026
 - **User's machine checklist** (`docs/setup-cachyos.md`). Ask whether these are done:
   - install the toolchain
   - clone with `--recurse-submodules`
-  - `dotnet test Builder.Linux.sln`, expecting 137 passing
+  - `dotnet test Builder.Linux.sln`, expecting 149 passing
   - the Mono reference build, reference screenshots in `docs/reference-screenshots/`
   - own maps in `tests/maps/user/` (optional)
 - **On the user's machine the window is real:** the Avalonia app runs on their KDE Plasma (X11 backend; XWayland on Wayland sessions). Use `-p:UldbArch=znver4` for their builds if they want it.
