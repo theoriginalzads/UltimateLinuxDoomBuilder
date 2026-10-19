@@ -99,6 +99,8 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
+**Session ended 20 Oct 2026 (evening); resume with item 1 below (texture browser).** All work is committed and pushed on `phase-3/shell`; 159 tests pass.
+
 **State on 20 Oct 2026 (user tested):** open via the Open Map dialog, edit, save; info panels (modern cards), dockers (Help docker; plugin dockers say "not ported"), and the edit dialogs Vertex, Thing (UDMF), Sector (UDMF), Linedef (UDMF), Edit Action and Edit Text all work as model ports with .axaml windows. The user reviewed the dialogs against UDB screenshots and approved the compact, aligned layout (shared label column per tab, 92 px number boxes, previews filling space, Linedef sides grouped by wall part like Sector surfaces, no action help button). First pass of Breeze-style toolbar icons (`Shell/BreezeIcons.cs`). Next, in order:
 1. **Texture browser** (`TextureBrowserForm`): clicking texture/flat pickers does nothing until it's ported (its placeholder returns null and the picker keeps its texture).
 2. Remaining icons: toolbars, mode buttons, BuilderModes menu items and the status bar use Breeze-style icons (user: "they all look fine"); dialogs' small buttons (reset, link, browse, clear) and other menus' items still show UDB bitmaps. Add specs to `BreezeIcons` (keyed by action tag/name; `ToolStripViews.IconKeyProvider` for state icons).
