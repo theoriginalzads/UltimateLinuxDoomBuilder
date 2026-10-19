@@ -1,0 +1,131 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The Builder assembly: upstream Source/Core files plus ULDB's UI layer.
+       Upstream files are included by glob and never moved or edited for the
+       project structure; WinForms UI (Controls/, Windows/) is excluded. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Builder</AssemblyName>
+    <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamCore>$(MSBuildThisFileDirectory)../../Core/</UpstreamCore>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UpstreamCore)**/*.cs"
+             Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**;$(UpstreamCore)Properties/Resources.Designer.cs" />
+    <!-- Replacement for upstream's Properties/Resources.Designer.cs (tools/resxgen). -->
+    <Compile Include="Properties/**/*.cs" />
+    <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
+    <Compile Include="UIStubs/**/*.cs" />
+    <!-- Hand-written partial additions to placeholders (members inherited from WinForms bases). -->
+    <Compile Include="UIStubFixes/**/*.cs" />
+    <!-- ULDB platform helpers (Linux replacements for Windows-only code). -->
+    <Compile Include="Platform/**/*.cs" />
+    <!-- ULDB rendering integration (hosted OpenGL context). -->
+    <Compile Include="Rendering/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
+    <!-- Same SharpCompress version as the DLL upstream ships in Assets/Common. -->
+    <PackageReference Include="SharpCompress" Version="0.20.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
+  </ItemGroup>
+  <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Actions.cfg" LogicalName="CodeImp.DoomBuilder.Resources.Actions.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Black.png" LogicalName="CodeImp.DoomBuilder.Resources.Black.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentInfo.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentInfo.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentProblem.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentProblem.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentQuestion.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentQuestion.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentRegular.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentRegular.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CommentSmile.png" LogicalName="CodeImp.DoomBuilder.Resources.CommentSmile.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Crosshair.png" LogicalName="CodeImp.DoomBuilder.Resources.Crosshair.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/CrosshairBusy.png" LogicalName="CodeImp.DoomBuilder.Resources.CrosshairBusy.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Folder96.png" LogicalName="CodeImp.DoomBuilder.Resources.Folder96.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Folder96Up.png" LogicalName="CodeImp.DoomBuilder.Resources.Folder96Up.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Hourglass3D.png" LogicalName="CodeImp.DoomBuilder.Resources.Hourglass3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Lexers.cfg" LogicalName="CodeImp.DoomBuilder.Resources.Lexers.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingSky3D.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingSky3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingTexture3D.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingTexture3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/MissingThing.png" LogicalName="CodeImp.DoomBuilder.Resources.MissingThing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/Nothing.png" LogicalName="CodeImp.DoomBuilder.Resources.Nothing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/SkySphere.md3" LogicalName="CodeImp.DoomBuilder.Resources.SkySphere.md3" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/ThingTexture2D.png" LogicalName="CodeImp.DoomBuilder.Resources.ThingTexture2D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UDMF.cfg" LogicalName="CodeImp.DoomBuilder.Resources.UDMF.cfg" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UnknownTexture3D.png" LogicalName="CodeImp.DoomBuilder.Resources.UnknownTexture3D.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/UnknownThing.png" LogicalName="CodeImp.DoomBuilder.Resources.UnknownThing.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/White.png" LogicalName="CodeImp.DoomBuilder.Resources.White.png" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/display2d.shader" LogicalName="CodeImp.DoomBuilder.Resources.display2d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/things2d.shader" LogicalName="CodeImp.DoomBuilder.Resources.things2d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/world3d.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d.shader" />
+    <EmbeddedResource Include="$(UpstreamCore)Resources/world3d_skybox.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d_skybox.shader" />
+  </ItemGroup>
+  <Import Project="Properties/Resources.g.props" />
+  <!-- Data files next to the program, laid out like upstream's Build folder
+       (Configurations/, Compilers/, Scripting/, UDBuilder.default.cfg, ...).
+       Windows-only DLLs and the .chm help file are left out. -->
+  <PropertyGroup>
+    <UpstreamAssets>$(MSBuildThisFileDirectory)../../../Assets/</UpstreamAssets>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(UpstreamAssets)Common/**/*"
+          Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
+          Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- Upstream's prebuilt Linux ACC and ZDBSP are replaced by source builds (tools/compilers). -->
+    <None Include="$(UpstreamAssets)Linux/**/*"
+          Exclude="$(UpstreamAssets)Linux/Compilers/*/acc;$(UpstreamAssets)Linux/Compilers/Nodebuilders/zdbsp"
+          Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- BCS support: upstream only ships it for Windows. ZT-BCC's libraries and the syntax
+         definitions are platform-neutral text; the compiler configs are ULDB's Linux versions
+         (Source/ULDB/Assets). -->
+    <!-- BCC: its own library files, matching the source-built compiler. Upstream's BCC
+         std.acs/zcommon.bcs use a syntax no BCC release accepts. -->
+    <None Include="$(MSBuildThisFileDirectory)../../../tools/compilers/src/bcc/lib/**/*"
+          Link="Compilers/BCC/lib/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(UpstreamAssets)Windows/Compilers/ZT-BCC/**/*" Exclude="$(UpstreamAssets)Windows/Compilers/ZT-BCC/*.exe;$(UpstreamAssets)Windows/Compilers/ZT-BCC/*.cfg"
+          Link="Compilers/ZT-BCC/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(UpstreamAssets)Windows/Scripting/*.cfg" Exclude="$(UpstreamAssets)Windows/Scripting/BCS.cfg" Link="Scripting/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)../Assets/**/*" Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+  <!-- Native renderer (libBuilderNative.so), built with CMake from upstream's Source/Native
+       plus Source/ULDB/Native. CPU target: dotnet build -p:UldbArch=znver4 (default generic). -->
+  <PropertyGroup>
+    <UldbArch Condition="'$(UldbArch)' == ''">generic</UldbArch>
+    <NativeSourceDir>$(MSBuildThisFileDirectory)../Native</NativeSourceDir>
+    <NativeBuildDir>$(MSBuildThisFileDirectory)obj/native/$(Configuration)-$(UldbArch)</NativeBuildDir>
+    <NativeBuildType Condition="'$(Configuration)' == 'Debug'">RelWithDebInfo</NativeBuildType>
+    <NativeBuildType Condition="'$(Configuration)' != 'Debug'">Release</NativeBuildType>
+  </PropertyGroup>
+  <Target Name="BuildNative" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="cmake -S &quot;$(NativeSourceDir)&quot; -B &quot;$(NativeBuildDir)&quot; -G Ninja -DCMAKE_BUILD_TYPE=$(NativeBuildType) -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
+    <Exec Command="cmake --build &quot;$(NativeBuildDir)&quot;" />
+    <ItemGroup>
+      <None Include="$(NativeBuildDir)/libBuilderNative.so" Link="libBuilderNative.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    </ItemGroup>
+  </Target>
+  <!-- Script compilers and node builder, built from source (tools/compilers, git submodules). -->
+  <PropertyGroup>
+    <CompilersSourceDir>$(MSBuildThisFileDirectory)../../../tools/compilers</CompilersSourceDir>
+    <CompilersBuildDir>$(MSBuildThisFileDirectory)obj/compilers/$(UldbArch)</CompilersBuildDir>
+  </PropertyGroup>
+  <Target Name="BuildCompilers" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="cmake -S &quot;$(CompilersSourceDir)&quot; -B &quot;$(CompilersBuildDir)&quot; -G Ninja -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
+    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; /dev/null" />
+    <ItemGroup>
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDoom/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Zandronum/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDaemon/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Hexen/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/zdbsp" Link="Compilers/Nodebuilders/zdbsp" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/zt-bcc" Link="Compilers/ZT-BCC/zt-bcc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(CompilersBuildDir)/bin/bcc" Link="Compilers/BCC/bcc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    </ItemGroup>
+  </Target>
+</Project>

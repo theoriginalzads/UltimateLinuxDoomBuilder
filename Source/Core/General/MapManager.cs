@@ -2503,6 +2503,16 @@ namespace CodeImp.DoomBuilder
 		{
 			string filename;
 
+#if ULDB
+			// ULDB: commands are a shell script run by /bin/sh; the argument is passed as $1.
+			filename = Path.Combine(Path.GetTempPath(), "uldb-" + Guid.NewGuid().ToString("N") + ".sh");
+			File.WriteAllText(filename, cmdsettings.Commands.Replace("\r\n", "\n"));
+
+			ProcessStartInfo startinfo = new ProcessStartInfo();
+			startinfo.FileName = "/bin/sh";
+			startinfo.ArgumentList.Add(filename);
+			if(!string.IsNullOrEmpty(arguments)) startinfo.ArgumentList.Add(arguments);
+#else
 			do
 			{
 				filename = Path.ChangeExtension(Path.GetTempFileName(), ".cmd");
@@ -2514,6 +2524,7 @@ namespace CodeImp.DoomBuilder
 			ProcessStartInfo startinfo = new ProcessStartInfo();
 			startinfo.FileName = "cmd.exe";
 			startinfo.Arguments = "/C " + filename + " " + arguments;
+#endif
 			if(!string.IsNullOrWhiteSpace(cmdsettings.WorkingDirectory))
 				startinfo.WorkingDirectory = cmdsettings.WorkingDirectory;
 

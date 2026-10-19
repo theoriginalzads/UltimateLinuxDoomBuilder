@@ -649,7 +649,12 @@ namespace CodeImp.DoomBuilder
 
 			// Setup directories
 			temppath = Path.GetTempPath();
+#if ULDB
+			// ULDB: XDG config directory (~/.config/UltimateLinuxDoomBuilder), separate from upstream UDB's settings.
+			settingspath = (portablemode ? apppath : ULDB.Platform.Paths.SettingsDirectory);
+#else
 			settingspath = (portablemode ? apppath : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR)); //mxd
+#endif
 			restorepath = Path.Combine(settingspath, MAP_RESTORE_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
@@ -898,6 +903,10 @@ namespace CodeImp.DoomBuilder
 				else if(string.Compare(curarg, "-PORTABLE", true) == 0)
 				{
 					// Can we write stuff to apppath?
+#if ULDB
+					// ULDB: Windows ACLs don't exist on Linux; test writability directly.
+					portablemode = ULDB.Platform.Paths.IsDirectoryWritable(apppath);
+#else
 					try
 					{
 						WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -927,6 +936,7 @@ namespace CodeImp.DoomBuilder
 						}
 					} 
 					catch(Exception) { }
+#endif
 
 					// Warn the user?
 					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for \"" + apppath + "\" directory.", MessageBoxButtons.OK);
@@ -2164,7 +2174,12 @@ namespace CodeImp.DoomBuilder
             string url2 = url.ToLowerInvariant();
             if (!url2.StartsWith("http://") && !url2.StartsWith("https://") && !url2.StartsWith("ftp://") && !url2.StartsWith("mailto:"))
                 return;
+#if ULDB
+            // ULDB: .NET only opens URLs through the shell when asked to; on Linux that's xdg-open.
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+#else
             System.Diagnostics.Process.Start(url);
+#endif
             /*
 
 			RegistryKey key = null;

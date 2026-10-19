@@ -282,6 +282,9 @@ namespace CodeImp.DoomBuilder.Compilers
 			{
 				// Start the compiler
 				process = Process.Start(processinfo);
+#if ULDB
+				ULDB.Platform.Processes.Started(process); // ULDB: Linux can't read StartTime after exit
+#endif
 			}
 			catch (Exception e)
 			{
@@ -292,7 +295,11 @@ namespace CodeImp.DoomBuilder.Compilers
 
 			// Wait for compiler to complete
 			process.WaitForExit();
+#if ULDB
+			TimeSpan deltatime = ULDB.Platform.Processes.RunTime(process); // ULDB: Linux can't read StartTime after exit
+#else
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+#endif
 			General.WriteLogLine("Compiler process has finished.");
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 

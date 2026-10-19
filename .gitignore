@@ -18,3 +18,6 @@ bin
 /Source/Core/*.user
 /Source/Native/*.log
 /Build/builder
+
+# ULDB: generated test maps (tools/testmaps/make_testmaps.py)
+/tests/maps/

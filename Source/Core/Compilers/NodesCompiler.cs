@@ -111,6 +111,9 @@ namespace CodeImp.DoomBuilder.Compilers
 			{
 				// Start the compiler
 				process.Start();
+#if ULDB
+				ULDB.Platform.Processes.Started(process); // ULDB: Linux can't read StartTime after exit
+#endif
 				process.BeginOutputReadLine();
 				process.BeginErrorReadLine();
 			}
@@ -133,7 +136,11 @@ namespace CodeImp.DoomBuilder.Compilers
 			//zdbsp actually writes building process here, not error info
 			bool errorsInErrorOutput = (outErr.Length > 0 && outErr.ToLowerInvariant().IndexOf("error") != -1);
 
+#if ULDB
+			TimeSpan deltatime = ULDB.Platform.Processes.RunTime(process); // ULDB: Linux can't read StartTime after exit
+#else
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+#endif
 			General.WriteLogLine("Compiler process has finished" + (errorsInNormalOurput || errorsInErrorOutput ? " with errors." : ".")); //mxd
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 
