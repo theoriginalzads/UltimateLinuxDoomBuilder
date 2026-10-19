@@ -88,9 +88,47 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 **Tests:** 137 passing.
 
-### Remaining Phase 3 work
+### Remaining Phase 3 work (pick up here)
 
-1. `UDB.Avalonia` app (or the UI in the `Builder` assembly) with Avalonia 12.1.4. It installs an `IWinFormsHost`, `Application.RunHandler` and a `HostedGL` context shared with Avalonia's, whose FBO it displays.
-2. `MainForm` port: menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.
-3. Viewport: render UDB into the shared context's FBO and show it in an `OpenGlControlBase`. Input goes into UDB's action system, with key code mapping.
-4. Scope filter (GZDoom/UZDoom only) and branding, as the first config UI lands.
+The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
+
+1. **Avalonia app entry point:**
+   - The UI lives in the `Builder` assembly; it already references Avalonia 12.1.4.
+   - Add the `uldb` launcher and an Avalonia `App`. Set up Avalonia before `General.Main` creates windows: `General.Main` builds `MainForm` and then calls `Application.Run`.
+   - Install `Application.RunHandler`/`ExitHandler`, and set `ULDB.Branding` names in the window title.
+2. **`IWinFormsHost` implementation** (`Source/ULDB/Compat/WinForms/Host.cs` defines the interface):
+   - message boxes, portal file and colour dialogs, clipboard, cursors
+   - `Invoke`/`BeginInvoke`/`CheckAccess` via Avalonia's `Dispatcher`
+   - UI-thread timers, `ActiveForm`
+3. **Viewport:**
+   - A context shared with Avalonia's (`IOpenGlTextureSharingRenderInterfaceContextFeature`), registered with `ULDB.Rendering.HostedGL`.
+   - UDB renders into an FBO texture at any time; an `OpenGlControlBase` blits the latest frame.
+   - Set `HostedGL.SetFramebuffer` on resize.
+   - Input through `ULDB.Input.KeyMapping` into UDB's action system.
+   - 3D mouselook needs pointer capture plus `Cursor.PositionSetter`, replacing RawMouse (`Actions/MouseInput.cs`).
+4. **`MainForm` port** (first real port; see the procedure in `docs/architecture.md`):
+   - Add `CodeImp.DoomBuilder.Windows.MainForm` to `Source/ULDB/Builder/uistubs-ported.txt`, rerun `tools/uistubgen/prune.py`, and move `UIStubFixes/MainForm.cs` logic into the port.
+   - Menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.
+   - Familiar layout (plan section 4). Screenshot to the user before any major layout change.
+   - Record it in `docs/port-map.md` and `docs/ux-changes.md`.
+5. **First config UI** (Open Map / game configurations): use `ULDB.Scope.ScopeFilter`, and add entries to `docs/scope-hidden.md`.
+
+**Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save.
+
+## Handoff notes (for the next session)
+
+- **Branches:**
+  - `phase-1/core` → `phase-2/renderer` → `phase-3/shell` (each builds on the previous).
+  - Phases 0–2 are in PR [#1](https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/pull/1) into `master`; it may already be merged when you read this.
+  - Continue on `phase-3/shell`. If #1 has been merged, merge `master` into it first.
+- **User's machine checklist** (`docs/setup-cachyos.md`). Ask whether these are done:
+  - install the toolchain
+  - clone with `--recurse-submodules`
+  - `dotnet test Builder.Linux.sln`, expecting 137 passing
+  - the Mono reference build, reference screenshots in `docs/reference-screenshots/`
+  - own maps in `tests/maps/user/` (optional)
+- **On the user's machine the window is real:** the Avalonia app runs on their KDE Plasma (X11 backend; XWayland on Wayland sessions). Use `-p:UldbArch=znver4` for their builds if they want it.
+- **GitHub from cloud sessions:**
+  - `gh` GraphQL is blocked; use `gh api` (REST).
+  - The repo is a fork, so always target `theoriginalzads/UltimateLinuxDoomBuilder` explicitly when opening PRs, never upstream.
+- **Open decisions:** none. Everything is in `docs/ULDB-Plan.md` sections 0 and 7.
