@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			if(!isdisposed)
 			{
 				// Clean up
-				icon.Dispose();
+				icon?.Dispose(); // ULDB bug fix: icon is only created on demand, so it can be null here
 
 				// Done
 				isdisposed = true;

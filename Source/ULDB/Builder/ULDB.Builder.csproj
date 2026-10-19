@@ -66,4 +66,17 @@
     <EmbeddedResource Include="$(UpstreamCore)Resources/world3d_skybox.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d_skybox.shader" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
+  <!-- Data files next to the program, laid out like upstream's Build folder
+       (Configurations/, Compilers/, Scripting/, UDBuilder.default.cfg, ...).
+       Windows-only DLLs and the .chm help file are left out. -->
+  <PropertyGroup>
+    <UpstreamAssets>$(MSBuildThisFileDirectory)../../../Assets/</UpstreamAssets>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(UpstreamAssets)Common/**/*"
+          Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
+          Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <None Include="$(UpstreamAssets)Linux/**/*"
+          Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
 </Project>
