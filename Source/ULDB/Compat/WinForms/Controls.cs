@@ -129,9 +129,34 @@ namespace System.Windows.Forms
 		protected virtual void WndProc(ref Message m) { }
 
 		public event EventHandler MouseCaptureChanged;
+		public event ComponentModel.CancelEventHandler Validating;
+		public event EventHandler Validated;
+		public event LayoutEventHandler Layout;
+		public event EventHandler ClientSizeChanged;
+		public event HelpEventHandler HelpRequested;
+		protected virtual void OnValidating(ComponentModel.CancelEventArgs e) => Validating?.Invoke(this, e);
+		protected virtual void OnValidated(EventArgs e) => Validated?.Invoke(this, e);
+		protected virtual void OnLayout(LayoutEventArgs e) => Layout?.Invoke(this, e);
+		protected virtual void OnClientSizeChanged(EventArgs e) => ClientSizeChanged?.Invoke(this, e);
+		protected virtual void OnHelpRequested(HelpEventArgs e) => HelpRequested?.Invoke(this, e);
+
+		/// <summary>ULDB: focus left the control in the view; runs Validating (unless cancelled) and Validated.</summary>
+		public bool RaiseValidation()
+		{
+			if(!CausesValidation) return true;
+			ComponentModel.CancelEventArgs e = new ComponentModel.CancelEventArgs();
+			OnValidating(e);
+			if(e.Cancel) return false;
+			OnValidated(EventArgs.Empty);
+			return true;
+		}
+
+		public void RaiseLayout() => OnLayout(new LayoutEventArgs(this, ""));
+		public void RaiseHelpRequested() => OnHelpRequested(new HelpEventArgs(Cursor.Position));
 		protected virtual void OnMouseCaptureChanged(EventArgs e) => MouseCaptureChanged?.Invoke(this, e);
 
 		public DockStyle Dock { get; set; }
+		public ImeMode ImeMode { get; set; }
 		public bool CausesValidation { get; set; } = true;
 		public bool CanFocus => Visible && Enabled;
 		public ContextMenuStrip ContextMenuStrip { get; set; }
@@ -471,6 +496,90 @@ namespace System.Windows.Forms
 		}
 	}
 
+	public class AutoCompleteStringCollection : List<string>
+	{
+		public void AddRange(string[] value) => base.AddRange(value);
+	}
+
+	public delegate void DrawItemEventHandler(object sender, DrawItemEventArgs e);
+	public class DrawItemEventArgs : EventArgs
+	{
+		public DrawItemEventArgs(Graphics graphics, Font font, Rectangle rect, int index, DrawItemState state)
+		{
+			Graphics = graphics; Font = font; Bounds = rect; Index = index; State = state;
+		}
+		public Graphics Graphics { get; }
+		public Font Font { get; }
+		public Rectangle Bounds { get; }
+		public int Index { get; }
+		public DrawItemState State { get; }
+		public Color ForeColor => (State & DrawItemState.Selected) != 0 ? SystemColors.HighlightText : SystemColors.WindowText;
+		public Color BackColor => (State & DrawItemState.Selected) != 0 ? SystemColors.Highlight : SystemColors.Window;
+		public void DrawBackground() { }
+		public void DrawFocusRectangle() { }
+	}
+
+	public delegate void MeasureItemEventHandler(object sender, MeasureItemEventArgs e);
+	public class MeasureItemEventArgs : EventArgs
+	{
+		public MeasureItemEventArgs(Graphics graphics, int index, int itemHeight) { Graphics = graphics; Index = index; ItemHeight = itemHeight; }
+		public Graphics Graphics { get; }
+		public int Index { get; }
+		public int ItemHeight { get; set; }
+		public int ItemWidth { get; set; }
+	}
+
+	public delegate void LayoutEventHandler(object sender, LayoutEventArgs e);
+	public class LayoutEventArgs : EventArgs
+	{
+		public LayoutEventArgs(Control affectedControl, string affectedProperty) { AffectedControl = affectedControl; AffectedProperty = affectedProperty; }
+		public Control AffectedControl { get; }
+		public string AffectedProperty { get; }
+	}
+
+	public delegate void HelpEventHandler(object sender, HelpEventArgs hlpevent);
+	public class HelpEventArgs : EventArgs
+	{
+		public HelpEventArgs(Point mousePos) { MousePos = mousePos; }
+		public Point MousePos { get; }
+		public bool Handled { get; set; }
+	}
+
+	/// <summary>Scroll bar state (value and range). ButtonsNumericTextbox uses one as up/down buttons.</summary>
+	public class ScrollBar : Control
+	{
+		private int value;
+		public int Minimum { get; set; }
+		public int Maximum { get; set; } = 100;
+		public int SmallChange { get; set; } = 1;
+		public int LargeChange { get; set; } = 10;
+		public int Value
+		{
+			get => value;
+			set
+			{
+				if(this.value == value) return;
+				if(value < Minimum || value > Maximum) throw new ArgumentOutOfRangeException(nameof(value));
+				this.value = value;
+				ValueChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+		public event EventHandler ValueChanged;
+		public event ScrollEventHandler Scroll;
+
+		/// <summary>ULDB: the view scrolled (or clicked an arrow): raises Scroll, then sets Value.</summary>
+		public void RaiseScroll(ScrollEventType type, int newValue)
+		{
+			newValue = Math.Max(Minimum, Math.Min(Maximum, newValue));
+			ScrollEventArgs e = new ScrollEventArgs(type, value, newValue, this is VScrollBar ? ScrollOrientation.VerticalScroll : ScrollOrientation.HorizontalScroll);
+			Scroll?.Invoke(this, e);
+			Value = Math.Max(Minimum, Math.Min(Maximum, e.NewValue));
+		}
+	}
+
+	public class VScrollBar : ScrollBar { }
+	public class HScrollBar : ScrollBar { }
+
 	public class CreateParams
 	{
 		public string ClassName { get; set; }
@@ -532,24 +641,198 @@ namespace System.Windows.Forms
 	}
 
 	/// <summary>State-only combo box: items, selection and drop-down width. The UI renders it.</summary>
+	/// <summary>
+	/// Combo box state: items, selection and text. Like WinForms, selecting an item sets Text to it
+	/// (and a DropDownList's Text is always its selected item); typing in a DropDown sets Text and
+	/// selects a matching item. Views call RaiseDropDown/RaiseDropDownClosed/RaiseSelectionChangeCommitted.
+	/// </summary>
 	public class ComboBox : Control
 	{
-		public ObjectCollection Items { get; } = new ObjectCollection();
-		public int SelectedIndex { get; set; } = -1;
+		private int selectedindex = -1;
+		private bool settingtext;
+
+		public ComboBox()
+		{
+			Items = new ObjectCollection(this);
+		}
+
+		public ObjectCollection Items { get; }
+
+		public int SelectedIndex
+		{
+			get => selectedindex;
+			set
+			{
+				if(value < -1 || value >= Items.Count) throw new ArgumentOutOfRangeException(nameof(value));
+				if(selectedindex == value) return;
+				selectedindex = value;
+				settingtext = true;
+				try { Text = value >= 0 ? GetItemText(Items[value]) : (DropDownStyle == ComboBoxStyle.DropDownList ? "" : Text); }
+				finally { settingtext = false; }
+				OnSelectedIndexChanged(EventArgs.Empty);
+				OnSelectedValueChanged(EventArgs.Empty);
+				SelectedItemChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
 		public object SelectedItem
 		{
-			get => SelectedIndex >= 0 && SelectedIndex < Items.Count ? Items[SelectedIndex] : null;
-			set => SelectedIndex = Items.IndexOf(value);
+			get => selectedindex >= 0 && selectedindex < Items.Count ? Items[selectedindex] : null;
+			set => SelectedIndex = value == null ? -1 : Items.IndexOf(value);
 		}
+
+		public object SelectedValue { get => SelectedItem; set => SelectedItem = value; }
+
+		public override string Text
+		{
+			get => base.Text;
+			set
+			{
+				base.Text = value;
+				if(settingtext) return;
+				// Typing (or code) selects the item with that text, if any.
+				int index = FindStringExact(value ?? "");
+				if(index != selectedindex && (index >= 0 || DropDownStyle != ComboBoxStyle.DropDownList))
+				{
+					if(index >= 0) SelectedIndex = index;
+					else if(selectedindex >= 0) { selectedindex = -1; OnSelectedIndexChanged(EventArgs.Empty); }
+				}
+			}
+		}
+
+		public string GetItemText(object item)
+		{
+			if(item == null) return "";
+			if(!string.IsNullOrEmpty(DisplayMember))
+			{
+				Reflection.PropertyInfo p = item.GetType().GetProperty(DisplayMember);
+				if(p != null) return p.GetValue(item)?.ToString() ?? "";
+			}
+			return item.ToString();
+		}
+
+		public int FindStringExact(string s)
+		{
+			for(int i = 0; i < Items.Count; i++) if(string.Equals(GetItemText(Items[i]), s, StringComparison.OrdinalIgnoreCase)) return i;
+			return -1;
+		}
+
+		public int FindString(string s)
+		{
+			for(int i = 0; i < Items.Count; i++) if(GetItemText(Items[i]).StartsWith(s ?? "", StringComparison.OrdinalIgnoreCase)) return i;
+			return -1;
+		}
+
 		public int DropDownWidth { get; set; }
-		public int ItemHeight { get; set; }
+		public int DropDownHeight { get; set; } = 106;
+		public int ItemHeight { get; set; } = 13;
+		public int MaxDropDownItems { get; set; } = 8;
+		public int MaxLength { get; set; }
+		public bool IntegralHeight { get; set; } = true;
+		public bool FormattingEnabled { get; set; }
+		public bool Sorted { get; set; }
+		public bool DroppedDown { get; set; }
+		public string DisplayMember { get; set; } = "";
+		public string ValueMember { get; set; } = "";
+		public object DataSource { get; set; }
+		public FlatStyle FlatStyle { get; set; } = FlatStyle.Standard;
+		public DrawMode DrawMode { get; set; }
+		public AutoCompleteMode AutoCompleteMode { get; set; }
+		public AutoCompleteSource AutoCompleteSource { get; set; } = AutoCompleteSource.None;
+		public AutoCompleteStringCollection AutoCompleteCustomSource { get; set; } = new AutoCompleteStringCollection();
 		public ComboBoxStyle DropDownStyle { get; set; } = ComboBoxStyle.DropDown;
+		public int SelectionStart { get; set; }
+		public int SelectionLength { get; set; }
+		public string SelectedText { get; set; } = "";
+		public void SelectAll() { SelectionStart = 0; SelectionLength = Text.Length; }
+		public void Select(int start, int length) { SelectionStart = start; SelectionLength = length; }
 		public void BeginUpdate() { }
-		public void EndUpdate() { }
+		public void EndUpdate() { ItemsChanged?.Invoke(this, EventArgs.Empty); }
+
+		public event EventHandler SelectedIndexChanged;
+		public event EventHandler SelectedValueChanged;
+		public event EventHandler SelectionChangeCommitted;
+		public event EventHandler DropDown;
+		public event EventHandler DropDownClosed;
+		public event EventHandler TextUpdate;
+		public event DrawItemEventHandler DrawItem;
+		public event MeasureItemEventHandler MeasureItem;
+
+		/// <summary>ULDB: raised when the item list changes, so views refresh it.</summary>
+		public event EventHandler ItemsChanged;
+		/// <summary>ULDB: raised after SelectedIndex changes (with SelectedIndexChanged).</summary>
+		public event EventHandler SelectedItemChanged;
+
+		protected virtual void OnSelectedIndexChanged(EventArgs e) => SelectedIndexChanged?.Invoke(this, e);
+		protected virtual void OnSelectedValueChanged(EventArgs e) => SelectedValueChanged?.Invoke(this, e);
+		protected virtual void OnSelectionChangeCommitted(EventArgs e) => SelectionChangeCommitted?.Invoke(this, e);
+		protected virtual void OnDropDown(EventArgs e) => DropDown?.Invoke(this, e);
+		protected virtual void OnDropDownClosed(EventArgs e) => DropDownClosed?.Invoke(this, e);
+		protected virtual void OnDrawItem(DrawItemEventArgs e) => DrawItem?.Invoke(this, e);
+		protected virtual void OnMeasureItem(MeasureItemEventArgs e) => MeasureItem?.Invoke(this, e);
+
+		/// <summary>ULDB: the user picked an item in the view.</summary>
+		public void RaiseSelectionChangeCommitted(int index)
+		{
+			SelectedIndex = index;
+			OnSelectionChangeCommitted(EventArgs.Empty);
+		}
+
+		/// <summary>ULDB: the user typed in the view's text box.</summary>
+		public void RaiseTextUpdate(string text)
+		{
+			Text = text;
+			TextUpdate?.Invoke(this, EventArgs.Empty);
+		}
+
+		public void RaiseDropDown() { DroppedDown = true; OnDropDown(EventArgs.Empty); }
+		public void RaiseDropDownClosed() { DroppedDown = false; OnDropDownClosed(EventArgs.Empty); }
+
+		internal void OnItemsChanged()
+		{
+			if(selectedindex >= Items.Count) { selectedindex = -1; OnSelectedIndexChanged(EventArgs.Empty); }
+			ItemsChanged?.Invoke(this, EventArgs.Empty);
+		}
 
 		public class ObjectCollection : List<object>
 		{
-			public void AddRange(object[] items) => base.AddRange(items);
+			private readonly ComboBox owner;
+
+			public ObjectCollection() { }
+			public ObjectCollection(ComboBox owner) { this.owner = owner; }
+
+			public new int Add(object item)
+			{
+				if(owner != null && owner.Sorted)
+				{
+					string text = owner.GetItemText(item);
+					int i = 0;
+					while(i < Count && string.Compare(owner.GetItemText(this[i]), text, StringComparison.CurrentCulture) <= 0) i++;
+					base.Insert(i, item);
+					owner.OnItemsChanged();
+					return i;
+				}
+				base.Add(item);
+				owner?.OnItemsChanged();
+				return Count - 1;
+			}
+
+			public void AddRange(object[] items)
+			{
+				if(owner != null && owner.Sorted) { foreach(object o in items) Add(o); return; }
+				base.AddRange(items);
+				owner?.OnItemsChanged();
+			}
+
+			public new void AddRange(IEnumerable<object> items) => AddRange(new List<object>(items).ToArray());
+			public new void Insert(int index, object item) { base.Insert(index, item); owner?.OnItemsChanged(); }
+			public new void Remove(object item) { base.Remove(item); owner?.OnItemsChanged(); }
+			public new void RemoveAt(int index) { base.RemoveAt(index); owner?.OnItemsChanged(); }
+			public new void Clear()
+			{
+				base.Clear();
+				if(owner != null) { owner.selectedindex = -1; owner.OnItemsChanged(); }
+			}
 		}
 	}
 
@@ -598,13 +881,4 @@ namespace System.Windows.Forms
 		public int Width { get; set; }
 	}
 
-	public class DataGridView : Control
-	{
-		public DataGridViewCellStyle RowsDefaultCellStyle { get; set; } = new DataGridViewCellStyle();
-	}
-
-	public class DataGridViewCellStyle
-	{
-		public Padding Padding { get; set; }
-	}
 }

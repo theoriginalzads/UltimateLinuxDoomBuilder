@@ -20,6 +20,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public Image WarningIcon { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckedColoredListBox..ctor#1
 		public CheckedColoredListBox() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.CheckedColoredListBox.OnMeasureItem#2
+		protected virtual void OnMeasureItem(MeasureItemEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.CheckedColoredListBox.OnDrawItem#3
+		protected virtual void OnDrawItem(DrawItemEventArgs e) { }
 	}
 }
 

@@ -16,6 +16,8 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ColoredComboBox..ctor#0
 		public ColoredComboBox() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ColoredComboBox.OnDrawItem#2
+		protected virtual void OnDrawItem(DrawItemEventArgs e) { }
 	}
 }
 

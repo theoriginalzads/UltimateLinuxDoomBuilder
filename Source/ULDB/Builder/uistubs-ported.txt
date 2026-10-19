@@ -34,3 +34,10 @@ CodeImp.DoomBuilder.Controls.DockersControl
 CodeImp.DoomBuilder.Controls.DockersTabsControl
 CodeImp.DoomBuilder.Controls.TransparentPanel
 CodeImp.DoomBuilder.Controls.HintsPanel
+CodeImp.DoomBuilder.Controls.AutoSelectTextbox
+CodeImp.DoomBuilder.Controls.NumericTextbox
+CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox
+CodeImp.DoomBuilder.Controls.FieldsEditorControl
+CodeImp.DoomBuilder.Windows.VertexEditForm
+CodeImp.DoomBuilder.Controls.FieldsEditorRow
+CodeImp.DoomBuilder.Controls.FieldsEditorRowType

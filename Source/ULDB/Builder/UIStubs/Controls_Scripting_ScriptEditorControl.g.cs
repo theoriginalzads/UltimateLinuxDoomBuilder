@@ -179,6 +179,8 @@ namespace CodeImp.DoomBuilder.Controls
 		internal ScriptStyleType GetScriptStyle(int scintillastyle) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ProcessCmdKey#72
 		protected virtual bool ProcessCmdKey(ref Message msg, Keys keydata) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.OnLayout#73
+		protected virtual void OnLayout(LayoutEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ImageIndex
 		internal enum ImageIndex
 		{
