@@ -40,6 +40,7 @@
     <Compile Include="$(UpstreamCore)Windows/IMainForm.cs" />
     <Compile Include="$(UpstreamCore)Controls/Docker.cs" />
     <Compile Include="$(UpstreamCore)Controls/ControlExtensionMethods.cs" />
+    <Compile Include="$(UpstreamCore)Windows/DelayedForm.cs" />
     <Compile Include="$(UpstreamCore)Controls/ToolStripActionButton.cs" />
     <Compile Include="$(UpstreamCore)Controls/RenderTargetControl.cs" />
     <Compile Include="$(UpstreamCore)Controls/ToolStripNumericUpDown.cs" />

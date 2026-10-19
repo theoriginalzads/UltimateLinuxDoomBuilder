@@ -17,3 +17,4 @@ CodeImp.DoomBuilder.Windows.FindReplaceOptions
 CodeImp.DoomBuilder.Windows.ScriptStatusInfo
 CodeImp.DoomBuilder.Windows.ScriptStatusType
 CodeImp.DoomBuilder.Windows.StatusType
+CodeImp.DoomBuilder.Windows.DelayedForm

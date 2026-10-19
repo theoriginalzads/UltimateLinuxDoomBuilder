@@ -36,6 +36,12 @@ namespace ULDB.Shell
 		private static GlInterface gl;
 		private static Task initializing;
 		private static int framebuffer, colortexture, depthbuffer;
+		private static unsafe delegate* unmanaged<int, int*, void> glGetIntegerv;
+		private static unsafe delegate* unmanaged<int, int, void> glBindBuffer;
+		private const int GL_PIXEL_UNPACK_BUFFER = 0x88EC;
+		private const int GL_PIXEL_UNPACK_BUFFER_BINDING = 0x88EF;
+		private const int GL_TEXTURE_BINDING_2D = 0x8069;
+		private const int GL_RENDERBUFFER_BINDING = 0x8CA7;
 
 		/// <summary>True once the context exists and BuilderNative is registered to use it.</summary>
 		public static bool IsReady => context != null;
@@ -73,6 +79,11 @@ namespace ULDB.Shell
 			context = sharing.CreateSharedContext(versions)
 				?? throw new NotSupportedException("Unable to create an OpenGL 3.2+ context shared with Avalonia's");
 			gl = context.GlInterface;
+			unsafe
+			{
+				glGetIntegerv = (delegate* unmanaged<int, int*, void>)gl.GetProcAddress("glGetIntegerv");
+				glBindBuffer = (delegate* unmanaged<int, int, void>)gl.GetProcAddress("glBindBuffer");
+			}
 
 			HostedGL.Register(name => gl.GetProcAddress(name), MakeCurrent, null, OnPresent);
 			CodeImp.DoomBuilder.General.WriteLogLine("Viewport OpenGL context: " + context.Version + ", " + gl.Renderer);
@@ -91,6 +102,14 @@ namespace ULDB.Shell
 		{
 			if(!IsReady || size.Width <= 0 || size.Height <= 0 || size == FrameSize) return;
 			MakeCurrent();
+
+			// UDB's renderer may leave a pixel unpack buffer bound (texture uploads); with one
+			// bound, TexImage2D reads from it and fails. Unbind it here and restore UDB's
+			// bindings afterwards, so its cached GL state stays true.
+			int unpackbuffer = GetInteger(GL_PIXEL_UNPACK_BUFFER_BINDING);
+			int boundtexture = GetInteger(GL_TEXTURE_BINDING_2D);
+			int boundrenderbuffer = GetInteger(GL_RENDERBUFFER_BINDING);
+			if(unpackbuffer != 0) BindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 
 			if(framebuffer == 0)
 			{
@@ -113,6 +132,9 @@ namespace ULDB.Shell
 			gl.FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colortexture, 0);
 			gl.FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthbuffer);
 			int status = gl.CheckFramebufferStatus(GL_FRAMEBUFFER);
+			gl.BindTexture(GL_TEXTURE_2D, boundtexture);
+			gl.BindRenderbuffer(GL_RENDERBUFFER, boundrenderbuffer);
+			if(unpackbuffer != 0) BindBuffer(GL_PIXEL_UNPACK_BUFFER, unpackbuffer);
 			gl.BindFramebuffer(GL_FRAMEBUFFER, 0);
 			if(status != GL_FRAMEBUFFER_COMPLETE)
 				throw new InvalidOperationException("Viewport framebuffer is incomplete (0x" + status.ToString("X") + ")");
@@ -120,6 +142,15 @@ namespace ULDB.Shell
 			FrameSize = size;
 			HostedGL.SetFramebuffer((uint)framebuffer, size.Width, size.Height);
 		}
+
+		private static unsafe int GetInteger(int name)
+		{
+			int value = 0;
+			glGetIntegerv(name, &value);
+			return value;
+		}
+
+		private static unsafe void BindBuffer(int target, int buffer) => glBindBuffer(target, buffer);
 
 		private static void OnPresent()
 		{

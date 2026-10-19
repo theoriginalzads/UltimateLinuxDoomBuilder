@@ -115,6 +115,27 @@ namespace System.Windows.Forms
 		public static Rectangle GetBounds(Point pt) => PrimaryScreen.Bounds;
 	}
 
+	/// <summary>Desktop metrics upstream asks for. The virtual screen comes from Screen (the UI).</summary>
+	public static class SystemInformation
+	{
+		public static Rectangle VirtualScreen
+		{
+			get
+			{
+				Rectangle r = Rectangle.Empty;
+				foreach(Screen s in Screen.AllScreens) r = r.IsEmpty ? s.Bounds : Rectangle.Union(r, s.Bounds);
+				return r;
+			}
+		}
+
+		public static int CaretBlinkTime => 530;
+		public static int VerticalScrollBarWidth => 14;
+		public static int HorizontalScrollBarHeight => 14;
+		public static Size PrimaryMonitorSize => Screen.PrimaryScreen.Bounds.Size;
+		public static Size DoubleClickSize => new Size(4, 4);
+		public static int DoubleClickTime => 500;
+	}
+
 	public static class Cursors
 	{
 		public static Cursor Default { get; } = new Cursor("Default");

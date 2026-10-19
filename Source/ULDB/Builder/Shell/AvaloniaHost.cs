@@ -49,8 +49,22 @@ namespace ULDB.Shell
 			// it installed one; otherwise they crash the program as usual.
 			Dispatcher.UIThread.UnhandledException += (s, e) =>
 			{
-				if(System.Windows.Forms.Application.RaiseThreadException(e.Exception)) e.Handled = true;
+				ReportException(e.Exception);
+				e.Handled = true;
 			};
+		}
+
+		/// <summary>
+		/// An exception escaped upstream code on the UI thread (an event handler or timer tick).
+		/// Like WinForms: upstream's ThreadException handler shows it when installed (release
+		/// builds); otherwise it's logged and reported, and the editor keeps running.
+		/// </summary>
+		private static void ReportException(Exception ex)
+		{
+			try { CodeImp.DoomBuilder.General.WriteLogLine("Unhandled exception on the UI thread: " + ex); }
+			catch(Exception) { Console.Error.WriteLine(ex); }
+			if(System.Windows.Forms.Application.RaiseThreadException(ex)) return;
+			CodeImp.DoomBuilder.General.ErrorLogger?.Add(CodeImp.DoomBuilder.ErrorType.Error, ex.GetType().Name + ": " + ex.Message);
 		}
 
 		#region ================== Main loop
@@ -282,7 +296,9 @@ namespace ULDB.Shell
 				Stopper stopper = new Stopper();
 				DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, (s, e) =>
 				{
-					if(!stopper.Stopped) tick();
+					if(stopper.Stopped) return;
+					try { tick(); }
+					catch(Exception ex) { ReportException(ex); }
 				});
 				stopper.Timer = timer;
 				timer.Start();

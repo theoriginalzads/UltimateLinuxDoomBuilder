@@ -162,6 +162,7 @@ namespace System.Windows.Forms
 		public void RaiseDragDrop(DragEventArgs e) => OnDragDrop(e);
 		public void RaiseDragLeave() => OnDragLeave(EventArgs.Empty);
 
+		protected bool DesignMode => false;
 		public bool AllowDrop { get; set; }
 		public AnchorStyles Anchor { get; set; } = AnchorStyles.Top | AnchorStyles.Left;
 		public bool Capture { get; set; }
@@ -264,6 +265,7 @@ namespace System.Windows.Forms
 		public FormStartPosition StartPosition { get; set; }
 		public SizeGripStyle SizeGripStyle { get; set; }
 		public MenuStrip MainMenuStrip { get; set; }
+		public double Opacity { get; set; } = 1.0;
 		public bool MaximizeBox { get; set; } = true;
 		public bool MinimizeBox { get; set; } = true;
 		public bool ShowIcon { get; set; } = true;
@@ -291,7 +293,10 @@ namespace System.Windows.Forms
 		/// <summary>ULDB: the UI asks to close (title bar, Alt+F4). Returns false if the form cancelled.</summary>
 		public bool RequestClose(CloseReason reason)
 		{
-			FormClosingEventArgs closing = new FormClosingEventArgs(reason, false);
+			// WinForms raises the old Closing event first; FormClosing sees its decision.
+			ComponentModel.CancelEventArgs old = new ComponentModel.CancelEventArgs();
+			OnClosing(old);
+			FormClosingEventArgs closing = new FormClosingEventArgs(reason, old.Cancel);
 			OnFormClosing(closing);
 			if(closing.Cancel) return false;
 			Visible = false;
@@ -308,6 +313,16 @@ namespace System.Windows.Forms
 
 		/// <summary>ULDB: installed by the UI to close a form's window.</summary>
 		public static Action<Form> CloseHandler { get; set; }
+
+		[Obsolete("Use FormClosing")] public event ComponentModel.CancelEventHandler Closing;
+		public event EventHandler ResizeEnd;
+#pragma warning disable CS0618
+		protected virtual void OnClosing(ComponentModel.CancelEventArgs e) => Closing?.Invoke(this, e);
+#pragma warning restore CS0618
+		protected virtual void OnResizeEnd(EventArgs e) => ResizeEnd?.Invoke(this, e);
+
+		/// <summary>ULDB: the UI raises ResizeEnd when the user finishes moving or resizing the window.</summary>
+		public void RaiseResizeEnd() => OnResizeEnd(EventArgs.Empty);
 
 		protected virtual void OnFormClosing(FormClosingEventArgs e) => FormClosing?.Invoke(this, e);
 
