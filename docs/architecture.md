@@ -39,7 +39,19 @@ Until each window is ported, `tools/uistubgen` generates a **placeholder** for e
 - Each placeholder keeps the name, namespace and non-private member signatures. Bodies do nothing and return defaults.
 - WinForms base classes map to the compat `Form`/`Control`.
 - Members that can't compile yet (they use WinForms types ULDB doesn't provide) are pruned automatically by `tools/uistubgen/prune.py` and listed in `uistubs-prune.txt`.
-- `UIStubFixes/` holds small hand-written partial additions, for members placeholders inherit from WinForms in upstream (e.g. `MainForm.Focus()`).
+- `UIStubFixes/` holds small hand-written partial additions:
+  - members placeholders inherit from WinForms in upstream (e.g. `MainForm.Focus()`)
+  - members that must do real work even before the port. These are listed in `uistubs-manual.txt` so the generator skips them. For example, `MainForm.RunOnUIThread` must run its action, because image loading publishes results through it.
+
+## Rendering (`Source/ULDB/Native`, `Source/ULDB/Builder/Rendering`)
+
+Upstream's BuilderNative creates its own GLX/WGL context on a native window. ULDB adds a **hosted context**: the host registers OpenGL callbacks and a target framebuffer with `ULDB.Rendering.HostedGL`, and BuilderNative renders with them.
+- **The Avalonia UI** (Phase 3) will use a context shared with Avalonia's and an FBO it displays. UDB issues GL calls at any time (texture uploads, redraws), not only inside Avalonia's render callback, so it needs its own current context.
+- **Tests** use `OffscreenGL`: Mesa's surfaceless EGL platform, no display needed.
+
+**Build:** `Source/ULDB/Native/CMakeLists.txt`, run automatically by `dotnet build`.
+- CPU target: `-p:UldbArch=generic|x86-64-v3|x86-64-v4|znver4|native`.
+- Upstream native files get three tiny `#ifdef ULDB` hooks. `ULDBHost.h` is force-included by CMake.
 
 **When a type gets its real Avalonia port:**
 1. Add its full name to `uistubs-ported.txt`.

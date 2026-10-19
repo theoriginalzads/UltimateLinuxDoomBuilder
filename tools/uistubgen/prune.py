@@ -18,6 +18,7 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 STUBS = os.path.join(REPO, "Source", "ULDB", "Builder", "UIStubs")
 PRUNE = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-prune.txt")
 PORTED = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-ported.txt")
+MANUAL = os.path.join(REPO, "Source", "ULDB", "Builder", "uistubs-manual.txt")
 PROJECT = os.path.join(REPO, "Source", "ULDB", "Builder", "ULDB.Builder.csproj")
 UPSTREAM = os.path.join(REPO, "Source", "Core")
 ERROR = re.compile(r"^(?P<file>/[^(]+)\((?P<line>\d+),\d+\): error (?P<code>CS\d+): (?P<msg>.*?)(?: \[.*\])?$")
@@ -36,7 +37,7 @@ def compiled_files():
 
 def generate():
     subprocess.run(["dotnet", "run", "--project", os.path.join(REPO, "tools", "uistubgen"), "--",
-                    "--out", STUBS, "--prune", PRUNE, "--ported", PORTED, "--root", UPSTREAM,
+                    "--out", STUBS, "--prune", PRUNE, "--ported", PORTED, "--manual", MANUAL, "--root", UPSTREAM,
                     "--winforms-types", os.path.join(REPO, "tools", "uistubgen", "winforms-types.txt"),
                     "--files-from", compiled_files(),
                     os.path.join(UPSTREAM, "Windows"), os.path.join(UPSTREAM, "Controls")],

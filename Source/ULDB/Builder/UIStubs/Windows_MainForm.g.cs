@@ -316,8 +316,6 @@ namespace CodeImp.DoomBuilder.Windows
 		public DialogResult ShowEditThings(ICollection<Thing> things) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.ProcessQueuedUIActions#272
 		internal void ProcessQueuedUIActions() { }
-		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.RunOnUIThread#273
-		public void RunOnUIThread(System.Action action) { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.UpdateStatus#274
 		public void UpdateStatus() { }
 		// stub-key: CodeImp.DoomBuilder.Windows.MainForm.ImageDataLoaded#275

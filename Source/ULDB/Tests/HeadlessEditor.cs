@@ -61,6 +61,7 @@ namespace ULDB.Tests
 
 				// The generated MainForm placeholder: a main window that does nothing.
 				SetField("mainwindow", new CodeImp.DoomBuilder.Windows.MainForm());
+				SetField("toastmanager", new ToastManager(new Control()));
 
 				MapSet.Initialize();
 
@@ -97,6 +98,9 @@ namespace ULDB.Tests
 			info.ApplyDefaults(config);
 			typeof(MapManager).GetField("config", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(manager, config);
 			typeof(MapManager).GetField("configinfo", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(manager, info);
+
+			// An empty map, as for a new map; resource loading updates its things.
+			typeof(MapManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(manager, new MapSet());
 
 			// Map options, as for a new map using this configuration.
 			MapOptions options = new MapOptions { ConfigFile = configfile, CurrentName = "MAP01" };

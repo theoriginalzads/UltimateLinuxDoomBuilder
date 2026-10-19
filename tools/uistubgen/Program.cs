@@ -20,6 +20,7 @@ static class Program
 	static readonly List<string> sourceDirs = new();
 	static HashSet<string> prune = new();
 	static HashSet<string> ported = new();
+	static HashSet<string> manual = new(); // "Type.Member": implemented by hand in UIStubFixes
 	static HashSet<string> winformsTypes = new();
 	static HashSet<string> onlyFiles; // Relative paths upstream's project compiles (null = all)
 
@@ -32,6 +33,7 @@ static class Program
 				case "--out": outDir = args[++i]; break;
 				case "--prune": pruneFile = args[++i]; break;
 				case "--ported": portedFile = args[++i]; break;
+				case "--manual": manual = ReadList(args[++i]); break;
 				case "--root": root = args[++i]; break;
 				case "--winforms-types": winformsTypes = ReadList(args[++i]); break;
 				case "--files-from": onlyFiles = ReadList(args[++i]); break;
@@ -212,7 +214,7 @@ static class Program
 
 			string mkey = key + "." + MemberKey(member) + "#" + (n++);
 			string code = EmitMember(member, isInterface, td.Identifier.Text);
-			if(code == null || prune.Contains(mkey)) continue;
+			if(code == null || prune.Contains(mkey) || manual.Contains(key + "." + MemberKey(member))) continue;
 			sb.AppendLine(ind + "\t// stub-key: " + mkey);
 			sb.AppendLine(Indent(code, ind + "\t"));
 		}

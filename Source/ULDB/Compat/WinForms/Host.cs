@@ -26,6 +26,9 @@ namespace System.Windows.Forms
 		void ShowHelp(IWin32Window owner, string url, string topic);
 		void DoEvents();
 
+		/// <summary>True when called on the UI thread.</summary>
+		bool CheckAccess();
+
 		/// <summary>Runs an action on the UI thread and waits for it to finish.</summary>
 		void Invoke(Action action);
 
@@ -102,6 +105,7 @@ namespace System.Windows.Forms
 		public DataObject GetClipboard() => clipboard;
 		public void ShowHelp(IWin32Window owner, string url, string topic) { }
 		public void DoEvents() { }
+		public bool CheckAccess() => true; // No UI thread: every thread counts as the UI thread
 		public void Invoke(Action action) => action();
 		public void BeginInvoke(Action action) => Threading.ThreadPool.QueueUserWorkItem(_ => action());
 

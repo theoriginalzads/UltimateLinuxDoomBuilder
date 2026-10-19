@@ -299,6 +299,7 @@ PK3_FILES = {
 {
     levelnum = 1
     next = "MAP01"
+    sky1 = "SKY1"
 }
 
 // A DoomEdNum for the ZScript actor, so it shows up in the editor's thing list.
@@ -319,6 +320,12 @@ object ULDBTestLamp
 }
 """,
     "zscript.zs": b"""version "4.10"
+
+// Real projects load GZDoom's/UZDoom's base resource (gzdoom.pk3 / uzdoom.pk3), which
+// defines the actor hierarchy. This test PK3 declares minimal stand-ins so it's self-contained.
+class Object native {}
+class Thinker : Object native {}
+class Actor : Thinker native {}
 
 class ULDBTestLamp : Actor
 {

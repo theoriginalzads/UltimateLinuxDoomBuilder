@@ -1,0 +1,4 @@
+# Placeholder members implemented by hand in UIStubFixes/ (by "Type.Member" name, all
+# overloads), because callers depend on them doing real work even before the window
+# is ported. tools/uistubgen skips these when generating placeholders.
+CodeImp.DoomBuilder.Windows.MainForm.RunOnUIThread
