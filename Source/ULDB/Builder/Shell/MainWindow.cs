@@ -130,35 +130,87 @@ namespace ULDB.Shell
 			return frame;
 		}
 
+		// Info panel heights: expanded (cards) and collapsed (one line), in ULDB's layout.
+		private const double InfoPanelExpandedHeight = 126;
+		private const double InfoPanelCollapsedHeight = 26;
+
 		private Control CreateInfoPanel()
 		{
-			// The linedef/sector/thing/vertex info panels are ported next; until then the panel
-			// shows the mode name and the collapsed-info label upstream maintains.
-			WF.Panel panelinfo = Field<WF.Panel>("panelinfo");
-			WF.Label modename = Field<WF.Label>("modename");
-			WF.Label collapsed = Field<WF.Label>("labelcollapsedinfo");
+			// Upstream's info panels (model-ported) are shown by their .axaml views; MainForm shows
+			// and hides them, the mode name and the statistics exactly as upstream does.
+			ModelBinder binder = new ModelBinder(form);
+			WF.Control panelinfo = binder.Watch(Field<WF.Panel>("panelinfo"));
+			WF.Label modename = (WF.Label)binder.Watch(Field<WF.Label>("modename"));
+			WF.Label collapsed = (WF.Label)binder.Watch(Field<WF.Label>("labelcollapsedinfo"));
+			WF.Button toggle = Field<WF.Button>("buttontoggleinfo");
+			StatisticsControl statsmodel = (StatisticsControl)binder.Watch(Field<StatisticsControl>("statistics"));
+			// Debug builds of upstream show a debug console in place of the mode name; ULDB doesn't
+			// show that console, so the mode name stands in for it.
+			WF.Control console = binder.Watch(Field<WF.Control>("console"));
 
-			TextBlock title = new TextBlock { FontSize = 28, FontWeight = FontWeight.Bold, Opacity = 0.35, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(12, 0) };
-			TextBlock info = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(12, 0) };
-			StackPanel content = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-			content.Children.Add(title);
-			content.Children.Add(info);
-			Border border = new Border { Child = content, Height = 106, BorderThickness = new Thickness(0, 1, 0, 0) };
+			Panel cards = new Panel { Margin = new Thickness(6, 6, 34, 6), ClipToBounds = true };
+			void AddCard(WF.Control model, Control view)
+			{
+				binder.Watch(model);
+				binder.Custom(() => view.IsVisible = model.Visible && form.IsInfoPanelExpanded);
+				cards.Children.Add(view);
+			}
+			AddCard(Field<LinedefInfoPanel>("linedefinfo"), new LinedefInfoView(Field<LinedefInfoPanel>("linedefinfo")));
+			AddCard(Field<SectorInfoPanel>("sectorinfo"), new SectorInfoView(Field<SectorInfoPanel>("sectorinfo")));
+			AddCard(Field<ThingInfoPanel>("thinginfo"), new ThingInfoView(Field<ThingInfoPanel>("thinginfo")));
+			AddCard(Field<VertexInfoPanel>("vertexinfo"), new VertexInfoView(Field<VertexInfoPanel>("vertexinfo")));
+
+			// Nothing highlighted: the mode name, and the map statistics on the right.
+			TextBlock title = new TextBlock { FontSize = 30, FontWeight = FontWeight.SemiBold, Opacity = 0.3, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0) };
+			StatisticsView stats = new StatisticsView(statsmodel) { HorizontalAlignment = HorizontalAlignment.Right };
+			Grid moderow = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+			Grid.SetColumn(stats, 1);
+			moderow.Children.Add(title);
+			moderow.Children.Add(stats);
+			cards.Children.Add(moderow);
+
+			// Collapsed: one line of info (upstream's labelcollapsedinfo).
+			TextBlock collapsedtext = new TextBlock { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(10, 0, 34, 0), TextTrimming = TextTrimming.CharacterEllipsis };
+
+			// Expand/collapse (upstream's buttontoggleinfo, which runs the "toggleinfopanel" action).
+			PathIcon chevron = new PathIcon { Width = 10, Height = 7 };
+			Button togglebutton = new Button
+			{
+				Content = chevron,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				VerticalAlignment = VerticalAlignment.Top,
+				Margin = new Thickness(0, 4, 6, 0),
+				Width = 24, Height = 20, Padding = new Thickness(0),
+				HorizontalContentAlignment = HorizontalAlignment.Center,
+				VerticalContentAlignment = VerticalAlignment.Center,
+			};
+			togglebutton.Classes.Add("uldb-tool");
+			togglebutton.Click += (s, e) => toggle.RaiseClick();
+
+			Panel content = new Panel();
+			content.Children.Add(cards);
+			content.Children.Add(collapsedtext);
+			content.Children.Add(togglebutton);
+			Border border = new Border { Child = content, BorderThickness = new Thickness(0, 1, 0, 0) };
 			border.Classes.Add("uldb-infopanel");
 
-			void Update()
+			binder.Custom(() =>
 			{
-				title.Text = General.Map != null && General.Editing?.Mode != null ? General.Editing.Mode.GetType().Name.Replace("Mode", "") : "";
-				if(modename.Visible) title.Text = modename.Text;
-				info.Text = collapsed.Visible ? collapsed.Text : "";
-				border.Height = panelinfo.Height > 0 ? panelinfo.Height : 106;
-			}
-			Update();
-			modename.TextChanged += (s, e) => Dispatcher.UIThread.Post(Update);
-			modename.VisibleChanged += (s, e) => Dispatcher.UIThread.Post(Update);
-			collapsed.TextChanged += (s, e) => Dispatcher.UIThread.Post(Update);
-			collapsed.VisibleChanged += (s, e) => Dispatcher.UIThread.Post(Update);
-			panelinfo.Resize += (s, e) => Dispatcher.UIThread.Post(Update);
+				bool expanded = form.IsInfoPanelExpanded;
+				border.IsVisible = panelinfo.Visible;
+				border.Height = expanded ? InfoPanelExpandedHeight : InfoPanelCollapsedHeight;
+				cards.IsVisible = expanded;
+				bool showname = modename.Visible || console.Visible;
+				moderow.IsVisible = showname || statsmodel.Visible;
+				title.IsVisible = showname;
+				title.Text = modename.Text;
+				stats.IsVisible = statsmodel.Visible;
+				collapsedtext.IsVisible = collapsed.Visible && !expanded;
+				collapsedtext.Text = collapsed.Text;
+				chevron.Data = Geometry.Parse(expanded ? "M0,0 L5,5 L10,0 L10,1.8 L5,6.8 L0,1.8 Z" : "M0,6.8 L5,1.8 L10,6.8 L10,5 L5,0 L0,5 Z");
+				ToolTip.SetTip(togglebutton, expanded ? "Collapse the info panel" : "Expand the info panel");
+			});
+			binder.UpdateNow();
 			return border;
 		}
 

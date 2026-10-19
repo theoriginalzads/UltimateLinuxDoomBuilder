@@ -22,3 +22,11 @@ CodeImp.DoomBuilder.Windows.OpenMapOptionsForm
 CodeImp.DoomBuilder.Windows.ResourceOptionsForm
 CodeImp.DoomBuilder.Controls.ResourceListEditor
 CodeImp.DoomBuilder.Windows.ErrorsForm
+CodeImp.DoomBuilder.Controls.LinedefInfoPanel
+CodeImp.DoomBuilder.Controls.SectorInfoPanel
+CodeImp.DoomBuilder.Controls.ThingInfoPanel
+CodeImp.DoomBuilder.Controls.VertexInfoPanel
+CodeImp.DoomBuilder.Controls.ConfigurablePictureBox
+CodeImp.DoomBuilder.Controls.TransparentListView
+CodeImp.DoomBuilder.Controls.AngleControlEx
+CodeImp.DoomBuilder.Controls.StatisticsControl

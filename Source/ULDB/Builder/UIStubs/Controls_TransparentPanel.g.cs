@@ -16,6 +16,8 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.TransparentPanel..ctor#0
 		public TransparentPanel() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.TransparentPanel.CreateParams#1
+		protected virtual CreateParams CreateParams { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.TransparentPanel.OnPaintBackground#2
 		protected virtual void OnPaintBackground(PaintEventArgs e) { }
 	}

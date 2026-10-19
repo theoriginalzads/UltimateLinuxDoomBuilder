@@ -39,12 +39,6 @@ namespace System.Windows.Forms
 		public void RaiseLoad() => OnLoad(EventArgs.Empty);
 	}
 
-	public enum AutoSizeMode
-	{
-		GrowAndShrink = 0,
-		GrowOnly = 1
-	}
-
 	public class GroupBox : Control
 	{
 		public FlatStyle FlatStyle { get; set; } = FlatStyle.Standard;

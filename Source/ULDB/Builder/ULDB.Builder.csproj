@@ -46,6 +46,20 @@
     <Compile Include="$(UpstreamCore)Controls/ToolStripNumericUpDown.cs" />
     <Compile Include="$(UpstreamCore)Controls/PlaceholderToolStripTextBox.cs" />
     <Compile Include="$(UpstreamCore)Controls/ToolStripCheckBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/LinedefInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/LinedefInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/VertexInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/VertexInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ConfigurablePictureBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentListView.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControlEx.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControlEx.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/StatisticsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/StatisticsControl.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />

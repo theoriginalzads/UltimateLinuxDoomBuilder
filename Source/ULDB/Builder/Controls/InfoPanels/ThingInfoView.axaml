@@ -1,0 +1,70 @@
+<!-- ULDB: the view of upstream's ThingInfoPanel (Controls/ThingInfoPanel.cs, model-ported).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. Order and
+     grouping follow upstream's designer; the look is ULDB's (cards, texture tiles). -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:uldb="clr-namespace:ULDB.Controls"
+             x:Class="CodeImp.DoomBuilder.Controls.ThingInfoView">
+  <StackPanel Orientation="Horizontal">
+    <!-- Thing properties and action arguments -->
+    <Border x:Name="infopanel" Classes="uldb-card">
+      <StackPanel>
+        <TextBlock x:Name="infopanelTitle" Classes="uldb-card-title"/>
+        <StackPanel Orientation="Horizontal">
+          <Grid Width="290" ColumnDefinitions="Auto,Auto,Auto,*" RowDefinitions="16,16,16,16,16">
+            <TextBlock Text="Type:" Classes="uldb-key"/>
+            <TextBlock x:Name="type" Grid.Column="1" Grid.ColumnSpan="3" Classes="uldb-value"/>
+            <TextBlock x:Name="labelclass" Grid.Row="1" Classes="uldb-key"/>
+            <TextBlock x:Name="classname" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Classes="uldb-value"/>
+            <TextBlock x:Name="labelaction" Grid.Row="2" Classes="uldb-key"/>
+            <TextBlock x:Name="action" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Classes="uldb-value"/>
+            <TextBlock Text="Position:" Grid.Row="3" Classes="uldb-key"/>
+            <TextBlock x:Name="position" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Classes="uldb-value"/>
+            <TextBlock Text="Tag:" Grid.Row="4" Classes="uldb-key"/>
+            <TextBlock x:Name="tag" Grid.Row="4" Grid.Column="1" Classes="uldb-value" MinWidth="44"/>
+            <TextBlock Text="Angle:" Grid.Row="4" Grid.Column="2" Classes="uldb-key"/>
+            <StackPanel Grid.Row="4" Grid.Column="3" Orientation="Horizontal" Spacing="4">
+              <TextBlock x:Name="angle" Classes="uldb-value" Margin="0"/>
+              <uldb:AngleDial x:Name="anglecontrol" Width="15" Height="15" VerticalAlignment="Center"/>
+            </StackPanel>
+          </Grid>
+          <Grid x:Name="args" Width="250" ColumnDefinitions="Auto,*" RowDefinitions="16,16,16,16,16">
+          <TextBlock x:Name="arglbl1" Grid.Row="0" Classes="uldb-key"/>
+          <TextBlock x:Name="arg1" Grid.Row="0" Grid.Column="1" Classes="uldb-value"/>
+          <TextBlock x:Name="arglbl2" Grid.Row="1" Classes="uldb-key"/>
+          <TextBlock x:Name="arg2" Grid.Row="1" Grid.Column="1" Classes="uldb-value"/>
+          <TextBlock x:Name="arglbl3" Grid.Row="2" Classes="uldb-key"/>
+          <TextBlock x:Name="arg3" Grid.Row="2" Grid.Column="1" Classes="uldb-value"/>
+          <TextBlock x:Name="arglbl4" Grid.Row="3" Classes="uldb-key"/>
+          <TextBlock x:Name="arg4" Grid.Row="3" Grid.Column="1" Classes="uldb-value"/>
+          <TextBlock x:Name="arglbl5" Grid.Row="4" Classes="uldb-key"/>
+          <TextBlock x:Name="arg5" Grid.Row="4" Grid.Column="1" Classes="uldb-value"/>
+          </Grid>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+    <!-- Sprite -->
+    <Border x:Name="spritepanel" Classes="uldb-card">
+      <StackPanel>
+        <TextBlock x:Name="spritepanelTitle" Classes="uldb-card-title"/>
+        <StackPanel Width="64">
+          <Border x:Name="panel1" Classes="uldb-tile">
+            <Image x:Name="spritetex" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="None"/>
+          </Border>
+          <TextBlock x:Name="spritename" Classes="uldb-small" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+    <!-- Flags -->
+    <Border x:Name="flagsPanel" Classes="uldb-card">
+      <StackPanel>
+        <TextBlock x:Name="flagsPanelTitle" Classes="uldb-card-title"/>
+        <ItemsControl x:Name="flags" ItemTemplate="{StaticResource UldbFlagTemplate}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate><WrapPanel Orientation="Vertical" Height="80"/></ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+        </ItemsControl>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

@@ -32,8 +32,6 @@ CodeImp.DoomBuilder.Controls.ScriptEditorControl.OnLayout#73
 CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager..ctor#8
 CodeImp.DoomBuilder.Controls.Scripting.ScriptIconsManager.Icons#7
 CodeImp.DoomBuilder.Controls.TagInfo.ToString#3
-CodeImp.DoomBuilder.Controls.TransparentListView.CreateParams#0
-CodeImp.DoomBuilder.Controls.TransparentPanel.CreateParams#1
 CodeImp.DoomBuilder.Controls.TreeNodeEventHandler
 using:System.Management
 using:System.Windows.Forms.Design.Behavior

@@ -193,6 +193,7 @@ namespace System.Drawing
 
 		public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) => DrawLine(pen, (float)x1, y1, x2, y2);
 		public void DrawLine(Pen pen, Point p1, Point p2) => DrawLine(pen, (float)p1.X, p1.Y, p2.X, p2.Y);
+		public void DrawLine(Pen pen, PointF p1, PointF p2) => DrawLine(pen, p1.X, p1.Y, p2.X, p2.Y);
 
 		public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
 		{

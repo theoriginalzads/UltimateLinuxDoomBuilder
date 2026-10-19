@@ -34,8 +34,9 @@ namespace System.Windows.Forms
 		private Font font;
 		/// <summary>Like WinForms: falls back to the default font when none is set.</summary>
 		public virtual Font Font { get => font ?? SystemFonts.DefaultFont; set => font = value; }
-		public Color BackColor { get; set; }
-		public Color ForeColor { get; set; }
+		private Color backcolor, forecolor;
+		public Color BackColor { get => backcolor; set { if(backcolor == value) return; backcolor = value; NotifyStylesChanged(); } }
+		public Color ForeColor { get => forecolor; set { if(forecolor == value) return; forecolor = value; NotifyStylesChanged(); } }
 		public Cursor Cursor { get; set; } = Cursors.Default;
 		public Padding Margin { get; set; }
 		public Padding Padding { get; set; }
@@ -191,9 +192,23 @@ namespace System.Windows.Forms
 		protected void NotifyStylesChanged() => StylesChanged?.Invoke(this, EventArgs.Empty);
 		public event EventHandler HandleCreated;
 		public event EventHandler HandleDestroyed;
-		public virtual void Refresh() { }
+		public virtual void Refresh() { Refreshed?.Invoke(this, EventArgs.Empty); }
 		public virtual void Update() { }
-		public virtual void Show() { Visible = true; }
+		public virtual void Show() { Visible = true; Refreshed?.Invoke(this, EventArgs.Empty); }
+
+		/// <summary>ULDB: raised by Show() and Refresh(), which upstream calls after filling a
+		/// control; views re-read the model's state then.</summary>
+		public event EventHandler Refreshed;
+
+		// Background image (WinForms has these on Control).
+		private Image backgroundimage;
+		private ImageLayout backgroundimagelayout = ImageLayout.Tile;
+		public Image BackgroundImage { get => backgroundimage; set { backgroundimage = value; NotifyStylesChanged(); } }
+		public ImageLayout BackgroundImageLayout { get => backgroundimagelayout; set { backgroundimagelayout = value; NotifyStylesChanged(); } }
+
+		// Window creation parameters: kept as state only.
+		protected virtual CreateParams CreateParams => new CreateParams();
+		protected virtual void OnPaintBackground(PaintEventArgs e) { }
 		public virtual void Hide() { Visible = false; }
 		public void BringToFront() { }
 		public void SuspendLayout() { }
@@ -430,13 +445,51 @@ namespace System.Windows.Forms
 
 	public class Panel : Control
 	{
-		private Image backgroundimage;
-		private ImageLayout backgroundimagelayout = ImageLayout.Tile;
-
-		public Image BackgroundImage { get => backgroundimage; set { backgroundimage = value; NotifyStylesChanged(); } }
-		public ImageLayout BackgroundImageLayout { get => backgroundimagelayout; set { backgroundimagelayout = value; NotifyStylesChanged(); } }
 		public BorderStyle BorderStyle { get; set; }
 		public bool AutoScroll { get; set; }
+		public AutoSizeMode AutoSizeMode { get; set; } = AutoSizeMode.GrowOnly;
+	}
+
+	public static class ControlPaint
+	{
+		/// <summary>Draws a border of the given widths and colours inside bounds (only Solid is drawn).</summary>
+		public static void DrawBorder(Graphics graphics, Rectangle bounds,
+			Color leftColor, int leftWidth, ButtonBorderStyle leftStyle,
+			Color topColor, int topWidth, ButtonBorderStyle topStyle,
+			Color rightColor, int rightWidth, ButtonBorderStyle rightStyle,
+			Color bottomColor, int bottomWidth, ButtonBorderStyle bottomStyle)
+		{
+			void Fill(Color c, ButtonBorderStyle style, int x, int y, int w, int h)
+			{
+				if(style == ButtonBorderStyle.None || w <= 0 || h <= 0) return;
+				using(SolidBrush b = new SolidBrush(c)) graphics.FillRectangle(b, x, y, w, h);
+			}
+			Fill(leftColor, leftStyle, bounds.Left, bounds.Top, leftWidth, bounds.Height);
+			Fill(topColor, topStyle, bounds.Left, bounds.Top, bounds.Width, topWidth);
+			Fill(rightColor, rightStyle, bounds.Right - rightWidth, bounds.Top, rightWidth, bounds.Height);
+			Fill(bottomColor, bottomStyle, bounds.Left, bounds.Bottom - bottomWidth, bounds.Width, bottomWidth);
+		}
+	}
+
+	public class CreateParams
+	{
+		public string ClassName { get; set; }
+		public string Caption { get; set; }
+		public int Style { get; set; }
+		public int ExStyle { get; set; }
+		public int ClassStyle { get; set; }
+		public object Parent { get; set; }
+	}
+
+	public class PictureBox : Control, ComponentModel.ISupportInitialize
+	{
+		public void BeginInit() { }
+		public void EndInit() { }
+		private Image image;
+		public Image Image { get => image; set { image = value; NotifyStylesChanged(); } }
+		public PictureBoxSizeMode SizeMode { get; set; }
+		public BorderStyle BorderStyle { get; set; }
+		public Rectangle DisplayRectangle => new Rectangle(Point.Empty, ClientSize);
 	}
 
 	public class FlowLayoutPanel : Panel
@@ -454,6 +507,7 @@ namespace System.Windows.Forms
 		public BorderStyle BorderStyle { get; set; }
 		public FlatStyle FlatStyle { get; set; }
 		public bool UseMnemonic { get; set; } = true;
+		public bool AutoEllipsis { get; set; }
 	}
 
 	public class Button : Control, IButtonControl
@@ -502,6 +556,46 @@ namespace System.Windows.Forms
 	public class ListView : Control
 	{
 		public View View { get; set; }
+		public bool CheckBoxes { get; set; }
+		public bool FullRowSelect { get; set; }
+		public bool MultiSelect { get; set; } = true;
+		public bool HideSelection { get; set; } = true;
+		public bool Scrollable { get; set; } = true;
+		public bool ShowGroups { get; set; } = true;
+		public bool UseCompatibleStateImageBehavior { get; set; }
+		public BorderStyle BorderStyle { get; set; }
+		public ColumnHeaderStyle HeaderStyle { get; set; }
+		public ListViewItemCollection Items { get; } = new ListViewItemCollection();
+		public List<ColumnHeader> Columns { get; } = new List<ColumnHeader>();
+
+		/// <summary>Item layout is up to the view; this reports one column of 16 px rows.</summary>
+		public Rectangle GetItemRect(int index) => new Rectangle(0, index * 16, Math.Max(1, Width), 16);
+
+		public class ListViewItemCollection : List<ListViewItem>
+		{
+			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
+			public void AddRange(ListViewItem[] items) => base.AddRange(items);
+		}
+	}
+
+	public class ListViewItem
+	{
+		public ListViewItem() { }
+		public ListViewItem(string text) { Text = text; }
+		public string Text { get; set; }
+		public bool Checked { get; set; }
+		public bool Selected { get; set; }
+		public Color ForeColor { get; set; } = SystemColors.WindowText;
+		public Color BackColor { get; set; } = SystemColors.Window;
+		public object Tag { get; set; }
+		public string ToolTipText { get; set; }
+		public string Name { get; set; }
+	}
+
+	public class ColumnHeader
+	{
+		public string Text { get; set; }
+		public int Width { get; set; }
 	}
 
 	public class DataGridView : Control

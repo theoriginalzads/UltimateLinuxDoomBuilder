@@ -31,6 +31,12 @@ namespace System.Windows.Forms
 		None = 0,
 	}
 
+	public enum AutoSizeMode
+	{
+		GrowAndShrink = 0,
+		GrowOnly = 1,
+	}
+
 	public enum Border3DStyle
 	{
 		Adjust = 8192,
@@ -52,11 +58,28 @@ namespace System.Windows.Forms
 		None = 0,
 	}
 
+	public enum ButtonBorderStyle
+	{
+		Dashed = 2,
+		Dotted = 1,
+		Inset = 4,
+		None = 0,
+		Outset = 5,
+		Solid = 3,
+	}
+
 	public enum CheckState
 	{
 		Checked = 1,
 		Indeterminate = 2,
 		Unchecked = 0,
+	}
+
+	public enum ColumnHeaderStyle
+	{
+		Clickable = 2,
+		Nonclickable = 1,
+		None = 0,
 	}
 
 	public enum ComboBoxStyle
@@ -446,6 +469,15 @@ namespace System.Windows.Forms
 		Right = 2097152,
 		XButton1 = 8388608,
 		XButton2 = 16777216,
+	}
+
+	public enum PictureBoxSizeMode
+	{
+		AutoSize = 2,
+		CenterImage = 3,
+		Normal = 0,
+		StretchImage = 1,
+		Zoom = 4,
 	}
 
 	public enum RightToLeft
