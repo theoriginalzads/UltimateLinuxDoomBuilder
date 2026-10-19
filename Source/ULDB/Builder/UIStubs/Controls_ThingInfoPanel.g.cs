@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ThingInfoPanel
-	internal partial class ThingInfoPanel : System.Windows.Forms.Control
+	internal partial class ThingInfoPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ThingInfoPanel..ctor#2
 		public ThingInfoPanel() { }

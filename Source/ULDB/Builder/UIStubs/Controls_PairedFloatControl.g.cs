@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.PairedFloatControl
-	public partial class PairedFloatControl : System.Windows.Forms.Control
+	public partial class PairedFloatControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.PairedFloatControl.OnValuesChanged#0
 		public event EventHandler OnValuesChanged;

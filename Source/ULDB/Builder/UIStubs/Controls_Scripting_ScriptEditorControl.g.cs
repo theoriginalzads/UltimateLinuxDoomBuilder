@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl
-	public partial class ScriptEditorControl : System.Windows.Forms.Control
+	public partial class ScriptEditorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ExplicitSaveTabDelegate
 		public delegate void ExplicitSaveTabDelegate();

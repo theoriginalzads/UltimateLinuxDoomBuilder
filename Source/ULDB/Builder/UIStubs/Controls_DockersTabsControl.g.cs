@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl
-	internal partial class DockersTabsControl : System.Windows.Forms.Control
+	internal partial class DockersTabsControl : System.Windows.Forms.TabControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl..ctor#6
 		public DockersTabsControl() { }

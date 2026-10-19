@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.TagsSelector
-	public partial class TagsSelector : System.Windows.Forms.Control
+	public partial class TagsSelector : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.TagsSelector..ctor#9
 		public TagsSelector() { }

@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.LinedefInfoPanel
-	internal partial class LinedefInfoPanel : System.Windows.Forms.Control
+	internal partial class LinedefInfoPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.LinedefInfoPanel..ctor#2
 		public LinedefInfoPanel() { }

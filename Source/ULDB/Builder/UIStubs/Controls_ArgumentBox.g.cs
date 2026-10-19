@@ -22,7 +22,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ArgumentBox
-	public partial class ArgumentBox : System.Windows.Forms.Control
+	public partial class ArgumentBox : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ArgumentBox.Text#3
 		public virtual string Text { get => default; }

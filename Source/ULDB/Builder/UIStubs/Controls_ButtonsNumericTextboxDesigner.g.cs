@@ -10,6 +10,8 @@ using System.Collections;
 using System.ComponentModel;
 // stub-key: using:System.ComponentModel.Design
 using System.ComponentModel.Design;
+// stub-key: using:System.Windows.Forms.Design
+using System.Windows.Forms.Design;
 
 namespace CodeImp.DoomBuilder.Controls
 {

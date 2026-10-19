@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawLineOptionsPanel
-	internal partial class DrawLineOptionsPanel : System.Windows.Forms.Control
+	internal partial class DrawLineOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawLineOptionsPanel.OnContinuousDrawingChanged#0
 		public event EventHandler OnContinuousDrawingChanged;

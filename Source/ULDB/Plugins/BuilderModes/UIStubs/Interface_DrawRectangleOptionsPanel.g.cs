@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawRectangleOptionsPanel
-	internal partial class DrawRectangleOptionsPanel : System.Windows.Forms.Control
+	internal partial class DrawRectangleOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawRectangleOptionsPanel.OnValueChanged#0
 		public event EventHandler OnValueChanged;

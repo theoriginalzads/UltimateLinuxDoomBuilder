@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawCurveOptionsPanel
-	internal partial class DrawCurveOptionsPanel : System.Windows.Forms.Control
+	internal partial class DrawCurveOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawCurveOptionsPanel.OnValueChanged#0
 		public event EventHandler OnValueChanged;

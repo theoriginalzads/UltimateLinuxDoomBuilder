@@ -24,7 +24,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.FieldsEditorControl
-	public partial class FieldsEditorControl : System.Windows.Forms.Control
+	public partial class FieldsEditorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent
 		public delegate void SingleFieldNameEvent(string fieldname);

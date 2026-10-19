@@ -24,7 +24,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.SectorInfoPanel
-	internal partial class SectorInfoPanel : System.Windows.Forms.Control
+	internal partial class SectorInfoPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.SectorInfoPanel..ctor#4
 		public SectorInfoPanel() { }

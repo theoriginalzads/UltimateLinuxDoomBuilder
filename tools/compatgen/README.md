@@ -17,6 +17,8 @@ dotnet run --project tools/compatgen -- $REF/System.Windows.Forms.dll \
   TextImageRelation ToolStripItemOverflow ToolStripLayoutStyle ToolStripRenderMode MergeAction \
   AutoScaleMode FormBorderStyle ComboBoxStyle FormStartPosition SizeGripStyle \
   DragDropEffects FlatStyle FlowDirection BorderStyle ScrollBars RightToLeft \
+  TabControlAction Appearance ToolStripItemDesignerAvailability LeftRightAlignment ToolTipIcon TabAlignment TabAppearance TabSizeMode \
+  ControlStyles \
   > $C/WinForms/Enums.g.cs
 dotnet run --project tools/compatgen -- $REF/System.Drawing.dll \
   RotateFlipType GraphicsUnit FontStyle PixelFormat ImageLockMode SmoothingMode InterpolationMode \

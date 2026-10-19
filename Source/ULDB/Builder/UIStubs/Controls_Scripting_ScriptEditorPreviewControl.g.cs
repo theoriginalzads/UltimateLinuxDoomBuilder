@@ -20,7 +20,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorPreviewControl
-	internal partial class ScriptEditorPreviewControl : System.Windows.Forms.Control
+	internal partial class ScriptEditorPreviewControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorPreviewControl.FontName#6
 		public string FontName { set { } }

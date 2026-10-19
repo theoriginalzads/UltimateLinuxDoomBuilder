@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.HintsPanel
-	internal partial class HintsPanel : System.Windows.Forms.Control
+	internal partial class HintsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.HintsPanel..ctor#0
 		public HintsPanel() { }

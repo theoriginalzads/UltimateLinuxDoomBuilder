@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.Controls
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.SectorSlopeControl
-	public partial class SectorSlopeControl : System.Windows.Forms.Control
+	public partial class SectorSlopeControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.SectorSlopeControl.OnAnglesChanged#0
 		public event EventHandler OnAnglesChanged;

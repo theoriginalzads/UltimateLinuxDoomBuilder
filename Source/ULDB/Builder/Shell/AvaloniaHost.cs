@@ -36,6 +36,15 @@ namespace ULDB.Shell
 			System.Windows.Forms.Application.RunHandler = host.Run;
 			System.Windows.Forms.Application.ExitHandler = host.Exit;
 
+			// Closing a form closes its window (whose Closing asks the form); a form
+			// without a window is just a model.
+			Form.CloseHandler = f =>
+			{
+				Window w = FormWindows.WindowFor(f);
+				if(w != null) w.Close();
+				else f.RequestClose(CloseReason.UserClosing);
+			};
+
 			// Exceptions on the UI thread go to upstream's handler (its error dialog), when
 			// it installed one; otherwise they crash the program as usual.
 			Dispatcher.UIThread.UnhandledException += (s, e) =>
@@ -51,12 +60,14 @@ namespace ULDB.Shell
 			Form form = mainwindow as Form;
 			Window window = FormWindows.WindowFor(form);
 
-			// Until MainForm is ported, its placeholder has no window of its own.
-			if(window == null)
+			if(window == null && form is CodeImp.DoomBuilder.Windows.MainForm mainform)
 			{
-				window = new TemporaryMainWindow(form);
-				FormWindows.Register(form, window);
+				MainWindow main = new MainWindow(mainform);
+				FormWindows.Register(form, main);
+				main.Load();
+				window = main;
 			}
+			if(window == null) throw new InvalidOperationException("No window for " + mainwindow);
 
 			mainloop = new System.Threading.CancellationTokenSource();
 			window.Closed += (s, e) => mainloop.Cancel();
@@ -268,17 +279,30 @@ namespace ULDB.Shell
 		{
 			return OnUIThread(() =>
 			{
-				DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, (s, e) => tick());
+				Stopper stopper = new Stopper();
+				DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, (s, e) =>
+				{
+					if(!stopper.Stopped) tick();
+				});
+				stopper.Timer = timer;
 				timer.Start();
-				return new Stopper(timer);
+				return stopper;
 			});
 		}
 
+		// Like WinForms, Stop takes effect at once: upstream restarts timers from their own
+		// Tick handlers (the status bar), so a late tick would start them again and again.
 		private sealed class Stopper : IDisposable
 		{
-			private readonly DispatcherTimer timer;
-			public Stopper(DispatcherTimer timer) { this.timer = timer; }
-			public void Dispose() => Dispatcher.UIThread.Post(timer.Stop);
+			public DispatcherTimer Timer;
+			public volatile bool Stopped;
+
+			public void Dispose()
+			{
+				Stopped = true;
+				if(Dispatcher.UIThread.CheckAccess()) Timer.Stop();
+				else Dispatcher.UIThread.Post(Timer.Stop);
+			}
 		}
 
 		public Form ActiveForm => OnUIThread(() =>

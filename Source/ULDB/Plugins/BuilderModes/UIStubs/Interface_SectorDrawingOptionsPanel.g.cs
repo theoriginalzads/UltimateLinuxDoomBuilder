@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.Interface.SectorDrawingOptionsPanel
-	public partial class SectorDrawingOptionsPanel : System.Windows.Forms.Control
+	public partial class SectorDrawingOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.Interface.SectorDrawingOptionsPanel..ctor#0
 		public SectorDrawingOptionsPanel() { }

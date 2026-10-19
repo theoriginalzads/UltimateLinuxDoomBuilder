@@ -17,6 +17,12 @@ namespace System.Windows.Forms
 		Top = 1,
 	}
 
+	public enum Appearance
+	{
+		Button = 1,
+		Normal = 0,
+	}
+
 	public enum AutoScaleMode
 	{
 		Dpi = 2,
@@ -58,6 +64,28 @@ namespace System.Windows.Forms
 		DropDown = 1,
 		DropDownList = 2,
 		Simple = 0,
+	}
+
+	[Flags]
+	public enum ControlStyles
+	{
+		AllPaintingInWmPaint = 8192,
+		CacheText = 16384,
+		ContainerControl = 1,
+		DoubleBuffer = 65536,
+		EnableNotifyMessage = 32768,
+		FixedHeight = 64,
+		FixedWidth = 32,
+		Opaque = 4,
+		OptimizedDoubleBuffer = 131072,
+		ResizeRedraw = 16,
+		Selectable = 512,
+		StandardClick = 256,
+		StandardDoubleClick = 4096,
+		SupportsTransparentBackColor = 2048,
+		UserMouse = 1024,
+		UserPaint = 2,
+		UseTextForAccessibility = 262144,
 	}
 
 	public enum DialogResult
@@ -355,6 +383,12 @@ namespace System.Windows.Forms
 		Zoom = 251,
 	}
 
+	public enum LeftRightAlignment
+	{
+		Left = 0,
+		Right = 1,
+	}
+
 	public enum MergeAction
 	{
 		Append = 0,
@@ -594,6 +628,36 @@ namespace System.Windows.Forms
 		Show = 1,
 	}
 
+	public enum TabAlignment
+	{
+		Bottom = 1,
+		Left = 2,
+		Right = 3,
+		Top = 0,
+	}
+
+	public enum TabAppearance
+	{
+		Buttons = 1,
+		FlatButtons = 2,
+		Normal = 0,
+	}
+
+	public enum TabControlAction
+	{
+		Deselected = 3,
+		Deselecting = 2,
+		Selected = 1,
+		Selecting = 0,
+	}
+
+	public enum TabSizeMode
+	{
+		FillToRight = 1,
+		Fixed = 2,
+		Normal = 0,
+	}
+
 	public enum TextImageRelation
 	{
 		ImageAboveText = 1,
@@ -684,6 +748,14 @@ namespace System.Windows.Forms
 		Top = 2,
 	}
 
+	public enum ToolTipIcon
+	{
+		Error = 3,
+		Info = 1,
+		None = 0,
+		Warning = 2,
+	}
+
 	public enum View
 	{
 		Details = 1,
@@ -691,6 +763,20 @@ namespace System.Windows.Forms
 		List = 3,
 		SmallIcon = 2,
 		Tile = 4,
+	}
+}
+
+namespace System.Windows.Forms.Design
+{
+	[Flags]
+	public enum ToolStripItemDesignerAvailability
+	{
+		All = 15,
+		ContextMenuStrip = 4,
+		MenuStrip = 2,
+		None = 0,
+		StatusStrip = 8,
+		ToolStrip = 1,
 	}
 }
 

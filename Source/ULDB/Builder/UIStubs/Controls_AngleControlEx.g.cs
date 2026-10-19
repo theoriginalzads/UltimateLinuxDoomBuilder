@@ -20,7 +20,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.AngleControlEx
-	public partial class AngleControlEx : System.Windows.Forms.Control
+	public partial class AngleControlEx : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.AngleControlEx.AngleChanged#15
 		public event EventHandler AngleChanged;

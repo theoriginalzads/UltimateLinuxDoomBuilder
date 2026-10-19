@@ -34,6 +34,8 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool ReloadResources { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesForm..ctor#9
 		public PreferencesForm() { }
+		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesForm.AddTabPage#12
+		public void AddTabPage(TabPage tab) { }
 	}
 }
 

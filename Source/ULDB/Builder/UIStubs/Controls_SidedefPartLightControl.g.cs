@@ -22,7 +22,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.SidedefPartLightControl
-	public partial class SidedefPartLightControl : System.Windows.Forms.Control
+	public partial class SidedefPartLightControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.SidedefPartLightControl..ctor#6
 		public SidedefPartLightControl() { }

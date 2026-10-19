@@ -24,6 +24,13 @@ static class Program
 	static HashSet<string> winformsTypes = new();
 	static HashSet<string> onlyFiles; // Relative paths upstream's project compiles (null = all)
 
+	// Controls ULDB.Compat provides (Compat/WinForms): kept as bases.
+	static readonly HashSet<string> compatControlTypes = new()
+	{
+		"Panel", "FlowLayoutPanel", "ComboBox", "ListView", "Label", "Button", "GroupBox", "CheckBox",
+		"NumericUpDown", "TabControl", "TabPage", "ContainerControl", "UserControl", "DataGridView",
+	};
+
 	// The menu/toolbar model ULDB.Compat provides (Compat/WinForms/ToolStrip.cs): kept as bases.
 	static readonly HashSet<string> compatToolStripTypes = new()
 	{
@@ -185,7 +192,7 @@ static class Program
 			else if(name == "IWin32Window") bases.Add("System.Windows.Forms.IWin32Window");
 			else if(name.StartsWith("I") && name.Length > 1 && char.IsUpper(name[1])) continue;
 			else if(name == "Form") bases.Add("System.Windows.Forms.Form");
-			else if(name is "Panel" or "ComboBox" or "ListView" || compatToolStripTypes.Contains(name)) bases.Add("System.Windows.Forms." + name);
+			else if(compatControlTypes.Contains(name) || compatToolStripTypes.Contains(name)) bases.Add("System.Windows.Forms." + name);
 			else if(IsControlType(name)) bases.Add("System.Windows.Forms.Control");
 		}
 		// A class's base class must come first.

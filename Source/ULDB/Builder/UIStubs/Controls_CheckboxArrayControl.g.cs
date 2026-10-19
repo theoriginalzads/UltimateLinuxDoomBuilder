@@ -18,16 +18,20 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl
-	public partial class CheckboxArrayControl : System.Windows.Forms.Control
+	public partial class CheckboxArrayControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.OnValueChanged#0
 		public event EventHandler OnValueChanged;
+		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.Checkboxes#4
+		public List<CheckBox> Checkboxes { get => default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.Columns#5
 		public int Columns { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.VerticalSpacing#6
 		public int VerticalSpacing { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl..ctor#7
 		public CheckboxArrayControl() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.Add#8
+		public CheckBox Add(string text, object tag) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.GetWidth#9
 		public int GetWidth() { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.CheckboxArrayControl.GetHeight#10

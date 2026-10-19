@@ -30,7 +30,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ArgumentsControl
-	public partial class ArgumentsControl : System.Windows.Forms.Control
+	public partial class ArgumentsControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ArgumentsControl..ctor#8
 		public ArgumentsControl() { }

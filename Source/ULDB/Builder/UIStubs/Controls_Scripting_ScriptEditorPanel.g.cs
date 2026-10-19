@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorPanel
-	public partial class ScriptEditorPanel : System.Windows.Forms.Control
+	public partial class ScriptEditorPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorPanel.ActiveTab#15
 		public ScriptDocumentTab ActiveTab { get => default; }

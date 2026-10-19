@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.StatisticsControl
-	public partial class StatisticsControl : System.Windows.Forms.Control
+	public partial class StatisticsControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.StatisticsControl..ctor#0
 		public StatisticsControl() { }

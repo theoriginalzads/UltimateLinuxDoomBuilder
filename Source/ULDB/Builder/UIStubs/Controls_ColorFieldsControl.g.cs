@@ -20,7 +20,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ColorFieldsControl
-	public partial class ColorFieldsControl : System.Windows.Forms.Control
+	public partial class ColorFieldsControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ColorFieldsControl.OnValueChanged#0
 		public event EventHandler OnValueChanged;

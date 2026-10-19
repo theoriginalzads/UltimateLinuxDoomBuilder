@@ -24,7 +24,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ThingBrowserControl
-	public partial class ThingBrowserControl : System.Windows.Forms.Control
+	public partial class ThingBrowserControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeChangedDeletegate
 		public delegate void TypeChangedDeletegate(ThingTypeInfo value);

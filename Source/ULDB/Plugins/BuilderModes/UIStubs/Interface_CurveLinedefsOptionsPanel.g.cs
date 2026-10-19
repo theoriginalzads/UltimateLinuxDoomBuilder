@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.Interface.CurveLinedefsOptionsPanel
-	public partial class CurveLinedefsOptionsPanel : System.Windows.Forms.Control
+	public partial class CurveLinedefsOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.Interface.CurveLinedefsOptionsPanel.OnValueChanged#0
 		public event EventHandler OnValueChanged;

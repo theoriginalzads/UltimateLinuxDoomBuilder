@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel
-	public partial class UndoRedoPanel : System.Windows.Forms.Control
+	public partial class UndoRedoPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel..ctor#5
 		public UndoRedoPanel() { }

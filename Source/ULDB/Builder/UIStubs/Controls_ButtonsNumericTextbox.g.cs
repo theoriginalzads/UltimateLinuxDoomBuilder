@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox
-	public partial class ButtonsNumericTextbox : System.Windows.Forms.Control
+	public partial class ButtonsNumericTextbox : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox.WhenTextChanged#0
 		public event EventHandler WhenTextChanged;

@@ -11,7 +11,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
     <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
   </PropertyGroup>
   <PropertyGroup>

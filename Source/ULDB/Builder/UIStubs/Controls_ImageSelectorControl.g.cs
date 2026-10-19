@@ -20,7 +20,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ImageSelectorControl
-	public abstract partial class ImageSelectorControl : System.Windows.Forms.Control
+	public abstract partial class ImageSelectorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ImageSelectorControl.OnValueChanged#0
 		public event EventHandler OnValueChanged;

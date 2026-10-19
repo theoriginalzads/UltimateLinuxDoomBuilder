@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.PairedIntControl
-	public partial class PairedIntControl : System.Windows.Forms.Control
+	public partial class PairedIntControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.PairedIntControl.OnValuesChanged#0
 		public event EventHandler OnValuesChanged;

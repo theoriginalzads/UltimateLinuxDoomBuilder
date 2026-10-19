@@ -15,7 +15,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
     <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
     <!-- Form resources (FormResources/, tools/resxgen/formresx.py) hold Bitmap/Icon file
          references, created from a stream at runtime by System.Resources.Extensions. -->
@@ -28,7 +28,23 @@
     <Compile Include="$(UpstreamCore)**/*.cs"
              Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**;$(UpstreamCore)Properties/Resources.Designer.cs" />
     <!-- Replacement for upstream's Properties/Resources.Designer.cs (tools/resxgen). -->
+    <!-- Model ports: upstream window/control files compiled unchanged against ULDB.Compat
+         (docs/architecture.md, "Two ways to port a window"; listed in uistubs-ported.txt). -->
     <Compile Include="$(UpstreamCore)Windows/MainForm.cs;$(UpstreamCore)Windows/MainForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/StatusInfo.cs" />
+    <Compile Include="$(UpstreamCore)Windows/MenuSection.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ToolbarSection.cs" />
+    <Compile Include="$(UpstreamCore)Windows/MessageBeepType.cs" />
+    <Compile Include="$(UpstreamCore)Windows/FindReplaceOptions.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PluginToolbarButton.cs" />
+    <Compile Include="$(UpstreamCore)Windows/IMainForm.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Docker.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ControlExtensionMethods.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripActionButton.cs" />
+    <Compile Include="$(UpstreamCore)Controls/RenderTargetControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripNumericUpDown.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PlaceholderToolStripTextBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripCheckBox.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />

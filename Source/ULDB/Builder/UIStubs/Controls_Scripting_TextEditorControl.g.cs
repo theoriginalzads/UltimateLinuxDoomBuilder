@@ -425,7 +425,7 @@ namespace ScintillaNET
 namespace ScintillaNET
 {
 	// stub-key: ScintillaNET.Scintilla
-	public partial class Scintilla : System.Windows.Forms.Control
+	public partial class Scintilla : System.Windows.Forms.UserControl
 	{
 		// stub-key: ScintillaNET.Scintilla..ctor#1
 		public Scintilla() { }

@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.DockersControl
-	internal partial class DockersControl : System.Windows.Forms.Control
+	internal partial class DockersControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.DockersControl.MouseContainerEnter#0
 		public event EventHandler MouseContainerEnter;

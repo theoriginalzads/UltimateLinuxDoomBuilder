@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.AngleControl
-	public partial class AngleControl : System.Windows.Forms.Control
+	public partial class AngleControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.AngleControl.ValueChanged#1
 		public event EventHandler ValueChanged;

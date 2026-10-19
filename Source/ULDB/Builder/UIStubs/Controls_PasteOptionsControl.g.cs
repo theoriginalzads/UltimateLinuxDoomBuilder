@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.PasteOptionsControl
-	public partial class PasteOptionsControl : System.Windows.Forms.Control
+	public partial class PasteOptionsControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.PasteOptionsControl..ctor#0
 		public PasteOptionsControl() { }

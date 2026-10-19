@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.CommentEditor
-	public partial class CommentEditor : System.Windows.Forms.Control
+	public partial class CommentEditor : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.CommentEditor..ctor#3
 		public CommentEditor() { }

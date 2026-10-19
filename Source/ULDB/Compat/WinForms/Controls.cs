@@ -13,10 +13,24 @@ namespace System.Windows.Forms
 
 		public virtual IntPtr Handle => IntPtr.Zero;
 		public string Name { get; set; } = "";
-		public virtual string Text { get; set; } = "";
+		private string text = "";
+		public virtual string Text
+		{
+			get => text;
+			set { if(text == value) return; text = value ?? ""; OnTextChanged(EventArgs.Empty); }
+		}
 		public object Tag { get; set; }
-		public bool Visible { get; set; } = true;
-		public bool Enabled { get; set; } = true;
+		private bool visible = true, enabled = true;
+		public bool Visible
+		{
+			get => visible;
+			set { if(visible == value) return; visible = value; OnVisibleChanged(EventArgs.Empty); }
+		}
+		public bool Enabled
+		{
+			get => enabled;
+			set { if(enabled == value) return; enabled = value; OnEnabledChanged(EventArgs.Empty); }
+		}
 		private Font font;
 		/// <summary>Like WinForms: falls back to the default font when none is set.</summary>
 		public virtual Font Font { get => font ?? SystemFonts.DefaultFont; set => font = value; }
@@ -160,6 +174,22 @@ namespace System.Windows.Forms
 
 		public virtual bool Focus() => false;
 		public virtual void Invalidate() { }
+		public void Invalidate(bool invalidateChildren) => Invalidate();
+		public void Invalidate(Rectangle rc) => Invalidate();
+		public void SendToBack() { }
+
+		// Painting style flags: kept as state; the Avalonia views decide how to draw.
+		private ControlStyles styles;
+		protected void SetStyle(ControlStyles flag, bool value) { styles = value ? styles | flag : styles & ~flag; }
+		protected bool GetStyle(ControlStyles flag) => (styles & flag) == flag;
+		protected void UpdateStyles() { StylesChanged?.Invoke(this, EventArgs.Empty); }
+		protected virtual bool DoubleBuffered { get; set; }
+
+		/// <summary>ULDB: raised when SetStyle/UpdateStyles or the background changes, so the view can redraw.</summary>
+		public event EventHandler StylesChanged;
+		protected void NotifyStylesChanged() => StylesChanged?.Invoke(this, EventArgs.Empty);
+		public event EventHandler HandleCreated;
+		public event EventHandler HandleDestroyed;
 		public virtual void Refresh() { }
 		public virtual void Update() { }
 		public virtual void Show() { Visible = true; }
@@ -211,7 +241,7 @@ namespace System.Windows.Forms
 		}
 	}
 
-	public class Form : Control
+	public class Form : ContainerControl
 	{
 		/// <summary>The UI's active window, if it's one of the compat forms.</summary>
 		public static Form ActiveForm => WinFormsHost.Current.ActiveForm;
@@ -224,8 +254,6 @@ namespace System.Windows.Forms
 		public Icon Icon { get; set; }
 
 		// Designer settings: kept for upstream's InitializeComponent code; the Avalonia port decides.
-		public SizeF AutoScaleDimensions { get; set; }
-		public AutoScaleMode AutoScaleMode { get; set; }
 		public FormBorderStyle FormBorderStyle { get; set; } = FormBorderStyle.Sizable;
 		public FormStartPosition StartPosition { get; set; }
 		public SizeGripStyle SizeGripStyle { get; set; }
@@ -242,9 +270,6 @@ namespace System.Windows.Forms
 		public event EventHandler Shown;
 		public event EventHandler Activated;
 		public event EventHandler Deactivate;
-
-		/// <summary>The focused control within the form (null: the form itself).</summary>
-		public Control ActiveControl { get; set; }
 
 		protected virtual void OnLoad(EventArgs e) => Load?.Invoke(this, e);
 		protected virtual void OnShown(EventArgs e) => Shown?.Invoke(this, e);
@@ -293,9 +318,15 @@ namespace System.Windows.Forms
 
 		public virtual DialogResult ShowDialog() => ShowDialog(null);
 
+		/// <summary>
+		/// Windows not ported yet (generated placeholders) say so and answer Cancel, so the
+		/// editor keeps running. Ported windows override this.
+		/// </summary>
 		public virtual DialogResult ShowDialog(IWin32Window owner)
 		{
-			throw new NotSupportedException(GetType().Name + " has no ULDB (Avalonia) implementation yet");
+			WinFormsHost.Current.ShowMessageBox(owner, "The \"" + GetType().Name + "\" window isn't available in this version of " + Application.ProductName + " yet.",
+				Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+			return DialogResult = DialogResult.Cancel;
 		}
 	}
 
@@ -327,10 +358,13 @@ namespace System.Windows.Forms
 
 	public class Panel : Control
 	{
+		private Image backgroundimage;
+		private ImageLayout backgroundimagelayout = ImageLayout.Tile;
+
+		public Image BackgroundImage { get => backgroundimage; set { backgroundimage = value; NotifyStylesChanged(); } }
+		public ImageLayout BackgroundImageLayout { get => backgroundimagelayout; set { backgroundimagelayout = value; NotifyStylesChanged(); } }
 		public BorderStyle BorderStyle { get; set; }
 		public bool AutoScroll { get; set; }
-		public Image BackgroundImage { get; set; }
-		public ImageLayout BackgroundImageLayout { get; set; }
 	}
 
 	public class FlowLayoutPanel : Panel

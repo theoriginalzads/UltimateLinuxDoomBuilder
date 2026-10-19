@@ -26,6 +26,8 @@ namespace CodeImp.DoomBuilder.Windows
 		internal bool AllowAddTab { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesController..ctor#5
 		internal PreferencesController(PreferencesForm form) { }
+		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesController.AddTab#6
+		public void AddTab(TabPage tab) { }
 		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesController.RaiseAccept#7
 		public void RaiseAccept() { }
 		// stub-key: CodeImp.DoomBuilder.Windows.PreferencesController.RaiseCancel#8

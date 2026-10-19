@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.PairedFieldsControl
-	public partial class PairedFieldsControl : System.Windows.Forms.Control
+	public partial class PairedFieldsControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.PairedFieldsControl.OnValuesChanged#0
 		public event EventHandler OnValuesChanged;

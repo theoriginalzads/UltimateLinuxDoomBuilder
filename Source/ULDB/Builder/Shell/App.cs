@@ -18,6 +18,11 @@ namespace ULDB.Shell
 				Source = new System.Uri("avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml")
 			});
 
+			Styles.Add(new StyleInclude(new System.Uri("avares://Builder/"))
+			{
+				Source = new System.Uri("avares://Builder/Shell/Styles.axaml")
+			});
+
 			// Follow the desktop's light/dark setting.
 			RequestedThemeVariant = ThemeVariant.Default;
 		}

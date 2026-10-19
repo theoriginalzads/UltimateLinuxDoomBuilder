@@ -28,7 +28,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ResourceListEditor
-	internal partial class ResourceListEditor : System.Windows.Forms.Control
+	internal partial class ResourceListEditor : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListEditor.ContentChanged
 		public delegate void ContentChanged();

@@ -52,7 +52,9 @@ namespace System.Windows.Forms
 		public Size Size { get; set; }
 		public int Width { get => Size.Width; set => Size = new Size(value, Size.Height); }
 		public int Height { get => Size.Height; set => Size = new Size(Size.Width, value); }
-		public Font Font { get; set; }
+		private Font font;
+		/// <summary>Like WinForms: the owner's font unless one is set.</summary>
+		public Font Font { get => font ?? Owner?.Font ?? SystemFonts.DefaultFont; set { font = value; NotifyChanged(); } }
 		public Color ForeColor { get; set; }
 		public Color BackColor { get; set; }
 		public Padding Margin { get; set; }
@@ -119,6 +121,9 @@ namespace System.Windows.Forms
 
 		public void Select() { }
 		public void Invalidate() { }
+
+		/// <summary>Called when the item's size or position changes (upstream's Mono fixes override it).</summary>
+		protected virtual void OnBoundsChanged() { }
 
 		public void Dispose()
 		{
@@ -333,7 +338,15 @@ namespace System.Windows.Forms
 	/// <summary>Hosts a control on a tool strip. The UI renders hosted controls it knows about.</summary>
 	public class ToolStripControlHost : ToolStripItem
 	{
-		public ToolStripControlHost(Control c) { Control = c ?? throw new ArgumentNullException(nameof(c)); }
+		public ToolStripControlHost(Control c)
+		{
+			Control = c ?? throw new ArgumentNullException(nameof(c));
+			OnSubscribeControlEvents(c);
+		}
+
+		// Subclasses forward the hosted control's events here (WinForms calls these when hosting starts and ends).
+		protected virtual void OnSubscribeControlEvents(Control control) { }
+		protected virtual void OnUnsubscribeControlEvents(Control control) { }
 		// Not in WinForms: lets ULDB's generated placeholders derive without a hosted control.
 		protected ToolStripControlHost() : this(new Control()) { }
 		public ToolStripControlHost(Control c, string name) : this(c) { Name = name ?? ""; }

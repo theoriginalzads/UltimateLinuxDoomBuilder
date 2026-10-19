@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.EditSelectionPanel
-	public partial class EditSelectionPanel : System.Windows.Forms.Control
+	public partial class EditSelectionPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.EditSelectionPanel..ctor#10
 		public EditSelectionPanel(EditSelectionMode mode) { }

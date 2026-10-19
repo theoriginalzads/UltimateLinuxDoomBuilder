@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawGridOptionsPanel
-	internal partial class DrawGridOptionsPanel : System.Windows.Forms.Control
+	internal partial class DrawGridOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawGridOptionsPanel.OnValueChanged#0
 		public event EventHandler OnValueChanged;

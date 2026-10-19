@@ -18,7 +18,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ActionSelectorControl
-	public partial class ActionSelectorControl : System.Windows.Forms.Control
+	public partial class ActionSelectorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ActionSelectorControl.ValueChanges#0
 		public event EventHandler ValueChanges;

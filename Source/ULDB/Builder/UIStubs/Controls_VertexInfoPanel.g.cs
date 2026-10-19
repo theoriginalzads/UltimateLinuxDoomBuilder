@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.VertexInfoPanel
-	internal partial class VertexInfoPanel : System.Windows.Forms.Control
+	internal partial class VertexInfoPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.VertexInfoPanel..ctor#0
 		public VertexInfoPanel() { }

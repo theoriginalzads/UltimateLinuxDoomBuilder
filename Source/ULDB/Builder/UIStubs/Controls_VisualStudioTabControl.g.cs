@@ -22,8 +22,10 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl
-	public partial class VSTabControl : System.Windows.Forms.Control
+	public partial class VSTabControl : System.Windows.Forms.TabControl
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnCloseTabClicked#0
+		public event EventHandler<TabControlEventArgs> OnCloseTabClicked;
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.ShowClosingButton#1
 		public bool ShowClosingButton { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.ActiveColor#2

@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ColorControl
-	public partial class ColorControl : System.Windows.Forms.Control
+	public partial class ColorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ColorControl.ColorChanged#0
 		public event EventHandler ColorChanged;

@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawEllipseOptionsPanel
-	internal partial class DrawEllipseOptionsPanel : System.Windows.Forms.Control
+	internal partial class DrawEllipseOptionsPanel : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.DrawEllipseOptionsPanel.OnValueChanged#0
 		public event EventHandler OnValueChanged;
