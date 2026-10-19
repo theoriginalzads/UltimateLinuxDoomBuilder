@@ -96,41 +96,39 @@ Each phase ends with a milestone you can test. Work happens on a `phase-N/...` b
 
 **Milestone:** the reference build runs, the toolchain is installed, and the Avalonia version is chosen.
 
-### Phase 1 — Move to .NET 10 and separate the editor logic from the UI
+### Phase 1 — Move to .NET 10 and separate the editor logic from the UI ✅
 
-1. Convert the projects to SDK-style `.csproj` targeting `net10.0`.
-   - Add a new `Builder.Linux.sln`. Keep the upstream `.sln` and `.csproj` files untouched to avoid merge conflicts.
-2. Create `UDB.Core`, a library with no UI. It includes everything except `Windows/`, `Controls/` and WinForms-specific code, via globs.
-3. Turn `IMainForm` and `General.Interface` into a toolkit-neutral `IUserInterface` service covering:
-   - menus and toolbars
-   - status bar
-   - message boxes
-   - file dialogs
-   - progress
-   - clipboard
-   - cursors
-   - redraw requests
-   - opening edit dialogs (`ShowEditLinedefs(...)` and so on)
-4. Replace `System.Drawing`:
-   - `Color`, `Point`, `Rectangle` etc. come from `System.Drawing.Primitives`, which works cross-platform with no change needed.
-   - `Bitmap` and `Graphics`, used for texture loading and processing, move to **SkiaSharp**, which Avalonia already uses.
-5. Add a platform layer for Windows-only behaviour (`Source/Platform`):
+**Done.** The approach changed from the original sketch, to keep upstream files untouched. Details are in [`architecture.md`](architecture.md).
 
-   | Windows code | Linux replacement |
+| Originally planned | What was built instead, and why |
+|---|---|
+| A UI-free `UDB.Core` library, plus an `IUserInterface` service replacing `General.Interface` | One `Builder` assembly (upstream core and, later, the Avalonia UI), like upstream's `Builder.exe`. Ported windows keep their upstream names, so the core's direct references (`new AngleForm()`, `General.MainWindow.…`) and plugins work **without editing upstream code**. Until a window is ported, a generated **placeholder** stands in (`tools/uistubgen`) |
+| Rewrite `System.Drawing` usage to SkiaSharp | A **compatibility layer** (`ULDB.Compat`) provides `System.Drawing` (on SkiaSharp) and the non-visual WinForms types, so upstream code compiles unchanged. WinForms services (message boxes, dialogs, clipboard, cursors, timers) route through `IWinFormsHost`, which the Avalonia UI implements |
+| `Source/Platform` | `Source/ULDB/Builder/Platform`, called from small `#if ULDB` edits listed in [`upstream-edits.md`](upstream-edits.md) |
+
+**What Phase 1 delivered:**
+1. `Builder.Linux.sln` with `ULDB.Compat`, `ULDB.Builder` (assembly `Builder`) and `ULDB.Tests` (assembly `Builder.Tests`). Upstream `.sln` and `.csproj` files are untouched.
+2. The upstream editor core compiles on .NET 10 for Linux. There are only five small `#if ULDB` edits, plus one upstream bug fix.
+3. Upstream resources are embedded under the same names. `Properties.Resources` is regenerated so it loads the same images (`tools/resxgen`).
+4. Platform:
+
+   | Windows behaviour | Linux replacement |
    |---|---|
-   | Registry | Settings files in the XDG config folder (`~/.config/UltimateLinuxDoomBuilder`, separate from any upstream UDB settings) |
-   | `cmd.exe` scripts | `/bin/sh` scripts |
-   | `explorer.exe /select` | `xdg-open` / D-Bus `FileManager1.ShowItems` |
-   | `rstrtmgr` | Not needed, remove |
-   | Updater | Remove; packaging handles updates |
-   | `user32` calls | Avalonia equivalents |
+   | Settings folder | `$XDG_CONFIG_HOME/UltimateLinuxDoomBuilder` |
+   | `-PORTABLE` ACL check | Direct write test |
+   | `cmd.exe` pre/post commands | `/bin/sh` scripts |
+   | Opening URLs | `xdg-open` |
 
-   Remove the `WINEPREFIX` path hacks.
-6. Tests:
-   - Get the existing xUnit tests (`Source/Tests`) passing on .NET 10.
-   - Add **round-trip load/save tests** for each map format against the Phase 0 test maps, plus resource loading (WAD, PK3, folders).
+   - Already compiled out by upstream's `NO_WIN32`/`NO_UPDATER`: `user32`/`rstrtmgr` calls, the updater.
+   - Registry and `explorer.exe` uses are only in UI code (Preferences, exception dialog) and get handled when those windows are ported.
+5. Tests (`dotnet test Builder.Linux.sln`, 101 passing):
+   - upstream's own 70 tests
+   - UZDoom/GZDoom game configurations load
+   - UDMF map round trips are byte-stable and keep GZDoom data
+   - the compat drawing layer behaves like GDI+
+   - the platform helpers work
 
-**Milestone:** `dotnet test` passes on Linux. The core loads and saves maps with no UI at all.
+**Moved to Phase 2:** resource loading tests (WAD/PK3 textures, using Freedoom). Loading textures creates GPU textures, so these need the renderer's off-screen mode (Phase 2a).
 
 ### Phase 2 — Native renderer and external tools
 
@@ -139,7 +137,9 @@ Each phase ends with a milestone you can test. Work happens on a `phase-N/...` b
 1. Add `Source/Native/CMakeLists.txt` that builds `libBuilderNative.so`. Keep the old Makefile target working as well.
 2. Remove the renderer's own window and context creation on Linux. It renders into the OpenGL context **Avalonia provides** (`OpenGlControlBase`), so the renderer itself has no windowing-system code. It works on X11 and XWayland now, and would work on native Wayland later without renderer changes.
 3. Replace RawMouse (Windows raw input) with Avalonia pointer capture plus relative motion, for 3D mouselook.
-4. Build options:
+   - `Actions/MouseInput.cs` (upstream) warps the cursor with `Cursor.Position`. The compat `Cursor.PositionSetter` hook is where the UI implements that.
+4. **Off-screen context for tests:** a surfaceless or pbuffer EGL context (Mesa), so headless tests can create `RenderDevice` and exercise resource loading. Then add resource loading tests (Freedoom IWAD plus `tests/maps/pk3_resource.pk3`: textures, flats, sprites, GLDEFS, ZScript, MAPINFO).
+5. Build options:
    - `-DUDB_ARCH=generic` (default, x86-64-v2)
    - `x86-64-v3`
    - `x86-64-v4`
