@@ -932,6 +932,10 @@ GLXContext OpenGLContext::create_context_glx_1_3(GLXContext shared_context)
 
 std::unique_ptr<IOpenGLContext> IOpenGLContext::Create(void* disp, void* window)
 {
+#ifdef ULDB
+	// ULDB: use the host's context (Avalonia or a test harness) when one is registered.
+	if (ULDB_IsHosted()) return ULDB_CreateHostedContext();
+#endif
 	auto ctx = std::make_unique<OpenGLContext>(disp, window);
 	if (!ctx->IsValid()) return nullptr;
 	return ctx;
@@ -939,6 +943,10 @@ std::unique_ptr<IOpenGLContext> IOpenGLContext::Create(void* disp, void* window)
 
 void* GL_GetProcAddress(const char* function_name)
 {
+#ifdef ULDB
+	// ULDB: resolve entry points through the host's context loader.
+	if (ULDB_IsHosted()) return ULDB_HostGetProcAddress(function_name);
+#endif
 	if (glx_global.glXGetProcAddressARB)
 		return (void*)glx_global.glXGetProcAddressARB((GLubyte*)function_name);
 	else if (glx_global.glXGetProcAddress)

@@ -432,7 +432,11 @@ bool GLRenderDevice::StartRendering(bool clear, int backcolor, Texture* itarget,
 	}
 	else
 	{
+#ifdef ULDB
+		glBindFramebuffer(GL_FRAMEBUFFER, ULDB_DefaultFramebuffer()); // ULDB: the host's framebuffer
+#else
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 		mViewportWidth = Context->GetWidth();
 		mViewportHeight = Context->GetHeight();
 		if (!ApplyViewport()) return false;

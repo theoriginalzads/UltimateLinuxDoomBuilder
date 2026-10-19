@@ -221,7 +221,11 @@ GLuint GLTexture::GetFramebuffer(GLRenderDevice* device, bool usedepthbuffer)
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mDepthRenderbuffer);
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				throw std::runtime_error("glCheckFramebufferStatus did not return GL_FRAMEBUFFER_COMPLETE");
+#ifdef ULDB
+			glBindFramebuffer(GL_FRAMEBUFFER, ULDB_DefaultFramebuffer()); // ULDB: the host's framebuffer
+#else
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 		}
 		return mFramebuffer;
 	}

@@ -28,6 +28,8 @@
     <Compile Include="UIStubFixes/**/*.cs" />
     <!-- ULDB platform helpers (Linux replacements for Windows-only code). -->
     <Compile Include="Platform/**/*.cs" />
+    <!-- ULDB rendering integration (hosted OpenGL context). -->
+    <Compile Include="Rendering/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
@@ -79,4 +81,20 @@
     <None Include="$(UpstreamAssets)Linux/**/*"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
   </ItemGroup>
+  <!-- Native renderer (libBuilderNative.so), built with CMake from upstream's Source/Native
+       plus Source/ULDB/Native. CPU target: dotnet build -p:UldbArch=znver4 (default generic). -->
+  <PropertyGroup>
+    <UldbArch Condition="'$(UldbArch)' == ''">generic</UldbArch>
+    <NativeSourceDir>$(MSBuildThisFileDirectory)../Native</NativeSourceDir>
+    <NativeBuildDir>$(MSBuildThisFileDirectory)obj/native/$(Configuration)-$(UldbArch)</NativeBuildDir>
+    <NativeBuildType Condition="'$(Configuration)' == 'Debug'">RelWithDebInfo</NativeBuildType>
+    <NativeBuildType Condition="'$(Configuration)' != 'Debug'">Release</NativeBuildType>
+  </PropertyGroup>
+  <Target Name="BuildNative" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
+    <Exec Command="cmake -S &quot;$(NativeSourceDir)&quot; -B &quot;$(NativeBuildDir)&quot; -G Ninja -DCMAKE_BUILD_TYPE=$(NativeBuildType) -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
+    <Exec Command="cmake --build &quot;$(NativeBuildDir)&quot;" />
+    <ItemGroup>
+      <None Include="$(NativeBuildDir)/libBuilderNative.so" Link="libBuilderNative.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    </ItemGroup>
+  </Target>
 </Project>
