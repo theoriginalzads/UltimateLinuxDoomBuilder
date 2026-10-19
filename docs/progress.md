@@ -95,7 +95,7 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
-Steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). **Not yet confirmed by the user that the window appeared**; ask first. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
+Steps 1 and 2 are done (first run on the user's machine 19 Oct 2026: startup reaches "Startup done" with 0 plugins). The user confirmed the window appears (dark theme followed, text renders; title-bar icon is still the generic X11 one: add the app icon with the `MainForm` port). It reports 51 configs loaded: the scope filter applies once the config UI is ported. Plugins aren't built yet (Phase 4), so only `Plugins/Loadorder.cfg` is copied.
 
 1. ~~**Avalonia app entry point:**~~ done
    - The UI lives in the `Builder` assembly; it already references Avalonia 12.1.4.
