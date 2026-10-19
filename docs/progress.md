@@ -46,7 +46,7 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Tests | ✅ | 101 passing: upstream's 70, plus configs, UDMF round trips, compat drawing, platform |
 | Resource (texture) loading tests | ➡ Phase 2 | They need the renderer (GPU textures). Freedoom is available via apt (`freedoom` package) |
 
-**Upstream changes so far:** five `#if ULDB` edits (`General.cs`, `MapManager.cs`) and one bug fix (`EngineInfo.Dispose`).
+**Upstream changes so far:** four `#if ULDB` edits (three in `General.cs`, one in `MapManager.cs`) and one bug fix (`EngineInfo.Dispose`).
 
 ### Known gaps carried forward
 - The `Assets/Linux` prebuilt ACC/ZDBSP/ZenNode/ELFBSP binaries are still used. Phase 2b replaces them with source builds.

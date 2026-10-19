@@ -108,7 +108,7 @@ Each phase ends with a milestone you can test. Work happens on a `phase-N/...` b
 
 **What Phase 1 delivered:**
 1. `Builder.Linux.sln` with `ULDB.Compat`, `ULDB.Builder` (assembly `Builder`) and `ULDB.Tests` (assembly `Builder.Tests`). Upstream `.sln` and `.csproj` files are untouched.
-2. The upstream editor core compiles on .NET 10 for Linux. There are only five small `#if ULDB` edits, plus one upstream bug fix.
+2. The upstream editor core compiles on .NET 10 for Linux. There are only four small `#if ULDB` edits, plus one upstream bug fix.
 3. Upstream resources are embedded under the same names. `Properties.Resources` is regenerated so it loads the same images (`tools/resxgen`).
 4. Platform:
 
