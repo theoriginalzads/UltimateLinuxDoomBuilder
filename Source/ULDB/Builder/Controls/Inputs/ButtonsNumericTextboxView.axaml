@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.ButtonsNumericTextboxView">
   <Grid ColumnDefinitions="*,Auto">
-    <TextBox x:Name="textbox" MinWidth="40" MinHeight="28" Padding="6,3" VerticalContentAlignment="Center"/>
+    <TextBox x:Name="textbox" MinWidth="40" VerticalContentAlignment="Center"/>
     <Grid x:Name="buttons" Grid.Column="1" RowDefinitions="*,*" Width="18" Margin="2,0,0,0">
       <RepeatButton x:Name="buttonup" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">

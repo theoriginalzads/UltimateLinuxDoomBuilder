@@ -30,6 +30,12 @@ namespace ULDB.Shell
 			Register<CheckboxArrayControl>(m => new CheckboxArrayControlView(m));
 			Register<ThingBrowserControl>(m => new ThingBrowserControlView(m));
 			Register<AngleControlEx>(m => new ULDB.Controls.AngleEditor(m));
+			Register<PairedFieldsControl>(m => new PairedFieldsControlView(m));
+			Register<PairedIntControl>(m => new PairedIntControlView(m));
+			Register<SidedefPartLightControl>(m => new SidedefPartLightControlView(m));
+			Register<SectorSlopeControl>(m => new SectorSlopeControlView(m));
+			Register<TagsSelector>(m => new TagsSelectorView(m));
+			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
 		}
 
 		/// <summary>Registers the view for a model control type (and types derived from it).</summary>

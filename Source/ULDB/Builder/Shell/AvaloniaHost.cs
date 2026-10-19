@@ -131,7 +131,11 @@ namespace ULDB.Shell
 					window.WindowStartupLocation = ownerwindow != null ? WindowStartupLocation.CenterOwner : WindowStartupLocation.CenterScreen;
 				}
 
-				window.Opened += (s, e) => form.RaiseShown();
+				window.Opened += (s, e) =>
+				{
+					window.Activate(); // dialogs take the focus (KDE may otherwise leave it on the main window)
+					form.RaiseShown();
+				};
 				window.Activated += (s, e) => form.RaiseActivated();
 				window.Deactivated += (s, e) => form.RaiseDeactivate();
 

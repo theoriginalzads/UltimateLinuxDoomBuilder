@@ -1,0 +1,21 @@
+<!-- ULDB: the view of upstream's TagsSelector (model-ported): several tags: the current tag, its list (each one a link) and add/remove.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.TagsSelectorView">
+  <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto" RowSpacing="6" ColumnSpacing="4">
+    <TextBlock x:Name="curtaglabel" Classes="uldb-field" HorizontalAlignment="Right"/>
+    <ComboBox x:Name="tagpicker" Grid.Column="1" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+    <ContentControl x:Name="spin" Grid.Column="2"/>
+    <Button x:Name="newtag" Grid.Column="3"/>
+    <Button x:Name="unusedtag" Grid.Column="4"/>
+    <Button x:Name="clear" Grid.Column="5" Classes="uldb-tool"/>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4" HorizontalAlignment="Right">
+      <Button x:Name="clearalltags" Classes="uldb-tool"/>
+      <TextBlock x:Name="label1" Classes="uldb-field"/>
+    </StackPanel>
+    <ContentControl x:Name="tagslist" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" VerticalAlignment="Center"/>
+    <Button x:Name="addtag" Grid.Row="1" Grid.Column="4" Classes="uldb-tool" HorizontalAlignment="Right"/>
+    <Button x:Name="removetag" Grid.Row="1" Grid.Column="5" Classes="uldb-tool"/>
+  </Grid>
+</UserControl>

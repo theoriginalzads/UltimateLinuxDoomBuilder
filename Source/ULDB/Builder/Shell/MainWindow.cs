@@ -386,6 +386,31 @@ namespace ULDB.Shell
 
 		#region ================== Lifecycle
 
+		/// <summary>
+		/// Development aid: ULDB_SHOW_FORM=vertex|linedef|sector|thing[:tab] opens that edit dialog
+		/// on the first such map element once a map is open (optionally on the given tab index),
+		/// so dialogs can be checked and captured without clicking through the editor.
+		/// </summary>
+		private void ShowFormForDevelopment()
+		{
+			string what = Environment.GetEnvironmentVariable("ULDB_SHOW_FORM");
+			if(string.IsNullOrEmpty(what) || General.Map == null) return;
+			string[] parts = what.Split(':');
+			int tab = parts.Length > 1 && int.TryParse(parts[1], out int t) ? t : -1;
+			string configname = parts[0] switch { "vertex" => "vertexeditform", "linedef" => "linedefeditformudmf", "sector" => "sectoreditformudmf", "thing" => "thingeditformudmf", _ => parts[0] };
+			if(tab >= 0) General.Settings.WriteSetting("windows." + configname + ".activetab", tab);
+			Dispatcher.UIThread.Post(() =>
+			{
+				switch(parts[0])
+				{
+					case "vertex": form.ShowEditVertices(new[] { System.Linq.Enumerable.First(General.Map.Map.Vertices) }); break;
+					case "linedef": form.ShowEditLinedefs(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); break;
+					case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
+					case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
+				}
+			}, DispatcherPriority.Background);
+		}
+
 		private void HookLifecycle()
 		{
 			// Upstream opens command-line maps on Shown, which needs the renderer's OpenGL
@@ -396,6 +421,7 @@ namespace ULDB.Shell
 				catch(Exception) { } // Reported by the viewport; the editor runs without a map view
 				form.RaiseShown();
 				input.Focus();
+				ShowFormForDevelopment();
 			};
 			Activated += (s, e) => form.RaiseActivated();
 			Deactivated += (s, e) => form.RaiseDeactivate();

@@ -3,9 +3,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.ColorFieldsControlView">
-  <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+  <Grid ColumnDefinitions="Auto,Auto,Auto,*" ColumnSpacing="6">
     <ContentControl x:Name="cpColor"/>
-    <TextBox x:Name="tbColor" Grid.Column="1" MinWidth="80"/>
+    <TextBox x:Name="tbColor" Grid.Column="1" Width="90"/>
     <Button x:Name="bReset" Grid.Column="2" Classes="uldb-tool"/>
   </Grid>
 </UserControl>

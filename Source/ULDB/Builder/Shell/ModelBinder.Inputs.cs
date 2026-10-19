@@ -25,6 +25,8 @@ namespace ULDB.Shell
 				case CheckBox cb when model is WF.CheckBox m: BindCheckBox(cb, m); return true;
 				case RadioButton rb when model is WF.RadioButton m: BindRadioButton(rb, m); return true;
 				case Button link when model is WF.LinkLabel m: BindLink(link, m); return true;
+				case ContentControl links when model is WF.LinkLabel m && !(view is Button): BindLinks(links, m); return true;
+				case Slider slider when model is WF.TrackBar m: BindTrackBar(slider, m); return true;
 				case ComboBox combo when model is WF.ComboBox m: BindComboBox(combo, m); return true;
 				case NumericUpDown num when model is WF.NumericUpDown m: BindNumericUpDown(num, m); return true;
 				case TabControl tabs when model is WF.TabControl m: BindTabs(tabs, m); return true;
@@ -94,6 +96,74 @@ namespace ULDB.Shell
 			}, m);
 		}
 
+		/// <summary>
+		/// A LinkLabel with links inside its text (upstream's TagsSelector lists tags this way):
+		/// plain runs and link buttons in a wrap panel; clicking one raises LinkClicked for it.
+		/// </summary>
+		public ModelBinder BindLinks(ContentControl view, WF.LinkLabel m)
+		{
+			string shown = null;
+			return Custom(() =>
+			{
+				string sig = m.Text + "|" + string.Join(",", m.Links.Select(l => l.Start + ":" + l.Length));
+				if(sig != shown)
+				{
+					shown = sig;
+					WrapPanel panel = new WrapPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+					string text = m.Text ?? "";
+					List<WF.LinkLabel.Link> links = m.Links.Count > 0 ? m.Links.OrderBy(l => l.Start).ToList() : new List<WF.LinkLabel.Link> { new WF.LinkLabel.Link(0, text.Length) };
+					int pos = 0;
+					void Plain(string t) { if(t.Length > 0) panel.Children.Add(new TextBlock { Text = t, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center }); }
+					foreach(WF.LinkLabel.Link link in links)
+					{
+						int start = Math.Clamp(link.Start, pos, text.Length);
+						int end = Math.Clamp(link.Start + link.Length, start, text.Length);
+						Plain(text.Substring(pos, start - pos));
+						Button b = new Button { Content = text.Substring(start, end - start) };
+						b.Classes.Add("uldb-link");
+						WF.LinkLabel.Link target = m.Links.Count > 0 ? link : null;
+						b.Click += (s, e) => m.RaiseLinkClicked(target);
+						panel.Children.Add(b);
+						pos = end;
+					}
+					Plain(text.Substring(Math.Min(pos, text.Length)));
+					view.Content = panel;
+				}
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
+			}, m);
+		}
+
+		public ModelBinder BindTrackBar(Slider view, WF.TrackBar m)
+		{
+			bool updating = false;
+			view.ValueChanged += (s, e) =>
+			{
+				if(updating) return;
+				int v = (int)Math.Round(view.Value);
+				if(v != m.Value) m.RaiseScroll(v);
+			};
+			return Custom(() =>
+			{
+				updating = true;
+				try
+				{
+					view.Minimum = m.Minimum;
+					view.Maximum = m.Maximum;
+					view.SmallChange = m.SmallChange;
+					view.LargeChange = m.LargeChange;
+					view.TickFrequency = m.TickFrequency;
+					view.IsSnapToTickEnabled = true;
+					if((int)Math.Round(view.Value) != m.Value) view.Value = m.Value;
+					view.IsVisible = m.Visible;
+					view.IsEnabled = m.Enabled;
+					ApplyTip(view, m);
+				}
+				finally { updating = false; }
+			}, m);
+		}
+
 		/// <summary>A LinkLabel as a link-styled button.</summary>
 		public ModelBinder BindLink(Button view, WF.LinkLabel m)
 		{
@@ -154,14 +224,20 @@ namespace ULDB.Shell
 		public ModelBinder BindTextBox(TextBox view, WF.TextBoxBase m)
 		{
 			bool fromview = false;
+			WF.CharacterCasing Casing() => (m as WF.TextBox)?.CharacterCasing ?? WF.CharacterCasing.Normal;
 			view.IsReadOnly = m.ReadOnly;
 			view.AcceptsReturn = m.Multiline;
 			view.TextWrapping = m.Multiline && m.WordWrap ? Avalonia.Media.TextWrapping.Wrap : Avalonia.Media.TextWrapping.NoWrap;
 			view.TextChanged += (s, e) =>
 			{
-				if((view.Text ?? "") == m.Text) return;
+				string text = view.Text ?? "";
+				// WinForms' CharacterCasing changes typed text (upstream upper-cases short texture names).
+				if(Casing() == WF.CharacterCasing.Upper) text = text.ToUpperInvariant();
+				else if(Casing() == WF.CharacterCasing.Lower) text = text.ToLowerInvariant();
+				if(text != (view.Text ?? "")) { int caret = view.CaretIndex; view.Text = text; view.CaretIndex = caret; }
+				if(text == m.Text) return;
 				fromview = true;
-				try { m.Text = view.Text ?? ""; }
+				try { m.Text = text; }
 				finally { fromview = false; }
 			};
 			view.GotFocus += (s, e) =>
