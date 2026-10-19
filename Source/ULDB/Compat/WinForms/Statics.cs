@@ -105,10 +105,14 @@ namespace System.Windows.Forms
 
 	public static class Application
 	{
+		/// <summary>Set by the application to brand message boxes etc. (ULDB.Branding).</summary>
+		public static string ProductNameOverride { get; set; }
+
 		public static string ProductName
 		{
 			get
 			{
+				if(!string.IsNullOrEmpty(ProductNameOverride)) return ProductNameOverride;
 				Assembly asm = Assembly.GetEntryAssembly();
 				return asm?.GetCustomAttribute<AssemblyProductAttribute>()?.Product ?? asm?.GetName().Name ?? "Ultimate Linux Doom Builder";
 			}

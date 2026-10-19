@@ -28,6 +28,10 @@
     <Compile Include="UIStubFixes/**/*.cs" />
     <!-- ULDB platform helpers (Linux replacements for Windows-only code). -->
     <Compile Include="Platform/**/*.cs" />
+    <!-- ULDB-only code at the project root (Branding). -->
+    <Compile Include="*.cs" />
+    <!-- GZDoom/UZDoom-only scope filter. -->
+    <Compile Include="Scope/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
     <Compile Include="Rendering/**/*.cs" />
   </ItemGroup>
