@@ -21,3 +21,4 @@ CodeImp.DoomBuilder.Windows.DelayedForm
 CodeImp.DoomBuilder.Windows.OpenMapOptionsForm
 CodeImp.DoomBuilder.Windows.ResourceOptionsForm
 CodeImp.DoomBuilder.Controls.ResourceListEditor
+CodeImp.DoomBuilder.Windows.ErrorsForm

@@ -100,13 +100,14 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
 **State on 20 Oct 2026 (user tested):** the milestone works without the command line: File → Open → Open Map dialog (resources, scope-filtered configs) → map in 2D/3D → edit → Ctrl+S (ZDBSP nodes). Pan is Space + mouse (UDB's default; middle button is paint-select). Next, in order:
-1. `ErrorsForm` (shown after loading when there are resource warnings; currently a "not ported" message).
+1. ~~`ErrorsForm`~~ done (`.axaml`; shows after loading when resources have errors).
 2. Info panels (linedef/sector/thing/vertex) and dockers in `.axaml`, then the edit forms (linedef, sector, thing, vertex), Map Options, game configurations (`ConfigForm`, with `ScopeFilter`), preferences, texture browser, script editor. Per the user's decision (plan section 7): `.axaml` for the main windows as soon as possible.
 3. Window geometry persistence for the main window.
 4. Startup polish (user report): the window shows empty (see-through) for 1–2 s at launch while upstream's `Shown` handler loads before the first frame is painted. Let the window render once (raise `Shown` after the first frame) and/or show a splash.
 5. Resource list: drop-position marker when reordering; the duplicate-resource warning shows in the main status bar, behind the dialog (upstream does the same; consider showing it in the dialog).
 6. Builds are Debug: upstream's `#if DEBUG` assertions are active. UI-thread exceptions are logged and reported instead of crashing (`AvaloniaHost.ReportException`).
-7. 3D mouselook has no pointer grab for `Cursor.Clip`; add one if users report the pointer escaping.
+7. **Modernise the main window** (user, 20 Oct 2026: "don't forget we want to modernise the main window also"). It's a model port now, so it mirrors WinForms. Build the info panels, dockers and toolbars in the modern style (plan section 4), then do a main-window pass; screenshot sign-off before layout departures.
+8. 3D mouselook has no pointer grab for `Cursor.Clip`; add one if users report the pointer escaping.
 
 App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
 

@@ -1,0 +1,34 @@
+<!-- ULDB: the window for ErrorsForm (Windows/ErrorsForm.cs), "Errors and Warnings".
+     Same controls and names as upstream's designer; the grid is a list of icon + text rows. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:CodeImp.DoomBuilder.Windows"
+        x:Class="CodeImp.DoomBuilder.Windows.ErrorsView"
+        Title="Errors and Warnings" Width="820" Height="453" MinWidth="780" MinHeight="300"
+        ShowInTaskbar="False">
+  <DockPanel Margin="16">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" Margin="0,12,0,0">
+      <Button x:Name="copyselected" Grid.Column="0" Content="Copy Selection" IsEnabled="False" MinWidth="110" HorizontalContentAlignment="Center" Margin="0,0,8,0"/>
+      <Button x:Name="showsource" Grid.Column="1" Content="Show source" IsEnabled="False" MinWidth="110" HorizontalContentAlignment="Center" Margin="0,0,8,0"/>
+      <Button x:Name="clearlist" Grid.Column="2" Content="Clear" MinWidth="110" HorizontalContentAlignment="Center"/>
+      <CheckBox x:Name="checkshow" Grid.Column="3" Content="Show this window when errors occur" Margin="16,0" VerticalAlignment="Center"/>
+      <Button x:Name="close" Grid.Column="5" Content="Close" IsCancel="True" IsDefault="True" MinWidth="122" HorizontalContentAlignment="Center"/>
+    </Grid>
+
+    <Border BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" CornerRadius="3">
+      <Panel>
+        <ListBox x:Name="grid" SelectionMode="Multiple">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="local:ErrorsForm+Row">
+              <DockPanel Background="Transparent" Margin="0,2">
+                <Image Source="{Binding Icon}" Width="24" Height="24" VerticalAlignment="Top" Margin="0,0,10,0" DockPanel.Dock="Left"/>
+                <SelectableTextBlock Text="{Binding Description}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+              </DockPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock x:Name="emptylabel" Text="No errors or warnings." Opacity="0.6" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+      </Panel>
+    </Border>
+  </DockPanel>
+</Window>

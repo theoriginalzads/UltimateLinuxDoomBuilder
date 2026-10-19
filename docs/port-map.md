@@ -15,3 +15,4 @@ Each upstream window or control and its Avalonia port. Handler names are kept id
 | `Windows/OpenMapOptionsForm.cs` (+ `.Designer.cs`) | `Source/ULDB/Builder/Windows/OpenMapOptionsForm.cs` + `OpenMapOptionsView.axaml` | ✅ | `.axaml` port. Lists only visible configurations and script compilers (see `scope-hidden.md`) |
 | `Windows/ResourceOptionsForm.cs` (+ `.Designer.cs`) | `Source/ULDB/Builder/Windows/ResourceOptionsForm.cs` + `ResourceOptionsView.axaml` | ✅ | `.axaml` port ("Add Resource" / "Resource Options") |
 | `Controls/ResourceListEditor.cs` (+ `.Designer.cs`) | `Source/ULDB/Builder/Controls/ResourceListEditor.axaml` (+ `.axaml.cs`) | ✅ | `.axaml` port; same public API. Vector icons; reorder by dragging an item onto another |
+| `Windows/ErrorsForm.cs` (+ `.Designer.cs`) | `Source/ULDB/Builder/Windows/ErrorsForm.cs` + `ErrorsView.axaml` | ✅ | `.axaml` port; the grid is a list of icon + wrapped-text rows |
