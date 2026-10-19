@@ -34,6 +34,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public const int NO_ANGLE = int.MinValue;
 		// stub-key: CodeImp.DoomBuilder.Controls.AngleControlEx..ctor#20
 		public AngleControlEx() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.AngleControlEx.OnPaint#26
+		protected virtual void OnPaint(PaintEventArgs e) { }
 	}
 }
 

@@ -39,7 +39,7 @@ namespace System.Windows.Forms
 		public Control Parent { get; set; }
 		public ControlCollection Controls { get; }
 		public bool IsDisposed { get; private set; }
-		public bool InvokeRequired => false;
+		public bool InvokeRequired => !WinFormsHost.Current.CheckAccess();
 
 		public Control() { Controls = new ControlCollection(this); }
 
@@ -69,6 +69,94 @@ namespace System.Windows.Forms
 		protected virtual void OnResize(EventArgs e) => Resize?.Invoke(this, e);
 		protected virtual void OnGotFocus(EventArgs e) => GotFocus?.Invoke(this, e);
 		protected virtual void OnLostFocus(EventArgs e) => LostFocus?.Invoke(this, e);
+
+		public event PaintEventHandler Paint;
+		public event PreviewKeyDownEventHandler PreviewKeyDown;
+		public event DragEventHandler DragEnter;
+		public event DragEventHandler DragOver;
+		public event DragEventHandler DragDrop;
+		public event EventHandler DragLeave;
+		public event EventHandler MouseEnter;
+		public event EventHandler MouseLeave;
+		public event MouseEventHandler MouseClick;
+		public event MouseEventHandler MouseDoubleClick;
+		public event EventHandler DoubleClick;
+		public event EventHandler SizeChanged;
+		public event EventHandler VisibleChanged;
+		public event EventHandler EnabledChanged;
+		public event EventHandler Enter;
+		public event EventHandler Leave;
+
+		protected virtual void OnPaint(PaintEventArgs e) => Paint?.Invoke(this, e);
+		protected virtual void OnPreviewKeyDown(PreviewKeyDownEventArgs e) => PreviewKeyDown?.Invoke(this, e);
+		protected virtual void OnDragEnter(DragEventArgs e) => DragEnter?.Invoke(this, e);
+		protected virtual void OnDragOver(DragEventArgs e) => DragOver?.Invoke(this, e);
+		protected virtual void OnDragDrop(DragEventArgs e) => DragDrop?.Invoke(this, e);
+		protected virtual void OnDragLeave(EventArgs e) => DragLeave?.Invoke(this, e);
+		protected virtual void OnMouseEnter(EventArgs e) => MouseEnter?.Invoke(this, e);
+		protected virtual void OnMouseLeave(EventArgs e) => MouseLeave?.Invoke(this, e);
+		protected virtual void OnMouseClick(MouseEventArgs e) => MouseClick?.Invoke(this, e);
+		protected virtual void OnMouseDoubleClick(MouseEventArgs e) => MouseDoubleClick?.Invoke(this, e);
+		protected virtual void OnDoubleClick(EventArgs e) => DoubleClick?.Invoke(this, e);
+		protected virtual void OnSizeChanged(EventArgs e) => SizeChanged?.Invoke(this, e);
+		protected virtual void OnVisibleChanged(EventArgs e) => VisibleChanged?.Invoke(this, e);
+		protected virtual void OnEnabledChanged(EventArgs e) => EnabledChanged?.Invoke(this, e);
+		protected virtual void OnEnter(EventArgs e) => Enter?.Invoke(this, e);
+		protected virtual void OnLeave(EventArgs e) => Leave?.Invoke(this, e);
+
+		// WinForms keyboard routing hooks. Upstream overrides them to stop focus moving on
+		// Tab/arrow keys; the Avalonia port handles that itself, so they're never called.
+		protected virtual bool IsInputChar(char charCode) => false;
+		protected virtual bool IsInputKey(Keys keyData) => false;
+		protected virtual bool ProcessKeyPreview(ref Message m) => false;
+		protected virtual bool ProcessDialogKey(Keys keyData) => false;
+		protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData) => false;
+		protected virtual void WndProc(ref Message m) { }
+
+		public event EventHandler MouseCaptureChanged;
+		protected virtual void OnMouseCaptureChanged(EventArgs e) => MouseCaptureChanged?.Invoke(this, e);
+
+		public DockStyle Dock { get; set; }
+		public bool CausesValidation { get; set; } = true;
+		public bool CanFocus => Visible && Enabled;
+		public ContextMenuStrip ContextMenuStrip { get; set; }
+
+		/// <summary>The modifier keys held right now. Reported by the UI.</summary>
+		public static Keys ModifierKeys => ModifierKeysProvider?.Invoke() ?? Keys.None;
+		public static Func<Keys> ModifierKeysProvider { get; set; }
+
+		/// <summary>ULDB: lets the UI raise the events upstream code subscribes to.</summary>
+		public void RaiseMouseDown(MouseEventArgs e) => OnMouseDown(e);
+		public void RaiseMouseUp(MouseEventArgs e) => OnMouseUp(e);
+		public void RaiseMouseMove(MouseEventArgs e) => OnMouseMove(e);
+		public void RaiseMouseWheel(MouseEventArgs e) => OnMouseWheel(e);
+		public void RaiseMouseClick(MouseEventArgs e) => OnMouseClick(e);
+		public void RaiseMouseDoubleClick(MouseEventArgs e) => OnMouseDoubleClick(e);
+		public void RaiseMouseEnter() => OnMouseEnter(EventArgs.Empty);
+		public void RaiseMouseLeave() => OnMouseLeave(EventArgs.Empty);
+		public void RaiseKeyDown(KeyEventArgs e) => OnKeyDown(e);
+		public void RaiseKeyUp(KeyEventArgs e) => OnKeyUp(e);
+		public void RaiseKeyPress(KeyPressEventArgs e) => OnKeyPress(e);
+		public void RaisePreviewKeyDown(PreviewKeyDownEventArgs e) => OnPreviewKeyDown(e);
+		public void RaiseClick() => OnClick(EventArgs.Empty);
+		public void RaiseResize() { OnResize(EventArgs.Empty); OnSizeChanged(EventArgs.Empty); }
+		public void RaiseGotFocus() => OnGotFocus(EventArgs.Empty);
+		public void RaiseLostFocus() => OnLostFocus(EventArgs.Empty);
+		public void RaiseMouseCaptureChanged() => OnMouseCaptureChanged(EventArgs.Empty);
+		public void RaiseDragEnter(DragEventArgs e) => OnDragEnter(e);
+		public void RaiseDragOver(DragEventArgs e) => OnDragOver(e);
+		public void RaiseDragDrop(DragEventArgs e) => OnDragDrop(e);
+		public void RaiseDragLeave() => OnDragLeave(EventArgs.Empty);
+
+		public bool AllowDrop { get; set; }
+		public AnchorStyles Anchor { get; set; } = AnchorStyles.Top | AnchorStyles.Left;
+		public bool Capture { get; set; }
+		public bool Focused => false;
+		public bool ContainsFocus => false;
+		public bool Created => true;
+		public bool IsHandleCreated => true;
+		public Size MinimumSize { get; set; }
+		public Size MaximumSize { get; set; }
 
 		public virtual bool Focus() => false;
 		public virtual void Invalidate() { }
@@ -149,14 +237,55 @@ namespace System.Windows.Forms
 
 		public event FormClosingEventHandler FormClosing;
 		public event FormClosedEventHandler FormClosed;
+		[Obsolete("Use FormClosed")] public event EventHandler Closed;
+		public event EventHandler Load;
+		public event EventHandler Shown;
+		public event EventHandler Activated;
+		public event EventHandler Deactivate;
+
+		/// <summary>The focused control within the form (null: the form itself).</summary>
+		public Control ActiveControl { get; set; }
+
+		protected virtual void OnLoad(EventArgs e) => Load?.Invoke(this, e);
+		protected virtual void OnShown(EventArgs e) => Shown?.Invoke(this, e);
+		protected virtual void OnActivated(EventArgs e) => Activated?.Invoke(this, e);
+		protected virtual void OnDeactivate(EventArgs e) => Deactivate?.Invoke(this, e);
+
+		/// <summary>ULDB: the UI raises the form's lifecycle events as its window goes through them.</summary>
+		public void RaiseLoad() => OnLoad(EventArgs.Empty);
+		public void RaiseShown() => OnShown(EventArgs.Empty);
+		public void RaiseActivated() => OnActivated(EventArgs.Empty);
+		public void RaiseDeactivate() => OnDeactivate(EventArgs.Empty);
+
+		/// <summary>ULDB: the UI asks to close (title bar, Alt+F4). Returns false if the form cancelled.</summary>
+		public bool RequestClose(CloseReason reason)
+		{
+			FormClosingEventArgs closing = new FormClosingEventArgs(reason, false);
+			OnFormClosing(closing);
+			if(closing.Cancel) return false;
+			Visible = false;
+			OnFormClosed(new FormClosedEventArgs(reason));
+			return true;
+		}
 
 		public virtual void Close()
 		{
-			FormClosingEventArgs closing = new FormClosingEventArgs(CloseReason.UserClosing, false);
-			FormClosing?.Invoke(this, closing);
-			if(closing.Cancel) return;
-			Visible = false;
-			FormClosed?.Invoke(this, new FormClosedEventArgs(CloseReason.UserClosing));
+			// The UI closes the window (CloseHandler), which calls RequestClose; without one, close the model directly.
+			if(CloseHandler != null) CloseHandler(this);
+			else RequestClose(CloseReason.UserClosing);
+		}
+
+		/// <summary>ULDB: installed by the UI to close a form's window.</summary>
+		public static Action<Form> CloseHandler { get; set; }
+
+		protected virtual void OnFormClosing(FormClosingEventArgs e) => FormClosing?.Invoke(this, e);
+
+		protected virtual void OnFormClosed(FormClosedEventArgs e)
+		{
+			FormClosed?.Invoke(this, e);
+#pragma warning disable CS0618
+			Closed?.Invoke(this, e);
+#pragma warning restore CS0618
 		}
 
 		public void Activate() { }
@@ -198,8 +327,48 @@ namespace System.Windows.Forms
 
 	public class Panel : Control
 	{
+		public BorderStyle BorderStyle { get; set; }
+		public bool AutoScroll { get; set; }
 		public Image BackgroundImage { get; set; }
 		public ImageLayout BackgroundImageLayout { get; set; }
+	}
+
+	public class FlowLayoutPanel : Panel
+	{
+		public FlowDirection FlowDirection { get; set; }
+		public bool WrapContents { get; set; } = true;
+		public bool AutoSize { get; set; }
+	}
+
+	public class Label : Control
+	{
+		public bool AutoSize { get; set; }
+		public ContentAlignment TextAlign { get; set; } = ContentAlignment.TopLeft;
+		public Image Image { get; set; }
+		public BorderStyle BorderStyle { get; set; }
+		public FlatStyle FlatStyle { get; set; }
+		public bool UseMnemonic { get; set; } = true;
+	}
+
+	public class Button : Control, IButtonControl
+	{
+		public Image Image { get; set; }
+		public ContentAlignment ImageAlign { get; set; } = ContentAlignment.MiddleCenter;
+		public ContentAlignment TextAlign { get; set; } = ContentAlignment.MiddleCenter;
+		public TextImageRelation TextImageRelation { get; set; }
+		public FlatStyle FlatStyle { get; set; } = FlatStyle.Standard;
+		public bool UseVisualStyleBackColor { get; set; }
+		public bool AutoSize { get; set; }
+		public DialogResult DialogResult { get; set; }
+		public void NotifyDefault(bool value) { }
+		public void PerformClick() { if(Enabled && Visible) OnClick(EventArgs.Empty); }
+	}
+
+	public interface IButtonControl
+	{
+		DialogResult DialogResult { get; set; }
+		void NotifyDefault(bool value);
+		void PerformClick();
 	}
 
 	/// <summary>State-only combo box: items, selection and drop-down width. The UI renders it.</summary>

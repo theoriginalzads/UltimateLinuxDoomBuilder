@@ -42,12 +42,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public VSTabControl() { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.CreateHandle#18
 		protected virtual void CreateHandle() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnDragOver#19
+		protected virtual void OnDragOver(DragEventArgs drgevent) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseDown#20
 		protected virtual void OnMouseDown(MouseEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseMove#21
 		protected virtual void OnMouseMove(MouseEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseUp#22
 		protected virtual void OnMouseUp(MouseEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnPaint#23
+		protected virtual void OnPaint(PaintEventArgs e) { }
 	}
 }
 

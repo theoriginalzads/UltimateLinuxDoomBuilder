@@ -17,6 +17,9 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
     <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+    <!-- Form resources (FormResources/, tools/resxgen/formresx.py) hold Bitmap/Icon file
+         references, created from a stream at runtime by System.Resources.Extensions. -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup>
     <UpstreamCore>$(MSBuildThisFileDirectory)../../Core/</UpstreamCore>
@@ -25,6 +28,7 @@
     <Compile Include="$(UpstreamCore)**/*.cs"
              Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**;$(UpstreamCore)Properties/Resources.Designer.cs" />
     <!-- Replacement for upstream's Properties/Resources.Designer.cs (tools/resxgen). -->
+    <Compile Include="$(UpstreamCore)Windows/MainForm.cs;$(UpstreamCore)Windows/MainForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />
@@ -53,6 +57,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.13" />
   </ItemGroup>
   <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
   <ItemGroup>
@@ -83,6 +88,10 @@
     <EmbeddedResource Include="$(UpstreamCore)Resources/things2d.shader" LogicalName="CodeImp.DoomBuilder.Resources.things2d.shader" />
     <EmbeddedResource Include="$(UpstreamCore)Resources/world3d.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d.shader" />
     <EmbeddedResource Include="$(UpstreamCore)Resources/world3d_skybox.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d_skybox.shader" />
+  </ItemGroup>
+  <!-- Resources upstream's ported designer code reads through ComponentResourceManager. -->
+  <ItemGroup>
+    <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Data files next to the program, laid out like upstream's Build folder

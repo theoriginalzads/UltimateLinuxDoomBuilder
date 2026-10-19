@@ -177,6 +177,8 @@ namespace CodeImp.DoomBuilder.Controls
 		internal List<CompilerError> UpdateNavigator(ScriptDocumentTab tab) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.GetScriptStyle#67
 		internal ScriptStyleType GetScriptStyle(int scintillastyle) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ProcessCmdKey#72
+		protected virtual bool ProcessCmdKey(ref Message msg, Keys keydata) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ImageIndex
 		internal enum ImageIndex
 		{

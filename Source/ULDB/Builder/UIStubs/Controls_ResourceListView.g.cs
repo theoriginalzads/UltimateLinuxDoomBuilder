@@ -20,6 +20,12 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView..ctor#3
 		public ResourceListView() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragDrop#4
+		protected virtual void OnDragDrop(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragOver#5
+		protected virtual void OnDragOver(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragEnter#6
+		protected virtual void OnDragEnter(DragEventArgs e) { }
 	}
 }
 

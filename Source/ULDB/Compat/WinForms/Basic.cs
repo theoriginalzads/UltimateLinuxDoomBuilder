@@ -144,7 +144,7 @@ namespace System.Windows.Forms
 	}
 
 	/// <summary>Clipboard payload: a set of named formats.</summary>
-	public class DataObject
+	public class DataObject : IDataObject
 	{
 		internal readonly Dictionary<string, object> Formats = new Dictionary<string, object>(StringComparer.Ordinal);
 
@@ -157,6 +157,11 @@ namespace System.Windows.Forms
 		public object GetData(string format) => Formats.TryGetValue(format, out object data) ? data : null;
 		public bool GetDataPresent(string format) => Formats.ContainsKey(format);
 		public string[] GetFormats() => new List<string>(Formats.Keys).ToArray();
+
+		// Type-keyed overloads (IDataObject): the type's full name is the format, as in WinForms.
+		public object GetData(Type format) => GetData(format.FullName);
+		public bool GetDataPresent(Type format) => GetDataPresent(format.FullName);
+		public void SetData(object data) { if(data != null) Formats[data.GetType().FullName] = data; }
 	}
 
 	public enum HorizontalAlignment

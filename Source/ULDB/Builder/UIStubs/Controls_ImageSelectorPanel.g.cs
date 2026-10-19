@@ -94,6 +94,8 @@ namespace CodeImp.DoomBuilder.Controls
 		protected virtual void OnResize(EventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.ImageSelectorPanel.UpdateRectangles#55
 		internal void UpdateRectangles() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ImageSelectorPanel.OnPaint#56
+		protected virtual void OnPaint(PaintEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.ImageSelectorPanel.ClearCachedPreviews#59
 		public static void ClearCachedPreviews() { }
 	}

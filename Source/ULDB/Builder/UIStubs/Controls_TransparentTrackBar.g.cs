@@ -18,6 +18,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public TransparentTrackBar() { }
 		// stub-key: CodeImp.DoomBuilder.Controls.TransparentTrackBar.OnCreateControl#1
 		protected virtual void OnCreateControl() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.TransparentTrackBar.OnPaintBackground#2
+		protected virtual void OnPaintBackground(PaintEventArgs e) { }
 	}
 }
 

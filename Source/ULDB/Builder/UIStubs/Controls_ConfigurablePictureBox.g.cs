@@ -28,6 +28,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public GraphicsUnit PageUnit { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.ConfigurablePictureBox.Highlighted#12
 		public bool Highlighted { get => default; set { } }
+		// stub-key: CodeImp.DoomBuilder.Controls.ConfigurablePictureBox.OnPaint#13
+		protected virtual void OnPaint(PaintEventArgs pe) { }
 		protected ConfigurablePictureBox() { }
 	}
 }

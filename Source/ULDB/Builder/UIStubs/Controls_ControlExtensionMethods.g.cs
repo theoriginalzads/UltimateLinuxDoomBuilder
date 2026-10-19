@@ -12,6 +12,8 @@ namespace CodeImp.DoomBuilder.Controls
 	// stub-key: CodeImp.DoomBuilder.Controls.ControlExtensionMethods
 	public static partial class ControlExtensionMethods
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.ControlExtensionMethods.SetLeftExpandText#0
+		public static void SetLeftExpandText(this Label label, string text) { }
 	}
 }
 

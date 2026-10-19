@@ -30,7 +30,8 @@ On modern .NET, `System.Drawing.Common` is Windows-only and WinForms doesn't exi
 
 **`System.Windows.Forms`** (`Compat/WinForms`): only what the editor core uses.
 - **Enums** (`Keys`, `MouseButtons`, `DialogResult`…) are generated from the real WinForms reference assembly by `tools/compatgen`, so stored values (shortcut keys in settings files) stay compatible.
-- **Services** (`MessageBox`, `Cursor`, `Clipboard`, `Timer`, file/colour dialogs, `Application.Run`) all go through `WinFormsHost.Current` (`IWinFormsHost`). The Avalonia UI installs a real host at startup. Tests use the `HeadlessWinFormsHost`, which answers with defaults.
+- **Services** (`MessageBox`, `Cursor`, `Clipboard`, `Timer`, file/colour dialogs, `Application.Run`) all go through `WinFormsHost.Current` (`IWinFormsHost`). The Avalonia UI installs a real host at startup. Tests use the `HeadlessWinFormsHost`, which answers with defaults; its timers never tick, like WinForms timers with no message loop. `Control.InvokeRequired` is "not on the UI thread", so upstream's `RunOnUIThread` marshals background work (image loading) correctly.
+- **UI hooks** the Avalonia UI installs as static delegates: `Cursor.PositionProvider/PositionSetter/ClipSetter/VisibilitySetter`, `Control.ModifierKeysProvider`, `Screen.BoundsProvider`, `Graphics.ScreenCapture`, `Form.CloseHandler`, `ToolStripDropDown.ShowHandler`.
 - **`Control`, `Form`, `ComboBox`, `Panel`…** are state-only stand-ins. They draw nothing. They exist because upstream core code refers to them.
 - **Menus and toolbars** (`ToolStrip`, `MenuStrip`, `ToolStripMenuItem`, `ToolStripButton`, …, in `ToolStrip.cs`) are a state-only model too. Upstream and plugins build their menus with them (plugins through `General.Interface.AddButton`/`AddMenu`); the Avalonia main window renders them and follows their `Changed` events (a ULDB addition). With this model, a designer file that only builds menu items (BuilderModes' `MenusForm`) compiles unchanged.
 - **`System.Media.SystemSounds`**: routed to a UI-installed player.
@@ -54,6 +55,13 @@ Upstream's BuilderNative creates its own GLX/WGL context on a native window. ULD
 **Build:** `Source/ULDB/Native/CMakeLists.txt`, run automatically by `dotnet build`.
 - CPU target: `-p:UldbArch=generic|x86-64-v3|x86-64-v4|znver4|native`.
 - Upstream native files get three tiny `#ifdef ULDB` hooks. `ULDBHost.h` is force-included by CMake.
+
+## Two ways to port a window
+
+1. **Model port: upstream's files compile unchanged.** When a window's designer code only builds things compat models (menus, toolbars, labels, panels), upstream's `X.cs` and `X.Designer.cs` are compiled as they are. The WinForms objects become a state-only model, and a ULDB Avalonia view shows it and feeds input back (`Raise…` methods on compat controls, `Changed` events on ToolStrip items). Upstream logic keeps running exactly as written, so merges stay trivial. Used for `MainForm` (about 8,000 lines, zero edits) and BuilderModes' `MenusForm`.
+2. **Avalonia port:** for dialogs whose layout is the point (edit forms, preferences), the designer layout is rebuilt as `.axaml`, keeping class and handler names.
+
+Designer code that loads values through `ComponentResourceManager` (`resources.GetObject("$this.Icon")`) gets a ULDB `.resx` from `tools/resxgen/formresx.py` (in `FormResources/`). It keeps only the entries the designer reads, typed as compat's `Bitmap`/`Icon`; the project compiles it as preserialized resources, and `System.Resources.Extensions` creates the objects from a stream at runtime.
 
 **When a type gets its real Avalonia port:**
 1. Add its full name to `uistubs-ported.txt`.

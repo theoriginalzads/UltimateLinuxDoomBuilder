@@ -39,6 +39,13 @@ namespace System.Windows.Forms
 		SunkenOuter = 2,
 	}
 
+	public enum BorderStyle
+	{
+		Fixed3D = 2,
+		FixedSingle = 1,
+		None = 0,
+	}
+
 	public enum CheckState
 	{
 		Checked = 1,
@@ -73,6 +80,33 @@ namespace System.Windows.Forms
 		None = 0,
 		Right = 4,
 		Top = 1,
+	}
+
+	[Flags]
+	public enum DragDropEffects
+	{
+		All = -2147483645,
+		Copy = 1,
+		Link = 4,
+		Move = 2,
+		None = 0,
+		Scroll = -2147483648,
+	}
+
+	public enum FlatStyle
+	{
+		Flat = 0,
+		Popup = 1,
+		Standard = 2,
+		System = 3,
+	}
+
+	public enum FlowDirection
+	{
+		BottomUp = 3,
+		LeftToRight = 0,
+		RightToLeft = 2,
+		TopDown = 1,
 	}
 
 	public enum FormBorderStyle
@@ -378,6 +412,21 @@ namespace System.Windows.Forms
 		Right = 2097152,
 		XButton1 = 8388608,
 		XButton2 = 16777216,
+	}
+
+	public enum RightToLeft
+	{
+		Inherit = 2,
+		No = 0,
+		Yes = 1,
+	}
+
+	public enum ScrollBars
+	{
+		Both = 3,
+		Horizontal = 1,
+		None = 0,
+		Vertical = 2,
 	}
 
 	public enum Shortcut

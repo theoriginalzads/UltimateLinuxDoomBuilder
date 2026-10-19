@@ -28,6 +28,24 @@ namespace System.Drawing
 			throw new ArgumentException("ULDB only supports drawing on Bitmaps", nameof(image));
 		}
 
+		/// <summary>There are no window handles: returns a measuring-only Graphics (1x1 bitmap).</summary>
+		public static Graphics FromHwnd(IntPtr hwnd) => new Graphics(new Bitmap(1, 1));
+		public static Graphics FromHwndInternal(IntPtr hwnd) => FromHwnd(hwnd);
+
+		/// <summary>
+		/// Copies screen pixels into this Graphics. Routed to the UI (ScreenCapture), since
+		/// only it can read the window's contents; unsupported without one.
+		/// </summary>
+		public void CopyFromScreen(Point upperLeftSource, Point upperLeftDestination, Size blockRegionSize)
+		{
+			Bitmap shot = ScreenCapture?.Invoke(new Rectangle(upperLeftSource, blockRegionSize))
+				?? throw new NotSupportedException("Screen capture isn't available");
+			using(shot) DrawImage(shot, upperLeftDestination.X, upperLeftDestination.Y, blockRegionSize.Width, blockRegionSize.Height);
+		}
+
+		/// <summary>ULDB: installed by the UI. Returns the given screen area as a new bitmap, or null.</summary>
+		public static Func<Rectangle, Bitmap> ScreenCapture { get; set; }
+
 		#region Properties
 
 		// GDI+ quality settings, mapped onto the closest Skia behaviour.
@@ -236,6 +254,7 @@ namespace System.Drawing
 
 		public SizeF MeasureString(string text, Font font) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, int width) => font.Measure(text, DpiY);
+		public SizeF MeasureString(string text, Font font, int width, StringFormat format) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, SizeF layoutArea) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat format) => font.Measure(text, DpiY);
 
@@ -342,6 +361,20 @@ namespace System.Drawing
 		}
 
 		public override object Clone() => new SolidBrush(Color);
+	}
+
+	public static class Pens
+	{
+		public static Pen Black => new Pen(Color.Black);
+		public static Pen White => new Pen(Color.White);
+		public static Pen Red => new Pen(Color.Red);
+		public static Pen Green => new Pen(Color.Green);
+		public static Pen Blue => new Pen(Color.Blue);
+		public static Pen Gray => new Pen(Color.Gray);
+		public static Pen DarkGray => new Pen(Color.DarkGray);
+		public static Pen LightGray => new Pen(Color.LightGray);
+		public static Pen Yellow => new Pen(Color.Yellow);
+		public static Pen Transparent => new Pen(Color.Transparent);
 	}
 
 	public static class Brushes

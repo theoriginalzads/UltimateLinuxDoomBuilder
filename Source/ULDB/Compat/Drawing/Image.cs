@@ -81,10 +81,26 @@ namespace System.Drawing
 			using(FileStream fs = File.Create(filename)) Save(fs, format);
 		}
 
-		public void Save(Stream stream, ImageFormat format)
+		public void Save(string filename, ImageCodecInfo encoder, EncoderParameters encoderParams)
+		{
+			using(FileStream fs = File.Create(filename)) Save(fs, encoder, encoderParams);
+		}
+
+		public void Save(Stream stream, ImageCodecInfo encoder, EncoderParameters encoderParams)
+		{
+			int quality = -1;
+			if(encoderParams?.Param != null)
+				foreach(EncoderParameter p in encoderParams.Param)
+					if(p != null && p.Encoder.Guid == Encoder.Quality.Guid) quality = (int)Math.Clamp(p.Value, 0, 100);
+			Save(stream, ImageFormat.FromGuid(encoder.FormatID), quality);
+		}
+
+		public void Save(Stream stream, ImageFormat format) => Save(stream, format, -1);
+
+		private void Save(Stream stream, ImageFormat format, int quality)
 		{
 			SKEncodedImageFormat skformat = format.SkiaFormat;
-			int quality = (skformat == SKEncodedImageFormat.Jpeg) ? 90 : 100;
+			if(quality < 0) quality = (skformat == SKEncodedImageFormat.Jpeg) ? 90 : 100;
 			using(SKBitmap premul = Bitmap.ToPremul(Native))
 			using(SKData data = premul.Encode(skformat, quality))
 			{
@@ -462,19 +478,88 @@ namespace System.Drawing.Imaging
 		internal readonly SKEncodedImageFormat SkiaFormat;
 		private readonly string name;
 
-		private ImageFormat(string name, SKEncodedImageFormat format)
+		private ImageFormat(string name, SKEncodedImageFormat format, string guid)
 		{
 			this.name = name;
 			SkiaFormat = format;
+			Guid = new Guid(guid);
 		}
 
-		public static ImageFormat Png { get; } = new ImageFormat("Png", SKEncodedImageFormat.Png);
-		public static ImageFormat Jpeg { get; } = new ImageFormat("Jpeg", SKEncodedImageFormat.Jpeg);
-		public static ImageFormat Bmp { get; } = new ImageFormat("Bmp", SKEncodedImageFormat.Bmp);
-		public static ImageFormat Gif { get; } = new ImageFormat("Gif", SKEncodedImageFormat.Gif);
-		public static ImageFormat Webp { get; } = new ImageFormat("Webp", SKEncodedImageFormat.Webp);
+		// GDI+'s format GUIDs, so code comparing ImageCodecInfo.FormatID with them works.
+		public static ImageFormat Png { get; } = new ImageFormat("Png", SKEncodedImageFormat.Png, "b96b3caf-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Jpeg { get; } = new ImageFormat("Jpeg", SKEncodedImageFormat.Jpeg, "b96b3cae-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Bmp { get; } = new ImageFormat("Bmp", SKEncodedImageFormat.Bmp, "b96b3cab-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Gif { get; } = new ImageFormat("Gif", SKEncodedImageFormat.Gif, "b96b3cb0-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Webp { get; } = new ImageFormat("Webp", SKEncodedImageFormat.Webp, "b96b3cb8-0728-11d3-9d7b-0000f81ef32e");
+
+		public Guid Guid { get; }
+
+		internal static ImageFormat FromGuid(Guid guid)
+		{
+			foreach(ImageFormat f in new[] { Png, Jpeg, Bmp, Gif, Webp }) if(f.Guid == guid) return f;
+			return Png;
+		}
 
 		public override string ToString() => name;
+	}
+
+	/// <summary>The encoders ULDB can write (via Skia), described as GDI+ does.</summary>
+	public sealed class ImageCodecInfo
+	{
+		private ImageCodecInfo(ImageFormat format, string mime, string extensions)
+		{
+			FormatID = format.Guid;
+			Clsid = format.Guid;
+			FormatDescription = format.ToString().ToUpperInvariant();
+			CodecName = "ULDB " + FormatDescription + " Codec";
+			MimeType = mime;
+			FilenameExtension = extensions;
+		}
+
+		public Guid Clsid { get; set; }
+		public Guid FormatID { get; set; }
+		public string CodecName { get; set; }
+		public string FormatDescription { get; set; }
+		public string MimeType { get; set; }
+		public string FilenameExtension { get; set; }
+
+		private static readonly ImageCodecInfo[] codecs =
+		{
+			new ImageCodecInfo(ImageFormat.Bmp, "image/bmp", "*.BMP;*.DIB;*.RLE"),
+			new ImageCodecInfo(ImageFormat.Jpeg, "image/jpeg", "*.JPG;*.JPEG;*.JPE;*.JFIF"),
+			new ImageCodecInfo(ImageFormat.Gif, "image/gif", "*.GIF"),
+			new ImageCodecInfo(ImageFormat.Png, "image/png", "*.PNG"),
+		};
+
+		public static ImageCodecInfo[] GetImageEncoders() => (ImageCodecInfo[])codecs.Clone();
+		public static ImageCodecInfo[] GetImageDecoders() => (ImageCodecInfo[])codecs.Clone();
+	}
+
+	public sealed class Encoder
+	{
+		public Encoder(Guid guid) { Guid = guid; }
+		public Guid Guid { get; }
+		public static readonly Encoder Quality = new Encoder(new Guid("1d5be4b5-fa4a-452d-9cdd-5db35105e7eb"));
+		public static readonly Encoder Compression = new Encoder(new Guid("e09d739d-ccd4-44ee-8eba-3fbf8be4fc58"));
+		public static readonly Encoder ColorDepth = new Encoder(new Guid("66087055-ad66-4c7c-9a18-38a2310b8337"));
+	}
+
+	public sealed class EncoderParameter : IDisposable
+	{
+		public EncoderParameter(Encoder encoder, long value) { Encoder = encoder; Value = value; }
+		public EncoderParameter(Encoder encoder, byte value) : this(encoder, (long)value) { }
+		public EncoderParameter(Encoder encoder, short value) : this(encoder, (long)value) { }
+		public Encoder Encoder { get; set; }
+		internal long Value { get; }
+		public void Dispose() { }
+	}
+
+	public sealed class EncoderParameters : IDisposable
+	{
+		public EncoderParameters() : this(1) { }
+		public EncoderParameters(int count) { Param = new EncoderParameter[count]; }
+		public EncoderParameter[] Param { get; set; }
+		public void Dispose() { }
 	}
 
 	public sealed class ImageAttributes : IDisposable

@@ -74,6 +74,9 @@ namespace System.Drawing
 		public Font(string familyName, float emSize, FontStyle style) : this(MakeFamily(familyName), emSize, style) { }
 		public Font(string familyName, float emSize, FontStyle style, GraphicsUnit unit) : this(MakeFamily(familyName), emSize, style, unit) { }
 		public Font(Font prototype, FontStyle newStyle) : this(prototype.FontFamily, prototype.Size, newStyle, prototype.Unit) { }
+		// gdiCharSet is a Windows code page hint; fontconfig picks glyphs by Unicode coverage instead.
+		public Font(string familyName, float emSize, FontStyle style, GraphicsUnit unit, byte gdiCharSet) : this(familyName, emSize, style, unit) { }
+		public Font(FontFamily family, float emSize, FontStyle style, GraphicsUnit unit, byte gdiCharSet) : this(family, emSize, style, unit) { }
 
 		public FontFamily FontFamily { get; }
 		public string Name => FontFamily.Name;

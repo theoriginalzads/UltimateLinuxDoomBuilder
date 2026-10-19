@@ -62,8 +62,57 @@ namespace System.Windows.Forms
 		public static Func<Point> PositionProvider { get; set; }
 		public static Action<Point> PositionSetter { get; set; }
 
+		private static Rectangle clip;
+
+		/// <summary>Confines the pointer to a screen rectangle (Empty: no limit). UDB uses it for 3D mouselook.</summary>
+		public static Rectangle Clip
+		{
+			get => clip;
+			set { clip = value; ClipSetter?.Invoke(value); }
+		}
+
+		public static void Hide() => VisibilitySetter?.Invoke(false);
+		public static void Show() => VisibilitySetter?.Invoke(true);
+
+		/// <summary>Installed by the UI: confine the pointer, and hide or show it.</summary>
+		public static Action<Rectangle> ClipSetter { get; set; }
+		public static Action<bool> VisibilitySetter { get; set; }
+
 		public override string ToString() => "[Cursor: " + Name + "]";
 		public void Dispose() { }
+	}
+
+	/// <summary>A display. Its geometry comes from the UI (BoundsProvider); without one, a 1920x1080 screen.</summary>
+	public sealed class Screen
+	{
+		private Screen(Rectangle bounds, Rectangle workingarea, bool primary)
+		{
+			Bounds = bounds;
+			WorkingArea = workingarea;
+			Primary = primary;
+		}
+
+		public Rectangle Bounds { get; }
+		public Rectangle WorkingArea { get; }
+		public bool Primary { get; }
+		public string DeviceName => Primary ? "Primary" : "Screen";
+
+		/// <summary>ULDB: installed by the UI. Returns (bounds, working area) of the screen showing the control (null: primary).</summary>
+		public static Func<Control, (Rectangle bounds, Rectangle workingArea)> BoundsProvider { get; set; }
+
+		private static Screen For(Control c)
+		{
+			(Rectangle b, Rectangle w) = BoundsProvider?.Invoke(c) ?? (new Rectangle(0, 0, 1920, 1080), new Rectangle(0, 0, 1920, 1080));
+			return new Screen(b, w, c == null);
+		}
+
+		public static Screen PrimaryScreen => For(null);
+		public static Screen[] AllScreens => new[] { PrimaryScreen };
+		public static Screen FromControl(Control control) => For(control);
+		public static Rectangle GetWorkingArea(Control ctl) => For(ctl).WorkingArea;
+		public static Rectangle GetBounds(Control ctl) => For(ctl).Bounds;
+		public static Rectangle GetWorkingArea(Point pt) => PrimaryScreen.WorkingArea;
+		public static Rectangle GetBounds(Point pt) => PrimaryScreen.Bounds;
 	}
 
 	public static class Cursors

@@ -354,6 +354,7 @@ namespace System.Windows.Forms
 		public ToolStripTextBox() : base(new Control()) { }
 		public ToolStripTextBox(string name) : this() { Name = name ?? ""; }
 		public int MaxLength { get; set; } = 32767;
+		public BorderStyle BorderStyle { get; set; } = BorderStyle.Fixed3D;
 		public bool ReadOnly { get; set; }
 		public void SelectAll() { }
 		public void Clear() => Text = "";
@@ -401,7 +402,6 @@ namespace System.Windows.Forms
 		public bool Stretch { get; set; }
 		public bool AllowMerge { get; set; } = true;
 		public bool AutoSize { get; set; } = true;
-		public DockStyle Dock { get; set; }
 
 		public event ToolStripItemClickedEventHandler ItemClicked;
 		public event ToolStripItemEventHandler ItemAdded;

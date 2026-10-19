@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public int GetResult(int original) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.ArgumentBox.GetResult#19
 		public int GetResult(int original, int step) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.ArgumentBox.ProcessCmdKey#20
+		protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData) { return default; }
 	}
 }
 

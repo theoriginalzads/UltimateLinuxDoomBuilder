@@ -433,6 +433,8 @@ namespace ScintillaNET
 		protected virtual void OnResize(EventArgs e) { }
 		// stub-key: ScintillaNET.Scintilla.InvalidPosition#3
 		public const int InvalidPosition = -1;
+		// stub-key: ScintillaNET.Scintilla.BorderStyle#4
+		public new BorderStyle BorderStyle { get => default; set { } }
 		// stub-key: ScintillaNET.Scintilla.CaretWidth#5
 		public int CaretWidth { get => default; set { } }
 		// stub-key: ScintillaNET.Scintilla.ExtraAscent#6

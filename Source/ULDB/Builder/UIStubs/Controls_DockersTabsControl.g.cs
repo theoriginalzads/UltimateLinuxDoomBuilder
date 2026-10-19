@@ -26,6 +26,8 @@ namespace CodeImp.DoomBuilder.Controls
 		internal void PlayNotifyAnimation(int tabindex) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl.OnSelectedIndexChanged#9
 		protected virtual void OnSelectedIndexChanged(EventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl.OnPaint#10
+		protected virtual void OnPaint(PaintEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl.OnMouseMove#11
 		protected virtual void OnMouseMove(MouseEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.DockersTabsControl.OnMouseLeave#12

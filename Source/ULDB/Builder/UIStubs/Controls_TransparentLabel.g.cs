@@ -14,6 +14,8 @@ namespace CodeImp.DoomBuilder.Controls
 	// stub-key: CodeImp.DoomBuilder.Controls.TransparentLabel
 	internal partial class TransparentLabel : System.Windows.Forms.Control
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.TransparentLabel.WndProc#3
+		protected virtual void WndProc(ref Message m) { }
 		protected TransparentLabel() { }
 	}
 }

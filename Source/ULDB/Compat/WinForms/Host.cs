@@ -109,18 +109,12 @@ namespace System.Windows.Forms
 		public void Invoke(Action action) => action();
 		public void BeginInvoke(Action action) => Threading.ThreadPool.QueueUserWorkItem(_ => action());
 
-		public IDisposable StartTimer(int interval, Action tick)
-		{
-			// No UI thread: run on the thread pool. Ticks never overlap.
-			object gate = new object();
-			Threading.Timer timer = new Threading.Timer(_ =>
-			{
-				if(!Threading.Monitor.TryEnter(gate)) return;
-				try { tick(); }
-				finally { Threading.Monitor.Exit(gate); }
-			}, null, interval, interval);
-			return timer;
-		}
+		// Like a WinForms timer with no message loop running: it never ticks. Timers belong
+		// to the UI (redraw, status bar blinking); running them on another thread would
+		// race with the code under test.
+		public IDisposable StartTimer(int interval, Action tick) => new NoTimer();
+
+		private sealed class NoTimer : IDisposable { public void Dispose() { } }
 
 		public Form ActiveForm => null;
 

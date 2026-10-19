@@ -20,6 +20,8 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView..ctor#1
 		public OptimizedListView() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView.WndProc#5
+		protected virtual void WndProc(ref Message m) { }
 	}
 }
 

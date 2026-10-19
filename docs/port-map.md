@@ -6,5 +6,6 @@ Each upstream window or control and its Avalonia port. Handler names are kept id
 
 | Upstream file | ULDB file | Status | Notes |
 |---|---|---|---|
+| `Windows/MainForm.cs` (+ `.Designer.cs`) | *(upstream files, compiled unchanged)* + Avalonia view (next) | 🟨 | Model port: upstream logic runs as-is on compat models; resources via `FormResources/MainForm.resx`. The Avalonia view is the next step; `Shell/TemporaryMainWindow.cs` stands in |
 | `Plugins/BuilderModes/Interface/MenusForm.cs` (+ `.Designer.cs`) | *(upstream files, compiled unchanged)* | ✅ | Never shown: it only holds BuilderModes' menu items and toolbar buttons, which the main window displays. Compiles against the compat ToolStrip model; `MenusForm.resx` (one tooltip) is embedded |
 | `Controls/RenderTargetControl.cs` | `Source/ULDB/Builder/Shell/ViewportControl.cs` (+ placeholder) | 🟨 | The placeholder stays as upstream's display object (the renderer reads its `ClientSize`); `ViewportControl` shows it and keeps it sized |

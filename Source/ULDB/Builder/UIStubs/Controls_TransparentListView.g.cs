@@ -12,6 +12,8 @@ namespace CodeImp.DoomBuilder.Controls
 	// stub-key: CodeImp.DoomBuilder.Controls.TransparentListView
 	public partial class TransparentListView : System.Windows.Forms.ListView
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.TransparentListView.OnPaintBackground#1
+		protected virtual void OnPaintBackground(PaintEventArgs pevent) { }
 		protected TransparentListView() { }
 	}
 }
