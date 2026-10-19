@@ -47,7 +47,11 @@ namespace ULDB.Shell
 
 		internal static void TrackOpenWindows()
 		{
-			Window.WindowOpenedEvent.AddClassHandler<Window>((w, e) => { if(!open.Contains(w)) open.Add(w); });
+			Window.WindowOpenedEvent.AddClassHandler<Window>((w, e) =>
+			{
+				if(!open.Contains(w)) open.Add(w);
+				if(w.Icon == null) w.Icon = AppIcon.Window;
+			});
 			Window.WindowClosedEvent.AddClassHandler<Window>((w, e) => open.Remove(w));
 		}
 	}

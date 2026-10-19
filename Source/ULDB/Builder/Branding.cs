@@ -13,6 +13,9 @@ namespace ULDB
 		public const string APP_ID = "io.github.theoriginalzads.UltimateLinuxDoomBuilder";
 		public const string EXECUTABLE = "uldb";
 
+		/// <summary>The cacodemon on the app icon (Assets/Icons).</summary>
+		public const string MASCOT = "Cacky, the ULDB Cacodemon";
+
 		public const string REPOSITORY_URL = "https://github.com/theoriginalzads/UltimateLinuxDoomBuilder";
 		public const string ISSUES_URL = REPOSITORY_URL + "/issues";
 
