@@ -3,10 +3,12 @@
 ## 1. Install the toolchain
 
 ```sh
-sudo pacman -S --needed base-devel git cmake ninja python zlib \
+sudo pacman -S --needed base-devel git cmake ninja python \
     dotnet-sdk mono mono-msbuild \
     libx11 libxfixes mesa
 ```
+
+`zlib` (needed by ZDBSP) is left out because every Arch system already has it or a drop-in replacement; CachyOS uses `zlib-ng-compat`, which conflicts with the `zlib` package. Don't remove it.
 
 Freedoom isn't in the Arch or CachyOS repos (only the AUR), so it's left out above: if any package is missing, pacman installs nothing. Get it either from the AUR (`paru -S freedoom`) or by downloading the release zip:
 
