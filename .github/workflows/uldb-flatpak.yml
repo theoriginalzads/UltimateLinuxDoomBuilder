@@ -47,8 +47,27 @@ jobs:
           echo "$(grep -c '"url"' packaging/flatpak/nuget-sources.json) NuGet packages"
 
       - name: Build
-        uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6.8
+        run: |
+          # Direct flatpak-builder rather than the flatpak-builder action, so a failure's log tail
+          # becomes an error annotation (job logs can't always be fetched from where ULDB is developed).
+          if ! flatpak-builder --user --force-clean --disable-rofiles-fuse --install-deps-from=flathub \
+               --repo=repo build-dir packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml > flatpak-builder.log 2>&1; then
+            tail -n 200 flatpak-builder.log
+            echo "::error title=flatpak-builder failed::$(grep -v '^\s*$' flatpak-builder.log | tail -n 45 | cut -c1-220 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
+          flatpak build-bundle repo uldb.flatpak io.github.theoriginalzads.UltimateLinuxDoomBuilder
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
         with:
-          bundle: uldb.flatpak
-          manifest-path: packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml
-          cache-key: uldb-flatpak-${{ github.sha }}
+          name: uldb-flatpak
+          path: uldb.flatpak
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uldb-flatpak-log
+          path: flatpak-builder.log
+          if-no-files-found: ignore
