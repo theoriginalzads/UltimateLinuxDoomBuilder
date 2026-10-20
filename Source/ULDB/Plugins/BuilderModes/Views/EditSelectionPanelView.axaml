@@ -1,0 +1,76 @@
+<!-- ULDB: the view of Edit Selection mode's docker (EditSelectionPanel, model-ported: upstream's code
+     runs unchanged). Position, size and transform as upstream: X and Y side by side, units after. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.BuilderModes.EditSelectionPanelView">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="8" Margin="4,4,8,4" Grid.IsSharedSizeScope="True">
+      <Border x:Name="groupBox1" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnSpacing="6" RowSpacing="4">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto" MinWidth="24"/></Grid.ColumnDefinitions>
+          <TextBlock x:Name="label19" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <Button x:Name="orgposx" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <Button x:Name="orgposy" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <TextBlock x:Name="label16" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+          <TextBlock x:Name="label1" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ContentControl x:Name="absposx" Grid.Row="1" Grid.Column="1"/>
+          <ContentControl x:Name="absposy" Grid.Row="1" Grid.Column="2"/>
+          <TextBlock x:Name="label5" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+          <TextBlock x:Name="label2" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ContentControl x:Name="relposx" Grid.Row="2" Grid.Column="1"/>
+          <ContentControl x:Name="relposy" Grid.Row="2" Grid.Column="2"/>
+          <TextBlock x:Name="label6" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+        </Grid>
+          <CheckBox x:Name="preciseposition"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox2" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnSpacing="6" RowSpacing="4">
+          <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto" MinWidth="24"/></Grid.ColumnDefinitions>
+          <TextBlock x:Name="label9" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <Button x:Name="orgsizex" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <Button x:Name="orgsizey" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          <TextBlock x:Name="label12" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+          <TextBlock x:Name="label3" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ContentControl x:Name="abssizex" Grid.Row="1" Grid.Column="1"/>
+          <ContentControl x:Name="abssizey" Grid.Row="1" Grid.Column="2"/>
+          <TextBlock x:Name="label7" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+          <TextBlock x:Name="label4" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ContentControl x:Name="relsizex" Grid.Row="2" Grid.Column="1"/>
+          <ContentControl x:Name="relsizey" Grid.Row="2" Grid.Column="2"/>
+          <TextBlock x:Name="label8" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+        </Grid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox3" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox3Title" Classes="uldb-group-title"/>
+          <Grid RowDefinitions="Auto,Auto,Auto" ColumnSpacing="6" RowSpacing="4">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="label13" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <ContentControl x:Name="absrot" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+            <TextBlock x:Name="label11" Grid.Column="2" VerticalAlignment="Center" Opacity="0.65"/>
+            <TextBlock x:Name="label10" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <ComboBox x:Name="heightmode" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"/>
+            <TextBlock x:Name="label14" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+              <Button x:Name="fliph" Classes="uldb-tool"/>
+              <Button x:Name="flipv" Classes="uldb-tool"/>
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="gbTextures" Classes="uldb-group">
+        <StackPanel Spacing="2">
+          <TextBlock x:Name="gbTexturesTitle" Classes="uldb-group-title" Margin="0,0,0,4"/>
+          <CheckBox x:Name="pinceilingtextures"/>
+          <CheckBox x:Name="pinfloortextures"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -15,6 +15,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ControlViews.Register<UndoRedoPanel>(m => new UndoRedoPanelView(m));
 			ControlViews.Register<SectorDrawingOptionsPanel>(m => new SectorDrawingOptionsPanelView(m));
 			ControlViews.Register<DrawGridOptionsPanel>(m => new DrawGridOptionsPanelView(m));
+			ControlViews.Register<EditSelectionPanel>(m => new EditSelectionPanelView(m));
 		}
 	}
 }
