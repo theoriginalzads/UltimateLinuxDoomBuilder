@@ -1,0 +1,18 @@
+<!-- ULDB: the view of BuilderEffects' IntControl (model-ported): a labelled whole number with a slider
+     and its maximum, as upstream. The label shares its column with the dialog's other labels. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.BuilderEffects.IntControlView">
+  <Grid ColumnSpacing="8">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+      <ColumnDefinition Width="92"/>
+      <ColumnDefinition Width="*" MinWidth="120"/>
+      <ColumnDefinition Width="Auto" MinWidth="28"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+    <NumericUpDown x:Name="numericUpDown1" Grid.Column="1" VerticalAlignment="Center"/>
+    <Slider x:Name="trackBar1" Grid.Column="2" VerticalAlignment="Center" Margin="0,-6"/>
+    <TextBlock x:Name="labelMaximum" Grid.Column="3" VerticalAlignment="Center" Opacity="0.65"/>
+  </Grid>
+</UserControl>

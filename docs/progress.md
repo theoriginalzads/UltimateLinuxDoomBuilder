@@ -127,6 +127,22 @@ Work the user approved doing without their machine. All on `phase-3/shell`.
 | CI | ✅ | `.github/workflows/uldb-ci.yml`: build + tests (first run passed, 20 Oct 2026) on ubuntu-24.04 with Freedoom and Mesa. Upstream's workflows are untouched (they may fail on the fork; disable them in the repo's Actions settings if they're noise). Flatpak artifact builds still to do |
 | Packaging | 🟨 | `packaging/`: `build.sh` (Release publish + plugins), `install.sh` (PREFIX/DESTDIR; app in `lib/uldb`, hicolor icons from Cacky), `.desktop` (`StartupWMClass=uldb`), AppStream metainfo (both validate), `arch/PKGBUILD` (`uldb-git`, `_arch=znver4` option), Flatpak manifest (runtime 26.08 + dotnet10 extension; **untested**, needs `nuget-sources.json` generated, see `packaging/README.md`). **To do on the user's machine:** `cd packaging/arch && makepkg -si`, then check the KDE menu entry, icon and taskbar grouping. The metainfo release (0.1.0) is a placeholder |
 
+### Cloud session 2 (20 Oct 2026, no screen): where it stopped
+
+**Resume here.** Everything is committed and pushed on `phase-3/shell`; 188 tests pass.
+
+- **Dialogs can be checked in the container now.** `tools/capture/capture.sh OUT.png "STEPS"` opens a test map (Xvfb, `ULDB_RENDERING=egl`) and captures a dialog. Steps are chained with `+`: `action:<name>`, `select:sectors|linedefs|things|vertices`, `sector`, `linedef:1`... e.g. `"action:buildermodes_sectorsmode+select:sectors+action:buildereffects_applyjitter"`. About 13 s per capture.
+- **Plugin dialogs ported (model port + `.axaml` in the plugin's `Views/`, registered by `Views/PluginViews.cs`):**
+  - ThreeDFloorMode: slope data sector dialog (Slope and Draw Slopes modes now get past it)
+  - StairSectorBuilder: the whole Stair Sector Builder window
+  - BuilderEffects: all of it (jitter vertices/sectors/things, directional shading, OBJ import settings, `IntControl`)
+  - Captured and checked here; **show the user the screenshots for sign-off** (they haven't seen them).
+- **Still placeholders:** TagRange's form, 3D floor editor window, control sector area config, slope vertex edit form, 3D floors preferences, ColorPicker windows, SoundPropagation's colour configuration and reverbs picker, and the dockers (Tag Explorer, Comments, 3D floors, sound environments). Next in order: TagRangeForm (small), then the dockers.
+- **App-wide style change:** `NumericUpDown` now looks like `ButtonsNumericTextbox` (slim stacked arrows; `Shell/Styles.axaml`).
+- **Icons:** plugin edit modes and 3D floors' slope buttons have Breeze icons; plugin resources can have their own spec as `res:<Assembly>/<Name>` (BuilderEffects' `Update` is a re-roll arrow, not check-for-updates). The edit-modes toolbar scrolls.
+- **Flatpak CI (`.github/workflows/uldb-flatpak.yml`) is not green yet.** Fixed so far: system-wide SDK, `dir` source (the git source built `master`), NuGet restore with the Flatpak's own .NET SDK (10.0.401) via `tools/flatpak/nuget-sources.py`, a writable home and checkout for the sandbox. The last finished run failed in flatpak-builder while downloading NuGet sources (it was restoring the Tests project too); run 39361072710 (program and plugins only) was still running at the end of the session. Job logs can't be downloaded from the cloud container (Azure blob is blocked), so failures are reported as **annotations**: `gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/check-runs/<job id>/annotations`.
+- Main CI (`uldb-ci.yml`) is green.
+
 ## Handoff notes (for the next session)
 
 - **Branches:**

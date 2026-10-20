@@ -304,4 +304,32 @@
     <Setter Property="TextBlock.TextWrapping" Value="NoWrap"/>
     <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
   </Style>
+  <!-- Number boxes (NumericUpDown, used by plugin dialogs) look like ButtonsNumericTextbox's view:
+       the text box with slim stacked arrows on its right, instead of Fluent's wide side-by-side buttons. -->
+  <Style Selector="NumericUpDown /template/ ButtonSpinner">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid ColumnDefinitions="*,Auto">
+          <Border BorderBrush="{DynamicResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}"
+                  Background="{DynamicResource TextControlBackground}" ClipToBounds="True">
+            <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"/>
+          </Border>
+          <Grid Grid.Column="1" RowDefinitions="*,*" Width="18" Margin="2,0,0,0" IsVisible="{TemplateBinding ShowButtonSpinner}">
+            <RepeatButton Name="PART_IncreaseButton" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+              <PathIcon Data="M0,4 L4,0 L8,4 Z" Width="8" Height="4"/>
+            </RepeatButton>
+            <RepeatButton Name="PART_DecreaseButton" Grid.Row="1" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+              <PathIcon Data="M0,0 L8,0 L4,4 Z" Width="8" Height="4"/>
+            </RepeatButton>
+          </Grid>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="NumericUpDown /template/ TextBox#PART_TextBox">
+    <Setter Property="MinWidth" Value="40"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+  </Style>
 </Styles>

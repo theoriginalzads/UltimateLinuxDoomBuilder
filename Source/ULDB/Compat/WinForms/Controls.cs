@@ -38,6 +38,8 @@ namespace System.Windows.Forms
 		public Color BackColor { get => backcolor; set { if(backcolor == value) return; backcolor = value; NotifyStylesChanged(); } }
 		public Color ForeColor { get => forecolor; set { if(forecolor == value) return; forecolor = value; NotifyStylesChanged(); } }
 		public Cursor Cursor { get; set; } = Cursors.Default;
+		public RightToLeft RightToLeft { get; set; } = RightToLeft.No;
+		public static Point MousePosition => Cursor.Position;
 		public Padding Margin { get; set; }
 		public Padding Padding { get; set; }
 		public int Left { get => left; set => left = value; }

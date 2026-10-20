@@ -6,7 +6,8 @@
 //
 // Spec format, one layer per ';': "<s|f><colour>[opacity] <path data>", s = stroke, f = fill,
 // colours: i = ink (text colour), a = accent, r = red, g = green, o = orange, y = yellow, w = white.
-// Upstream resource images are keyed "res:<name>" (ResourceImageNames), some as aliases of action icons.
+// Upstream resource images are keyed "res:<name>" (ResourceImageNames), some as aliases of action icons;
+// "res:<assembly>/<name>" picks a plugin's own picture where its name means something else in the core.
 
 using System;
 using System.Collections.Generic;
@@ -293,6 +294,7 @@ namespace ULDB.Shell
 			["res:Join"] = "buildermodes_joinsectors", ["res:Merge"] = "buildermodes_mergesectors",
 			["res:NewSector2"] = "Make Sectors Mode", ["res:DrawCurveMode"] = "Draw Curve Mode",
 			// Other plugins
+			["res:BuilderEffects/Update"] = "res:Reload",
 			["colorpicker_togglelightpannel"] = "res:ColorPick", ["updateslopes"] = "res:Reload",
 		};
 

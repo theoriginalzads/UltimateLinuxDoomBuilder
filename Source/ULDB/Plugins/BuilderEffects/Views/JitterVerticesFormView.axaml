@@ -1,0 +1,18 @@
+<!-- ULDB: the window of BuilderEffects' JitterVerticesForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; groups and
+     their order follow upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderEffects.JitterVerticesFormView"
+        Title="Jitter Settings" Width="460" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="bApply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="bCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4" Grid.IsSharedSizeScope="True">
+      <ContentControl x:Name="positionJitterAmmount"/>
+      <Button x:Name="bUpdateTranslation" Grid.Column="1" Classes="uldb-tool" VerticalAlignment="Center"/>
+    </Grid>
+  </DockPanel>
+</Window>

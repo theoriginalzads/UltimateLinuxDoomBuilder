@@ -306,8 +306,9 @@ namespace System.Windows.Forms
 	{
 		private decimal value, minimum, maximum = 100m;
 
-		public decimal Minimum { get => minimum; set { minimum = value; if(maximum < minimum) maximum = minimum; Value = Value; } }
-		public decimal Maximum { get => maximum; set { maximum = value; if(minimum > maximum) minimum = maximum; Value = Value; } }
+		// As in WinForms, moving a limit past the value moves the value with it.
+		public decimal Minimum { get => minimum; set { minimum = value; if(maximum < minimum) maximum = minimum; Value = Math.Clamp(this.value, minimum, maximum); } }
+		public decimal Maximum { get => maximum; set { maximum = value; if(minimum > maximum) minimum = maximum; Value = Math.Clamp(this.value, minimum, maximum); } }
 		public decimal Increment { get; set; } = 1m;
 		public int DecimalPlaces { get; set; }
 		public bool Hexadecimal { get; set; }
@@ -332,8 +333,14 @@ namespace System.Windows.Forms
 
 		public event EventHandler ValueChanged;
 
-		public void UpButton() => Value = Math.Min(maximum, value + Increment);
-		public void DownButton() => Value = Math.Max(minimum, value - Increment);
+		public virtual void UpButton() => Value = Math.Min(maximum, value + Increment);
+		public virtual void DownButton() => Value = Math.Max(minimum, value - Increment);
+		protected virtual void OnTextBoxResize(object source, EventArgs e) { }
+
+		// WinForms' internal parts, which subclasses find by reflection (BuilderEffects' NumericUpDownEx).
+		// State only: the view draws its own text box and buttons.
+		private readonly TextBox upDownEdit = new TextBox();
+		private readonly Control upDownButtons = new Control();
 		public void Select(int start, int length) { }
 		public void BeginInit() { }
 		public void EndInit() { }

@@ -22,10 +22,13 @@
   <ItemGroup>
     <Compile Include="$(UpstreamPlugin)**/*.cs"
              Exclude="$(UpstreamPlugin)obj/**;$(UpstreamPlugin)bin/**;$(UpstreamPlugin)Properties/Resources.Designer.cs;$(UpstreamPlugin)Controls/**;$(UpstreamPlugin)Interface/**" />
-    <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
-         window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
-    <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
+    <!-- All of the plugin's UI compiles unchanged against ULDB.Compat (uistubs-ported.txt): MenusForm
+         only holds menu items and toolbar buttons; the forms and IntControl have Avalonia views in
+         Views/. (Controls/BoolControl isn't in upstream's build.) -->
+    <Compile Include="$(UpstreamPlugin)Interface/**/*.cs;$(UpstreamPlugin)Controls/IntControl.cs;$(UpstreamPlugin)Controls/IntControl.designer.cs;$(UpstreamPlugin)Controls/NumericUpDownEx.cs" />
     <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia views for the model-ported UI (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
     <Compile Include="UIStubs/**/*.cs" />
     <Compile Include="UIStubFixes/**/*.cs" />
   </ItemGroup>
@@ -38,6 +41,10 @@
   <ItemGroup>
     <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png"
                       LogicalName="CodeImp.DoomBuilder.BuilderEffects.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->

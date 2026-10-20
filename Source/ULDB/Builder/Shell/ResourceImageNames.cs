@@ -28,10 +28,18 @@ namespace ULDB.Shell
 			{
 				if(cache.TryGetValue(image, out string key)) return key.Length > 0 ? key : null;
 				ScanNewAssemblies();
-				key = names.TryGetValue(Hash(bitmap), out string name) ? "res:" + name : "";
+				key = names.TryGetValue(Hash(bitmap), out string name) ? KeyForName(name) : "";
 				cache.AddOrUpdate(image, key);
 				return key.Length > 0 ? key : null;
 			}
+		}
+
+		// A plugin's resource can share a name with a different core picture (BuilderEffects' "Update" is
+		// a re-roll arrow, the core's is check-for-updates): "res:Assembly/Name" wins when it has an icon.
+		private static string KeyForName(string qualified)
+		{
+			string own = "res:" + qualified;
+			return BreezeIcons.Has(own) ? own : "res:" + qualified.Substring(qualified.IndexOf('/') + 1);
 		}
 
 		// Plugins load after the main window is built, so new assemblies are picked up on later lookups.
@@ -58,7 +66,7 @@ namespace ULDB.Shell
 							{
 								if(b == null || b.Width > 64 || b.Height > 64) continue;
 								ulong h = Hash(b);
-								if(!names.ContainsKey(h)) names[h] = p.Name;
+								if(!names.ContainsKey(h)) names[h] = asm.GetName().Name + "/" + p.Name;
 							}
 						}
 						catch(Exception) { } // A missing or unreadable resource just has no key
