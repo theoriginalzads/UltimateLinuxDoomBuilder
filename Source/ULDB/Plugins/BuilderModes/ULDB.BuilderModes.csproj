@@ -28,8 +28,9 @@
     <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt).
          MenusForm is never shown: it only holds the plugin's menu items and toolbar buttons. -->
     <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
-    <!-- Model ports with Avalonia views in Views/: the Undo/Redo docker. -->
+    <!-- Model ports with Avalonia views in Views/: the Undo/Redo and Draw Settings dockers. -->
     <Compile Include="$(UpstreamPlugin)Interface/UndoRedoPanel.cs;$(UpstreamPlugin)Interface/UndoRedoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.cs;$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- ULDB's Avalonia views for model-ported UI (.axaml), registered by PluginViews. -->
     <Compile Include="Views/**/*.cs" />

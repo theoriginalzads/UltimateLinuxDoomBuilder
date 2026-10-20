@@ -2,6 +2,7 @@
 // assembly is first used (the plugin manager creating its BuilderPlug).
 
 using System.Runtime.CompilerServices;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using ULDB.Shell;
 
 namespace CodeImp.DoomBuilder.BuilderModes
@@ -12,6 +13,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal static void Register()
 		{
 			ControlViews.Register<UndoRedoPanel>(m => new UndoRedoPanelView(m));
+			ControlViews.Register<SectorDrawingOptionsPanel>(m => new SectorDrawingOptionsPanelView(m));
 		}
 	}
 }

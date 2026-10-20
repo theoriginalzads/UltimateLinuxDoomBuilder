@@ -1,2 +1,3 @@
 CodeImp.DoomBuilder.BuilderModes.MenusForm
+CodeImp.DoomBuilder.BuilderModes.Interface.SectorDrawingOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel
