@@ -1,7 +1,7 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 3 (branch `phase-3/shell`): **milestone reached on 20 Oct 2026** (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 3 (`phase-3/shell` merged to `master` via PR #2 on 20 Oct 2026; start follow-up work on a new `phase-3/...` branch from `master`). **Early preview v0.1.0 released** (below). Milestone reached on 20 Oct 2026 (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -115,6 +115,14 @@ The user wants this done **on their machine**, with them watching the window. Wo
 App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. **About dialog (user request, 20 Oct 2026): when `AboutForm` is ported, show Cacky as its image/icon** (in place of UDB's logo artwork), alongside the UZDoom/GZDoom reference and the AI disclosure from `Branding`. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
 
 **Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
+
+## Early preview release (20 Oct 2026)
+
+- `phase-3/shell` merged into `master` (PR #2); CI green on `master`.
+- Tag `v0.1.0-preview` pushed; the Flatpak workflow built the bundle on the tag (the build and bundle steps passed). Its release step failed because the release had already been created by hand, so PR #3 changed it to attach to an existing release (and a manual run can take `release_tag`).
+- GitHub pre-release **v0.1.0 (Early Preview)** is published with `uldb.flatpak` (about 45.9 MB) attached by hand. Its text is the first version of the notes; the newer wording is `packaging/RELEASE_NOTES.md` (PR #4, unmerged at the time of writing) and has to be pasted in by hand, since the cloud session can't edit releases.
+- Not verified on a real desktop: installing and running the Flatpak, `makepkg -si` for the AUR PKGBUILD, and the dialogs listed under "Remaining Phase 3 work".
+- Cloud-session limits found: no tag pushes, no release edits and no PR merges from the container; the user does those.
 
 ## Done ahead of order (cloud session, 20 Oct 2026, no screen)
 
