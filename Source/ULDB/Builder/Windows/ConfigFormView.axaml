@@ -1,0 +1,125 @@
+<!-- ULDB: the window of upstream's ConfigForm ("Game Configurations", model-ported: upstream's code
+     runs unchanged). Controls named like upstream's fields are bound to them by
+     ModelBinder.BindByName; the tabs follow upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.Windows.ConfigFormView"
+        Title="Game Configurations" Width="1040" Height="640" MinWidth="900" MinHeight="560" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+      <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+        <Image x:Name="hint" Width="16" Height="16"/>
+        <TextBlock x:Name="hintlabel" Opacity="0.7" FontSize="12"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+    <Grid ColumnDefinitions="300,12,*">
+      <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+        <ListBox x:Name="listconfigs" SelectionMode="Single">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+              <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}" Opacity="{Binding Dim, Converter={x:Static shell:ModelBinder.DimOpacity}}" Margin="2,0"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Border>
+      <TabControl x:Name="tabs" Grid.Column="2">
+        <TabItem x:Name="tabresources">
+          <ScrollViewer>
+            <StackPanel Spacing="8" Margin="0,10,0,0">
+              <TextBlock x:Name="label6" TextWrapping="Wrap" Text="These are the resources that will be loaded when this configuration is chosen for editing. Usually you add your IWAD (like DOOM.WAD or DOOM2.WAD) here."/>
+              <ContentControl x:Name="configdata"/>
+              <TextBlock x:Name="label5" TextWrapping="Wrap" Opacity="0.75" FontSize="12" Text="Drag &amp; drop resources to add them. Drag items to change order (lower items override higher items). Use the context menu to cut, copy, paste or remove items."/>
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="tabnodebuilder">
+          <StackPanel Spacing="10" Margin="0,10,0,0">
+            <TextBlock x:Name="label3" TextWrapping="Wrap" Text="The nodebuilder is a compiler which builds geometry structures for your map. You need these structures to be able to play the map in the game. For each purpose you can choose the desired nodebuilder configuration here."/>
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="10">
+              <TextBlock x:Name="label2" Classes="uldb-field" Text="Configuration for saving map:"/>
+              <ComboBox x:Name="nodebuildersave" Grid.Column="1" HorizontalAlignment="Stretch"/>
+              <TextBlock x:Name="label7" Grid.Row="1" Classes="uldb-field" Text="Configuration for testing:"/>
+              <ComboBox x:Name="nodebuildertest" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+            </Grid>
+          </StackPanel>
+        </TabItem>
+        <TabItem x:Name="tabtesting">
+          <ScrollViewer>
+            <StackPanel Spacing="8" Margin="0,10,0,0">
+              <TextBlock x:Name="label9" TextWrapping="Wrap" Text="Here you can specify the program settings to use for launching a game engine when testing the map. Press F1 for help with custom parameters."/>
+              <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="6" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                <TextBlock x:Name="label13" Classes="uldb-field"/>
+                <ComboBox x:Name="cbEngineSelector" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <Button x:Name="btnNewEngine" Grid.Column="2" Classes="uldb-tool"/>
+                <Button x:Name="btnRemoveEngine" Grid.Column="3" Classes="uldb-tool"/>
+                <TextBlock x:Name="label1" Grid.Row="1" Classes="uldb-field" Text="Application:"/>
+                <TextBox x:Name="testapplication" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True"/>
+                <Button x:Name="browsetestprogram" Grid.Row="1" Grid.Column="3" Classes="uldb-tool"/>
+                <TextBlock x:Name="label8" Grid.Row="2" Classes="uldb-field" Text="Skill Level:"/>
+                <ContentControl x:Name="skill" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"/>
+                <CheckBox x:Name="customparameters" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"/>
+                <TextBlock x:Name="labelparameters" Grid.Row="4" Classes="uldb-field" VerticalAlignment="Top"/>
+                <TextBox x:Name="testparameters" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60"/>
+                <TextBlock x:Name="labelresult" Grid.Row="5" Classes="uldb-field" VerticalAlignment="Top"/>
+                <TextBox x:Name="testresult" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"/>
+                <TextBlock x:Name="noresultlabel" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" TextWrapping="Wrap" Opacity="0.7"/>
+                <CheckBox x:Name="shortpaths" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"/>
+                <CheckBox x:Name="linuxpaths" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"/>
+              </Grid>
+            </StackPanel>
+          </ScrollViewer>
+        </TabItem>
+        <TabItem x:Name="tabtextures">
+          <DockPanel Margin="0,10,0,0">
+            <TextBlock x:Name="label4" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8" Text="Texture Sets are a way to group textures and flats into categories, so that you can easily find a texture for the specific style or purpose you need by selecting one of the categories."/>
+            <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto,Auto" ColumnSpacing="6" Margin="0,8,0,0" RowDefinitions="Auto,Auto" RowSpacing="6">
+              <Button x:Name="addtextureset"/>
+              <Button x:Name="edittextureset" Grid.Column="1"/>
+              <Button x:Name="removetextureset" Grid.Column="2"/>
+              <Button x:Name="copytexturesets" Grid.Column="4"/>
+              <Button x:Name="pastetexturesets" Grid.Column="5"/>
+              <Button x:Name="restoretexturesets" Grid.Row="1"/>
+              <Button x:Name="importtexturesets" Grid.Row="1" Grid.Column="4"/>
+              <Button x:Name="exporttexturesets" Grid.Row="1" Grid.Column="5"/>
+            </Grid>
+            <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+              <ListBox x:Name="listtextures" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+                    <TextBlock Text="{Binding Text}" Margin="4,2"/>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </Border>
+          </DockPanel>
+        </TabItem>
+        <TabItem x:Name="tabmodes">
+          <DockPanel Margin="0,10,0,0">
+            <TextBlock x:Name="label10" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0,0,0,8" Text="Here you can select the editing modes that you wish to use in this configuration. This is useful in case there are plugins with additional editing modes that can be used as a replacement for the original editing modes."/>
+            <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*" ColumnSpacing="10" Margin="0,8,0,0">
+              <TextBlock x:Name="label11" Classes="uldb-field"/>
+              <ComboBox x:Name="startmode" Grid.Column="1" HorizontalAlignment="Stretch"/>
+            </Grid>
+            <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+              <ListBox x:Name="listmodes" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+                    <Grid ColumnDefinitions="*,200">
+                      <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}" Margin="2,0"/>
+                      <TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/>
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </Border>
+          </DockPanel>
+        </TabItem>
+      </TabControl>
+    </Grid>
+  </DockPanel>
+</Window>

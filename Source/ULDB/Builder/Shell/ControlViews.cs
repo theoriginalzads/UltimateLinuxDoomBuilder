@@ -36,6 +36,14 @@ namespace ULDB.Shell
 			Register<SectorSlopeControl>(m => new SectorSlopeControlView(m));
 			Register<TagsSelector>(m => new TagsSelectorView(m));
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
+			Register<ImageBrowserControl>(m => new ImageBrowserControlView(m));
+			Register<AngleControl>(m => new AngleControlView(m));
+			Register<ScriptEditorControl>(m => new ULDB.Controls.ScriptEditorControlView(m));
+			Register<ScriptEditorPreviewControl>(m => new ULDB.Controls.ScriptEditorPreviewControlView(m));
+			Register<ScriptEditorPanel>(m => new ULDB.Controls.ScriptEditorPanelView(m));
+			Register<ResourceListEditor>(m => m.View);
+			Register<PasteOptionsControl>(m => new PasteOptionsControlView(m));
+			Register<ExternalCommandControl>(m => new ExternalCommandControlView(m));
 			// Any upstream tree (plugins' dockers: Tag Explorer, sound environments...)
 			Register<WF.TreeView>(m => new ULDB.Controls.TreeViewView(m));
 			// Plain grids that just list rows (Filter Selected Things); others have their own views.

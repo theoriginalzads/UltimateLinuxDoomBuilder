@@ -75,6 +75,10 @@ def main():
                            % (escape(name), escape(rel), compat_type(reftype)))
         elif mime and mime.group(1) == "application/x-microsoft.net.object.bytearray.base64":
             data = base64.b64decode("".join(value.split()))
+            if data.startswith(b"\x00\x00\x01\x00"):
+                # An .ico (a window icon): the designer gets null, ULDB's windows have their own icon.
+                entries.append('  <data name="%s" type="System.Resources.ResXNullRef, System.Windows.Forms"><value /></data>' % escape(name))
+                continue
             if not data.startswith(b"\x89PNG"):
                 sys.exit("formresx: " + name + " isn't PNG data")
             filename = stem + "." + re.sub(r"[^A-Za-z0-9_.-]", "_", name) + ".png"

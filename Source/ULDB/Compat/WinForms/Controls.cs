@@ -126,6 +126,9 @@ namespace System.Windows.Forms
 		protected virtual bool IsInputChar(char charCode) => false;
 		protected virtual bool IsInputKey(Keys keyData) => false;
 		protected virtual bool ProcessKeyPreview(ref Message m) => false;
+		protected virtual bool ProcessTabKey(bool forward) => false;
+		/// <summary>ULDB: offers a key to the control as WinForms does before the key reaches the focused child (shortcuts).</summary>
+		public bool RaiseProcessCmdKey(Keys keyData) { Message m = default; return ProcessCmdKey(ref m, keyData); }
 		protected virtual bool ProcessDialogKey(Keys keyData) => false;
 		protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData) => false;
 		protected virtual void WndProc(ref Message m) { }
@@ -190,6 +193,9 @@ namespace System.Windows.Forms
 		public void RaiseClick() => OnClick(EventArgs.Empty);
 		public void RaiseDoubleClick() => OnDoubleClick(EventArgs.Empty);
 		public void RaiseResize() { OnResize(EventArgs.Empty); OnSizeChanged(EventArgs.Empty); }
+		// WinForms raises Enter before GotFocus and Leave before LostFocus.
+		public void RaiseEnter() => OnEnter(EventArgs.Empty);
+		public void RaiseLeave() => OnLeave(EventArgs.Empty);
 		public void RaiseGotFocus() => OnGotFocus(EventArgs.Empty);
 		public void RaiseLostFocus() => OnLostFocus(EventArgs.Empty);
 		public void RaiseMouseCaptureChanged() => OnMouseCaptureChanged(EventArgs.Empty);
@@ -330,6 +336,9 @@ namespace System.Windows.Forms
 
 		private DialogResult dialogresult;
 
+		/// <summary>Like WinForms, a new form isn't visible until it's shown (callers test Visible before Show).</summary>
+		public Form() { Visible = false; }
+
 		/// <summary>Like WinForms: setting a result on a form shown with ShowDialog closes it.</summary>
 		public DialogResult DialogResult
 		{
@@ -447,8 +456,9 @@ namespace System.Windows.Forms
 
 			dialogresult = DialogResult.None;
 			Modal = true;
+			Visible = true;
 			try { WinFormsHost.Current.ShowForm(this, view, owner, true); }
-			finally { Modal = false; }
+			finally { Modal = false; Visible = false; }
 			if(dialogresult == DialogResult.None) dialogresult = DialogResult.Cancel; // Closed with the title bar
 			return dialogresult;
 		}
@@ -956,16 +966,60 @@ namespace System.Windows.Forms
 		public BorderStyle BorderStyle { get; set; }
 		public ColumnHeaderStyle HeaderStyle { get; set; }
 		public ListViewItemCollection Items { get; }
+		public ImageList SmallImageList { get; set; }
+		public ImageList LargeImageList { get; set; }
+		public SortOrder Sorting { get; set; }
+		public bool LabelWrap { get; set; }
+		public bool LabelEdit { get; set; }
+		public bool GridLines { get; set; }
+		/// <summary>ULDB: the item whose label the view should edit (BeginEdit).</summary>
+		public ListViewItem EditingItem { get; set; }
+		public event LabelEditEventHandler BeforeLabelEdit;
+		public event LabelEditEventHandler AfterLabelEdit;
+		/// <summary>ULDB: the view finished editing an item's label (label null when cancelled).</summary>
+		public void EndLabelEdit(ListViewItem item, string label)
+		{
+			LabelEditEventArgs e = new LabelEditEventArgs(item.Index, label);
+			AfterLabelEdit?.Invoke(this, e);
+			if(!e.CancelEdit && label != null) item.Text = label;
+		}
+		public bool RaiseBeforeLabelEdit(ListViewItem item)
+		{
+			LabelEditEventArgs e = new LabelEditEventArgs(item.Index);
+			BeforeLabelEdit?.Invoke(this, e);
+			return !e.CancelEdit;
+		}
+		public ListViewGroupCollection Groups { get; } = new ListViewGroupCollection();
+		public void AutoResizeColumns(ColumnHeaderAutoResizeStyle headerAutoResize) { }
+		public void EnsureVisible(int index) { if(index >= 0 && index < Items.Count) Items[index].EnsureVisible(); }
+		/// <summary>The item with the focus; the views keep selection and focus together, so the first selected.</summary>
+		public ListViewItem FocusedItem { get { foreach(ListViewItem i in Items) if(i.Selected) return i; return null; } set { if(value != null && !value.Selected) { value.Selected = true; OnSelectionSetByCode(); } } }
+
+		/// <summary>Sorts the items by text (in the order of Sorting), as WinForms does.</summary>
+		public void Sort()
+		{
+			if(Sorting == SortOrder.None) return;
+			List<ListViewItem> sorted = new List<ListViewItem>(Items);
+			sorted.Sort((a, b) => (Sorting == SortOrder.Descending ? -1 : 1) * string.Compare(a.Text, b.Text, StringComparison.CurrentCultureIgnoreCase));
+			Items.Clear();
+			foreach(ListViewItem i in sorted) Items.Add(i);
+			NotifyStylesChanged();
+		}
 
 		public ListView() { Items = new ListViewItemCollection(this); }
 
 		public event EventHandler SelectedIndexChanged;
+		public event ItemCheckedEventHandler ItemChecked;
+		public event ListViewItemSelectionChangedEventHandler ItemSelectionChanged;
+		internal void OnItemChecked(ListViewItem item) => ItemChecked?.Invoke(this, new ItemCheckedEventArgs(item));
+		internal void OnItemSelectionChanged(ListViewItem item) => ItemSelectionChanged?.Invoke(this, new ListViewItemSelectionChangedEventArgs(item, item.Index, item.Selected));
 
 		/// <summary>ULDB: the view calls this after changing the items' Selected, as WinForms raises it.</summary>
 		public void RaiseSelectedIndexChanged() => SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 
 		// Batch updates: the view refreshes when they end.
 		private int updating;
+		internal void OnItemsChanged() { if(updating == 0) NotifyStylesChanged(); }
 		public void BeginUpdate() => updating++;
 		public void EndUpdate() { if(updating > 0 && --updating == 0) NotifyStylesChanged(); }
 
@@ -976,19 +1030,49 @@ namespace System.Windows.Forms
 		/// <summary>Item layout is up to the view; this reports one column of 16 px rows.</summary>
 		public Rectangle GetItemRect(int index) => new Rectangle(0, index * 16, Math.Max(1, Width), 16);
 
-		/// <summary>Indices of the selected items (a snapshot, in item order).</summary>
-		public List<int> SelectedIndices
+		/// <summary>Indices of the selected items, in item order. A snapshot for reading; Add and Clear
+		/// change the real selection (as WinForms' live collection does).</summary>
+		public SelectedIndexCollection SelectedIndices
 		{
 			get
 			{
-				List<int> result = new List<int>();
-				for(int i = 0; i < Items.Count; i++) if(Items[i].Selected) result.Add(i);
+				SelectedIndexCollection result = new SelectedIndexCollection(this);
+				for(int i = 0; i < Items.Count; i++) if(Items[i].Selected) result.AddSnapshot(i);
 				return result;
 			}
 		}
 
-		/// <summary>The selected items (a snapshot, in item order).</summary>
-		public List<ListViewItem> SelectedItems => Items.FindAll(i => i.Selected);
+		/// <summary>The selected items, in item order (same: a snapshot whose Clear changes the selection).</summary>
+		public SelectedListViewItemCollection SelectedItems
+		{
+			get
+			{
+				SelectedListViewItemCollection result = new SelectedListViewItemCollection(this);
+				foreach(ListViewItem i in Items) if(i.Selected) result.AddSnapshot(i);
+				return result;
+			}
+		}
+
+		/// <summary>ULDB: the selection changed from code; views refresh their selection.</summary>
+		internal void OnSelectionSetByCode() => NotifyStylesChanged();
+
+		public class SelectedIndexCollection : List<int>
+		{
+			private readonly ListView owner;
+			internal SelectedIndexCollection(ListView owner) { this.owner = owner; }
+			internal void AddSnapshot(int index) => base.Add(index);
+			public new int Add(int index) { if(index >= 0 && index < owner.Items.Count) { owner.Items[index].Selected = true; owner.OnSelectionSetByCode(); } return index; }
+			public new void Clear() { foreach(ListViewItem i in owner.Items) i.Selected = false; owner.OnSelectionSetByCode(); }
+			public new void Remove(int index) { if(index >= 0 && index < owner.Items.Count) { owner.Items[index].Selected = false; owner.OnSelectionSetByCode(); } }
+		}
+
+		public class SelectedListViewItemCollection : List<ListViewItem>
+		{
+			private readonly ListView owner;
+			internal SelectedListViewItemCollection(ListView owner) { this.owner = owner; }
+			internal void AddSnapshot(ListViewItem item) => base.Add(item);
+			public new void Clear() { foreach(ListViewItem i in owner.Items) i.Selected = false; owner.OnSelectionSetByCode(); }
+		}
 
 		public class ListViewItemCollection : List<ListViewItem>
 		{
@@ -996,9 +1080,16 @@ namespace System.Windows.Forms
 			public ListViewItemCollection() { }
 			internal ListViewItemCollection(ListView owner) { this.owner = owner; }
 			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
-			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); return item; }
-			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); }
+			public ListViewItem Add(string key, string text, int imageIndex) { ListViewItem item = new ListViewItem(text) { Name = key, ImageIndex = imageIndex }; Add(item); return item; }
+			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); Changed(); return item; }
+			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); Changed(); }
 			public void AddRange(ListViewItem[] items) { foreach(ListViewItem i in items) Add(i); }
+			public new void Clear() { base.Clear(); Changed(); }
+			public new bool Remove(ListViewItem item) { bool removed = base.Remove(item); Changed(); return removed; }
+			public new void RemoveAt(int index) { base.RemoveAt(index); Changed(); }
+
+			// The view shows the items again (not inside BeginUpdate/EndUpdate, which refresh once at the end).
+			private void Changed() { owner?.OnItemsChanged(); }
 		}
 	}
 
@@ -1038,13 +1129,65 @@ namespace System.Windows.Forms
 			public ListViewSubItem Add(string text) { ListViewSubItem item = new ListViewSubItem(owner, text); base.Add(item); return item; }
 			public new ListViewSubItem Add(ListViewSubItem item) { base.Add(item); return item; }
 		}
-		public bool Checked { get; set; }
-		public bool Selected { get; set; }
+		private bool itemchecked, selected;
+		public bool Checked { get => itemchecked; set { if(itemchecked == value) return; itemchecked = value; ListView?.OnItemChecked(this); } }
+		public bool Selected { get => selected; set { if(selected == value) return; selected = value; ListView?.OnItemSelectionChanged(this); } }
 		public Color ForeColor { get; set; } = SystemColors.WindowText;
 		public Color BackColor { get; set; } = SystemColors.Window;
 		public object Tag { get; set; }
 		public string ToolTipText { get; set; }
 		public string Name { get; set; }
+		public int ImageIndex { get; set; } = -1;
+		public bool UseItemStyleForSubItems { get; set; } = true;
+		public ListViewGroup Group { get; set; }
+		public void Remove() { ListView?.Items.Remove(this); }
+		public void BeginEdit() { if(ListView != null) ListView.EditingItem = this; }
+	}
+
+	public class ListViewGroup
+	{
+		public ListViewGroup() { }
+		public ListViewGroup(string header) { Header = header; }
+		public ListViewGroup(string key, string header) { Name = key; Header = header; }
+		public string Header { get; set; }
+		public string Name { get; set; }
+		public object Tag { get; set; }
+	}
+
+	public class ListViewGroupCollection : List<ListViewGroup>
+	{
+		public ListViewGroup Add(string key, string headerText) { ListViewGroup g = new ListViewGroup(key, headerText); base.Add(g); return g; }
+		public new int Add(ListViewGroup group) { base.Add(group); return Count - 1; }
+		public ListViewGroup this[string key] { get { foreach(ListViewGroup g in this) if(g.Name == key) return g; return null; } }
+	}
+
+	public enum ColumnHeaderAutoResizeStyle { None, HeaderSize, ColumnContent }
+
+	public delegate void LabelEditEventHandler(object sender, LabelEditEventArgs e);
+	public class LabelEditEventArgs : EventArgs
+	{
+		public LabelEditEventArgs(int item) { Item = item; }
+		public LabelEditEventArgs(int item, string label) { Item = item; Label = label; }
+		public int Item { get; }
+		public string Label { get; }
+		public bool CancelEdit { get; set; }
+	}
+
+	public delegate void ItemCheckedEventHandler(object sender, ItemCheckedEventArgs e);
+	public delegate void ListViewItemSelectionChangedEventHandler(object sender, ListViewItemSelectionChangedEventArgs e);
+
+	public class ItemCheckedEventArgs : EventArgs
+	{
+		public ItemCheckedEventArgs(ListViewItem item) { Item = item; }
+		public ListViewItem Item { get; }
+	}
+
+	public class ListViewItemSelectionChangedEventArgs : EventArgs
+	{
+		public ListViewItemSelectionChangedEventArgs(ListViewItem item, int itemIndex, bool isSelected) { Item = item; ItemIndex = itemIndex; IsSelected = isSelected; }
+		public ListViewItem Item { get; }
+		public int ItemIndex { get; }
+		public bool IsSelected { get; }
 	}
 
 	public class ColumnHeader

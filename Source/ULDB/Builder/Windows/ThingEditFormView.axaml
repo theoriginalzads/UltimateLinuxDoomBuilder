@@ -1,0 +1,76 @@
+<!-- ULDB: the window of upstream's ThingEditForm ("Edit Thing" for Doom and Hexen format maps,
+     model-ported: upstream's code runs unchanged). Controls named like upstream's fields are bound
+     to them by ModelBinder.BindByName; groups and field order follow upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ThingEditFormView"
+        Title="Edit Thing" Width="860" Height="720" MinWidth="760" MinHeight="620" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Image x:Name="hint" Width="16" Height="16" VerticalAlignment="Center"/>
+        <TextBlock x:Name="hintlabel" Opacity="0.7" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+    <Grid ColumnDefinitions="300,10,*" RowDefinitions="*,Auto,Auto">
+      <Border x:Name="typegroup" Classes="uldb-group" Grid.RowSpan="3">
+        <DockPanel>
+          <TextBlock x:Name="typegroupTitle" DockPanel.Dock="Top" Classes="uldb-group-title" Margin="0,0,0,6"/>
+          <ContentControl x:Name="thingtype"/>
+        </DockPanel>
+      </Border>
+      <Grid Grid.Column="2" ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,0,0,8">
+        <Border x:Name="settingsgroup" Classes="uldb-group">
+          <DockPanel>
+            <TextBlock x:Name="settingsgroupTitle" DockPanel.Dock="Top" Classes="uldb-group-title" Margin="0,0,0,6"/>
+            <ContentControl x:Name="flags"/>
+          </DockPanel>
+        </Border>
+        <StackPanel Grid.Column="1" Spacing="8">
+          <Border Classes="uldb-group" Width="190">
+            <StackPanel Spacing="6">
+              <TextBlock x:Name="groupBox4Title" Classes="uldb-group-title"/>
+              <ContentControl x:Name="angle" Width="92" HorizontalAlignment="Left"/>
+              <ContentControl x:Name="anglecontrol" Width="92" Height="92" HorizontalAlignment="Left"/>
+              <CheckBox x:Name="cbRandomAngle"/>
+            </StackPanel>
+          </Border>
+          <Border Classes="uldb-group">
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="Auto,92" RowDefinitions="Auto,Auto,Auto" RowSpacing="4" ColumnSpacing="6">
+                <TextBlock x:Name="label2" Classes="uldb-field"/>
+                <ContentControl x:Name="posX" Grid.Column="1" Width="92"/>
+                <TextBlock x:Name="label1" Grid.Row="1" Classes="uldb-field"/>
+                <ContentControl x:Name="posY" Grid.Row="1" Grid.Column="1" Width="92"/>
+                <TextBlock x:Name="zlabel" Grid.Row="2" Classes="uldb-field"/>
+                <ContentControl x:Name="posZ" Grid.Row="2" Grid.Column="1" Width="92"/>
+              </Grid>
+              <CheckBox x:Name="cbAbsoluteHeight"/>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Grid>
+      <Border x:Name="actiongroup" Classes="uldb-group" Grid.Row="1" Grid.Column="2" Margin="0,0,0,8">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="actiongroupTitle" Classes="uldb-group-title"/>
+          <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+            <ContentControl x:Name="action"/>
+            <Button x:Name="browseaction" Grid.Column="1" Classes="uldb-tool"/>
+            <ContentControl x:Name="actionhelp" Grid.Column="2"/>
+          </Grid>
+          <ContentControl x:Name="argscontrol"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="idgroup" Classes="uldb-group" Grid.Row="2" Grid.Column="2">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="idgroupTitle" Classes="uldb-group-title"/>
+          <ContentControl x:Name="tagSelector"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>

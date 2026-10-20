@@ -9,7 +9,9 @@
     <ListBox x:Name="list" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
       <ListBox.ItemTemplate>
         <DataTemplate x:DataType="shell:ModelBinder+ListItem">
-          <TextBlock Text="{Binding Text}" Classes.dim="{Binding Dim}" TextTrimming="CharacterEllipsis"/>
+          <Border Classes="level" Classes.current="{Binding Highlight}" Padding="8,2">
+            <TextBlock Text="{Binding Text}" Classes.dim="{Binding Dim}" TextTrimming="CharacterEllipsis" FontSize="12"/>
+          </Border>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
@@ -17,6 +19,20 @@
   <UserControl.Styles>
     <Style Selector="TextBlock.dim">
       <Setter Property="Opacity" Value="0.45"/>
+    </Style>
+    <!-- Compact rows; upstream colours the current level and the level being picked (its Highlight colour). -->
+    <Style Selector="ListBoxItem">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="MinHeight" Value="0"/>
+    </Style>
+    <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{DynamicResource UldbHoverBrush}"/>
+    </Style>
+    <Style Selector="Border.level.current">
+      <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
     </Style>
   </UserControl.Styles>
 </UserControl>

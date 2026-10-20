@@ -21,7 +21,7 @@
     <!-- Tab order matches DataLocation.RESOURCE_WAD (0), RESOURCE_DIRECTORY (1), RESOURCE_PK3 (2). -->
     <TabControl x:Name="tabs" Padding="0,8,0,0">
       <TabItem x:Name="wadfiletab" Header="From WAD File">
-        <StackPanel Spacing="8" Margin="4">
+        <StackPanel Spacing="8">
           <TextBlock Text="WAD File Resource:"/>
           <DockPanel>
             <Button x:Name="browsewad" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>
@@ -31,7 +31,7 @@
         </StackPanel>
       </TabItem>
       <TabItem x:Name="directorytab" Header="From Directory">
-        <StackPanel Spacing="8" Margin="4">
+        <StackPanel Spacing="8">
           <TextBlock Text="Directory Resource:"/>
           <DockPanel>
             <Button x:Name="browsedir" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>
@@ -46,7 +46,7 @@
         </StackPanel>
       </TabItem>
       <TabItem x:Name="pk3filetab" Header="From PK3/PKE/PK7">
-        <StackPanel Spacing="8" Margin="4">
+        <StackPanel Spacing="8">
           <TextBlock Text="PK3, PKE, or PK7 File Resource:"/>
           <DockPanel>
             <Button x:Name="browsepk3" DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0"/>

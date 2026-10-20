@@ -1,0 +1,46 @@
+<!-- ULDB: the window of upstream's ScriptFindReplaceForm ("Find and Replace", model-ported): find and
+     replace in the open script, all open scripts or the whole project. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ScriptFindReplaceFormView"
+        Title="Find and Replace" Width="440" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <TabControl x:Name="tabs">
+      <TabItem x:Name="tabfind">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="10" Margin="0,12,0,0">
+          <TextBlock x:Name="label1" Classes="uldb-field"/>
+          <ComboBox x:Name="findbox" Grid.Column="1" HorizontalAlignment="Stretch" IsEditable="True"/>
+          <TextBlock x:Name="label2" Grid.Row="1" Classes="uldb-field"/>
+          <ComboBox x:Name="findinbox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+          <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="14">
+            <CheckBox x:Name="findmatchcase"/>
+            <CheckBox x:Name="findwholeword"/>
+          </StackPanel>
+          <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" Margin="0,6,0,0">
+            <Button x:Name="bookmarkallbutton"/>
+            <Button x:Name="findpreviousbutton"/>
+            <Button x:Name="findnextbutton" Classes="accent"/>
+          </StackPanel>
+        </Grid>
+      </TabItem>
+      <TabItem x:Name="tabreplace">
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="10" Margin="0,12,0,0">
+          <TextBlock x:Name="label4" Classes="uldb-field"/>
+          <ComboBox x:Name="replacefindbox" Grid.Column="1" HorizontalAlignment="Stretch" IsEditable="True"/>
+          <TextBlock x:Name="label5" Grid.Row="1" Classes="uldb-field"/>
+          <ComboBox x:Name="replacebox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" IsEditable="True"/>
+          <TextBlock x:Name="label3" Grid.Row="2" Classes="uldb-field"/>
+          <ComboBox x:Name="replaceinbox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch"/>
+          <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="14">
+            <CheckBox x:Name="replacematchcase"/>
+            <CheckBox x:Name="replacewholeword"/>
+          </StackPanel>
+          <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" Margin="0,6,0,0">
+            <Button x:Name="replaceallbutton"/>
+            <Button x:Name="replacebutton" Classes="accent"/>
+          </StackPanel>
+        </Grid>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

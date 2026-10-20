@@ -5,10 +5,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -26,7 +29,8 @@ namespace ULDB.Controls
 
 		private readonly WF.TreeView model;
 		private readonly ListBox list;
-		private readonly List<Row> rows = new List<Row>();
+		private readonly ObservableCollection<Row> rows = new ObservableCollection<Row>();
+		private WF.TreeNode lastselected;
 		private bool pending;
 
 		/// <summary>Icon for a node when the model's ImageList has no image for it (null for none).</summary>
@@ -57,6 +61,7 @@ namespace ULDB.Controls
 			model.EnabledChanged += Schedule;
 
 			// Mouse: as the native tree, in content coordinates (row index * RowHeight).
+			list.ItemsSource = rows;
 			list.AddHandler(PointerPressedEvent, OnPointerPressed, Avalonia.Interactivity.RoutingStrategies.Tunnel);
 			list.AddHandler(PointerReleasedEvent, OnPointerReleased, Avalonia.Interactivity.RoutingStrategies.Tunnel);
 			list.AddHandler(KeyDownEvent, OnKeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
@@ -88,6 +93,13 @@ namespace ULDB.Controls
 			public bool Expanded;
 			public string Text;
 			public SD.Color Fore, Back;
+			public bool Selected, Editing;
+			public int ImageIndex;
+
+			// Whether a row looks the same, so an update can keep it (and the list's scroll position).
+			public bool SameAs(Row o) =>
+				Node == o.Node && Level == o.Level && HasChildren == o.HasChildren && Expanded == o.Expanded && Text == o.Text &&
+				Fore == o.Fore && Back == o.Back && Selected == o.Selected && Editing == o.Editing && ImageIndex == o.ImageIndex;
 		}
 
 		private void Rebuild()
@@ -95,28 +107,48 @@ namespace ULDB.Controls
 			pending = false;
 			IsVisible = model.Visible;
 			IsEnabled = model.Enabled;
-			rows.Clear();
+
+			List<Row> wanted = new List<Row>();
 			void Add(WF.TreeNodeCollection nodes, int level)
 			{
 				foreach(WF.TreeNode n in nodes)
 				{
-					rows.Add(new Row { Node = n, Level = level, HasChildren = n.Nodes.Count > 0, Expanded = n.IsExpanded, Text = n.Text, Fore = n.ForeColor, Back = n.BackColor });
+					wanted.Add(new Row
+					{
+						Node = n, Level = level, HasChildren = n.Nodes.Count > 0, Expanded = n.IsExpanded, Text = n.Text, Fore = n.ForeColor, Back = n.BackColor,
+						Selected = (!n.BackColor.IsEmpty && n.BackColor.ToArgb() == SelectionColor().ToArgb()) || (HighlightSelectedNode && n.IsSelected),
+						Editing = model.EditingNode == n, ImageIndex = n.ImageIndex,
+					});
 					if(n.IsExpanded) Add(n.Nodes, level + 1);
 				}
 			}
 			Add(model.Nodes, 0);
-			list.ItemsSource = rows.ToArray();
 
-			// Keep the focused/selected node in view (EnsureVisible sets TopNode).
-			WF.TreeNode show = model.TopNode ?? model.SelectedNode;
+			// Apply only what changed (expanding a node inserts its children): the list keeps its
+			// scroll position, and rows that look the same aren't rebuilt.
+			int start = 0;
+			while(start < rows.Count && start < wanted.Count && rows[start].SameAs(wanted[start])) start++;
+			int oldend = rows.Count, newend = wanted.Count;
+			while(oldend > start && newend > start && rows[oldend - 1].SameAs(wanted[newend - 1])) { oldend--; newend--; }
+			for(int i = oldend - 1; i >= start; i--) rows.RemoveAt(i);
+			for(int i = start; i < newend; i++) rows.Insert(i, wanted[i]);
+
+			// Scroll when asked (EnsureVisible) or when the selection moved, not on every update.
+			WF.TreeNode show = model.TopNode;
 			model.TopNode = null;
-			int index = rows.FindIndex(r => r.Node == show);
-			if(index >= 0) list.ScrollIntoView(index);
+			if(show == null && model.SelectedNode != lastselected) show = model.SelectedNode;
+			lastselected = model.SelectedNode;
+			if(show != null)
+			{
+				int index = -1;
+				for(int i = 0; i < rows.Count; i++) if(rows[i].Node == show) { index = i; break; }
+				if(index >= 0) list.ScrollIntoView(index);
+			}
 		}
 
 		private Control BuildRow(Row row)
 		{
-			bool selected = (!row.Back.IsEmpty && row.Back.ToArgb() == SelectionColor().ToArgb()) || (HighlightSelectedNode && row.Node.IsSelected);
+			bool selected = row.Selected;
 			Grid g = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto,*"), Height = RowHeight, Margin = new Thickness(row.Level * IndentWidth, 0, 0, 0) };
 			g.Classes.Add("uldb-tree-row");
 			g.Classes.Set("selected", selected);
@@ -140,12 +172,44 @@ namespace ULDB.Controls
 				g.Children.Add(icon);
 			}
 
-			TextBlock text = new TextBlock { Text = row.Text, VerticalAlignment = VerticalAlignment.Center, FontSize = 12, TextTrimming = TextTrimming.CharacterEllipsis };
-			if(!selected) ModelBinder.SetForeground(text, row.Fore);
+			Control text;
+			if(row.Editing)
+			{
+				text = LabelEditor(row);
+			}
+			else
+			{
+				TextBlock block = new TextBlock { Text = row.Text, VerticalAlignment = VerticalAlignment.Center, FontSize = 12, TextTrimming = TextTrimming.CharacterEllipsis };
+				if(!selected) ModelBinder.SetForeground(block, row.Fore);
+				text = block;
+			}
 			Grid.SetColumn(text, 2);
 			g.Children.Add(text);
 			if(!string.IsNullOrEmpty(row.Node.ToolTipText)) ToolTip.SetTip(g, row.Node.ToolTipText);
 			return g;
+		}
+
+		// The inline editor for TreeNode.BeginEdit(): Enter or leaving the box commits, Escape cancels
+		// (AfterLabelEdit gets a null label), as WinForms' label editing.
+		private Control LabelEditor(Row row)
+		{
+			TextBox box = new TextBox { Text = row.Node.Text, FontSize = 12, MinHeight = 0, Height = RowHeight - 2, HorizontalAlignment = HorizontalAlignment.Stretch, MinWidth = 60, Padding = new Thickness(4, 0), VerticalContentAlignment = VerticalAlignment.Center };
+			bool done = false;
+			void Finish(string label)
+			{
+				if(done) return;
+				done = true;
+				model.EndLabelEdit(row.Node, label);
+				list.Focus();
+			}
+			box.KeyDown += (s, e) =>
+			{
+				if(e.Key == Key.Enter) { Finish(box.Text ?? ""); e.Handled = true; }
+				else if(e.Key == Key.Escape) { Finish(null); e.Handled = true; }
+			};
+			box.LostFocus += (s, e) => Finish(box.Text ?? "");
+			box.AttachedToVisualTree += (s, e) => Dispatcher.UIThread.Post(() => { box.Focus(); box.SelectAll(); }, DispatcherPriority.Input);
+			return box;
 		}
 
 		private Control Icon(WF.TreeNode node)
@@ -164,10 +228,73 @@ namespace ULDB.Controls
 
 		private SD.Rectangle BoundsOf(WF.TreeNode node)
 		{
-			int i = rows.FindIndex(r => r.Node == node);
+			int i = -1;
+			for(int k = 0; k < rows.Count; k++) if(rows[k].Node == node) { i = k; break; }
 			if(i < 0) return SD.Rectangle.Empty;
 			int x = (int)(rows[i].Level * IndentWidth + 16 + 21);
 			return new SD.Rectangle(x, (int)(i * RowHeight), Math.Max(10, (int)Bounds.Width - x), (int)RowHeight);
+		}
+
+		#endregion
+
+		#region ================== Development aids
+
+		/// <summary>Development aid (ULDB_SHOW_FORM "tree" steps): a click on a row, sent through the same
+		/// pointer handlers as the mouse (on the expander arrow or on the text), clicks = 2 for a double-click.</summary>
+		internal void DevClick(int rowindex, bool onexpander, int clicks)
+		{
+			Control container = list.ContainerFromIndex(rowindex);
+			if(container == null) { list.ScrollIntoView(rowindex); container = list.ContainerFromIndex(rowindex); }
+			TopLevel top = TopLevel.GetTopLevel(this);
+			if(container == null || top == null || rowindex >= rows.Count) { Console.WriteLine("[devstep] tree row " + rowindex + " isn't showing"); return; }
+			Row row = rows[rowindex];
+			Point inrow = new Point(onexpander ? row.Level * IndentWidth + 4 + 8 : row.Level * IndentWidth + 4 + 60, container.Bounds.Height / 2);
+			Point pos = container.TranslatePoint(inrow, top) ?? default;
+			// The element under that point is the event's source, as for a real click.
+			Visual source = top.GetVisualAt(pos) ?? container;
+			Pointer pointer = new Pointer(Pointer.GetNextFreeId(), PointerType.Mouse, true);
+			bool wasexpanded = row.Node.IsExpanded;
+			Console.WriteLine("[devstep] tree click row " + rowindex + " \"" + row.Text + "\" at " + (int)inrow.X + "," + (int)inrow.Y + " source=" + source.GetType().Name + " expanded=" + wasexpanded);
+			for(int c = 1; c <= clicks; c++)
+			{
+				PointerPointProperties down = new PointerPointProperties(RawInputModifiers.LeftMouseButton, PointerUpdateKind.LeftButtonPressed);
+				((Interactive)source).RaiseEvent(new PointerPressedEventArgs(source, pointer, top, pos, 0, down, KeyModifiers.None, c));
+				PointerPointProperties up = new PointerPointProperties(RawInputModifiers.None, PointerUpdateKind.LeftButtonReleased);
+				((Interactive)source).RaiseEvent(new PointerReleasedEventArgs(source, pointer, top, pos, 0, up, KeyModifiers.None, MouseButton.Left));
+			}
+			Console.WriteLine("[devstep] tree   → expanded=" + row.Node.IsExpanded + " selected=\"" + model.SelectedNode?.Text + "\"");
+		}
+
+		/// <summary>Development aid: types into the label editor (TreeNode.BeginEdit) and presses Enter.</summary>
+		internal void DevEdit(string text)
+		{
+			TextBox box = this.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
+			if(box == null) { Console.WriteLine("[devstep] tree: no label editor showing"); return; }
+			Console.WriteLine("[devstep] tree editor shows \"" + box.Text + "\" focused=" + box.IsFocused);
+			box.Text = text;
+			box.RaiseEvent(new KeyEventArgs { RoutedEvent = InputElement.KeyDownEvent, Key = Key.Enter, Source = box });
+		}
+
+		/// <summary>Development aid: the index of the first row whose text starts with the given text, or -1.</summary>
+		internal int DevFindRow(string prefix)
+		{
+			for(int i = 0; i < rows.Count; i++) if(rows[i].Text.StartsWith(prefix, StringComparison.Ordinal)) return i;
+			return -1;
+		}
+
+		/// <summary>Development aid: scrolls the list to a vertical offset in pixels (like the mouse wheel).</summary>
+		internal void DevScrollTo(double y)
+		{
+			if(list.Scroll is ScrollViewer sv) sv.Offset = new Vector(sv.Offset.X, y);
+		}
+
+		/// <summary>Development aid: what the tree is showing, to check scrolling, expansion and selection.</summary>
+		internal void DevReport(string label)
+		{
+			double offset = (list.Scroll as ScrollViewer)?.Offset.Y ?? -1;
+			string first = rows.Count > 0 ? rows[0].Text : "";
+			Console.WriteLine("[devstep] tree " + label + ": rows=" + rows.Count + " scroll=" + (int)offset + " selected=\"" + model.SelectedNode?.Text + "\" editing=" + (model.EditingNode != null)
+				+ " expanded=" + string.Join("", rows.Select(r => r.HasChildren ? (r.Expanded ? "-" : "+") : ".").Take(40)));
 		}
 
 		#endregion
@@ -205,7 +332,7 @@ namespace ULDB.Controls
 
 		private void OnPointerPressed(object sender, PointerPressedEventArgs e)
 		{
-			if(e.Handled) return;
+			if(e.Handled || e.Source is Visual src && src.FindAncestorOfType<TextBox>() != null) return; // clicks in the label editor
 			Point p = ContentPoint(e);
 			pressed = Button(e.GetCurrentPoint(list).Properties);
 			list.Focus();
@@ -239,6 +366,7 @@ namespace ULDB.Controls
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
+			if(model.EditingNode != null) return; // the label editor takes the keys
 			WF.KeyEventArgs args = new WF.KeyEventArgs(ULDB.Input.KeyMapping.ToKeys(e.Key, e.KeyModifiers));
 			model.RaiseKeyDown(args);
 			if(args.Handled) { e.Handled = true; return; }

@@ -45,6 +45,20 @@ namespace ULDB.Shell
 			WF.ToolStripDropDown.CloseHandler = menu => Post(() => { if(openmenus.TryGetValue(menu, out ContextMenu cm)) cm.Close(); });
 		}
 
+		/// <summary>
+		/// An Avalonia context menu for a control's ContextMenuStrip (shown on right-click): upstream's
+		/// Opening handler runs first, so it can enable and disable items.
+		/// </summary>
+		public static ContextMenu CreateContextMenu(WF.ToolStripDropDown menu)
+		{
+			ContextMenu cm = new ContextMenu();
+			cm.Opening += (s, e) => { if(!menu.RaiseOpening()) e.Cancel = true; };
+			cm.Opened += (s, e) => menu.RaiseOpened();
+			cm.Closed += (s, e) => menu.RaiseClosed(WF.ToolStripDropDownCloseReason.CloseCalled);
+			foreach(WF.ToolStripItem item in menu.Items) cm.Items.Add(CreateMenuEntry(item));
+			return cm;
+		}
+
 		private static void ShowContextMenu(WF.ToolStripDropDown menu)
 		{
 			if(!menu.RaiseOpening()) return;
@@ -205,6 +219,22 @@ namespace ULDB.Shell
 		/// </summary>
 		public static Control CreateToolBar(WF.ToolStrip strip, Orientation orientation)
 		{
+			// Toolbars show what fits and move the rest into an overflow drop-down (the status bar lays itself out).
+			if(!(strip is WF.StatusStrip))
+			{
+				OverflowToolPanel bar = new OverflowToolPanel(orientation, item => CreateToolItem(item, orientation));
+				bar.Classes.Add("uldb-toolbar");
+				void Fill()
+				{
+					List<(Control, WF.ToolStripItem)> items = new List<(Control, WF.ToolStripItem)>();
+					foreach(WF.ToolStripItem item in strip.Items) items.Add((CreateToolItem(item, orientation), item));
+					bar.SetItems(items);
+				}
+				Fill();
+				strip.Items.Changed += (s, e) => Post(Fill);
+				return bar;
+			}
+
 			Panel host = orientation == Orientation.Vertical ? new StackPanel { Orientation = Orientation.Vertical, Spacing = 1 } : new Grid();
 			host.Classes.Add("uldb-toolbar");
 

@@ -1,0 +1,16 @@
+<!-- ULDB: the view of upstream's ExternalCommandControl (model-ported): the working directory and
+     commands run before or after resources are reloaded or a map is tested. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ExternalCommandControlView">
+  <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+    <TextBlock x:Name="label2" Classes="uldb-field"/>
+    <TextBox x:Name="tbFolder" Grid.Column="1"/>
+    <Button x:Name="btnBrowseFolder" Grid.Column="2" Classes="uldb-tool" Content="..."/>
+    <TextBlock x:Name="label1" Grid.Row="1" Classes="uldb-field" VerticalAlignment="Top" Margin="0,6,0,0"/>
+    <TextBox x:Name="tbCommand" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" AcceptsReturn="True" TextWrapping="NoWrap" MinHeight="120" FontFamily="monospace"/>
+    <CheckBox x:Name="cbAutoclose" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+    <CheckBox x:Name="cbExitCode" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"/>
+    <CheckBox x:Name="cbStdErr" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"/>
+  </Grid>
+</UserControl>

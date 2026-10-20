@@ -1,0 +1,18 @@
+<!-- ULDB: the window of upstream's TextureBrowserForm ("Browse textures/flats", model-ported): the
+     image tiles on the left, the texture set tree on the right. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.TextureBrowserFormView"
+        Title="Browse textures" Width="1000" Height="640" MinWidth="640" MinHeight="420" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid x:Name="splitgrid" ColumnDefinitions="*,Auto,260">
+      <ContentControl x:Name="browser"/>
+      <GridSplitter x:Name="gridsplitter" Grid.Column="1" Width="8" Background="Transparent" ResizeDirection="Columns"/>
+      <ContentControl x:Name="treehost" Grid.Column="2"/>
+    </Grid>
+  </DockPanel>
+</Window>

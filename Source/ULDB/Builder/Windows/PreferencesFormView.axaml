@@ -1,0 +1,432 @@
+<!-- ULDB: the window of upstream's PreferencesForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. Written by
+     tools/axamlgen/preferences.py; labels upstream keeps in designer locals get their text there. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.Windows.PreferencesFormView"
+        Title="Preferences" Width="1040" Height="760" MinWidth="880" MinHeight="620" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <TabControl x:Name="tabs">
+      <TabItem x:Name="tabinterface" Header="Interface">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="*"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<StackPanel Grid.Column="0" Spacing="10">
+<StackPanel Spacing="4">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Options" Classes="uldb-group-title"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Default view:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<ComboBox x:Name="defaultviewmode" Width="160"/></ContentPresenter>
+<TextBlock Grid.Row="1" Text="Auto-scroll speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="1" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="autoscrollspeed" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="autoscrollspeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="2" Text="Zoom factor:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="2" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="zoomfactor" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="zoomfactorlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="3" Text="Vertex scale (2D):" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="3" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="vertexScale" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="vertexScaleLabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="4" Text="Max. recent files:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="4" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="recentFiles" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="labelRecentFiles" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<ContentPresenter Grid.Row="5" Grid.ColumnSpan="2">
+<StackPanel Spacing="4">
+<CheckBox x:Name="scriptontop"/>
+<CheckBox x:Name="showtexturesizes"/>
+<CheckBox x:Name="texturesizesbelow"/>
+<CheckBox x:Name="locatetexturegroup"/>
+<CheckBox x:Name="blackbrowsers"/>
+<CheckBox x:Name="cbSynchCameras"/>
+<CheckBox x:Name="cbStoreEditTab"/>
+<CheckBox x:Name="checkforupdates"/>
+<CheckBox x:Name="autolaunchontest"/></StackPanel></ContentPresenter></Grid></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Side Panels" Classes="uldb-group-title"/>
+<StackPanel Orientation="Horizontal" Spacing="10">
+<TextBlock Text="Position:" Classes="uldb-field"/>
+<ComboBox x:Name="dockersposition" Width="110"/>
+<CheckBox x:Name="collapsedockers"/></StackPanel></StackPanel></Border></StackPanel></StackPanel>
+<StackPanel Grid.Column="1" Spacing="10">
+<StackPanel Spacing="4">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Visual Modes" Classes="uldb-group-title"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl2"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Field of view:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="fieldofview" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="fieldofviewlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="1" Text="Mouse speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="1" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="mousespeed" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="mousespeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="2" Text="Move speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="2" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="movespeed" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="movespeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="3" Text="Vertex scale (3D):" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="3" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="vertexScale3D" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="vertexScale3DLabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="4" Text="View distance:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="4" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="viewdistance" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="viewdistancelabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<ContentPresenter Grid.Row="5" Grid.ColumnSpan="2">
+<CheckBox x:Name="invertyaxis"/></ContentPresenter></Grid></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Toolbar Buttons" Classes="uldb-group-title"/>
+<UniformGrid Columns="2">
+<CheckBox x:Name="toolbar_file"/>
+<CheckBox x:Name="toolbar_filter"/>
+<CheckBox x:Name="toolbar_script"/>
+<CheckBox x:Name="toolbar_viewmodes"/>
+<CheckBox x:Name="toolbar_undo"/>
+<CheckBox x:Name="toolbar_geometry"/>
+<CheckBox x:Name="toolbar_copy"/>
+<CheckBox x:Name="toolbar_testing"/>
+<CheckBox x:Name="toolbar_prefabs"/>
+<CheckBox x:Name="toolbar_gzdoom"/></UniformGrid></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Text Labels" Classes="uldb-group-title"/>
+<StackPanel Orientation="Horizontal" Spacing="8">
+<TextBlock Text="Font:" Classes="uldb-field"/>
+<ComboBox x:Name="textlabelfontname" Width="170"/>
+<TextBlock Text="Size:" Classes="uldb-field"/>
+<ComboBox x:Name="textlabelfontsize" Width="76"/>
+<CheckBox x:Name="textlabelfontbold"/></StackPanel></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Screenshots Folder" Classes="uldb-group-title"/>
+<Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="4">
+<TextBox x:Name="screenshotsfolderpath"/>
+<Button x:Name="browsescreenshotsdir" Grid.Column="1" Classes="uldb-tool"/>
+<Button x:Name="resetscreenshotsdir" Grid.Column="2" Classes="uldb-tool"/></Grid></StackPanel></Border></StackPanel></StackPanel></Grid></Grid></ScrollViewer></TabItem>
+      <TabItem x:Name="tabkeys" Header="Controls">
+<Grid ColumnDefinitions="*,12,330" Margin="0,10,0,0">
+  <DockPanel>
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6" Margin="0,0,0,6">
+      <TextBlock Text="Filter:" Classes="uldb-field"/>
+<TextBox x:Name="tbFilterActions" Grid.Column="1" Watermark="Action name"/>
+<Button x:Name="bClearActionFilter" Grid.Column="2" Classes="uldb-tool"/>
+    </Grid>
+    <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+      <ListBox x:Name="listactions" SelectionMode="Single">
+        <ListBox.ItemTemplate>
+<DataTemplate x:DataType="shell:ModelBinder+ListItem">
+          <Grid ColumnDefinitions="*,Auto" Margin="4,1">
+<StackPanel>
+<TextBlock Text="{Binding Text}"/>
+<TextBlock Text="{Binding Group}" FontSize="11" Opacity="0.55"/></StackPanel>
+<TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.8" VerticalAlignment="Center" Margin="12,0,0,0"/></Grid>
+        </DataTemplate></ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </DockPanel>
+  <Border x:Name="actioncontrolpanel" Grid.Column="2" Classes="uldb-group">
+<StackPanel Spacing="8">
+    <TextBlock x:Name="actioncontrolpanelTitle" Classes="uldb-group-title"/>
+    <TextBlock x:Name="actiontitle" FontWeight="SemiBold" TextWrapping="Wrap"/>
+    <TextBox x:Name="actiondescription" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" Height="90" Opacity="0.85"/>
+    <TextBlock Text="Press the desired key combination here:" Classes="uldb-field" TextWrapping="Wrap"/>
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+<TextBox x:Name="actionkey" IsReadOnly="True"/>
+<Button x:Name="actioncontrolclear" Grid.Column="1" Classes="uldb-tool"/></Grid>
+    <TextBlock Text="Or select a special input control here:" Classes="uldb-field" TextWrapping="Wrap"/>
+    <ComboBox x:Name="actioncontrol" HorizontalAlignment="Stretch"/>
+    <TextBlock x:Name="disregardshiftlabel" TextWrapping="Wrap" FontSize="12" Opacity="0.8"/>
+    <TextBlock x:Name="keyusedlabel" TextWrapping="Wrap" FontSize="12"/>
+    <ListBox x:Name="keyusedlist" Height="110"/>
+  </StackPanel></Border>
+</Grid></TabItem>
+      <TabItem x:Name="tabcolors" Header="Appearance">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="290"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<StackPanel Grid.Column="0" Spacing="10">
+<Border x:Name="colorsgroup1" Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Colors" Classes="uldb-group-title"/>
+<StackPanel Spacing="6">
+<ContentControl x:Name="colorbackcolor" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorvertices" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorlinedefs" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorhighlight" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorselection" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorindication" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorgrid" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorgrid64" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorMD3" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorInfo" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorguidelines" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="color3dFloors" Width="250" HorizontalAlignment="Left"/></StackPanel></StackPanel></Border></StackPanel>
+<StackPanel Grid.Column="1" Spacing="10">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Rendering" Classes="uldb-group-title"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl3"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Passable lines transparency:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="doublesidedalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="doublesidedalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="1" Text="Things transparency (Things mode):" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="1" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="activethingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="activethingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="2" Text="Things transparency (other modes):" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="2" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="inactivethingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="inactivethingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="3" Text="Hidden things transparency:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="3" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="hiddenthingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="hiddenthingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="4" Text="Textures and flats brightness:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="4" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="imagebrightness" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="imagebrightnesslabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="5" Text="Dynamic lights count:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="5" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="tbDynLightCount" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="labelDynLightCount" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="6" Text="Anisotropic filtering:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="6" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="anisotropicfiltering" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="labelanisotropicfiltering" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="7" Text="Edge anti-aliasing:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="7" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="antialiasing" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="labelantialiasing" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<ContentPresenter Grid.Row="8" Grid.ColumnSpan="2">
+<StackPanel Spacing="4">
+<CheckBox x:Name="qualitydisplay"/>
+<CheckBox x:Name="classicbilinear"/>
+<CheckBox x:Name="visualbilinear"/>
+<CheckBox x:Name="animatevisualselection"/>
+<CheckBox x:Name="cbShowFPS"/>
+<CheckBox x:Name="cbStretchView"/>
+<CheckBox x:Name="cbOldHighlightMode"/>
+<CheckBox x:Name="cbMarkExtraFloors"/>
+<CheckBox x:Name="cbFlatShadeVertices"/>
+<CheckBox x:Name="cbParallelizedLinedefPlotting"/>
+<CheckBox x:Name="cbParallelizedVertexPlotting"/></StackPanel></ContentPresenter></Grid></StackPanel></Border></StackPanel></Grid></Grid></ScrollViewer></TabItem>
+      <TabItem x:Name="tabscripteditor" Header="Script Editor">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="290"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<StackPanel Grid.Column="0" Spacing="10">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Colors" Classes="uldb-group-title"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl4"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Preset:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<ComboBox x:Name="scriptcolorpresets" Width="170"/></ContentPresenter></Grid>
+<StackPanel Spacing="4">
+<ContentControl x:Name="colorproperties" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorscriptbackground" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorlinenumbers" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorplaintext" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorcomments" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorkeywords" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorstrings" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorliterals" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorconstants" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorincludes" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorselectionfore" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorselectionback" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorindicator" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorbrace" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorbracebad" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorwhitespace" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorfoldfore" Width="250" HorizontalAlignment="Left"/>
+<ContentControl x:Name="colorfoldback" Width="250" HorizontalAlignment="Left"/></StackPanel></StackPanel></Border></StackPanel>
+<StackPanel Grid.Column="1" Spacing="10">
+<StackPanel Spacing="4">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Font" Classes="uldb-group-title"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl5"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Font:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<ComboBox x:Name="scriptfontname" Width="220"/></ContentPresenter>
+<TextBlock Grid.Row="1" Text="Size:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="1" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="12">
+<ComboBox x:Name="scriptfontsize" Width="90"/>
+<CheckBox x:Name="scriptfontbold"/></StackPanel></ContentPresenter></Grid></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Formatting" Classes="uldb-group-title"/>
+<StackPanel Spacing="4">
+<CheckBox x:Name="scriptusetabs"/>
+<StackPanel Orientation="Horizontal" Spacing="8">
+<TextBlock Text="Tab width:" Classes="uldb-field"/>
+<ContentControl x:Name="scripttabwidth" Width="92"/></StackPanel>
+<CheckBox x:Name="scriptautoindent"/>
+<CheckBox x:Name="scriptautoclosebrackets"/>
+<CheckBox x:Name="scriptallmanstyle"/>
+<CheckBox x:Name="scriptautoshowautocompletion"/></StackPanel></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Appearance" Classes="uldb-group-title"/>
+<StackPanel Spacing="4">
+<CheckBox x:Name="scriptshowlinenumbers"/>
+<CheckBox x:Name="scriptshowfolding"/></StackPanel></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Preview" Classes="uldb-group-title"/>
+<TextBlock Text="The preview needs the script editor, which isn't available yet." Opacity="0.6" TextWrapping="Wrap"/></StackPanel></Border></StackPanel></StackPanel></Grid></Grid></ScrollViewer></TabItem>
+      <TabItem x:Name="tabpasting" Header="Pasting">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<StackPanel Spacing="10">
+<TextBlock x:Name="label16" TextWrapping="Wrap" Text="These are the default options for pasting geometry. You can also choose these options when you use the Paste Special function. These options also apply when inserting prefabs."/>
+<ContentControl x:Name="pasteoptions"/></StackPanel></Grid></ScrollViewer></TabItem>
+      <TabItem x:Name="tabrecovery" Header="Recovery">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Autosave" Classes="uldb-group-title"/>
+<CheckBox x:Name="autosave"/>
+<Border x:Name="autosavedisabledwarning" Classes="uldb-group" Padding="8,4">
+<TextBlock Text="It is not recommended to disable autosaves!" Foreground="#E8A317"/></Border>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl6"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Autosave interval:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="autosaveinterval" Width="200" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="autosaveintervallabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
+<TextBlock Grid.Row="1" Text="Number of autosaves:" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="1" Grid.Column="1">
+<StackPanel Orientation="Horizontal" Spacing="8">
+<Slider x:Name="autosavecount" Width="200" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<TextBlock x:Name="autosavecountlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter></Grid></StackPanel></Border></Grid></ScrollViewer></TabItem>
+      <TabItem x:Name="tabtoasts" Header="Toasts">
+<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<StackPanel Spacing="10">
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Toasts" Classes="uldb-group-title"/>
+<CheckBox x:Name="cbToastsEnabled"/>
+<Grid RowSpacing="6" ColumnSpacing="10">
+<Grid.ColumnDefinitions>
+<ColumnDefinition Width="Auto" SharedSizeGroup="lbl7"/>
+<ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+<Grid.RowDefinitions>
+<RowDefinition Height="Auto"/></Grid.RowDefinitions>
+<TextBlock Grid.Row="0" Text="Duration (seconds):" Classes="uldb-field" HorizontalAlignment="Right"/>
+<ContentPresenter Grid.Row="0" Grid.Column="1">
+<ContentControl x:Name="tbToastDuration" Width="92" HorizontalAlignment="Left"/></ContentPresenter></Grid>
+<TextBlock Text="Toast position" Classes="uldb-field" Margin="0,6,0,0"/>
+<UniformGrid Columns="2" Width="260" HorizontalAlignment="Left">
+<RadioButton x:Name="rbToastPosTL" GroupName="toastpos" Content="Top left"/>
+<RadioButton x:Name="rbToastPosTR" GroupName="toastpos" Content="Top right"/>
+<RadioButton x:Name="rbToastPosBL" GroupName="toastpos" Content="Bottom left"/>
+<RadioButton x:Name="rbToastPosBR" GroupName="toastpos" Content="Bottom right"/></UniformGrid></StackPanel></Border>
+<Border Classes="uldb-group">
+<StackPanel Spacing="6">
+<TextBlock Text="Show toasts for" Classes="uldb-group-title"/>
+<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="260">
+<ListBox x:Name="lvToastActions" SelectionMode="Single">
+<ListBox.ItemTemplate>
+<DataTemplate x:DataType="shell:ModelBinder+ListItem">
+<Grid ColumnDefinitions="*,*">
+<CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/>
+<TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border></StackPanel></Border></StackPanel></Grid></ScrollViewer></TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

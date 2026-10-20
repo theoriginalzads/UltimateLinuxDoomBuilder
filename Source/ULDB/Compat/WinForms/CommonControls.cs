@@ -55,6 +55,10 @@ namespace System.Windows.Forms
 		public bool WordWrap { get; set; } = true;
 		public bool HideSelection { get; set; } = true;
 		public bool ShortcutsEnabled { get; set; } = true;
+		// Clipboard commands: the view's text box handles them itself.
+		public void Cut() { }
+		public void Copy() { }
+		public void Paste() { }
 		public int MaxLength { get; set; } = 32767;
 		public BorderStyle BorderStyle { get; set; } = BorderStyle.Fixed3D;
 		public int SelectionStart { get; set; }
@@ -233,6 +237,7 @@ namespace System.Windows.Forms
 		public BorderStyle BorderStyle { get; set; }
 		public bool Panel1Collapsed { get => collapse1; set { collapse1 = value; NotifyStylesChanged(); } }
 		public bool Panel2Collapsed { get => collapse2; set { collapse2 = value; NotifyStylesChanged(); } }
+		public Rectangle SplitterRectangle => Rectangle.Empty;
 		public event SplitterEventHandler SplitterMoved;
 		public void RaiseSplitterMoved(int distance) { SplitterDistance = distance; SplitterMoved?.Invoke(this, new SplitterEventArgs(0, 0, distance, distance)); }
 		public void BeginInit() { }

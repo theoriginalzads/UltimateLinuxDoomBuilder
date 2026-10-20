@@ -148,6 +148,83 @@ namespace ULDB.Tests
 			}
 		}
 
+		// The Undo/Redo docker: picking a level in its list (the view sets the items' selection, raises
+		// SelectedIndexChanged, then MouseUp) undoes to that level, as upstream's panel does on Windows.
+		[SkippableFact]
+		public void PickingALevelInTheUndoPanelUndoesToIt()
+		{
+			string iwad = TestResources.FreedoomIwad;
+			Skip.If(iwad == null, "Freedoom 2 IWAD not found; install the freedoom package or set ULDB_TEST_IWAD");
+			UIThread ui = new UIThread();
+			SynchronizationContext oldcontext = SynchronizationContext.Current;
+			SynchronizationContext.SetSynchronizationContext(ui);
+			try
+			{
+				WithPlugins(plugins =>
+				{
+					string source = Path.Combine(HeadlessEditor.TempDir, "undopanel-" + Guid.NewGuid().ToString("N") + ".wad");
+					File.Copy(HeadlessEditor.TestMap("small.wad"), source);
+					using(OffscreenGL gl = new OffscreenGL())
+					{
+						MapOptions options = new MapOptions { ConfigFile = "UZDoom_DoomUDMF.cfg", CurrentName = "MAP01", ScriptCompiler = "zdoom_acs.cfg" };
+						options.Resources.Add(new DataLocation(DataLocation.RESOURCE_WAD, iwad, false, false, false, null));
+						MapManager manager = new MapManager();
+						HeadlessEditor.SetGeneralField("map", manager);
+						try
+						{
+							Assert.True(manager.InitializeOpenMap(source, options), "InitializeOpenMap failed");
+							plugins.OnMapOpenEnd();
+
+							System.Reflection.Assembly asm = plugins.Plugins.First(p => p.Assembly.GetName().Name == "BuilderModes").Assembly;
+							Type plugtype = asm.GetType("CodeImp.DoomBuilder.BuilderModes.BuilderPlug");
+							const System.Reflection.BindingFlags any = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+							object plug = plugtype.GetProperty("Me", any).GetValue(null);
+							object panel = plugtype.GetField("undoredopanel", any).GetValue(plug);
+							System.Windows.Forms.ListView list = (System.Windows.Forms.ListView)panel.GetType().GetField("list", any).GetValue(panel);
+
+							Vertex v = manager.Map.Vertices.First();
+							CodeImp.DoomBuilder.Geometry.Vector2D start = v.Position;
+							manager.UndoRedo.CreateUndo("Move 1");
+							v.Move(start + new CodeImp.DoomBuilder.Geometry.Vector2D(8, 0));
+							manager.UndoRedo.CreateUndo("Move 2");
+							v.Move(start + new CodeImp.DoomBuilder.Geometry.Vector2D(16, 0));
+
+							Assert.Equal(3, list.Items.Count);
+							Assert.Equal("Move 2", list.Items[2].Text);
+							Assert.Equal(System.Drawing.SystemColors.Highlight, list.Items[2].BackColor); // the current level
+
+							// What the view does for a click on the first level.
+							foreach(System.Windows.Forms.ListViewItem i in list.Items) i.Selected = false;
+							list.Items[0].Selected = true;
+							list.RaiseSelectedIndexChanged();
+							list.RaiseMouseUp(new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 4, 11, 0));
+
+							Assert.Equal(start, v.Position);
+							Assert.Empty(manager.UndoRedo.GetUndoList());
+							Assert.Equal(2, manager.UndoRedo.GetRedoList().Count);
+							Assert.Equal(System.Drawing.SystemColors.Highlight, list.Items[0].BackColor); // now the current level
+							Assert.Empty(list.SelectedIndices); // the pick is cleared once done
+
+							// And forward again, to the last level.
+							foreach(System.Windows.Forms.ListViewItem i in list.Items) i.Selected = false;
+							list.Items[2].Selected = true;
+							list.RaiseSelectedIndexChanged();
+							list.RaiseMouseUp(new System.Windows.Forms.MouseEventArgs(System.Windows.Forms.MouseButtons.Left, 1, 4, 55, 0));
+							Assert.Equal(start + new CodeImp.DoomBuilder.Geometry.Vector2D(16, 0), v.Position);
+							Assert.Empty(manager.UndoRedo.GetRedoList());
+						}
+						finally
+						{
+							try { General.Editing.ChangeMode((EditMode)null); } catch(Exception) { }
+							try { manager.Dispose(); } catch(Exception e) { output.WriteLine("Dispose: " + e); }
+							HeadlessEditor.SetGeneralField("map", null);
+						}
+					}
+				});
+			}
+			finally { SynchronizationContext.SetSynchronizationContext(oldcontext); }
+		}
+
 		/// <summary>Stands in for the UI thread: posted callbacks queue up and run on the caller's thread.</summary>
 		private sealed class UIThread : SynchronizationContext
 		{

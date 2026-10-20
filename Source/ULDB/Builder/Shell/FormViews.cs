@@ -22,6 +22,28 @@ namespace ULDB.Shell
 			Register<SectorEditFormUDMF>(f => new SectorEditFormUDMFView(f));
 			Register<LinedefEditFormUDMF>(f => new LinedefEditFormUDMFView(f));
 			Register<AboutForm>(f => new AboutView(f));
+			Register<TextureBrowserForm>(f => new TextureBrowserFormView(f));
+			Register<GridSetupForm>(f => new GridSetupFormView(f));
+			Register<CenterOnCoordinatesForm>(f => new CenterOnCoordinatesFormView(f));
+			Register<ChangeMapForm>(f => new ChangeMapFormView(f));
+			Register<TagStatisticsForm>(f => new TagStatisticsFormView(f));
+			Register<ThingStatisticsForm>(f => new ThingStatisticsFormView(f));
+			Register<PasteOptionsForm>(f => new PasteOptionsFormView(f));
+			Register<ThingsFiltersForm>(f => new ThingsFiltersFormView(f));
+			Register<SectorEditForm>(f => new SectorEditFormView(f));
+			Register<LinedefEditForm>(f => new LinedefEditFormView(f));
+			Register<ThingEditForm>(f => new ThingEditFormView(f));
+			Register<ConfigForm>(f => new ConfigFormView(f));
+			Register<PreferencesForm>(f => new PreferencesFormView(f));
+			Register<ThingBrowserForm>(f => new ThingBrowserFormView(f));
+			Register<ThingMultipleBrowserForm>(f => new ThingMultipleBrowserFormView(f));
+			Register<EffectBrowserForm>(f => new EffectBrowserFormView(f));
+			Register<AngleForm>(f => new AngleFormView(f));
+			Register<TextureSetForm>(f => new TextureSetFormView(f));
+			Register<ScriptEditorForm>(f => new ScriptEditorFormView(f));
+			Register<ScriptGoToLineForm>(f => new ScriptGoToLineFormView(f));
+			Register<ScriptFindReplaceForm>(f => new ScriptFindReplaceFormView(f));
+			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 
 		/// <summary>Registers the window for a form type.</summary>

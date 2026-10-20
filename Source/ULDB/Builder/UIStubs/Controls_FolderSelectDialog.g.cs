@@ -44,26 +44,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog
-	public partial class FolderSelectDialog
-	{
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog..ctor#1
-		public FolderSelectDialog() { }
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog.InitialDirectory#2
-		public string InitialDirectory { get => default; set { } }
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog.Title#3
-		public string Title { get => default; set { } }
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog.FileName#4
-		public string FileName { get => default; }
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog.ShowDialog#5
-		public bool ShowDialog() { return default; }
-		// stub-key: CodeImp.DoomBuilder.Controls.FolderSelectDialog.ShowDialog#6
-		public bool ShowDialog(IntPtr hWndOwner) { return default; }
-	}
-}
-
-namespace CodeImp.DoomBuilder.Controls
-{
 	// stub-key: CodeImp.DoomBuilder.Controls.WindowWrapper
 	public partial class WindowWrapper : System.Windows.Forms.IWin32Window
 	{

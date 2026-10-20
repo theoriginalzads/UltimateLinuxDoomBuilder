@@ -96,6 +96,7 @@ namespace System.Windows.Forms
 		public event EventHandler EnabledChanged;
 		public event EventHandler VisibleChanged;
 		public event EventHandler TextChanged;
+		protected void RaiseTextChanged() => TextChanged?.Invoke(this, EventArgs.Empty);
 		public event EventHandler Disposed;
 
 		/// <summary>ULDB: raised when anything the UI shows (text, image, state) changes.</summary>
@@ -351,7 +352,7 @@ namespace System.Windows.Forms
 		protected ToolStripControlHost() : this(new Control()) { }
 		public ToolStripControlHost(Control c, string name) : this(c) { Name = name ?? ""; }
 		public Control Control { get; }
-		public override string Text { get => Control.Text; set { Control.Text = value; NotifyChanged(); } }
+		public override string Text { get => Control.Text; set { string old = Control.Text; Control.Text = value; if(old != Control.Text) RaiseTextChanged(); NotifyChanged(); } }
 		public override bool Enabled { get => Control.Enabled; set { Control.Enabled = value; NotifyChanged(); } }
 		public bool Focused => false;
 		public void Focus() { }
@@ -371,6 +372,12 @@ namespace System.Windows.Forms
 		public bool ReadOnly { get; set; }
 		public void SelectAll() { }
 		public void Clear() => Text = "";
+		// The view's text box handles the clipboard and undo itself when it has the focus.
+		public void Undo() { }
+		public void Cut() { }
+		public void Copy() { }
+		public void Paste() { }
+		public TextBox TextBox => null;
 	}
 
 	public class ToolStripComboBox : ToolStripControlHost

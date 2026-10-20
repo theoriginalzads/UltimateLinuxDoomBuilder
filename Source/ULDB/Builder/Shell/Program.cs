@@ -13,6 +13,9 @@ namespace ULDB.Shell
 		[STAThread]
 		public static int Main(string[] args)
 		{
+			// Windows code pages (upstream's script editor reads scripts as Windows-1251, as UDB did).
+			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
 			BuildAvaloniaApp().SetupWithoutStarting();
 			AvaloniaHost.Install();
 

@@ -126,6 +126,71 @@
     <Compile Include="$(UpstreamCore)Controls/CommentEditor.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.cs" />
     <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CollapsibleSplitContainer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageBrowserControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageBrowserControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/GridSetupForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/GridSetupForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/CenterOnCoordinatesForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/CenterOnCoordinatesForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ChangeMapForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ChangeMapForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingsFiltersForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingsFiltersForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TagStatisticsForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TagStatisticsForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingStatisticsForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingStatisticsForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PasteOptionsForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PasteOptionsForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreAndPostCommandsForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreAndPostCommandsForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PasteOptionsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PasteOptionsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ExternalCommandControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ExternalCommandControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ConfigForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ConfigForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesController.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/EffectBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/EffectBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/AngleForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/AngleForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingMultipleBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingMultipleBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureSetForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureSetForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptDocumentTab.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptFileDocumentTab.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptLumpDocumentTab.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptResourceDocumentTab.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptIconsManager.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorPreviewControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Scripting/ScriptEditorPreviewControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptEditorForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptEditorForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptFindReplaceForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptFindReplaceForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptGoToLineForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ScriptGoToLineForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/MultiSelectTreeview.cs" />
     <Compile Include="$(UpstreamCore)Controls/BufferedTreeView.cs" />
     <Compile Include="$(UpstreamCore)Controls/ColoredComboBox.cs" />
@@ -148,6 +213,8 @@
     <Compile Include="Rendering/**/*.cs" />
     <!-- Avalonia ports of upstream windows and controls (.axaml), same names and namespaces. -->
     <Compile Include="Windows/**/*.cs;Controls/**/*.cs" />
+    <!-- Script editor: ScintillaNET-compatible editing model over AvaloniaEdit, lexer, views. -->
+    <Compile Include="Scripting/**/*.cs" />
     <!-- Avalonia app: entry point, IWinFormsHost, main loop. -->
     <Compile Include="Shell/**/*.cs" />
   </ItemGroup>
@@ -160,8 +227,14 @@
     <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.4" />
+    <!-- Text editor (script editor). -->
+    <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
     <PackageReference Include="System.Resources.Extensions" Version="10.0.13" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- JetBrains Mono (SIL Open Font License, Fonts/OFL.txt): the script editor's font. -->
+    <AvaloniaResource Include="Fonts/*.ttf" />
   </ItemGroup>
   <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
   <ItemGroup>
@@ -198,6 +271,14 @@
     <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
     <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
     <EmbeddedResource Update="FormResources/ThingBrowserControl.resx" LogicalName="CodeImp.DoomBuilder.Controls.ThingBrowserControl.resources" />
+    <EmbeddedResource Update="FormResources/TextureBrowserForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.TextureBrowserForm.resources" />
+    <EmbeddedResource Update="FormResources/ThingsFiltersForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ThingsFiltersForm.resources" />
+    <EmbeddedResource Update="FormResources/TagStatisticsForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.TagStatisticsForm.resources" />
+    <EmbeddedResource Update="FormResources/PreferencesForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.PreferencesForm.resources" />
+    <EmbeddedResource Update="FormResources/ConfigForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ConfigForm.resources" />
+    <EmbeddedResource Update="FormResources/ScriptEditorPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.ScriptEditorPanel.resources" />
+    <EmbeddedResource Update="FormResources/ScriptEditorForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ScriptEditorForm.resources" />
+    <EmbeddedResource Update="FormResources/ScriptFindReplaceForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ScriptFindReplaceForm.resources" />
     <EmbeddedResource Update="FormResources/SectorEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.SectorEditFormUDMF.resources" />
     <EmbeddedResource Update="FormResources/LinedefEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF.resources" />
   </ItemGroup>

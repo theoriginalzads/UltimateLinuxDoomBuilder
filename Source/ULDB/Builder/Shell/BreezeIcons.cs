@@ -182,6 +182,15 @@ namespace ULDB.Shell
 			["res:List"] = "sa M1.5,3.5 H2.5 M1.5,8 H2.5 M1.5,12.5 H2.5;si M5.5,3.5 H14.5 M5.5,8 H14.5 M5.5,12.5 H14.5",
 			["res:List_Images"] = "si M1.5,2.5 H6.5 V7.5 H1.5 Z M1.5,9.5 H6.5 V14.5 H1.5 Z M8.5,4 H14.5 M8.5,11 H14.5;sa M8.5,6 H12.5 M8.5,13 H12.5;fa.45 M1.5,2.5 H6.5 V7.5 H1.5 Z M1.5,9.5 H6.5 V14.5 H1.5 Z",
 			["res:treeview"] = "si M3.5,4 V12.5 H7.5 M3.5,8 H7.5;fi M1.5,1 H5.5 V4 H1.5 Z;sa M9.5,8 H14.5 M9.5,12.5 H14.5",
+			// Linked values (offset/scale pairs): two joined links when linked, apart when not.
+			["res:Link"] = "sa M7.5,4.5 H4.5 A3.5,3.5 0 0 0 4.5,11.5 H7.5 M8.5,4.5 H11.5 A3.5,3.5 0 0 1 11.5,11.5 H8.5 M6,8 H10",
+			["res:Unlink"] = "si M6.5,4.5 H4.5 A3.5,3.5 0 0 0 4.5,11.5 H6.5 M9.5,4.5 H11.5 A3.5,3.5 0 0 1 11.5,11.5 H9.5",
+			// Comment types (the Comment tab's radio buttons)
+			["res:CommentRegular"] = "si M2.5,2.5 H13.5 V10.5 H8 L5,13.5 V10.5 H2.5 Z;si M5,5.5 H11 M5,8 H9",
+			["res:CommentInfo"] = "sa M2.5,2.5 H13.5 V10.5 H8 L5,13.5 V10.5 H2.5 Z;fa " + C(8, 4.6, 0.9) + ";sa M8,6.6 V8.8",
+			["res:CommentQuestion"] = "so M2.5,2.5 H13.5 V10.5 H8 L5,13.5 V10.5 H2.5 Z;so M6.6,5 A1.5,1.5 0 1 1 8.3,6.5 C8,6.8 8,7 8,7.8;fo " + C(8, 9.2, 0.6),
+			["res:CommentProblem"] = "sr M2.5,2.5 H13.5 V10.5 H8 L5,13.5 V10.5 H2.5 Z;sr M8,4.3 V7.2;fr " + C(8, 8.9, 0.7),
+			["res:CommentSmile"] = "sy M2.5,2.5 H13.5 V10.5 H8 L5,13.5 V10.5 H2.5 Z;fy " + C(6.2, 5.3, 0.7) + " " + C(9.8, 5.3, 0.7) + ";sy M5.8,7.3 Q8,9.2 10.2,7.3",
 			["res:Reset"] = "si M4.5,4.5 A5,5 0 1 1 3,8 M1.5,4.5 H4.5 V1.5",
 			["res:Reload"] = "si M13.5,8 A5.5,5.5 0 0 1 3.5,11 M2.5,8 A5.5,5.5 0 0 1 12.5,5;sa M12.5,1.5 V5 H9 M3.5,14.5 V11 H7",
 			["res:Repeat"] = "si M2.5,9 V6.5 A2,2 0 0 1 4.5,4.5 H13 M13.5,7 V9.5 A2,2 0 0 1 11.5,11.5 H3;sa M11,2.5 L13,4.5 L11,6.5 M5,9.5 L3,11.5 L5,13.5",

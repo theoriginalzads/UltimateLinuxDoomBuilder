@@ -25,6 +25,9 @@ namespace ULDB.Shell
 		public static void Schedule(Window window, TimeSpan delay, System.Windows.Forms.Form form = null)
 		{
 			if(!Enabled) return;
+			// ULDB_CAPTURE_TITLE=<text>: only the window whose title contains it (modeless windows open later than the main one)
+			string only = Environment.GetEnvironmentVariable("ULDB_CAPTURE_TITLE");
+			if(!string.IsNullOrEmpty(only) && !(window.Title ?? "").Contains(only)) return;
 			if(form is CodeImp.DoomBuilder.Windows.ErrorsForm)
 			{
 				Dispatcher.UIThread.Post(() => form.Close(), DispatcherPriority.Background);

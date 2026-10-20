@@ -1,0 +1,14 @@
+<!-- ULDB: the view of upstream's PasteOptionsControl (model-ported): what to do with tags and actions. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.PasteOptionsControlView">
+  <Border Classes="uldb-group">
+    <StackPanel Spacing="8">
+      <TextBlock x:Name="tagsgroupTitle" Classes="uldb-group-title"/>
+      <RadioButton x:Name="keeptags" GroupName="pastetags"/>
+      <RadioButton x:Name="renumbertags" GroupName="pastetags"/>
+      <RadioButton x:Name="removetags" GroupName="pastetags"/>
+      <CheckBox x:Name="removeactions" Margin="0,4,0,0"/>
+    </StackPanel>
+  </Border>
+</UserControl>

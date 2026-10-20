@@ -1395,6 +1395,9 @@ namespace CodeImp.DoomBuilder
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Opening map file...");
 			Cursor.Current = Cursors.WaitCursor;
+#if ULDB
+			ULDB.Platform.Busy.Begin("Opening map...");
+#endif
 
 			// Clear the display
 			mainwindow.ClearDisplay();
@@ -1464,6 +1467,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayReady();
 			
 			Cursor.Current = Cursors.Default;
+#if ULDB
+			ULDB.Platform.Busy.End();
+#endif
 		}
 		
 		// This saves the current map

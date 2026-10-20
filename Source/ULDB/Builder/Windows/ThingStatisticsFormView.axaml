@@ -1,0 +1,14 @@
+<!-- ULDB: the window of upstream's ThingStatisticsForm ("Thing statistics", model-ported): how many
+     of each thing type the map has. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ThingStatisticsFormView"
+        Title="Thing statistics" Width="560" Height="480" MinWidth="420" MinHeight="320" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,14,0,0">
+      <CheckBox x:Name="hideUnused"/>
+      <Button x:Name="apply" Grid.Column="1" IsDefault="True" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+    </Grid>
+    <ContentControl x:Name="dataGridView"/>
+  </DockPanel>
+</Window>
