@@ -241,6 +241,18 @@ namespace System.Drawing
 
 		public void FillEllipse(Brush brush, Rectangle rect) => FillEllipse(brush, rect.X, rect.Y, rect.Width, rect.Height);
 
+		public void FillPolygon(Brush brush, Point[] points) => FillPolygon(brush, Array.ConvertAll(points, p => (PointF)p));
+
+		public void FillPolygon(Brush brush, PointF[] points)
+		{
+			using(SKPath path = new SKPath())
+			using(SKPaint paint = brush.CreatePaint(Antialias, BlendMode))
+			{
+				path.AddPoly(Array.ConvertAll(points, p => new SKPoint(p.X, p.Y)), true);
+				canvas.DrawPath(path, paint);
+			}
+		}
+
 		public void DrawEllipse(Pen pen, float x, float y, float width, float height)
 		{
 			using(SKPaint paint = pen.CreatePaint(Antialias))
@@ -586,6 +598,10 @@ namespace System.Drawing.Drawing2D
 		{
 			Native.AddOval(new SKRect(x, y, x + width, y + height));
 		}
+
+		public void AddEllipse(RectangleF rect) => AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
+		public void AddEllipse(Rectangle rect) => AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
+		public void AddRectangle(Rectangle rect) => AddRectangle((RectangleF)rect);
 
 		public void CloseFigure()
 		{

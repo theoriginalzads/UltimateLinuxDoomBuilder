@@ -1,0 +1,3 @@
+CodeImp.DoomBuilder.ThreeDFloorMode.MenusForm
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorHelperTooltipElementControl
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorPanel

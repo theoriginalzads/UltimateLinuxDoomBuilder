@@ -20,7 +20,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ButtonsNumericTextboxDesigner.SnapLines#0
 		public virtual IList SnapLines { get => default; }
-		protected ButtonsNumericTextboxDesigner() { }
+		public ButtonsNumericTextboxDesigner() { }
 	}
 }
 

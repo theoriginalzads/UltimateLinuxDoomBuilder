@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The SoundPropagationMode plugin (sound propagation and sound environment modes): upstream's Source/Plugins/SoundPropagationMode,
+       included by glob. Its WinForms UI (Interface, Windows) is replaced by generated placeholders
+       until ported (tools/uistubgen/prune.py SoundPropagationMode). Same setup as ULDB.BuilderModes. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>SoundPropagationMode</AssemblyName>
+    <RootNamespace>CodeImp.DoomBuilder.SoundPropagationMode</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older (docs/architecture.md, "Language version"). -->
+    <LangVersion>13</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamPlugin>$(MSBuildThisFileDirectory)../../../Plugins/SoundPropagationMode/</UpstreamPlugin>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UpstreamPlugin)**/*.cs"
+             Exclude="$(UpstreamPlugin)obj/**;$(UpstreamPlugin)bin/**;$(UpstreamPlugin)Properties/Resources.Designer.cs;$(UpstreamPlugin)Interface/**;$(UpstreamPlugin)Windows/**" />
+    <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
+         window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
+    <Compile Include="$(UpstreamPlugin)Windows/MenusForm.cs;$(UpstreamPlugin)Windows/MenusForm.designer.cs" />
+    <!-- Model port (uistubs-ported.txt): the sound environments docker's tree, filled in by
+         SoundEnvironmentMode. Its view is still to come; the docker shows a placeholder note. -->
+    <Compile Include="$(UpstreamPlugin)Interface/SoundEnvironmentPanel.cs;$(UpstreamPlugin)Interface/SoundEnvironmentPanel.Designer.cs" />
+    <Compile Include="Properties/**/*.cs" />
+    <Compile Include="UIStubs/**/*.cs" />
+    <Compile Include="UIStubFixes/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Loaded by the plugin host at runtime from Builder's folder, so not copied here. -->
+    <ProjectReference Include="../../Builder/ULDB.Builder.csproj" Private="false" />
+    <ProjectReference Include="../../Compat/ULDB.Compat.csproj" Private="false" />
+  </ItemGroup>
+  <!-- Upstream's embedded resources under the names upstream uses; Plugin.GetResourceStream finds them by suffix. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png;$(UpstreamPlugin)Resources/*.txt"
+                      LogicalName="CodeImp.DoomBuilder.SoundPropagationMode.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <Import Project="Properties/Resources.g.props" />
+  <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->
+  <Target Name="CopyToBuilderPlugins" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb"
+          DestinationFolder="$(MSBuildThisFileDirectory)../../Builder/bin/$(Configuration)/net10.0/Plugins" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

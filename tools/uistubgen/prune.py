@@ -17,12 +17,28 @@ import sys
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Each target: ULDB's project, the upstream source it compiles, upstream's Mono project
-# (whose compile list is authoritative) and the upstream folders holding WinForms UI.
+# (whose compile list is authoritative) and the upstream folders (or files) holding WinForms UI.
 TARGETS = {
     "Builder": dict(dir="Source/ULDB/Builder", project="ULDB.Builder.csproj",
                     upstream="Source/Core", mono="BuilderMono.csproj", ui=["Windows", "Controls"]),
     "BuilderModes": dict(dir="Source/ULDB/Plugins/BuilderModes", project="ULDB.BuilderModes.csproj",
                          upstream="Source/Plugins/BuilderModes", mono="BuilderModesMono.csproj", ui=["Interface"]),
+    "ThreeDFloorMode": dict(dir="Source/ULDB/Plugins/ThreeDFloorMode", project="ULDB.ThreeDFloorMode.csproj",
+               upstream="Source/Plugins/3DFloorMode", mono="ThreeDFloorModeMono.csproj", ui=["Controls", "Interface", "Windows"]),
+    "BuilderEffects": dict(dir="Source/ULDB/Plugins/BuilderEffects", project="ULDB.BuilderEffects.csproj",
+               upstream="Source/Plugins/BuilderEffects", mono="BuilderEffectsMono.csproj", ui=["Controls", "Interface"]),
+    "StairSectorBuilder": dict(dir="Source/ULDB/Plugins/StairSectorBuilder", project="ULDB.StairSectorBuilder.csproj",
+               upstream="Source/Plugins/StairSectorBuilder", mono="StairSectorBuilderMono.csproj", ui=["StairSectorBuilderForm.cs"]),
+    "TagRange": dict(dir="Source/ULDB/Plugins/TagRange", project="ULDB.TagRange.csproj",
+               upstream="Source/Plugins/TagRange", mono="TagRangeMono.csproj", ui=["TagRangeForm.cs", "ToolsForm.cs"]),
+    "SoundPropagationMode": dict(dir="Source/ULDB/Plugins/SoundPropagationMode", project="ULDB.SoundPropagationMode.csproj",
+               upstream="Source/Plugins/SoundPropagationMode", mono="SoundPropagationMono.csproj", ui=["Interface", "Windows"]),
+    "ColorPicker": dict(dir="Source/ULDB/Plugins/ColorPicker", project="ULDB.ColorPicker.csproj",
+               upstream="Source/Plugins/ColorPicker", mono="ColorPickerMono.csproj", ui=["Controls", "Windows"]),
+    "TagExplorer": dict(dir="Source/ULDB/Plugins/TagExplorer", project="ULDB.TagExplorer.csproj",
+               upstream="Source/Plugins/TagExplorer", mono="TagExplorerMono.csproj", ui=["Controls"]),
+    "CommentsPanel": dict(dir="Source/ULDB/Plugins/CommentsPanel", project="ULDB.CommentsPanel.csproj",
+               upstream="Source/Plugins/CommentsPanel", mono="CommentsPanelMono.csproj", ui=["CommentsDocker.cs"]),
 }
 
 STUBS = PRUNE = PORTED = MANUAL = PROJECT = UPSTREAM = MONO = None

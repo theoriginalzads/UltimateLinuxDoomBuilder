@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The 3DFloorMode plugin (3D floors, Slope and Draw Slopes modes): upstream's Source/Plugins/3DFloorMode,
+       included by glob. Its WinForms UI (Controls, Interface, Windows) is replaced by generated placeholders
+       until ported (tools/uistubgen/prune.py ThreeDFloorMode). Same setup as ULDB.BuilderModes. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ThreeDFloorMode</AssemblyName>
+    <RootNamespace>ThreeDFloorMode</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older (docs/architecture.md, "Language version"). -->
+    <LangVersion>13</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
+    <!-- MenusForm's images come from a ULDB .resx (FormResources/, tools/resxgen/formresx.py),
+         created from a stream at runtime by System.Resources.Extensions. -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamPlugin>$(MSBuildThisFileDirectory)../../../Plugins/3DFloorMode/</UpstreamPlugin>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(UpstreamPlugin)**/*.cs"
+             Exclude="$(UpstreamPlugin)obj/**;$(UpstreamPlugin)bin/**;$(UpstreamPlugin)Properties/Resources.Designer.cs;$(UpstreamPlugin)MergePoint.cs;$(UpstreamPlugin)Controls/**;$(UpstreamPlugin)Interface/**;$(UpstreamPlugin)Windows/**" />
+    <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt):
+         the 3D floor tooltip list, filled in by ThreeDFloorMode itself. -->
+    <Compile Include="$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.cs;$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/ThreeDFloorPanel.cs;$(UpstreamPlugin)Interface/ThreeDFloorPanel.Designer.cs" />
+    <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
+         window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
+    <Compile Include="$(UpstreamPlugin)Windows/MenusForm.cs;$(UpstreamPlugin)Windows/MenusForm.Designer.cs" />
+    <Compile Include="Properties/**/*.cs" />
+    <Compile Include="UIStubs/**/*.cs" />
+    <Compile Include="UIStubFixes/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Loaded by the plugin host at runtime from Builder's folder, so not copied here. -->
+    <ProjectReference Include="../../Builder/ULDB.Builder.csproj" Private="false" />
+    <ProjectReference Include="../../Compat/ULDB.Compat.csproj" Private="false" />
+    <!-- Uses BuilderModes' classes, as upstream does; BuilderModes is loaded from Plugins/ at runtime. -->
+    <ProjectReference Include="../BuilderModes/ULDB.BuilderModes.csproj" Private="false" />
+  </ItemGroup>
+  <!-- Upstream's embedded resources under the names upstream uses; Plugin.GetResourceStream finds them by suffix. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png"
+                      LogicalName="ThreeDFloorMode.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.13" />
+    <EmbeddedResource Update="FormResources/MenusForm.resx" LogicalName="CodeImp.DoomBuilder.ThreeDFloorMode.MenusForm.resources" />
+  </ItemGroup>
+  <Import Project="Properties/Resources.g.props" />
+  <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->
+  <Target Name="CopyToBuilderPlugins" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb"
+          DestinationFolder="$(MSBuildThisFileDirectory)../../Builder/bin/$(Configuration)/net10.0/Plugins" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

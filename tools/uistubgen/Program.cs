@@ -7,7 +7,7 @@
 // can't exist until the real port), and types listed in the ported file are skipped
 // entirely (ULDB has a real implementation).
 //
-// Usage: uistubgen --out DIR --prune FILE --ported FILE --root UPSTREAM_DIR SOURCE_DIR...
+// Usage: uistubgen --out DIR --prune FILE --ported FILE --root UPSTREAM_DIR SOURCE_DIR_OR_FILE...
 
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -70,7 +70,9 @@ static class Program
 		var types = new Dictionary<string, TypeInfo>();
 		foreach(string dir in sourceDirs)
 		{
-			foreach(string file in Directory.EnumerateFiles(dir, "*.cs", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
+			// A source can also be a single file (plugins with their forms at the top level).
+			IEnumerable<string> files = File.Exists(dir) ? new[] { dir } : Directory.EnumerateFiles(dir, "*.cs", SearchOption.AllDirectories);
+			foreach(string file in files.OrderBy(f => f, StringComparer.Ordinal))
 			{
 				if(file.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase)) continue;
 				if(onlyFiles != null && !onlyFiles.Contains(Path.GetRelativePath(root, file).Replace('\\', '/'))) continue;
@@ -238,9 +240,11 @@ static class Program
 			sb.AppendLine(Indent(code, ind + "\t"));
 		}
 
-		// Derived placeholders call the parameterless base constructor implicitly.
+		// Derived placeholders call the parameterless base constructor implicitly. A class that
+		// declares no constructors has C#'s implicit public one, which callers may use ("new X()").
+		bool anyCtor = decls.OfType<TypeDeclarationSyntax>().SelectMany(d => d.Members).OfType<ConstructorDeclarationSyntax>().Any(c => !c.Modifiers.Any(SyntaxKind.StaticKeyword));
 		if(kind == "class" && !hasParameterlessCtor && !isStatic)
-			sb.AppendLine(ind + "\tprotected " + td.Identifier.Text + "() { }");
+			sb.AppendLine(ind + "\t" + (anyCtor ? "protected " : "public ") + td.Identifier.Text + "() { }");
 
 		foreach(var kv in nested) EmitType(sb, kv.Value, key + "." + kv.Key, stubbedNames, depth + 1);
 		sb.AppendLine(ind + "}");

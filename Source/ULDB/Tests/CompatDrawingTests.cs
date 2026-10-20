@@ -91,5 +91,41 @@ namespace ULDB.Tests
 				Assert.True(lit > 20, "Expected the text to cover some pixels, got " + lit);
 			}
 		}
+			[Fact]
+		public void PathGradientBrushBlendsFromCentreToEdges()
+		{
+			// ColorPicker's colour wheel: white in the middle, each surround colour at its point.
+			Point[] square = { new Point(0, 0), new Point(20, 0), new Point(20, 20), new Point(0, 20) };
+			using(Bitmap b = new Bitmap(20, 20))
+			using(System.Drawing.Drawing2D.PathGradientBrush brush = new System.Drawing.Drawing2D.PathGradientBrush(square))
+			{
+				brush.CenterColor = Color.White;
+				brush.CenterPoint = new PointF(10, 10);
+				brush.SurroundColors = new[] { Color.Red, Color.Red, Color.Blue, Color.Blue };
+				using(Graphics g = Graphics.FromImage(b))
+					g.FillEllipse(brush, 0, 0, 20, 20);
+
+				Color centre = b.GetPixel(10, 10), top = b.GetPixel(10, 1), bottom = b.GetPixel(10, 18), corner = b.GetPixel(0, 0);
+				Assert.True(centre.R > 230 && centre.G > 230 && centre.B > 230, "centre " + centre);
+				Assert.True(top.R > 200 && top.B < 60, "top " + top);
+				Assert.True(bottom.B > 200 && bottom.R < 60, "bottom " + bottom);
+				Assert.Equal(0, corner.A); // Outside the ellipse
+			}
+		}
+
+		[Fact]
+		public void RegionHitTestsItsPath()
+		{
+			using(System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath())
+			{
+				path.AddEllipse(new Rectangle(0, 0, 20, 20));
+				using(Region r = new Region(path))
+				{
+					Assert.True(r.IsVisible(new Point(10, 10)));
+					Assert.False(r.IsVisible(new Point(1, 1)));
+					Assert.False(r.IsVisible(new Point(30, 10)));
+				}
+			}
+		}
 	}
 }

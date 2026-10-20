@@ -155,6 +155,10 @@ namespace ULDB.Tests
 		/// <summary>Sets one of General's private static fields (e.g. "map").</summary>
 		public static void SetGeneralField(string name, object value) => SetField(name, value);
 
+		/// <summary>Reads one of General's private static fields.</summary>
+		public static object GetGeneralField(string name) =>
+			(typeof(General).GetField(name, BindingFlags.NonPublic | BindingFlags.Static) ?? throw new MissingFieldException(nameof(General), name)).GetValue(null);
+
 		private static void SetField(string name, object value)
 		{
 			FieldInfo f = typeof(General).GetField(name, BindingFlags.NonPublic | BindingFlags.Static)

@@ -26,6 +26,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void SetBeginDescription(string description) { }
 		// stub-key: CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel.UpdateList#7
 		public void UpdateList() { }
+		// stub-key: CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel.OnLayout#10
+		protected virtual void OnLayout(LayoutEventArgs e) { }
 	}
 }
 
