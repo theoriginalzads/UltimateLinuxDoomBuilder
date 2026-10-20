@@ -29,7 +29,18 @@ foreach(missing acc zdbsp zt-bcc bcc)
 	endif()
 endforeach()
 
+# ACC links fully static (its own CMakeLists). The Freedesktop SDK's GCC (Flatpak builds) always
+# adds -latomic_asneeded, which has no static version; ACC uses no atomics, so an empty archive
+# by that name on the library path satisfies it. Elsewhere it's never looked at.
+find_program(AR_PROGRAM NAMES ar REQUIRED)
+set(STATIC_SHIM "${CMAKE_BINARY_DIR}/static-shim")
+file(MAKE_DIRECTORY "${STATIC_SHIM}")
+if(NOT EXISTS "${STATIC_SHIM}/libatomic_asneeded.a")
+	execute_process(COMMAND "${AR_PROGRAM}" rc "${STATIC_SHIM}/libatomic_asneeded.a")
+endif()
+
 set(COMMON_ARGS
+	"-DCMAKE_EXE_LINKER_FLAGS=-L${STATIC_SHIM}"
 	-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
 	"-DCMAKE_C_FLAGS=${ARCH_FLAGS}"
 	"-DCMAKE_CXX_FLAGS=${ARCH_FLAGS}"
