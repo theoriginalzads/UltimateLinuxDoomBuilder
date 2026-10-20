@@ -1,0 +1,26 @@
+<!-- ULDB: the window of ExceptionDialog (Windows/ExceptionDialog.cs): shown when an unexpected error
+     escapes upstream's code. Continue keeps the editor running; Quit saves a map backup and exits. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ExceptionView"
+        Title="Unexpected error" Width="700" Height="420" MinWidth="560" MinHeight="320" ShowInTaskbar="False">
+  <DockPanel Margin="16">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,12,0,0">
+      <TextBlock x:Name="hint" Text="Continue keeps editing; Quit saves a map backup and exits." Opacity="0.7" VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"/>
+      <Button x:Name="bToClipboard" Grid.Column="1" Content="Copy to clipboard" Margin="16,0,16,0"/>
+      <Button x:Name="bContinue" Grid.Column="2" Content="Continue" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent" Margin="0,0,8,0"/>
+      <Button x:Name="bQuit" Grid.Column="3" Content="Quit" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+    </Grid>
+    <StackPanel DockPanel.Dock="Bottom" Spacing="2" Margin="0,10,0,0">
+      <Button x:Name="newissue" Classes="uldb-link" Content="Help fix this by reporting it on ULDB's issue tracker."/>
+      <Button x:Name="reportlink" Classes="uldb-link" Content="Include the steps to reproduce it, a test map and the error report file (show the file's folder)."/>
+    </StackPanel>
+    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+      <PathIcon DockPanel.Dock="Left" Width="28" Height="28" Margin="0,0,12,0" Foreground="{DynamicResource UldbRedTextBrush}"
+                Data="M8,1.5 L15,14 H1 Z M7.25,5.5 H8.75 V10 H7.25 Z M7.25,11 H8.75 V12.5 H7.25 Z"/>
+      <TextBlock x:Name="errorDescription" Text="An application error occurred:" VerticalAlignment="Center" FontWeight="SemiBold"/>
+    </DockPanel>
+    <TextBox x:Name="errorMessage" IsReadOnly="True" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="monospace" FontSize="12" VerticalContentAlignment="Top"
+             ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+  </DockPanel>
+</Window>

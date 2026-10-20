@@ -76,3 +76,4 @@ CodeImp.DoomBuilder.Controls.TextureSelectorControl
 CodeImp.DoomBuilder.Controls.ImageSelectorControl
 CodeImp.DoomBuilder.Controls.TransparentTrackBar
 CodeImp.DoomBuilder.Controls.TransparentLabel
+CodeImp.DoomBuilder.Windows.ExceptionDialog

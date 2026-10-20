@@ -320,9 +320,14 @@ namespace ULDB.Shell
 				if(accepted.Length == 0) e.Handled = true;
 				else e.Text = accepted;
 			}, RoutingStrategies.Tunnel);
-			view.GotFocus += (s, e) => m.RaiseGotFocus();
+			view.GotFocus += (s, e) =>
+			{
+				m.RaiseEnter();
+				m.RaiseGotFocus();
+			};
 			view.LostFocus += (s, e) =>
 			{
+				m.RaiseLeave();
 				m.RaiseLostFocus();
 				m.RaiseValidation();
 			};
@@ -525,6 +530,9 @@ namespace ULDB.Shell
 		{
 			bool red = !c.IsEmpty && !c.IsKnownColor && c.R > 0x7F && c.G < 0x60 && c.B < 0x60 || c == System.Drawing.Color.Red || c == System.Drawing.Color.DarkRed;
 			target.Classes.Set("uldb-red", red);
+			// Placeholder-style text (upstream's "Click to enter a comment..." uses the inactive colour).
+			bool dim = c.IsKnownColor && (c.ToKnownColor() == System.Drawing.KnownColor.InactiveCaptionText || c.ToKnownColor() == System.Drawing.KnownColor.GrayText);
+			target.Opacity = dim ? 0.55 : 1.0;
 		}
 	}
 }

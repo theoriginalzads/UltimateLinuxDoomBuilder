@@ -223,6 +223,22 @@ def large_map(rooms_per_side=50, size=128):
     return m
 
 
+def tags_map(rooms_per_side=14, size=128):
+    """A grid of rooms with sector tags, linedef specials and thing TIDs spread over a few dozen
+    tags: a long tree for the Tag Explorer (about 200 sectors, 200 lines with actions, 200 things)."""
+    m = MapBuilder()
+    for gx in range(rooms_per_side):
+        for gy in range(rooms_per_side):
+            x, y = gx * size, gy * size
+            tag = 1 + (gx * rooms_per_side + gy) % 30
+            m.rect(x, y, x + size, y + size, id=tag, floor=((gx + gy) % 4) * 8)
+            # A door action on each room's top wall, targeting its tag; and a thing with the same TID.
+            m.set_line((x, y + size), (x + size, y + size), special=12, arg0=tag, arg1=16, arg2=150, arg3=0)
+            m.thing(x + size // 2, y + size // 2, DOOM_IMP, tid=tag)
+    m.thing(64, 64, PLAYER1_START)
+    return m
+
+
 ACS_SOURCE = b"""#include "zcommon.acs"
 
 // Test script for ULDB: exercises includes, script types, specials and strings.
@@ -381,6 +397,7 @@ def main():
     write_wad(out("bcs.wad"), map_lumps("MAP01", bcs_map(), b"", BCS_SOURCE))
 
     write_wad(out("3dfloors_slopes.wad"), map_lumps("MAP01", floors3d_slopes_map()))
+    write_wad(out("tags.wad"), map_lumps("MAP01", tags_map()))
 
     m = small_map()
     m.thing(384, 384, 30000)

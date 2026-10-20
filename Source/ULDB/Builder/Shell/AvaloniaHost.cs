@@ -100,6 +100,8 @@ namespace ULDB.Shell
 
 		#region ================== Dialogs
 
+		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Window, object> hooked = new System.Runtime.CompilerServices.ConditionalWeakTable<Window, object>();
+
 		public void ShowForm(Form form, object view, IWin32Window owner, bool modal)
 		{
 			OnUIThread(() =>
@@ -107,6 +109,17 @@ namespace ULDB.Shell
 				Window window = (Window)view;
 				Window ownerwindow = OwnerWindow(owner);
 				double scale = ownerwindow?.RenderScaling ?? 1.0;
+
+				// A form shown again (upstream keeps some modeless forms and Hide()s/Show()s them):
+				// the window is set up once; showing it again just shows it.
+				if(hooked.TryGetValue(window, out object _))
+				{
+					if(modal) { if(!window.IsVisible) Modal.ShowDialog(window, ownerwindow); }
+					else if(!window.IsVisible) { if(ownerwindow != null && ownerwindow.IsVisible) window.Show(ownerwindow); else window.Show(); }
+					window.Activate();
+					return;
+				}
+				hooked.Add(window, new object());
 				FormWindows.Register(form, window);
 
 				// Title follows the form's Text.
@@ -137,21 +150,36 @@ namespace ULDB.Shell
 					window.Activate(); // dialogs take the focus (KDE may otherwise leave it on the main window)
 					form.RaiseShown();
 					DevCapture.Schedule(window, TimeSpan.FromSeconds(1.5), form);
+					// Development aid: ULDB_AUTOCLOSE=<ms> also closes modal windows, for scripted sweeps.
+					if(modal && int.TryParse(Environment.GetEnvironmentVariable("ULDB_AUTOCLOSE"), out int autoclose) && autoclose > 0)
+						DispatcherTimer.RunOnce(window.Close, TimeSpan.FromMilliseconds(autoclose));
 				};
 				window.Activated += (s, e) => form.RaiseActivated();
 				window.Deactivated += (s, e) => form.RaiseDeactivate();
 
 				// Closing the window (title bar, Escape, Close()) asks the form, like WinForms.
-				bool closed = false;
+				bool closed = false, closing = false;
+
+				// WinForms: Hide() (Visible = false) hides the window. Not while it's closing: closing sets Visible itself.
+				form.VisibleChanged += (s, e) =>
+				{
+					if(!closing && !closed && !form.Visible && window.IsVisible) window.Hide();
+				};
+
 				window.Closing += (s, e) =>
 				{
 					if(closed) return;
+					closing = true;
 					double sc = window.RenderScaling;
 					form.Location = new System.Drawing.Point(window.Position.X, window.Position.Y);
 					form.Size = new System.Drawing.Size((int)(window.Bounds.Width * sc), (int)(window.Bounds.Height * sc));
 					form.RaiseResizeEnd();
-					if(!form.RequestClose(CloseReason.UserClosing)) e.Cancel = true;
-					else closed = true;
+					try
+					{
+						if(!form.RequestClose(CloseReason.UserClosing)) e.Cancel = true;
+						else closed = true;
+					}
+					finally { closing = false; }
 				};
 
 				if(modal) Modal.ShowDialog(window, ownerwindow);

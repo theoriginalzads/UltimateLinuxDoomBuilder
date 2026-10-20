@@ -190,6 +190,9 @@ namespace System.Windows.Forms
 		public void RaiseClick() => OnClick(EventArgs.Empty);
 		public void RaiseDoubleClick() => OnDoubleClick(EventArgs.Empty);
 		public void RaiseResize() { OnResize(EventArgs.Empty); OnSizeChanged(EventArgs.Empty); }
+		// WinForms raises Enter before GotFocus and Leave before LostFocus.
+		public void RaiseEnter() => OnEnter(EventArgs.Empty);
+		public void RaiseLeave() => OnLeave(EventArgs.Empty);
 		public void RaiseGotFocus() => OnGotFocus(EventArgs.Empty);
 		public void RaiseLostFocus() => OnLostFocus(EventArgs.Empty);
 		public void RaiseMouseCaptureChanged() => OnMouseCaptureChanged(EventArgs.Empty);
@@ -976,19 +979,49 @@ namespace System.Windows.Forms
 		/// <summary>Item layout is up to the view; this reports one column of 16 px rows.</summary>
 		public Rectangle GetItemRect(int index) => new Rectangle(0, index * 16, Math.Max(1, Width), 16);
 
-		/// <summary>Indices of the selected items (a snapshot, in item order).</summary>
-		public List<int> SelectedIndices
+		/// <summary>Indices of the selected items, in item order. A snapshot for reading; Add and Clear
+		/// change the real selection (as WinForms' live collection does).</summary>
+		public SelectedIndexCollection SelectedIndices
 		{
 			get
 			{
-				List<int> result = new List<int>();
-				for(int i = 0; i < Items.Count; i++) if(Items[i].Selected) result.Add(i);
+				SelectedIndexCollection result = new SelectedIndexCollection(this);
+				for(int i = 0; i < Items.Count; i++) if(Items[i].Selected) result.AddSnapshot(i);
 				return result;
 			}
 		}
 
-		/// <summary>The selected items (a snapshot, in item order).</summary>
-		public List<ListViewItem> SelectedItems => Items.FindAll(i => i.Selected);
+		/// <summary>The selected items, in item order (same: a snapshot whose Clear changes the selection).</summary>
+		public SelectedListViewItemCollection SelectedItems
+		{
+			get
+			{
+				SelectedListViewItemCollection result = new SelectedListViewItemCollection(this);
+				foreach(ListViewItem i in Items) if(i.Selected) result.AddSnapshot(i);
+				return result;
+			}
+		}
+
+		/// <summary>ULDB: the selection changed from code; views refresh their selection.</summary>
+		internal void OnSelectionSetByCode() => NotifyStylesChanged();
+
+		public class SelectedIndexCollection : List<int>
+		{
+			private readonly ListView owner;
+			internal SelectedIndexCollection(ListView owner) { this.owner = owner; }
+			internal void AddSnapshot(int index) => base.Add(index);
+			public new int Add(int index) { if(index >= 0 && index < owner.Items.Count) { owner.Items[index].Selected = true; owner.OnSelectionSetByCode(); } return index; }
+			public new void Clear() { foreach(ListViewItem i in owner.Items) i.Selected = false; owner.OnSelectionSetByCode(); }
+			public new void Remove(int index) { if(index >= 0 && index < owner.Items.Count) { owner.Items[index].Selected = false; owner.OnSelectionSetByCode(); } }
+		}
+
+		public class SelectedListViewItemCollection : List<ListViewItem>
+		{
+			private readonly ListView owner;
+			internal SelectedListViewItemCollection(ListView owner) { this.owner = owner; }
+			internal void AddSnapshot(ListViewItem item) => base.Add(item);
+			public new void Clear() { foreach(ListViewItem i in owner.Items) i.Selected = false; owner.OnSelectionSetByCode(); }
+		}
 
 		public class ListViewItemCollection : List<ListViewItem>
 		{

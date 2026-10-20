@@ -3541,13 +3541,21 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//open file
 			DisplayStatus(StatusType.Info, "Shortcut reference saved to \"" + path + "\"");
+#if ULDB
+			ULDB.Platform.Desktop.Open(path); // .NET doesn't open files through the shell by default
+#else
 			Process.Start(path);
+#endif
 		}
 
 		//mxd
 		private void itemopenconfigfolder_Click(object sender, EventArgs e)
 		{
+			#if ULDB
+			if(Directory.Exists(General.SettingsPath)) ULDB.Platform.Desktop.Open(General.SettingsPath);
+#else
 			if(Directory.Exists(General.SettingsPath)) Process.Start(General.SettingsPath);
+#endif
 			else General.ShowErrorMessage("Huh? Where did Settings folder go?.." + Environment.NewLine
 				+ "I swear it was here: \"" + General.SettingsPath + "\"!", MessageBoxButtons.OK); // I don't think this will ever happen
 		}

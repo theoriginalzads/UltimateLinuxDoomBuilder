@@ -46,6 +46,9 @@ namespace ULDB.Shell
 			MinWidth = 640;
 			MinHeight = 480;
 			WindowStartupLocation = WindowStartupLocation.CenterScreen;
+			// Development aid: ULDB_SIZE=<width>x<height> for the start size (checking layouts in small windows).
+			string devsize = Environment.GetEnvironmentVariable("ULDB_SIZE");
+			if(devsize != null && devsize.Split('x') is string[] wh && wh.Length == 2 && double.TryParse(wh[0], out double dw) && double.TryParse(wh[1], out double dh)) { Width = dw; Height = dh; }
 			form.TextChanged += (s, e) => Dispatcher.UIThread.Post(() => Title = form.Text);
 
 			// Top: menu bar with the mode's own controls beside it, then the main toolbar.
@@ -70,9 +73,8 @@ namespace ULDB.Shell
 
 			// Left: the edit-modes toolbar.
 			Control modes = ToolStripViews.CreateToolBar(Field<WF.ToolStrip>("modestoolbar"), Orientation.Vertical);
-			// With every plugin's modes it's taller than small windows: it scrolls rather than overflowing.
-			ScrollViewer modesscroll = new ScrollViewer { Content = modes, VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled };
-			Border modesborder = new Border { Child = modesscroll, Padding = new Thickness(1, 2), ClipToBounds = true };
+			// With every plugin's modes it's taller than small windows: what doesn't fit goes into an overflow drop-down.
+			Border modesborder = new Border { Child = modes, Padding = new Thickness(1, 2), ClipToBounds = true };
 			modesborder.Classes.Add("uldb-bar");
 
 			// Bottom: info panel and status bar.
@@ -112,10 +114,31 @@ namespace ULDB.Shell
 			root.Children.Add(infopanel);
 			root.Children.Add(modesborder);
 			root.Children.Add(CreateMiddle(view, modesborder));
-			Content = root;
+			Content = new Grid { Children = { root, CreateBusyOverlay() } };
 
 			HookInput();
 			HookLifecycle();
+		}
+
+		private Border busyoverlay;
+		private TextBlock busytext;
+
+		/// <summary>A dimmed "Loading…" cover shown while the UI thread is blocked (see ULDB.Platform.Busy).</summary>
+		private Control CreateBusyOverlay()
+		{
+			busytext = new TextBlock { FontSize = 18, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+			busyoverlay = new Border { Background = new SolidColorBrush(Color.FromArgb(110, 0, 0, 0)), IsVisible = false, Child = busytext };
+			ULDB.Platform.Busy.Show = message =>
+			{
+				busytext.Text = message;
+				busytext.Foreground = Brushes.White;
+				busyoverlay.IsVisible = true;
+				// Lay out and paint one frame now; the work that follows won't return to the loop.
+				Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
+				Dispatcher.UIThread.RunJobs();
+			};
+			ULDB.Platform.Busy.Hide = () => busyoverlay.IsVisible = false;
+			return busyoverlay;
 		}
 
 		/// <summary>One of MainForm's designer fields (private upstream; names are stable).</summary>
@@ -420,12 +443,12 @@ namespace ULDB.Shell
 		private void ShowFormForDevelopment()
 		{
 			string what = Environment.GetEnvironmentVariable("ULDB_SHOW_FORM");
-			if(string.IsNullOrEmpty(what) || General.Map == null) return;
+			if(string.IsNullOrEmpty(what) || (General.Map == null && !what.StartsWith("click"))) return;
 			string[] parts = what.Split(':');
 			int tab = parts.Length > 1 && int.TryParse(parts[1], out int t) ? t : -1;
 			string configname = parts[0] switch { "vertex" => "vertexeditform", "linedef" => "linedefeditformudmf", "sector" => "sectoreditformudmf", "thing" => "thingeditformudmf", _ => parts[0] };
 			if(tab >= 0) General.Settings.WriteSetting("windows." + configname + ".activetab", tab);
-			Dispatcher.UIThread.Post(() =>
+			Dispatcher.UIThread.Post(async () =>
 			{
 				// Steps joined by "+" run in order, e.g. "action:buildermodes_sectorsmode+select:sectors+action:...".
 				foreach(string step in what.Split('+'))
@@ -446,6 +469,64 @@ namespace ULDB.Shell
 								if(page.Tag is CodeImp.DoomBuilder.Controls.Docker d && d.Name == p[1]) dockers.SelectDocker(d);
 							break;
 						case "about": Field<WF.ToolStripItem>("itemhelpabout").PerformClick(); break;
+						case "exception": // the unexpected-error dialog, for a real exception
+							Exception thrown;
+							try { throw new InvalidOperationException("Example exception for ULDB_SHOW_FORM=exception"); } catch(Exception ex) { thrown = ex; }
+							CodeImp.DoomBuilder.Windows.ExceptionDialog exdlg = new CodeImp.DoomBuilder.Windows.ExceptionDialog(new System.Threading.ThreadExceptionEventArgs(thrown));
+							exdlg.Setup();
+							exdlg.ShowDialog(form);
+							break;
+						case "click": Field<WF.ToolStripItem>(p[1]).PerformClick(); break;
+						case "wait": await System.Threading.Tasks.Task.Delay(int.Parse(p[1])); break; // wait:<ms>
+						case "tree": // tree:<row>[:expander|text][:dbl] clicks a row of the first visible tree; tree:report prints its state
+						{
+							ULDB.Controls.TreeViewView tv = this.GetVisualDescendants().OfType<ULDB.Controls.TreeViewView>().FirstOrDefault(v => v.IsEffectivelyVisible);
+							if(tv == null) { Console.WriteLine("[devstep] no tree showing"); break; }
+							if(p[1] == "report") { tv.DevReport(p.Length > 2 ? p[2] : ""); break; }
+							if(p[1] == "scroll") { tv.DevScrollTo(double.Parse(p[2])); break; }
+							if(p[1] == "edit") { tv.DevEdit(p[2]); break; }
+							int row = p[1].StartsWith("@") ? tv.DevFindRow(p[1].Substring(1)) : int.Parse(p[1]); // @text: the first row starting with it
+							tv.DevClick(row, p.Length > 2 && p[2] == "expander", p.Length > 3 && p[3] == "dbl" || p.Length > 2 && p[2] == "dbl" ? 2 : 1);
+							break;
+						}
+						case "windowbutton": // windowbutton:<field>: press a button of the newest open window's form
+						{
+							Window top = null;
+							foreach(Window w in FormWindows.Open) if(w != this && w.IsVisible) top = w;
+							WF.Form f = FormWindows.FormFor(top);
+							object target = null;
+							for(Type t = f?.GetType(); t != null && target == null; t = t.BaseType)
+								target = t.GetField(p[1], BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)?.GetValue(f);
+							Console.WriteLine("[devstep] windowbutton " + p[1] + " on " + (f?.GetType().Name ?? "(no window)"));
+							(target as WF.Button)?.PerformClick();
+							break;
+						}
+						case "overflow": // describes every toolbar's overflow (and opens its popup)
+							foreach(OverflowToolPanel bar in this.GetVisualDescendants().OfType<OverflowToolPanel>().ToList()) Console.WriteLine("[devstep] " + bar.DevOpen());
+							break;
+						case "report": // the open windows and whether they're showing
+							foreach(Window w in FormWindows.Open) Console.WriteLine("[devstep] window \"" + w.Title + "\" visible=" + w.IsVisible);
+							break;
+						case "clickall": // every enabled menu item in turn (skipping ones that leave the program), logging each; with ULDB_AUTOCLOSE
+							void ClickAll(WF.ToolStripItemCollection items)
+							{
+								foreach(WF.ToolStripItem item in items)
+								{
+									if(!item.Enabled || !item.Available) continue;
+									if(item is WF.ToolStripDropDownItem dd && dd.DropDownItems.Count > 0) { ClickAll(dd.DropDownItems); continue; }
+									string n = item.Name ?? ""; if(n.Length == 0 || item is WF.ToolStripSeparator) continue;
+									if(n.Contains("exit", StringComparison.OrdinalIgnoreCase) || n.Contains("quit", StringComparison.OrdinalIgnoreCase) || n.Contains("open", StringComparison.OrdinalIgnoreCase) || n.Contains("save", StringComparison.OrdinalIgnoreCase) || n.Contains("recent", StringComparison.OrdinalIgnoreCase)) continue;
+									Console.WriteLine("[clickall] " + n + " \"" + item.Text + "\"");
+									try { item.PerformClick(); } catch(Exception e) { Console.WriteLine("[clickall] exception: " + e.Message); }
+								}
+							}
+							ClickAll(Field<WF.ToolStrip>("menumain").Items);
+							Console.WriteLine("[clickall] done");
+							break; // a toolbar or menu item of MainForm, by its field name (works without a map)
+						case "resource": // the Add Resource dialog (resource:<tab index>)
+							CodeImp.DoomBuilder.Windows.ResourceOptionsForm resform = new CodeImp.DoomBuilder.Windows.ResourceOptionsForm(new CodeImp.DoomBuilder.Data.DataLocation(), "Add Resource", null);
+							resform.ShowDialog(form);
+							break;
 						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{

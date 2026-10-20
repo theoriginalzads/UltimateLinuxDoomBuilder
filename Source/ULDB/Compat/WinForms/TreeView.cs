@@ -62,6 +62,30 @@ namespace System.Windows.Forms
 		/// <summary>ULDB: raised when nodes, expansion, selection or node colours change.</summary>
 		public event EventHandler TreeChanged;
 
+		/// <summary>The node whose label is being edited (TreeNode.BeginEdit), or null. The view shows an editor for it.</summary>
+		public TreeNode EditingNode { get; internal set; }
+
+		internal bool RaiseBeforeLabelEdit(TreeNode node)
+		{
+			NodeLabelEditEventArgs e = new NodeLabelEditEventArgs(node);
+			OnBeforeLabelEdit(e);
+			return !e.CancelEdit;
+		}
+
+		/// <summary>
+		/// ULDB: the view finished editing a label: AfterLabelEdit is raised (label is null when the user
+		/// cancelled), and the node takes the new text unless the handler cancelled the edit, as in WinForms.
+		/// </summary>
+		public void EndLabelEdit(TreeNode node, string label)
+		{
+			if(EditingNode != node) return;
+			EditingNode = null;
+			NodeLabelEditEventArgs e = new NodeLabelEditEventArgs(node, label);
+			OnAfterLabelEdit(e);
+			if(!e.CancelEdit && label != null) node.Text = label;
+			OnTreeChanged();
+		}
+
 		internal void OnTreeChanged()
 		{
 			if(updatecount == 0) TreeChanged?.Invoke(this, EventArgs.Empty);
@@ -262,7 +286,7 @@ namespace System.Windows.Forms
 		public int Level { get { int l = 0; for(TreeNode n = Parent; n != null; n = n.Parent) l++; return l; } }
 		public bool IsExpanded => expanded;
 		public bool IsSelected => TreeView != null && TreeView.SelectedNode == this;
-		public bool IsEditing => false;
+		public bool IsEditing => TreeView?.EditingNode == this;
 
 		/// <summary>Visible when all ancestors are expanded (scrolling is the view's business).</summary>
 		public bool IsVisible
@@ -363,8 +387,24 @@ namespace System.Windows.Forms
 			s?.Remove(this);
 		}
 
-		public void BeginEdit() { }
-		public void EndEdit(bool cancel) { }
+		/// <summary>Starts editing the label (TreeView.LabelEdit must be on; BeforeLabelEdit may refuse).</summary>
+		public void BeginEdit()
+		{
+			TreeView tv = TreeView;
+			if(tv == null || !tv.LabelEdit || tv.EditingNode == this) return;
+			if(!tv.RaiseBeforeLabelEdit(this)) return;
+			tv.EditingNode = this;
+			tv.OnTreeChanged();
+		}
+
+		/// <summary>Ends editing without going through the view (WinForms: cancel discards the typed text).</summary>
+		public void EndEdit(bool cancel)
+		{
+			TreeView tv = TreeView;
+			if(tv == null || tv.EditingNode != this) return;
+			tv.EditingNode = null;
+			tv.OnTreeChanged();
+		}
 
 		public virtual object Clone()
 		{

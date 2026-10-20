@@ -332,4 +332,12 @@
     <Setter Property="MinWidth" Value="40"/>
     <Setter Property="VerticalContentAlignment" Value="Center"/>
   </Style>
+
+  <!-- The popup of a toolbar's overflow button: a small panel of tool buttons. -->
+  <Style Selector="FlyoutPresenter.uldb-overflow">
+    <Setter Property="Padding" Value="3"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="CornerRadius" Value="6"/>
+  </Style>
 </Styles>

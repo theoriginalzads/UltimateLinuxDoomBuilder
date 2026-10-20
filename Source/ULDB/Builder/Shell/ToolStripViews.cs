@@ -205,6 +205,22 @@ namespace ULDB.Shell
 		/// </summary>
 		public static Control CreateToolBar(WF.ToolStrip strip, Orientation orientation)
 		{
+			// Toolbars show what fits and move the rest into an overflow drop-down (the status bar lays itself out).
+			if(!(strip is WF.StatusStrip))
+			{
+				OverflowToolPanel bar = new OverflowToolPanel(orientation, item => CreateToolItem(item, orientation));
+				bar.Classes.Add("uldb-toolbar");
+				void Fill()
+				{
+					List<(Control, WF.ToolStripItem)> items = new List<(Control, WF.ToolStripItem)>();
+					foreach(WF.ToolStripItem item in strip.Items) items.Add((CreateToolItem(item, orientation), item));
+					bar.SetItems(items);
+				}
+				Fill();
+				strip.Items.Changed += (s, e) => Post(Fill);
+				return bar;
+			}
+
 			Panel host = orientation == Orientation.Vertical ? new StackPanel { Orientation = Orientation.Vertical, Spacing = 1 } : new Grid();
 			host.Classes.Add("uldb-toolbar");
 

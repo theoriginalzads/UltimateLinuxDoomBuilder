@@ -82,6 +82,11 @@ namespace ULDB.Shell
 			Content = root;
 
 			Opened += (s, e) => defaultcontrol?.Focus();
+
+			// Development aid: ULDB_AUTOCLOSE=<ms> closes message boxes by themselves, so scripted runs
+			// (ULDB_SHOW_FORM) can check what happens after a dialog is dismissed.
+			if(int.TryParse(System.Environment.GetEnvironmentVariable("ULDB_AUTOCLOSE"), out int ms) && ms > 0)
+				Opened += (s, e) => Avalonia.Threading.DispatcherTimer.RunOnce(Close, System.TimeSpan.FromMilliseconds(ms));
 			KeyDown += (s, e) =>
 			{
 				// Ctrl+C copies the message, as in the Windows message box.

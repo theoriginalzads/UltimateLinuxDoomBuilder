@@ -194,6 +194,8 @@ namespace ULDB.Shell
 			public string SubText { get; init; }
 			public bool Checked { get; init; }
 			public bool Hot { get; init; }
+			/// <summary>Upstream colours it with the highlight colour (Undo/Redo's current level, or the target being picked).</summary>
+			public bool Highlight { get; init; }
 			/// <summary>Upstream greys it out (GrayText), e.g. Undo/Redo's redo levels.</summary>
 			public bool Dim { get; init; }
 		}
@@ -215,6 +217,13 @@ namespace ULDB.Shell
 					list.RaiseSelectedIndexChanged();
 				};
 				box.DoubleTapped += (s, e) => { if(box.SelectedIndex >= 0) { list.RaiseDoubleClick(); Schedule(s, e); } };
+				// Upstream acts on MouseUp (Undo/Redo performs the undo there), after the selection changed.
+				box.AddHandler(Avalonia.Input.InputElement.PointerReleasedEvent, (s, e) =>
+				{
+					WF.MouseButtons button = e.InitialPressMouseButton == Avalonia.Input.MouseButton.Right ? WF.MouseButtons.Right : WF.MouseButtons.Left;
+					list.RaiseMouseUp(new WF.MouseEventArgs(button, 1, 4, Math.Max(0, box.SelectedIndex) * 22 + 11, 0));
+					Schedule(s, e);
+				}, Avalonia.Interactivity.RoutingStrategies.Bubble, true);
 			}
 			string shown = null;
 			return Custom(() =>
@@ -226,9 +235,10 @@ namespace ULDB.Shell
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,
 					Dim = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.GrayText,
+					Highlight = i.BackColor.IsKnownColor && i.BackColor.ToKnownColor() == SD.KnownColor.Highlight,
 				}).ToList();
 				// Only when something changed: replacing the items resets the selection and scrolling.
-				string sig = string.Join("\n", items.Select(i => i.Text + "\t" + i.SubText + "\t" + i.Checked + i.Hot + i.Dim));
+				string sig = string.Join("\n", items.Select(i => i.Text + "\t" + i.SubText + "\t" + i.Checked + i.Hot + i.Dim + i.Highlight));
 				if(sig != shown)
 				{
 					shown = sig;
@@ -237,6 +247,19 @@ namespace ULDB.Shell
 					if(target is ListBox lb)
 						for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected) lb.Selection.Select(i);
 					updating = false;
+				}
+				// Selection set by upstream's code (SelectedIndices.Clear(), Selected = ...) reaches the view.
+				if(target is ListBox sel)
+				{
+					bool differs = false;
+					for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected != sel.Selection.IsSelected(i)) { differs = true; break; }
+					if(differs)
+					{
+						updating = true;
+						sel.Selection.Clear();
+						for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected) sel.Selection.Select(i);
+						updating = false;
+					}
 				}
 				if(target is ListBox scroll && list.EnsureVisibleItem != null)
 				{

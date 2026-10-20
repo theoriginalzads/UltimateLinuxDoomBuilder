@@ -25,4 +25,10 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 | Help menu | "Reference Manual" (UDB's help file) and "Check for updates" are hidden; "GitHub issues tracker" is now "ULDB on GitHub" and opens ULDB's repository; About is "About Ultimate Linux Doom Builder..." | User request, 20 Oct 2026: ULDB isn't reworking the help file yet; UDB's updater isn't part of ULDB |
 | About window | ULDB's own: Cacky, name, version (early preview), the unofficial-fork and AI-disclosure notice, links to ULDB, its issues and upstream UDB, credits | User request; the plan's About requirements (section 6) |
 | Main window title | No "(64-bit)" after the program name | User request |
+| Toolbars (main, mode controls, edit modes) | When the buttons don't fit, the rest go into a » drop-down instead of scrolling or clipping, as UDB's ToolStrip does | Issue fixes, 20 Oct 2026 |
+| Tree views (thing types, etc.) | Rename in place (label editing); expanding no longer scrolls back to the selection | Issue fixes |
+| Comments panel / link buttons | Comment type icons (regular, info, question, problem, smile) and link/unlink icons in Breeze style; placeholder text is dimmed | Issue fixes |
+| Undo/Redo panel | Compact rows, highlight for the current step; clicking a level undoes/redoes to it | Issue fixes |
+| Opening a map | A dimmed "Opening map..." cover appears while the map loads, since the window can't repaint during the load | Issue #13 |
+| Unexpected error window | ULDB's own port of UDB's (system info for Linux, Continue/Quit, link to ULDB's issue tracker) | Issue #7 |
 | *(More entries are added as UI work continues in Phase 3.)* | | |

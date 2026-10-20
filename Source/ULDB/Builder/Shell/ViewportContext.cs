@@ -18,6 +18,9 @@ namespace ULDB.Shell
 {
 	internal static class ViewportContext
 	{
+		/// <summary>The GPU's renderer string once the viewport's OpenGL context exists (for error reports).</summary>
+		public static string Renderer { get; private set; }
+
 		private const int GL_FRAMEBUFFER = 0x8D40;
 		private const int GL_RENDERBUFFER = 0x8D41;
 		private const int GL_COLOR_ATTACHMENT0 = 0x8CE0;
@@ -87,6 +90,7 @@ namespace ULDB.Shell
 
 			HostedGL.Register(name => gl.GetProcAddress(name), MakeCurrent, null, OnPresent);
 			CodeImp.DoomBuilder.General.WriteLogLine("Viewport OpenGL context: " + context.Version + ", " + gl.Renderer);
+			Renderer = gl.Renderer;
 		}
 
 		// The returned scope would restore the previous context; UDB just leaves its own
