@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Ultimate Linux Doom Builder
+GenericName=Doom Map Editor
+Comment=Map editor for GZDoom and UZDoom (unofficial Linux fork of Ultimate Doom Builder)
+Exec=uldb %f
+Icon=io.github.theoriginalzads.UltimateLinuxDoomBuilder
+Terminal=false
+Categories=Development;Game;
+Keywords=doom;gzdoom;uzdoom;map;level;editor;udmf;wad;
+MimeType=application/x-doom-wad;
+StartupNotify=true
+StartupWMClass=uldb
