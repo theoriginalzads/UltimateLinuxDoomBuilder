@@ -1,0 +1,26 @@
+<!-- ULDB: the view of the Comments docker (model-ported: upstream's CommentsDocker.cs runs unchanged).
+     The comments list shows upstream's grid rows (type icon, comment); the add-comment box and the
+     options below it are bound by name (ModelBinder.BindByName). -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.CommentsPanel.CommentsDockerView">
+  <DockPanel Margin="4">
+    <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,8,0,0">
+      <Border x:Name="addcommentgroup" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBox x:Name="addcommenttext"/>
+          <Button x:Name="addcomment" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="optionsgroup" Classes="uldb-group">
+        <StackPanel Spacing="2">
+          <CheckBox x:Name="filtermode"/>
+          <CheckBox x:Name="clickselects"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+    <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+      <ListBox x:Name="list" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+    </Border>
+  </DockPanel>
+</UserControl>

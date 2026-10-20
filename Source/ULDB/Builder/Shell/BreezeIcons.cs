@@ -295,6 +295,8 @@ namespace ULDB.Shell
 			["res:NewSector2"] = "Make Sectors Mode", ["res:DrawCurveMode"] = "Draw Curve Mode",
 			// Other plugins
 			["res:BuilderEffects/Update"] = "res:Reload",
+			// Comments and Tag Explorer list icons (element types)
+			["res:VerticesMode"] = "Vertices Mode", ["res:LinesMode"] = "Linedefs Mode", ["res:SectorsMode"] = "Sectors Mode", ["res:ThingsMode"] = "Things Mode",
 			["colorpicker_togglelightpannel"] = "res:ColorPick", ["updateslopes"] = "res:Reload",
 		};
 

@@ -103,6 +103,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Selected docker
 			WF.TabPage selected = tabsmodel.SelectedTab;
+
+			// As in WinForms, only the shown docker's control is Visible: plugins refresh on
+			// VisibleChanged (the Comments docker fills its list then).
+			foreach(WF.TabPage tp in tabsmodel.TabPages)
+				if(tp.Controls.Count > 0) tp.Controls[0].Visible = tp == selected && !collapsed;
 			if(selected != null && !collapsed)
 			{
 				pagetitle.Text = selected.Text;

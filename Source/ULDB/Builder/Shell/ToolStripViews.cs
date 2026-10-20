@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -29,6 +30,41 @@ namespace ULDB.Shell
 			Bind(strip.Items, menu.Items);
 			return menu;
 		}
+
+		#region ================== Context menus
+
+		private static readonly Dictionary<WF.ToolStripDropDown, ContextMenu> openmenus = new Dictionary<WF.ToolStripDropDown, ContextMenu>();
+
+		/// <summary>
+		/// Upstream's ContextMenuStrip.Show(...) opens an Avalonia context menu at the pointer (WinForms
+		/// callers pass the pointer position too), with the same items, events and closing.
+		/// </summary>
+		internal static void InstallContextMenus()
+		{
+			WF.ToolStripDropDown.ShowHandler = (menu, control, position) => Post(() => ShowContextMenu(menu));
+			WF.ToolStripDropDown.CloseHandler = menu => Post(() => { if(openmenus.TryGetValue(menu, out ContextMenu cm)) cm.Close(); });
+		}
+
+		private static void ShowContextMenu(WF.ToolStripDropDown menu)
+		{
+			if(!menu.RaiseOpening()) return;
+			var lifetime = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+			Window owner = lifetime?.Windows.FirstOrDefault(w => w.IsActive) ?? lifetime?.MainWindow;
+			if(owner == null) return;
+
+			ContextMenu cm = new ContextMenu { Placement = PlacementMode.Pointer };
+			foreach(WF.ToolStripItem item in menu.Items) cm.Items.Add(CreateMenuEntry(item));
+			cm.Opened += (s, e) => menu.RaiseOpened();
+			cm.Closed += (s, e) =>
+			{
+				openmenus.Remove(menu);
+				menu.RaiseClosed(WF.ToolStripDropDownCloseReason.CloseCalled);
+			};
+			openmenus[menu] = cm;
+			cm.Open(owner);
+		}
+
+		#endregion
 
 		/// <summary>Fills (and keeps filling) an Avalonia item list from a ToolStrip item collection.</summary>
 		private static void Bind(WF.ToolStripItemCollection source, ItemCollection target)

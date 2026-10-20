@@ -66,6 +66,8 @@ namespace System.Windows.Forms
 		public int ColumnHeadersHeight { get; set; } = 23;
 		public bool ColumnHeadersVisible { get; set; } = true;
 		public bool RowHeadersVisible { get; set; } = true;
+		public bool ShowCellErrors { get; set; } = true;
+		public bool ShowRowErrors { get; set; } = true;
 		public int RowHeadersWidth { get; set; } = 41;
 		public DataGridViewCellStyle ColumnHeadersDefaultCellStyle { get; set; } = new DataGridViewCellStyle();
 		public DataGridViewCellStyle RowHeadersDefaultCellStyle { get; set; } = new DataGridViewCellStyle();
@@ -328,7 +330,14 @@ namespace System.Windows.Forms
 			return new Rectangle(0, y, Width, ViewRowHeight);
 		}
 
-		public HitTestInfo HitTest(int x, int y) => new HitTestInfo();
+		/// <summary>ULDB: set by the view; maps a point in the grid to (row, column), or (-1, -1) for none.</summary>
+		public Func<int, int, (int row, int column)> CellLocator { get; set; }
+
+		public HitTestInfo HitTest(int x, int y)
+		{
+			(int row, int column) = CellLocator?.Invoke(x, y) ?? (-1, -1);
+			return new HitTestInfo(row, column);
+		}
 
 		public void AutoResizeColumns() { }
 		public void AutoResizeColumns(DataGridViewAutoSizeColumnsMode mode) { }
@@ -347,9 +356,11 @@ namespace System.Windows.Forms
 
 		public class HitTestInfo
 		{
-			public int RowIndex => -1;
-			public int ColumnIndex => -1;
-			public DataGridViewHitTestType Type => DataGridViewHitTestType.None;
+			public HitTestInfo() : this(-1, -1) { }
+			internal HitTestInfo(int row, int column) { RowIndex = row; ColumnIndex = column; }
+			public int RowIndex { get; }
+			public int ColumnIndex { get; }
+			public DataGridViewHitTestType Type => RowIndex >= 0 && ColumnIndex >= 0 ? DataGridViewHitTestType.Cell : DataGridViewHitTestType.None;
 		}
 
 		#endregion

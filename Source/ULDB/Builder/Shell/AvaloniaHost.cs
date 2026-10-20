@@ -33,6 +33,7 @@ namespace ULDB.Shell
 			WinFormsHost.Current = host;
 			FormWindows.TrackOpenWindows();
 			FormViews.Install();
+			ToolStripViews.InstallContextMenus();
 
 			System.Windows.Forms.Application.RunHandler = host.Run;
 			System.Windows.Forms.Application.ExitHandler = host.Exit;
