@@ -256,7 +256,7 @@
   <Target Name="BuildCompilers" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
     <Exec Command="cmake -S &quot;$(CompilersSourceDir)&quot; -B &quot;$(CompilersBuildDir)&quot; -G Ninja -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
     <!-- Quiet unless it fails: then its error lines and the end of the build log are shown. -->
-    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; &quot;$(CompilersBuildDir)/build.log&quot; 2&gt;&amp;1 || (grep -E &quot;error:|Error [0-9]|undefined reference&quot; &quot;$(CompilersBuildDir)/build.log&quot; | head -n 30; tail -n 20 &quot;$(CompilersBuildDir)/build.log&quot;; exit 1)" StandardOutputImportance="high" />
+    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; &quot;$(CompilersBuildDir)/build.log&quot; 2&gt;&amp;1 || (grep -E -B12 &quot;error:|Error [0-9]|undefined reference|collect2&quot; &quot;$(CompilersBuildDir)/build.log&quot; | head -n 60; tail -n 20 &quot;$(CompilersBuildDir)/build.log&quot;; exit 1)" StandardOutputImportance="high" />
     <ItemGroup>
       <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDoom/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
       <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Zandronum/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
