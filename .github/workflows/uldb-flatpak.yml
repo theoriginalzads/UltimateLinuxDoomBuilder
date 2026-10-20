@@ -42,7 +42,9 @@ jobs:
           # Restore with the Flatpak's own .NET SDK (the dotnet10 extension), so implicit package
           # versions match the offline build, then list the packages for flatpak-builder. The sandbox
           # can't write the runner's home, so the SDK gets one in the checkout.
-          mkdir -p .restore-home
+          # The checkout belongs to the runner's user; the sandbox writes obj/ and the packages there.
+          mkdir -p .restore-home nuget-restore
+          chmod -R a+rwX .
           if ! flatpak run --command=sh --runtime=org.freedesktop.Sdk//26.08 --share=network --filesystem=host \
                --env=DOTNET_CLI_TELEMETRY_OPTOUT=1 --env=DOTNET_NOLOGO=1 \
                --env=HOME="$PWD/.restore-home" --env=DOTNET_CLI_HOME="$PWD/.restore-home" \
