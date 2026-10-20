@@ -94,7 +94,7 @@ offline build), then list the packages with `tools/flatpak/nuget-sources.py`:
 flatpak install flathub org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
 flatpak run --command=sh --runtime=org.freedesktop.Sdk//26.08 --share=network --filesystem=host \
   org.freedesktop.Sdk.Extension.dotnet10//26.08 \
-  -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin"; dotnet restore Builder.Linux.sln -r linux-x64 --packages "$PWD/nuget-restore"'
+  -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin"; for p in Source/ULDB/Builder/ULDB.Builder.csproj Source/ULDB/Plugins/*/*.csproj; do dotnet restore "$p" -r linux-x64 --packages "$PWD/nuget-restore"; done'
 tools/flatpak/nuget-sources.py nuget-restore packaging/flatpak/nuget-sources.json
 rm -rf nuget-restore
 ```

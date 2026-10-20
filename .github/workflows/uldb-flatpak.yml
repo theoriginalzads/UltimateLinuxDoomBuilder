@@ -40,7 +40,8 @@ jobs:
       - name: Generate NuGet sources (offline restore inside flatpak-builder)
         run: |
           # Restore with the Flatpak's own .NET SDK (the dotnet10 extension), so implicit package
-          # versions match the offline build, then list the packages for flatpak-builder. The sandbox
+          # versions match the offline build, then list the packages for flatpak-builder. Only the
+          # program and plugins: the tests aren't part of the Flatpak. The sandbox
           # can't write the runner's home, so the SDK gets one in the checkout.
           # The checkout belongs to the runner's user; the sandbox writes obj/ and the packages there.
           mkdir -p .restore-home nuget-restore
@@ -49,7 +50,7 @@ jobs:
                --env=DOTNET_CLI_TELEMETRY_OPTOUT=1 --env=DOTNET_NOLOGO=1 \
                --env=HOME="$PWD/.restore-home" --env=DOTNET_CLI_HOME="$PWD/.restore-home" \
                org.freedesktop.Sdk.Extension.dotnet10//26.08 \
-               -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin" LD_LIBRARY_PATH="/usr/lib/sdk/dotnet10/lib"; dotnet restore Builder.Linux.sln -r linux-x64 --packages "$PWD/nuget-restore"' \
+               -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin" LD_LIBRARY_PATH="/usr/lib/sdk/dotnet10/lib"; for p in Source/ULDB/Builder/ULDB.Builder.csproj Source/ULDB/Plugins/*/*.csproj; do dotnet restore "$p" -r linux-x64 --packages "$PWD/nuget-restore" || exit 1; done' \
                > restore.log 2>&1; then
             cat restore.log
             echo "::error title=NuGet restore in the Flatpak SDK failed::$(grep -v '^\s*$' restore.log | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
@@ -66,7 +67,7 @@ jobs:
           if ! flatpak-builder --force-clean --disable-rofiles-fuse \
                --repo=repo build-dir packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml > flatpak-builder.log 2>&1; then
             tail -n 200 flatpak-builder.log
-            echo "::error title=flatpak-builder failed::$(grep -v '^\s*$' flatpak-builder.log | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=flatpak-builder failed::$(tr '\r' '\n' < flatpak-builder.log | grep -v '^\s*$' | grep -v '^Downloading ' | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
             exit 1
           fi
           echo "::notice title=flatpak-builder finished::$(grep -v '^\s*$' flatpak-builder.log | tail -n 8 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
