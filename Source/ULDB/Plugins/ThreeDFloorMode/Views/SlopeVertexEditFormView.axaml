@@ -1,0 +1,54 @@
+<!-- ULDB: the window of 3D Floor mode's SlopeVertexEditForm (model-ported: upstream's code runs unchanged):
+     position, the sectors to remove, and what to apply to the ceiling and floor of the selected sectors. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.SlopeVertexEditFormView"
+        Title="Edit Slope Vertex" Width="560" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="8">
+      <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+        <Border x:Name="groupBox1" Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <TextBlock x:Name="groupBox1Title" Text="Position" Classes="uldb-group-title"/>
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="6" RowSpacing="4">
+              <TextBlock x:Name="label1" Text="X:" Classes="uldb-field"/>
+              <ContentControl x:Name="positionx" Grid.Column="1" MinWidth="64"/>
+              <TextBlock x:Name="label2" Text="Y:" Grid.Row="1" Classes="uldb-field"/>
+              <ContentControl x:Name="positiony" Grid.Row="1" Grid.Column="1" MinWidth="64"/>
+              <TextBlock x:Name="label3" Text="Z:" Grid.Row="2" Classes="uldb-field"/>
+              <ContentControl x:Name="positionz" Grid.Row="2" Grid.Column="1" MinWidth="64"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+        <Border x:Name="groupBox2" Grid.Column="1" Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <TextBlock x:Name="groupBox2Title" Text="Sectors to remove" Classes="uldb-group-title"/>
+            <ListBox x:Name="checkedListBoxSectors" Height="110"/>
+          </StackPanel>
+        </Border>
+        <StackPanel Grid.Column="2" Spacing="8">
+          <Border x:Name="groupBox3" Classes="uldb-group">
+            <StackPanel Spacing="2">
+              <TextBlock x:Name="groupBox3Title" Text="Ceiling" Classes="uldb-group-title"/>
+              <CheckBox x:Name="addselectedsectorsceiling"/>
+              <CheckBox x:Name="removeselectedsectorsceiling"/>
+            </StackPanel>
+          </Border>
+          <Border x:Name="groupBox4" Classes="uldb-group">
+            <StackPanel Spacing="2">
+              <TextBlock x:Name="groupBox4Title" Text="Floor" Classes="uldb-group-title"/>
+              <CheckBox x:Name="addselectedsectorsfloor"/>
+              <CheckBox x:Name="removeselectedsectorsfloor"/>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Grid>
+      <CheckBox x:Name="spline"/>
+      <CheckBox x:Name="reposition"/>
+    </StackPanel>
+  </DockPanel>
+</Window>

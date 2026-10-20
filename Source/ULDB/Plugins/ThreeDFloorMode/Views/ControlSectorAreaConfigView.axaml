@@ -1,0 +1,23 @@
+<!-- ULDB: the window of 3D Floor mode's ControlSectorAreaConfig (model-ported: upstream's code runs unchanged). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.ControlSectorAreaConfigView"
+        Title="Control Sector Area Configuration" Width="360" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="okButton" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancelButton" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Border x:Name="groupBox1" Classes="uldb-group">
+      <StackPanel Spacing="6">
+        <CheckBox x:Name="useTagRange" FontWeight="SemiBold"/>
+        <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8">
+          <TextBlock x:Name="label1" Text="First" Classes="uldb-field"/>
+          <TextBox x:Name="firstTag" Grid.Column="1"/>
+          <TextBlock x:Name="label2" Text="Last" Grid.Column="2" Classes="uldb-field"/>
+          <TextBox x:Name="lastTag" Grid.Column="3"/>
+        </Grid>
+      </StackPanel>
+    </Border>
+  </DockPanel>
+</Window>

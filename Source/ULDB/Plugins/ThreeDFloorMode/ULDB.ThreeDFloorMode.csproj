@@ -29,6 +29,7 @@
          the 3D floors docker's list, filled in by ThreeDFloorMode itself; views in Views/. -->
     <Compile Include="$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.cs;$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Windows/SlopeDataSectorDialog.cs;$(UpstreamPlugin)Windows/SlopeDataSectorDialog.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Windows/ControlSectorAreaConfig.cs;$(UpstreamPlugin)Windows/ControlSectorAreaConfig.Designer.cs;$(UpstreamPlugin)Windows/SlopeVertexEditForm.cs;$(UpstreamPlugin)Windows/SlopeVertexEditForm.Designer.cs;$(UpstreamPlugin)Windows/ThreeDFloorEditorWindow.cs;$(UpstreamPlugin)Windows/ThreeDFloorEditorWindow.Designer.cs;$(UpstreamPlugin)Controls/ThreeDFloorControl.cs;$(UpstreamPlugin)Controls/ThreeDFloorControl.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/ThreeDFloorPanel.cs;$(UpstreamPlugin)Interface/ThreeDFloorPanel.Designer.cs" />
     <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
          window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->

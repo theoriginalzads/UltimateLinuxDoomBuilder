@@ -106,6 +106,10 @@ namespace System.Windows.Forms
 			NotifyStylesChanged();
 		}
 
+		internal virtual void ItemInserted(int index) { }
+		internal virtual void ItemRemoved(int index) { }
+		internal virtual void ItemsCleared() { }
+
 		internal void OnItemsChanged()
 		{
 			selected.RemoveWhere(i => i >= Items.Count);
@@ -121,18 +125,20 @@ namespace System.Windows.Forms
 
 			public int Count => items.Count;
 			public object this[int index] { get => items[index]; set { items[index] = value; owner.OnItemsChanged(); } }
-			public int Add(object item) { int i = Insert(item); owner.OnItemsChanged(); return i; }
-			public void AddRange(object[] range) { foreach(object o in range) Insert(o); owner.OnItemsChanged(); }
+			public int Add(object item) { int i = Insert(item); owner.ItemInserted(i); owner.OnItemsChanged(); return i; }
+			public int Add(object item, bool isChecked) { int i = Add(item); (owner as CheckedListBox)?.SetItemChecked(i, isChecked); return i; }
+			public void AddRange(object[] range) { foreach(object o in range) owner.ItemInserted(Insert(o)); owner.OnItemsChanged(); }
 			public void AddRange(ObjectCollection range) => AddRange(range.items.ToArray());
-			public void Clear() { items.Clear(); owner.selected.Clear(); owner.OnItemsChanged(); }
+			public void Clear() { items.Clear(); owner.selected.Clear(); owner.ItemsCleared(); owner.OnItemsChanged(); }
 			public bool Contains(object item) => items.Contains(item);
 			public int IndexOf(object item) => items.IndexOf(item);
-			public void Insert(int index, object item) { items.Insert(index, item); owner.OnItemsChanged(); }
+			public void Insert(int index, object item) { items.Insert(index, item); owner.ItemInserted(index); owner.OnItemsChanged(); }
 			public void Remove(object item) { int i = items.IndexOf(item); if(i >= 0) RemoveAt(i); }
 
 			public void RemoveAt(int index)
 			{
 				items.RemoveAt(index);
+				owner.ItemRemoved(index);
 				// Selection indices after the removed item move up by one, as in WinForms.
 				List<int> moved = new List<int>();
 				foreach(int s in owner.selected) if(s != index) moved.Add(s > index ? s - 1 : s);
@@ -187,6 +193,78 @@ namespace System.Windows.Forms
 			public IEnumerator<int> GetEnumerator() => owner.selected.GetEnumerator();
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
+	}
+
+	public class ItemCheckEventArgs : EventArgs
+	{
+		public ItemCheckEventArgs(int index, CheckState newCheckValue, CheckState currentValue)
+		{
+			Index = index;
+			NewValue = newCheckValue;
+			CurrentValue = currentValue;
+		}
+
+		public int Index { get; }
+		public CheckState CurrentValue { get; }
+		public CheckState NewValue { get; set; }
+	}
+
+	public delegate void ItemCheckEventHandler(object sender, ItemCheckEventArgs e);
+
+	/// <summary>A ListBox whose items have a check state. ItemCheck is raised before a state changes and can change it.</summary>
+	public class CheckedListBox : ListBox
+	{
+		private readonly List<CheckState> states = new List<CheckState>();
+
+		public bool CheckOnClick { get; set; }
+		public bool ThreeDCheckBoxes { get; set; }
+
+		public event ItemCheckEventHandler ItemCheck;
+
+		public CheckState GetItemCheckState(int index) => states[index];
+		public bool GetItemChecked(int index) => states[index] != CheckState.Unchecked;
+		public void SetItemChecked(int index, bool value) => SetItemCheckState(index, value ? CheckState.Checked : CheckState.Unchecked);
+
+		public void SetItemCheckState(int index, CheckState value)
+		{
+			if(index < 0 || index >= states.Count) throw new ArgumentOutOfRangeException(nameof(index));
+			ItemCheckEventArgs e = new ItemCheckEventArgs(index, value, states[index]);
+			ItemCheck?.Invoke(this, e);
+			if(states[index] == e.NewValue) return;
+			states[index] = e.NewValue;
+			NotifyStylesChanged();
+		}
+
+		public List<object> CheckedItems
+		{
+			get
+			{
+				List<object> result = new List<object>();
+				for(int i = 0; i < states.Count; i++) if(states[i] != CheckState.Unchecked) result.Add(Items[i]);
+				return result;
+			}
+		}
+
+		public List<int> CheckedIndices
+		{
+			get
+			{
+				List<int> result = new List<int>();
+				for(int i = 0; i < states.Count; i++) if(states[i] != CheckState.Unchecked) result.Add(i);
+				return result;
+			}
+		}
+
+		/// <summary>ULDB: a click on an item's checkbox. Cycles unchecked/checked, as WinForms does (indeterminate stays).</summary>
+		public void ToggleFromView(int index)
+		{
+			if(index < 0 || index >= states.Count) return;
+			SetItemCheckState(index, states[index] == CheckState.Unchecked ? CheckState.Checked : CheckState.Unchecked);
+		}
+
+		internal override void ItemInserted(int index) => states.Insert(Math.Min(index, states.Count), CheckState.Unchecked);
+		internal override void ItemRemoved(int index) { if(index < states.Count) states.RemoveAt(index); }
+		internal override void ItemsCleared() => states.Clear();
 	}
 
 	public class ProgressBar : Control

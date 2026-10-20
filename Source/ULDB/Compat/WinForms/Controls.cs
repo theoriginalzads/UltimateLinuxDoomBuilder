@@ -511,6 +511,9 @@ namespace System.Windows.Forms
 
 	public class Panel : Control
 	{
+		/// <summary>ULDB: the child the view should scroll to (ScrollControlIntoView).</summary>
+		public Control ScrollTarget { get; set; }
+		public void ScrollControlIntoView(Control activeControl) { ScrollTarget = activeControl; NotifyStylesChanged(); }
 		public BorderStyle BorderStyle { get; set; }
 		public bool AutoScroll { get; set; }
 		public AutoSizeMode AutoSizeMode { get; set; } = AutoSizeMode.GrowOnly;

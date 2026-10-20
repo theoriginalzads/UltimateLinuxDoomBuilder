@@ -1,0 +1,45 @@
+<!-- ULDB: the view of one 3D floor in 3D Floor mode's editor window (ThreeDFloorHelperControl, model-ported:
+     upstream's code runs unchanged): heights and textures on the left, type/flags/alpha/brightness in
+     the middle, the control sectors and the buttons on the right. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorHelperControlView">
+  <Border Classes="uldb-group" Margin="0,0,0,8">
+    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="14">
+      <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*,*" ColumnSpacing="6" RowSpacing="4">
+        <StackPanel Orientation="Horizontal" Spacing="4"><TextBlock x:Name="label1" Text="Top" Opacity="0.7"/><ContentControl x:Name="sectorCeilingHeight" Width="90"/></StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"><TextBlock x:Name="label3" Text="Border" Opacity="0.7"/><TextBlock x:Name="borderHeightLabel" FontWeight="SemiBold"/></StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4"><TextBlock x:Name="label2" Text="Bottom" Opacity="0.7"/><ContentControl x:Name="sectorFloorHeight" Width="90"/></StackPanel>
+        <ContentControl x:Name="sectorTopFlat" Grid.Row="1" Width="96" Height="110"/>
+        <ContentControl x:Name="sectorBorderTexture" Grid.Row="1" Grid.Column="1" Width="96" Height="110"/>
+        <ContentControl x:Name="sectorBottomFlat" Grid.Row="1" Grid.Column="2" Width="96" Height="110"/>
+      </Grid>
+      <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="8" RowSpacing="4" MinWidth="220">
+        <TextBlock x:Name="label4" Text="Type:" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="typeArgument" Grid.Column="1"/>
+        <TextBlock x:Name="label5" Text="Flags:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="flagsArgument" Grid.Row="1" Grid.Column="1"/>
+        <TextBlock x:Name="label6" Text="Alpha:" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="alphaArgument" Grid.Row="2" Grid.Column="1"/>
+        <TextBlock x:Name="label7" Text="Brightness:" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="sectorBrightness" Grid.Row="3" Grid.Column="1" Width="90" HorizontalAlignment="Left"/>
+        <TextBlock x:Name="label8" Text="Tag(s):" Grid.Row="4" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <TextBlock x:Name="tagsLabel" Grid.Row="4" Grid.Column="1"/>
+        <Button x:Name="buttonEditSector" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,0"/>
+      </Grid>
+      <Border x:Name="groupBox2" Grid.Column="2" Classes="uldb-group" MinWidth="140">
+        <StackPanel Spacing="4">
+          <TextBlock x:Name="groupBox2Title" Text="Sectors" Classes="uldb-group-title"/>
+          <ListBox x:Name="checkedListBoxSectors" Height="120"/>
+        </StackPanel>
+      </Border>
+      <StackPanel Grid.Column="3" Spacing="4">
+        <Button x:Name="buttonDuplicate" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="buttonSplit" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="buttonDetach" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="buttonCheckAll" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="buttonUncheckAll" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+  </Border>
+</UserControl>

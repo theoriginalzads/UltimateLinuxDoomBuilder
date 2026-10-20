@@ -27,6 +27,7 @@ namespace ULDB.Shell
 				case Button link when model is WF.LinkLabel m: BindLink(link, m); return true;
 				case ContentControl links when model is WF.LinkLabel m && !(view is Button): BindLinks(links, m); return true;
 				case Slider slider when model is WF.TrackBar m: BindTrackBar(slider, m); return true;
+				case ListBox checks when model is WF.CheckedListBox m: BindCheckedListBox(checks, m); return true;
 				case ListBox list when model is WF.ListBox m: BindListBox(list, m); return true;
 				case ProgressBar bar when model is WF.ProgressBar m: BindProgressBar(bar, m); return true;
 				case ComboBox combo when model is WF.ComboBox m: BindComboBox(combo, m); return true;
@@ -235,6 +236,39 @@ namespace ULDB.Shell
 				view.Selection.Clear();
 				foreach(int i in m.SelectedIndices) view.Selection.Select(i);
 				updating = false;
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
+			}, m);
+		}
+
+		/// <summary>A CheckedListBox: a checkbox (three-state) and text per row; a click goes to the model, whose ItemCheck may change it.</summary>
+		public ModelBinder BindCheckedListBox(ListBox view, WF.CheckedListBox m)
+		{
+			string shown = null;
+			view.SelectionMode = SelectionMode.Single;
+			view.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<(int index, string text, bool? check)>((row, _) =>
+			{
+				CheckBox box = new CheckBox { Content = row.text, IsThreeState = true, IsChecked = row.check };
+				// The model decides the new state (ItemCheck); the view then redraws from it.
+				box.AddHandler(InputElement.PointerPressedEvent, (s, e) =>
+				{
+					e.Handled = true;
+					m.ToggleFromView(row.index);
+					Schedule(s, e);
+				}, RoutingStrategies.Tunnel);
+				return box;
+			}, true);
+			return Custom(() =>
+			{
+				List<(int, string, bool?)> rows = new List<(int, string, bool?)>();
+				for(int i = 0; i < m.Items.Count; i++)
+				{
+					WF.CheckState st = m.GetItemCheckState(i);
+					rows.Add((i, m.Items[i]?.ToString() ?? "", st == WF.CheckState.Indeterminate ? (bool?)null : st == WF.CheckState.Checked));
+				}
+				string sig = string.Join("\n", rows.Select(r => r.Item2 + "|" + r.Item3));
+				if(sig != shown) { shown = sig; view.ItemsSource = rows; }
 				view.IsVisible = m.Visible;
 				view.IsEnabled = m.Enabled;
 				ApplyTip(view, m);

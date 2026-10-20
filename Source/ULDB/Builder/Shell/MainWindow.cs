@@ -7,6 +7,7 @@
 // the info panel and status bar at the bottom.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -437,6 +438,15 @@ namespace ULDB.Shell
 							WF.TabControl tabs = typeof(CodeImp.DoomBuilder.Controls.DockersControl).GetField("tabs", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(dockers) as WF.TabControl;
 							if(tabs != null) foreach(WF.TabPage page in tabs.TabPages)
 								if(page.Tag is CodeImp.DoomBuilder.Controls.Docker d && d.Name == p[1]) dockers.SelectDocker(d);
+							break;
+						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
+							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+							{
+								if(asm.GetName().Name != p[1]) continue;
+								Type plug = asm.GetTypes().First(t => t.Name == "BuilderPlug");
+								object me = plug.GetProperty("Me", BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
+								plug.GetMethod(p[2], BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Invoke(me, null);
+							}
 							break;
 						case "selectone": // selectone:sectors|linedefs|things|vertices, the first of that type
 							switch(p[1])

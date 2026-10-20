@@ -14,6 +14,10 @@ namespace CodeImp.DoomBuilder.ThreeDFloorMode
 			FormViews.Register<SlopeDataSectorDialog>(f => new SlopeDataSectorDialogView(f));
 			ControlViews.Register<ThreeDFloorPanel>(m => new ThreeDFloorPanelView(m));
 			ControlViews.Register<ThreeDFloorHelperTooltipElementControl>(m => new ThreeDFloorTooltipView(m));
+			FormViews.Register<ControlSectorAreaConfig>(f => new ControlSectorAreaConfigView(f));
+			FormViews.Register<SlopeVertexEditForm>(f => new SlopeVertexEditFormView(f));
+			FormViews.Register<ThreeDFloorEditorWindow>(f => new ThreeDFloorEditorWindowView(f));
+			ControlViews.Register<ThreeDFloorHelperControl>(m => new ThreeDFloorHelperControlView(m));
 		}
 	}
 }
