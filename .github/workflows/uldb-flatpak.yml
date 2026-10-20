@@ -1,0 +1,54 @@
+# ULDB: build the Flatpak (packaging/flatpak) and keep the bundle as a downloadable artifact.
+# Slow, so it runs on request (Actions → ULDB Flatpak → Run workflow) and when packaging changes.
+name: ULDB Flatpak
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'packaging/**'
+      - '.github/workflows/uldb-flatpak.yml'
+
+concurrency:
+  group: uldb-flatpak-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flatpak:
+    name: Build Flatpak bundle
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-26.08
+      options: --privileged
+
+    steps:
+      - name: Check out (with compiler submodules, full history for flatpak-builder's git source)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Let git use the checkout (container runs as another user)
+        run: git config --global --add safe.directory '*'
+
+      - name: Install the .NET 10 SDK extension
+        run: |
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install -y --noninteractive flathub org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
+
+      - name: Generate NuGet sources (offline restore inside flatpak-builder)
+        run: |
+          # flatpak-builder-tools, pinned
+          curl -fsSLo /tmp/flatpak-dotnet-generator.py \
+            https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/74697c75b630d7330e77250fc13cb5ea688d9479/dotnet/flatpak-dotnet-generator.py
+          python3 /tmp/flatpak-dotnet-generator.py packaging/flatpak/nuget-sources.json Builder.Linux.sln \
+            --runtime linux-x64 --freedesktop 26.08 --dotnet 10
+          echo "$(grep -c '"url"' packaging/flatpak/nuget-sources.json) NuGet packages"
+
+      - name: Build
+        uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6.8
+        with:
+          bundle: uldb.flatpak
+          manifest-path: packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml
+          cache-key: uldb-flatpak-${{ github.sha }}
