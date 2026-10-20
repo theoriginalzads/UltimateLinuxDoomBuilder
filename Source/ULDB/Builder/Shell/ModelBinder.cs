@@ -197,6 +197,10 @@ namespace ULDB.Shell
 			public int Index { get; init; }
 			/// <summary>The item's group header (ListView groups), or null.</summary>
 			public string Group { get; init; }
+			/// <summary>The item's second and third columns (SubItems 1 and 2), for list views with columns.</summary>
+			public string Sub1 { get; init; }
+			public string Sub2 { get; init; }
+			public object Tag { get; init; }
 			/// <summary>The item's other columns (SubItems 1 and up), joined for a second line or column.</summary>
 			public string SubText { get; init; }
 			public bool Checked { get; init; }
@@ -253,6 +257,9 @@ namespace ULDB.Shell
 					Text = i.Text,
 					Index = list.Items.IndexOf(i),
 					Group = i.Group?.Header,
+					Sub1 = i.SubItems.Count > 1 ? i.SubItems[1].Text : null,
+					Sub2 = i.SubItems.Count > 2 ? i.SubItems[2].Text : null,
+					Tag = i.Tag,
 					SubText = string.Join(" · ", i.SubItems.Skip(1).Select(si => si.Text)),
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,

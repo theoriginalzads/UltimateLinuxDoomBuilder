@@ -40,6 +40,9 @@ namespace ULDB.Shell
 			Register<EffectBrowserForm>(f => new EffectBrowserFormView(f));
 			Register<AngleForm>(f => new AngleFormView(f));
 			Register<TextureSetForm>(f => new TextureSetFormView(f));
+			Register<ScriptEditorForm>(f => new ScriptEditorFormView(f));
+			Register<ScriptGoToLineForm>(f => new ScriptGoToLineFormView(f));
+			Register<ScriptFindReplaceForm>(f => new ScriptFindReplaceFormView(f));
 			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 

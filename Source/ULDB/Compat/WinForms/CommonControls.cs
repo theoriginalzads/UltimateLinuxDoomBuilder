@@ -55,6 +55,10 @@ namespace System.Windows.Forms
 		public bool WordWrap { get; set; } = true;
 		public bool HideSelection { get; set; } = true;
 		public bool ShortcutsEnabled { get; set; } = true;
+		// Clipboard commands: the view's text box handles them itself.
+		public void Cut() { }
+		public void Copy() { }
+		public void Paste() { }
 		public int MaxLength { get; set; } = 32767;
 		public BorderStyle BorderStyle { get; set; } = BorderStyle.Fixed3D;
 		public int SelectionStart { get; set; }

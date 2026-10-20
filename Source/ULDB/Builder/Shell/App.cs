@@ -18,6 +18,12 @@ namespace ULDB.Shell
 				Source = new System.Uri("avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml")
 			});
 
+			// The script editor's text control.
+			Styles.Add(new StyleInclude(new System.Uri("avares://Builder/"))
+			{
+				Source = new System.Uri("avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml")
+			});
+
 			Styles.Add(new StyleInclude(new System.Uri("avares://Builder/"))
 			{
 				Source = new System.Uri("avares://Builder/Shell/Styles.axaml")

@@ -1,0 +1,7 @@
+<!-- ULDB: the window of upstream's ScriptEditorForm ("Script Editor", model-ported): the editor panel. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ScriptEditorFormView"
+        Title="Script Editor" Width="1100" Height="760" MinWidth="640" MinHeight="420">
+  <ContentControl x:Name="editor"/>
+</Window>

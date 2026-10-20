@@ -371,6 +371,12 @@ namespace System.Windows.Forms
 		public bool ReadOnly { get; set; }
 		public void SelectAll() { }
 		public void Clear() => Text = "";
+		// The view's text box handles the clipboard and undo itself when it has the focus.
+		public void Undo() { }
+		public void Cut() { }
+		public void Copy() { }
+		public void Paste() { }
+		public TextBox TextBox => null;
 	}
 
 	public class ToolStripComboBox : ToolStripControlHost

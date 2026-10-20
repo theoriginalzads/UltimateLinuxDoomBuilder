@@ -127,6 +127,8 @@ namespace System.Windows.Forms
 		protected virtual bool IsInputKey(Keys keyData) => false;
 		protected virtual bool ProcessKeyPreview(ref Message m) => false;
 		protected virtual bool ProcessTabKey(bool forward) => false;
+		/// <summary>ULDB: offers a key to the control as WinForms does before the key reaches the focused child (shortcuts).</summary>
+		public bool RaiseProcessCmdKey(Keys keyData) { Message m = default; return ProcessCmdKey(ref m, keyData); }
 		protected virtual bool ProcessDialogKey(Keys keyData) => false;
 		protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData) => false;
 		protected virtual void WndProc(ref Message m) { }
@@ -334,6 +336,9 @@ namespace System.Windows.Forms
 
 		private DialogResult dialogresult;
 
+		/// <summary>Like WinForms, a new form isn't visible until it's shown (callers test Visible before Show).</summary>
+		public Form() { Visible = false; }
+
 		/// <summary>Like WinForms: setting a result on a form shown with ShowDialog closes it.</summary>
 		public DialogResult DialogResult
 		{
@@ -451,8 +456,9 @@ namespace System.Windows.Forms
 
 			dialogresult = DialogResult.None;
 			Modal = true;
+			Visible = true;
 			try { WinFormsHost.Current.ShowForm(this, view, owner, true); }
-			finally { Modal = false; }
+			finally { Modal = false; Visible = false; }
 			if(dialogresult == DialogResult.None) dialogresult = DialogResult.Cancel; // Closed with the title bar
 			return dialogresult;
 		}
@@ -965,6 +971,7 @@ namespace System.Windows.Forms
 		public SortOrder Sorting { get; set; }
 		public bool LabelWrap { get; set; }
 		public bool LabelEdit { get; set; }
+		public bool GridLines { get; set; }
 		/// <summary>ULDB: the item whose label the view should edit (BeginEdit).</summary>
 		public ListViewItem EditingItem { get; set; }
 		public event LabelEditEventHandler BeforeLabelEdit;
@@ -1012,6 +1019,7 @@ namespace System.Windows.Forms
 
 		// Batch updates: the view refreshes when they end.
 		private int updating;
+		internal void OnItemsChanged() { if(updating == 0) NotifyStylesChanged(); }
 		public void BeginUpdate() => updating++;
 		public void EndUpdate() { if(updating > 0 && --updating == 0) NotifyStylesChanged(); }
 
@@ -1073,9 +1081,15 @@ namespace System.Windows.Forms
 			internal ListViewItemCollection(ListView owner) { this.owner = owner; }
 			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
 			public ListViewItem Add(string key, string text, int imageIndex) { ListViewItem item = new ListViewItem(text) { Name = key, ImageIndex = imageIndex }; Add(item); return item; }
-			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); return item; }
-			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); }
+			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); Changed(); return item; }
+			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); Changed(); }
 			public void AddRange(ListViewItem[] items) { foreach(ListViewItem i in items) Add(i); }
+			public new void Clear() { base.Clear(); Changed(); }
+			public new bool Remove(ListViewItem item) { bool removed = base.Remove(item); Changed(); return removed; }
+			public new void RemoveAt(int index) { base.RemoveAt(index); Changed(); }
+
+			// The view shows the items again (not inside BeginUpdate/EndUpdate, which refresh once at the end).
+			private void Changed() { owner?.OnItemsChanged(); }
 		}
 	}
 

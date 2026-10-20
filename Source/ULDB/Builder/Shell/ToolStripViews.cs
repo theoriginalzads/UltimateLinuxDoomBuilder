@@ -45,6 +45,20 @@ namespace ULDB.Shell
 			WF.ToolStripDropDown.CloseHandler = menu => Post(() => { if(openmenus.TryGetValue(menu, out ContextMenu cm)) cm.Close(); });
 		}
 
+		/// <summary>
+		/// An Avalonia context menu for a control's ContextMenuStrip (shown on right-click): upstream's
+		/// Opening handler runs first, so it can enable and disable items.
+		/// </summary>
+		public static ContextMenu CreateContextMenu(WF.ToolStripDropDown menu)
+		{
+			ContextMenu cm = new ContextMenu();
+			cm.Opening += (s, e) => { if(!menu.RaiseOpening()) e.Cancel = true; };
+			cm.Opened += (s, e) => menu.RaiseOpened();
+			cm.Closed += (s, e) => menu.RaiseClosed(WF.ToolStripDropDownCloseReason.CloseCalled);
+			foreach(WF.ToolStripItem item in menu.Items) cm.Items.Add(CreateMenuEntry(item));
+			return cm;
+		}
+
 		private static void ShowContextMenu(WF.ToolStripDropDown menu)
 		{
 			if(!menu.RaiseOpening()) return;

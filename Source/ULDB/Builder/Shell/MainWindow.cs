@@ -479,6 +479,14 @@ namespace ULDB.Shell
 							nf.ShowDialog(form);
 							break;
 						}
+						case "scripteditor": // the script editor, reporting why it didn't open
+							Console.WriteLine("[devstep] HasScriptLumps=" + General.Map.Config.HasScriptLumps());
+							try { General.Map.ShowScriptEditor(); Console.WriteLine("[devstep] script editor shown: " + (General.Map.ScriptEditor != null && General.Map.ScriptEditor.Visible)); }
+							catch(Exception ex) { Console.WriteLine("[devstep] script editor failed: " + ex); }
+							try { Console.WriteLine("[devstep] view: " + FormViews.Create(General.Map.ScriptEditor)); }
+							catch(Exception ex) { Console.WriteLine("[devstep] view failed: " + ex); }
+							Console.WriteLine("[devstep] script editor window: " + (FormWindows.WindowFor(General.Map.ScriptEditor)?.ToString() ?? "none") + " visible=" + FormWindows.WindowFor(General.Map.ScriptEditor)?.IsVisible);
+							break;
 						case "effectbrowser": CodeImp.DoomBuilder.Windows.EffectBrowserForm.BrowseEffect(form, 0); break;
 						case "thingbrowser": CodeImp.DoomBuilder.Windows.ThingBrowserForm.BrowseThing(form, 1); break;
 						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode

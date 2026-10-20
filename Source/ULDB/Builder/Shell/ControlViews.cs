@@ -38,6 +38,9 @@ namespace ULDB.Shell
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
 			Register<ImageBrowserControl>(m => new ImageBrowserControlView(m));
 			Register<AngleControl>(m => new AngleControlView(m));
+			Register<ScriptEditorControl>(m => new ULDB.Controls.ScriptEditorControlView(m));
+			Register<ScriptEditorPreviewControl>(m => new ULDB.Controls.ScriptEditorPreviewControlView(m));
+			Register<ScriptEditorPanel>(m => new ULDB.Controls.ScriptEditorPanelView(m));
 			Register<ResourceListEditor>(m => m.View);
 			Register<PasteOptionsControl>(m => new PasteOptionsControlView(m));
 			Register<ExternalCommandControl>(m => new ExternalCommandControlView(m));
