@@ -31,4 +31,5 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 | Undo/Redo panel | Compact rows, highlight for the current step; clicking a level undoes/redoes to it | Issue fixes |
 | Opening a map | A dimmed "Opening map..." cover appears while the map loads, since the window can't repaint during the load | Issue #13 |
 | Unexpected error window | ULDB's own port of UDB's (system info for Linux, Continue/Quit, link to ULDB's issue tracker) | Issue #7 |
+| Texture and flat browser | Same sets tree, filter, size, "used first", classic view and size filters; the tile grid is drawn natively (size badges, accent-colour selection, the group title across the top); the tree's icons are vector icons. Opens larger (1000x640) the first time | Phase 3 port; not yet reviewed by the user |
 | *(More entries are added as UI work continues in Phase 3.)* | | |

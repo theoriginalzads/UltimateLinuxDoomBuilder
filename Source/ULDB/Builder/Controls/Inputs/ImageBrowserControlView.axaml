@@ -1,0 +1,38 @@
+<!-- ULDB: the view of upstream's ImageBrowserControl (model-ported): the grid of image tiles and,
+     below it, the filter box, size, view options and the texture/flat switch. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ImageBrowserControlView">
+  <DockPanel>
+    <StackPanel x:Name="inputpanel" DockPanel.Dock="Bottom" Spacing="6" Margin="0,8,0,0">
+      <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="6">
+        <TextBlock x:Name="label" Classes="uldb-field"/>
+        <TextBox x:Name="objectname" Grid.Column="1" Watermark="Type to filter"/>
+        <Button x:Name="objectclear" Grid.Column="2" Classes="uldb-tool"/>
+        <CheckBox x:Name="usedtexturesfirst" Grid.Column="3" Margin="8,0,0,0"/>
+        <CheckBox x:Name="classicview" Grid.Column="4"/>
+      </Grid>
+      <WrapPanel Orientation="Horizontal" ItemSpacing="16" LineSpacing="6">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <TextBlock x:Name="label1" Classes="uldb-field"/>
+          <ComboBox x:Name="sizecombo" MinWidth="78"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <TextBlock x:Name="filterwidthlabel" Classes="uldb-field"/>
+          <ContentControl x:Name="filterWidth"/>
+          <TextBlock x:Name="filterheightlabel" Classes="uldb-field" Margin="4,0,0,0"/>
+          <ContentControl x:Name="filterHeight"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <TextBlock x:Name="labelMixMode" Classes="uldb-field"/>
+          <ComboBox x:Name="texturetypecombo" MinWidth="130"/>
+        </StackPanel>
+        <CheckBox x:Name="longtexturenames"/>
+        <CheckBox x:Name="centeritem"/>
+      </WrapPanel>
+    </StackPanel>
+    <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+      <ScrollViewer x:Name="scroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"/>
+    </Border>
+  </DockPanel>
+</UserControl>

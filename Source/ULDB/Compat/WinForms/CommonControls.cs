@@ -233,6 +233,7 @@ namespace System.Windows.Forms
 		public BorderStyle BorderStyle { get; set; }
 		public bool Panel1Collapsed { get => collapse1; set { collapse1 = value; NotifyStylesChanged(); } }
 		public bool Panel2Collapsed { get => collapse2; set { collapse2 = value; NotifyStylesChanged(); } }
+		public Rectangle SplitterRectangle => Rectangle.Empty;
 		public event SplitterEventHandler SplitterMoved;
 		public void RaiseSplitterMoved(int distance) { SplitterDistance = distance; SplitterMoved?.Invoke(this, new SplitterEventArgs(0, 0, distance, distance)); }
 		public void BeginInit() { }

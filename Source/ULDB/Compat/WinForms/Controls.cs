@@ -126,6 +126,7 @@ namespace System.Windows.Forms
 		protected virtual bool IsInputChar(char charCode) => false;
 		protected virtual bool IsInputKey(Keys keyData) => false;
 		protected virtual bool ProcessKeyPreview(ref Message m) => false;
+		protected virtual bool ProcessTabKey(bool forward) => false;
 		protected virtual bool ProcessDialogKey(Keys keyData) => false;
 		protected virtual bool ProcessCmdKey(ref Message msg, Keys keyData) => false;
 		protected virtual void WndProc(ref Message m) { }

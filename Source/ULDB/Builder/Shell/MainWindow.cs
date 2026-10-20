@@ -527,6 +527,9 @@ namespace ULDB.Shell
 							CodeImp.DoomBuilder.Windows.ResourceOptionsForm resform = new CodeImp.DoomBuilder.Windows.ResourceOptionsForm(new CodeImp.DoomBuilder.Data.DataLocation(), "Add Resource", null);
 							resform.ShowDialog(form);
 							break;
+						case "texbrowser": // texbrowser:textures|flats[:name], the texture/flat browser
+							CodeImp.DoomBuilder.Windows.TextureBrowserForm.Browse(form, p.Length > 2 ? p[2] : "STARTAN3", p.Length > 1 && p[1] == "flats");
+							break;
 						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{

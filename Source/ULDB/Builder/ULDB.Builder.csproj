@@ -126,6 +126,11 @@
     <Compile Include="$(UpstreamCore)Controls/CommentEditor.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.cs" />
     <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CollapsibleSplitContainer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageBrowserControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageBrowserControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextureBrowserForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/MultiSelectTreeview.cs" />
     <Compile Include="$(UpstreamCore)Controls/BufferedTreeView.cs" />
     <Compile Include="$(UpstreamCore)Controls/ColoredComboBox.cs" />
@@ -198,6 +203,7 @@
     <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
     <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
     <EmbeddedResource Update="FormResources/ThingBrowserControl.resx" LogicalName="CodeImp.DoomBuilder.Controls.ThingBrowserControl.resources" />
+    <EmbeddedResource Update="FormResources/TextureBrowserForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.TextureBrowserForm.resources" />
     <EmbeddedResource Update="FormResources/SectorEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.SectorEditFormUDMF.resources" />
     <EmbeddedResource Update="FormResources/LinedefEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF.resources" />
   </ItemGroup>

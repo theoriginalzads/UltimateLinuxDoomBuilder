@@ -120,6 +120,10 @@ App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source
 
 GitHub issues #6–#15 worked through. #6, #8–#12, #14, #15 fixed and checked with ULDB's own captures, dev steps or a unit test (`PickingALevelInTheUndoPanelUndoesToIt`); the details are in `docs/ux-changes.md`. **#7** (exit on an unknown error) wasn't reproduced; `ExceptionDialog` is now ported, so an unhandled exception should show the real error instead. **#13**: opening a map takes ~3.7 s in Debug for both `small.wad` and `large.wad`, so the time is fixed start-up/resource loading, not map size; the window now shows an "Opening map..." overlay (`ULDB.Platform.Busy`). The map still loads on the UI thread (a real fix would move it off-thread). Release timing wasn't measured. New: `tests/maps/tags.wad`, dev steps in `MainWindow` (see the `ULDB_SHOW_FORM` handling), `~/.cache/uldb-shots/loadtime.sh` (not in the repo). To verify on the real desktop: toolbar » popups, tree expand/rename, Undo/Redo clicking, Find & Replace closing, Add Resource alignment, comment placeholder, link icons, the overlay, and whether #7 recurs.
 
+### Texture browser (branch `phase-3/issue-fixes`, 20 Oct 2026)
+
+`TextureBrowserForm` and `ImageBrowserControl` now compile unchanged (model port): ULDB adds `ImageSelectorPanel` (state) and `ImageBrowserItem` (no drawing) as its own files, and the views `TextureBrowserFormView`, `ImageBrowserControlView` and `ImageTileList` (the tile grid). Compat gained `Control.ProcessTabKey` and `SplitContainer.SplitterRectangle`. Check with `ULDB_SHOW_FORM=texbrowser:textures|flats[:NAME]`; `EditFormTests` has a test. Checked on a ULDB capture only (list, tree, filter row); **not tried by hand**: picking from the Sector/Linedef dialogs, double-click, cursor keys, typing to filter, classic view, folders, used-first, multi-resource trees, resizing the split. The Flat/Texture set editor (`TextureSetForm`) and `FlatBrowserForm` (unused upstream) aren't ported.
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.

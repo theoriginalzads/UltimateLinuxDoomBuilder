@@ -46,6 +46,22 @@ namespace ULDB.Tests
 		}
 
 		[SkippableFact]
+		public void TextureBrowserFormListsTexturesAndSelectsTheCurrentOne()
+		{
+			WithMap(manager =>
+			{
+				using(TextureBrowserForm f = new TextureBrowserForm("STARTAN3", false))
+				{
+					f.RaiseShown();
+					CodeImp.DoomBuilder.Controls.ImageBrowserControl browser = (CodeImp.DoomBuilder.Controls.ImageBrowserControl)typeof(TextureBrowserForm)
+						.GetField("browser", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(f);
+					Assert.NotNull(browser.SelectedItem);
+					Assert.Equal("STARTAN3", browser.SelectedItem.TextureName);
+				}
+			});
+		}
+
+		[SkippableFact]
 		public void VertexEditFormSetsUp()
 		{
 			WithMap(manager =>
