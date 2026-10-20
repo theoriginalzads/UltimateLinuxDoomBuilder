@@ -37,6 +37,8 @@ namespace ULDB.Shell
 			Register<TagsSelector>(m => new TagsSelectorView(m));
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
 			Register<ImageBrowserControl>(m => new ImageBrowserControlView(m));
+			Register<PasteOptionsControl>(m => new PasteOptionsControlView(m));
+			Register<ExternalCommandControl>(m => new ExternalCommandControlView(m));
 			// Any upstream tree (plugins' dockers: Tag Explorer, sound environments...)
 			Register<WF.TreeView>(m => new ULDB.Controls.TreeViewView(m));
 			// Plain grids that just list rows (Filter Selected Things); others have their own views.

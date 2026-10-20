@@ -1,0 +1,98 @@
+<!-- ULDB: the window of upstream's ThingsFiltersForm ("Things Filters", model-ported): the list
+     of filters on the left; the selected filter's name, mode and rules on the right. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.Windows.ThingsFiltersFormView"
+        Title="Things Filters" Width="900" Height="620" MinWidth="760" MinHeight="560" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid ColumnDefinitions="230,16,*">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+          <Button x:Name="addfilter"/>
+          <Button x:Name="deletefilter"/>
+        </StackPanel>
+        <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+          <ListBox x:Name="listfilters" SelectionMode="Single">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+                <TextBlock Text="{Binding Text}" Margin="4,2"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Border>
+      </DockPanel>
+      <Border x:Name="filtergroup" Grid.Column="2" Classes="uldb-group">
+        <DockPanel>
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8" ColumnSpacing="8" Margin="0,0,0,10">
+            <TextBlock x:Name="label1" Classes="uldb-field"/>
+            <TextBox x:Name="filtername" Grid.Column="1"/>
+            <CheckBox x:Name="invert" Grid.Column="2"/>
+            <TextBlock x:Name="label9" Grid.Row="1" Classes="uldb-field"/>
+            <ComboBox x:Name="filtermode" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+          </Grid>
+          <TabControl x:Name="tabs">
+            <TabItem x:Name="tabbasic">
+              <StackPanel Spacing="8" Margin="0,8,0,0">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="8">
+                  <Grid.Styles><Style Selector="TextBlock.uldb-field"><Setter Property="MinWidth" Value="110"/></Style></Grid.Styles>
+                  <TextBlock x:Name="label2" Classes="uldb-field"/>
+                  <ComboBox x:Name="filtercategory" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                  <TextBlock x:Name="label4" Grid.Row="1" Classes="uldb-field"/>
+                  <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                    <ContentControl x:Name="filtertype"/>
+                    <Button x:Name="browsetype" Grid.Column="1" Classes="uldb-tool"/>
+                  </Grid>
+                  <TextBlock x:Name="label5" Grid.Row="2" Classes="uldb-field"/>
+                  <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                    <ContentControl x:Name="filterangle" Width="92"/>
+                    <Button x:Name="browseangle" Classes="uldb-tool"/>
+                  </StackPanel>
+                  <TextBlock x:Name="labelzheight" Grid.Row="3" Classes="uldb-field"/>
+                  <ContentControl x:Name="filterzheight" Grid.Row="3" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                </Grid>
+                <TextBlock x:Name="label6" TextWrapping="Wrap" Opacity="0.7" FontSize="12" Margin="0,8,0,0"/>
+              </StackPanel>
+            </TabItem>
+            <TabItem x:Name="tabflags">
+              <DockPanel Margin="0,8,0,0">
+                <TextBlock x:Name="label3" DockPanel.Dock="Top" Classes="uldb-field" Margin="0,0,0,6"/>
+                <ContentControl x:Name="filterfields"/>
+              </DockPanel>
+            </TabItem>
+            <TabItem x:Name="tabaction">
+              <StackPanel Spacing="8" Margin="0,8,0,0">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" RowDefinitions="Auto,Auto" RowSpacing="8">
+                  <TextBlock x:Name="label7" Classes="uldb-field"/>
+                  <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                    <ContentControl x:Name="filteraction"/>
+                    <Button x:Name="browseaction" Grid.Column="1" Classes="uldb-tool"/>
+                  </Grid>
+                  <TextBlock x:Name="labeltag" Grid.Row="1" Classes="uldb-field"/>
+                  <ContentControl x:Name="filtertag" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                </Grid>
+                <StackPanel x:Name="argumentspanel" Spacing="6">
+                  <TextBlock x:Name="label8" Classes="uldb-field"/>
+                  <Grid ColumnDefinitions="*,200" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                    <TextBlock x:Name="arg0label" VerticalAlignment="Center"/><ContentControl x:Name="arg0" Grid.Column="1"/>
+                    <TextBlock x:Name="arg1label" Grid.Row="1" VerticalAlignment="Center"/><ContentControl x:Name="arg1" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock x:Name="arg2label" Grid.Row="2" VerticalAlignment="Center"/><ContentControl x:Name="arg2" Grid.Row="2" Grid.Column="1"/>
+                    <TextBlock x:Name="arg3label" Grid.Row="3" VerticalAlignment="Center"/><ContentControl x:Name="arg3" Grid.Row="3" Grid.Column="1"/>
+                    <TextBlock x:Name="arg4label" Grid.Row="4" VerticalAlignment="Center"/><ContentControl x:Name="arg4" Grid.Row="4" Grid.Column="1"/>
+                  </Grid>
+                </StackPanel>
+              </StackPanel>
+            </TabItem>
+            <TabItem x:Name="tabcustom">
+              <ContentControl x:Name="fieldslist" Margin="0,8,0,0"/>
+            </TabItem>
+          </TabControl>
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>

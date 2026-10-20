@@ -1,0 +1,33 @@
+<!-- ULDB: the window of upstream's PreAndPostCommandsForm (model-ported): commands run around
+     resource reloads and test launches. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.PreAndPostCommandsFormView"
+        Title="Pre and post commands" Width="760" Height="640" MinWidth="560" MinHeight="520" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="btnOK" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="btnCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <TabControl x:Name="tabControl1" Padding="0,10,0,0">
+      <TabItem x:Name="tabPage1">
+        <ScrollViewer>
+          <StackPanel Spacing="10">
+            <TextBlock x:Name="label2" TextWrapping="Wrap" Opacity="0.8"/>
+            <Border Classes="uldb-group"><StackPanel Spacing="6"><TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/><ContentControl x:Name="reloadpre"/></StackPanel></Border>
+            <Border x:Name="groupBox2" Classes="uldb-group"><StackPanel Spacing="6"><TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/><ContentControl x:Name="reloadpost"/></StackPanel></Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem x:Name="tabPage2">
+        <ScrollViewer>
+          <StackPanel Spacing="10">
+            <TextBlock x:Name="label1" TextWrapping="Wrap" Opacity="0.8"/>
+            <Border Classes="uldb-group"><StackPanel Spacing="6"><TextBlock x:Name="groupBox4Title" Classes="uldb-group-title"/><ContentControl x:Name="testpre"/></StackPanel></Border>
+            <Border x:Name="groupBox3" Classes="uldb-group"><StackPanel Spacing="6"><TextBlock x:Name="groupBox3Title" Classes="uldb-group-title"/><ContentControl x:Name="testpost"/></StackPanel></Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

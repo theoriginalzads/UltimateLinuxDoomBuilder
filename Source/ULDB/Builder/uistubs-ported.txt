@@ -85,3 +85,15 @@ CodeImp.DoomBuilder.Controls.ImageBrowserCategoryItem
 CodeImp.DoomBuilder.Controls.ImageSelectorPanel
 CodeImp.DoomBuilder.Windows.TextureBrowserForm
 CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer
+CodeImp.DoomBuilder.Windows.GridSetupForm
+CodeImp.DoomBuilder.Windows.CenterOnCoordinatesForm
+CodeImp.DoomBuilder.Windows.ChangeMapForm
+CodeImp.DoomBuilder.Windows.MapOptionsForm
+CodeImp.DoomBuilder.Windows.ThingsFiltersForm
+CodeImp.DoomBuilder.Windows.TagStatisticsForm
+CodeImp.DoomBuilder.Windows.ThingStatisticsForm
+CodeImp.DoomBuilder.Windows.PasteOptionsForm
+CodeImp.DoomBuilder.Windows.PreAndPostCommandsForm
+CodeImp.DoomBuilder.Controls.PasteOptionsControl
+CodeImp.DoomBuilder.Controls.ExternalCommandControl
+CodeImp.DoomBuilder.Controls.FolderSelectDialog

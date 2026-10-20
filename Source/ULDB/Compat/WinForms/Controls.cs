@@ -960,6 +960,23 @@ namespace System.Windows.Forms
 		public BorderStyle BorderStyle { get; set; }
 		public ColumnHeaderStyle HeaderStyle { get; set; }
 		public ListViewItemCollection Items { get; }
+		public ImageList SmallImageList { get; set; }
+		public ImageList LargeImageList { get; set; }
+		public SortOrder Sorting { get; set; }
+		public bool LabelWrap { get; set; }
+		/// <summary>The item with the focus; the views keep selection and focus together, so the first selected.</summary>
+		public ListViewItem FocusedItem { get { foreach(ListViewItem i in Items) if(i.Selected) return i; return null; } set { if(value != null && !value.Selected) { value.Selected = true; OnSelectionSetByCode(); } } }
+
+		/// <summary>Sorts the items by text (in the order of Sorting), as WinForms does.</summary>
+		public void Sort()
+		{
+			if(Sorting == SortOrder.None) return;
+			List<ListViewItem> sorted = new List<ListViewItem>(Items);
+			sorted.Sort((a, b) => (Sorting == SortOrder.Descending ? -1 : 1) * string.Compare(a.Text, b.Text, StringComparison.CurrentCultureIgnoreCase));
+			Items.Clear();
+			foreach(ListViewItem i in sorted) Items.Add(i);
+			NotifyStylesChanged();
+		}
 
 		public ListView() { Items = new ListViewItemCollection(this); }
 
@@ -1079,6 +1096,7 @@ namespace System.Windows.Forms
 		public object Tag { get; set; }
 		public string ToolTipText { get; set; }
 		public string Name { get; set; }
+		public int ImageIndex { get; set; } = -1;
 	}
 
 	public class ColumnHeader

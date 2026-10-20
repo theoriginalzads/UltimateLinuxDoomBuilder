@@ -23,6 +23,14 @@ namespace ULDB.Shell
 			Register<LinedefEditFormUDMF>(f => new LinedefEditFormUDMFView(f));
 			Register<AboutForm>(f => new AboutView(f));
 			Register<TextureBrowserForm>(f => new TextureBrowserFormView(f));
+			Register<GridSetupForm>(f => new GridSetupFormView(f));
+			Register<CenterOnCoordinatesForm>(f => new CenterOnCoordinatesFormView(f));
+			Register<ChangeMapForm>(f => new ChangeMapFormView(f));
+			Register<TagStatisticsForm>(f => new TagStatisticsFormView(f));
+			Register<ThingStatisticsForm>(f => new ThingStatisticsFormView(f));
+			Register<PasteOptionsForm>(f => new PasteOptionsFormView(f));
+			Register<ThingsFiltersForm>(f => new ThingsFiltersFormView(f));
+			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 
 		/// <summary>Registers the window for a form type.</summary>

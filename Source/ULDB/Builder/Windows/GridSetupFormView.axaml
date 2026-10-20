@@ -1,0 +1,48 @@
+<!-- ULDB: the window of upstream's GridSetupForm ("Custom Grid Setup", model-ported): the grid size
+     and the background image shown behind the grid. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.GridSetupFormView"
+        Title="Custom Grid Setup" Width="400" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="12">
+      <Border Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock Text="Grid" Classes="uldb-group-title"/>
+          <Grid ColumnDefinitions="Auto,92,*">
+            <TextBlock Text="Grid size:" Classes="uldb-field"/>
+            <ContentControl x:Name="gridsize" Grid.Column="1" Width="92"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <Border Classes="uldb-group">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Background image" Classes="uldb-group-title"/>
+          <CheckBox x:Name="showbackground"/>
+          <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Border Classes="uldb-tile" Width="96" Height="96" VerticalAlignment="Top">
+              <Image x:Name="backgroundimage" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="None"/>
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="6">
+              <Button x:Name="selecttexture" HorizontalAlignment="Stretch"/>
+              <Button x:Name="selectflat" HorizontalAlignment="Stretch"/>
+              <Button x:Name="selectfile" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+          </Grid>
+          <Grid ColumnDefinitions="Auto,92,92" RowDefinitions="Auto,Auto" RowSpacing="6" ColumnSpacing="6">
+            <TextBlock x:Name="backoffset" Classes="uldb-field"/>
+            <ContentControl x:Name="backoffsetx" Grid.Column="1" Width="92"/>
+            <ContentControl x:Name="backoffsety" Grid.Column="2" Width="92"/>
+            <TextBlock x:Name="backscale" Grid.Row="1" Classes="uldb-field"/>
+            <ContentControl x:Name="backscalex" Grid.Row="1" Grid.Column="1" Width="92"/>
+            <ContentControl x:Name="backscaley" Grid.Row="1" Grid.Column="2" Width="92"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </DockPanel>
+</Window>

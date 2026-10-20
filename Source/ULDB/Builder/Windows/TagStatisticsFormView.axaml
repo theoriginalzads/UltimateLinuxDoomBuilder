@@ -1,0 +1,15 @@
+<!-- ULDB: the window of upstream's TagStatisticsForm ("Tag statistics", model-ported): the tags
+     in the map and what uses them; the labels can be edited. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.TagStatisticsFormView"
+        Title="Tag statistics" Width="560" Height="480" MinWidth="420" MinHeight="320" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <TextBox x:Name="hint" DockPanel.Dock="Bottom" Margin="0,10,0,0" IsReadOnly="True" TextWrapping="Wrap" Height="76" Opacity="0.8"/>
+    <ContentControl x:Name="dataGridView"/>
+  </DockPanel>
+</Window>

@@ -1,0 +1,23 @@
+<!-- ULDB: the window of upstream's ChangeMapForm ("Change Map", model-ported): the maps in the
+     open WAD file. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.Windows.ChangeMapFormView"
+        Title="Change Map" Width="420" Height="340" MinWidth="320" MinHeight="260" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+      <ListBox x:Name="mapslist" SelectionMode="Single">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+            <TextBlock Text="{Binding Text}" Margin="4,2"/>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </DockPanel>
+</Window>
