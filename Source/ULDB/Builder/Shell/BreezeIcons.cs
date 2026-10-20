@@ -134,6 +134,20 @@ namespace ULDB.Shell
 			["buildermodes_thingsselectinsectors"] = "si " + Poly + ";fa " + C(6.5, 8.5, 1.75) + " " + C(10, 9.5, 1.75),
 			["buildermodes_filterselectedthings"] = "si M1.5,2.5 H14.5 L9.5,8.5 V14 L6.5,12.5 V8.5 Z;fa " + C(12.5, 12.5, 2),
 
+			// Plugin edit modes (by title)
+			["3D Floor Mode"] = "si M1.5,4 L5.5,1.5 H14.5 L10.5,4 Z M1.5,14.5 L5.5,12 H14.5 L10.5,14.5 Z;sa M1.5,9.25 L5.5,6.75 H14.5 L10.5,9.25 Z;fa.45 M1.5,9.25 L5.5,6.75 H14.5 L10.5,9.25 Z",
+			["Slope Mode"] = "si M1.5,13.5 L14.5,5.5 V13.5 Z;fa.45 M1.5,13.5 L14.5,5.5 V13.5 Z;fa " + C(1.5, 13.5, 1.5) + " " + C(14.5, 5.5, 1.5),
+			["Draw Slopes Mode"] = "si.6 M1.5,14.5 H14.5;sa M1.5,14.5 L9,9.5;fa " + C(1.5, 14.5, 1.5) + " " + C(9, 9.5, 1.5) + ";si M11,1.5 L14.5,5 L10,9.5 H7 V6.5 Z",
+			["Stair Sector Builder Mode"] = "si M1.5,14.5 H14.5 V2.5 H11 V6 H7.5 V9.5 H4 V13 H1.5 Z;fa.45 M1.5,14.5 H14.5 V2.5 H11 V6 H7.5 V9.5 H4 V13 H1.5 Z",
+			["Sound Propagation Mode"] = "si M1.5,6 H4 L7,3.5 V12.5 L4,10 H1.5 Z;sa M9.5,5.5 A3.5,3.5 0 0 1 9.5,10.5 M11.5,3.5 A6,6 0 0 1 11.5,12.5 M13.5,1.5 A8.5,8.5 0 0 1 13.5,14.5",
+			["Sound Environment Mode"] = "si M1.5,1.5 H14.5 V14.5 H1.5 Z M3.5,7 H5.5 L8,5 V11 L5.5,9 H3.5 Z;sa M10,6 A2.5,2.5 0 0 1 10,10 M11.75,4.5 A4.5,4.5 0 0 1 11.75,11.5",
+
+			// Plugin buttons (tags get the plugin's assembly name as prefix)
+			["threedfloormode_drawfloorslope"] = "si M1.5,13.5 L14.5,7.5 V13.5 Z;fa.45 M1.5,13.5 L14.5,7.5 V13.5 Z",
+			["threedfloormode_drawceilingslope"] = "si M1.5,2.5 H14.5 L1.5,8.5 Z;fo.45 M1.5,2.5 H14.5 L1.5,8.5 Z",
+			["threedfloormode_drawfloorandceilingslope"] = "si M1.5,2.5 H14.5 L1.5,7 Z M1.5,13.5 L14.5,9 V13.5 Z;fo.45 M1.5,2.5 H14.5 L1.5,7 Z;fa.45 M1.5,13.5 L14.5,9 V13.5 Z",
+			["threedfloormode_relocate3dfloorcontrolsectors"] = "si M1.5,1.5 H6.5 V6.5 H1.5 Z M4,6.5 V12 H8.5;sa M9.5,9.5 H14.5 V14.5 H9.5 Z;fa.45 M9.5,9.5 H14.5 V14.5 H9.5 Z;si M7,10.5 L8.5,12 L7,13.5",
+
 			// BuilderEffects (tags get the plugin's "buildereffects_" prefix)
 			["buildereffects_applyjitter"] = "si.6 " + Poly + ";fa " + C(4, 12, 1.5) + " " + C(3.5, 6, 1.5) + " " + C(8.5, 3.5, 1.5) + " " + C(13, 6.5, 1.5) + " " + C(11, 13, 1.5),
 			["buildereffects_applydirectionalshading"] = "fi.2 M1.5,9 H5.5 V14.5 H1.5 Z;fi.45 M6,9 H10 V14.5 H6 Z;fi.7 M10.5,9 H14.5 V14.5 H10.5 Z;fy " + C(4, 4, 2) + ";sa M7,4 H14 M11.5,2 L14,4 L11.5,6",
@@ -278,6 +292,8 @@ namespace ULDB.Shell
 			["res:PastePropertiesOptions"] = "buildermodes_classicpastepropertieswithoptions",
 			["res:Join"] = "buildermodes_joinsectors", ["res:Merge"] = "buildermodes_mergesectors",
 			["res:NewSector2"] = "Make Sectors Mode", ["res:DrawCurveMode"] = "Draw Curve Mode",
+			// Other plugins
+			["colorpicker_togglelightpannel"] = "res:ColorPick", ["updateslopes"] = "res:Reload",
 		};
 
 		/// <summary>Whether there's a ULDB icon for this toolbar item tag.</summary>

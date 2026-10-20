@@ -63,7 +63,9 @@ namespace ULDB.Shell
 
 			// Left: the edit-modes toolbar.
 			Control modes = ToolStripViews.CreateToolBar(Field<WF.ToolStrip>("modestoolbar"), Orientation.Vertical);
-			Border modesborder = new Border { Child = modes, Padding = new Thickness(1, 2) };
+			// With every plugin's modes it's taller than small windows: it scrolls rather than overflowing.
+			ScrollViewer modesscroll = new ScrollViewer { Content = modes, VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled };
+			Border modesborder = new Border { Child = modesscroll, Padding = new Thickness(1, 2), ClipToBounds = true };
 			modesborder.Classes.Add("uldb-bar");
 
 			// Bottom: info panel and status bar.
@@ -441,10 +443,14 @@ namespace ULDB.Shell
 				ShowFormForDevelopment();
 				// Main window capture, unless a dialog opens first (it's scheduled sooner after opening).
 				DevCapture.Schedule(this, TimeSpan.FromSeconds(4));
+				// After a command-line map has opened, so mode-specific buttons are there too.
 				if(Environment.GetEnvironmentVariable("ULDB_DUMP_TOOLBARS") == "1")
-					foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar" })
-						foreach(WF.ToolStripItem item in Field<WF.ToolStrip>(bar).Items)
-							Console.WriteLine($"[toolbar] {bar} {item.GetType().Name} tag={item.Tag} name={item.Name} tip={item.ToolTipText ?? item.Text} img={(item.Image != null)}");
+					DispatcherTimer.RunOnce(() =>
+					{
+						foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar", "menumain" })
+							foreach(WF.ToolStripItem item in Field<WF.ToolStrip>(bar).Items)
+								Console.WriteLine($"[toolbar] {bar} {item.GetType().Name} tag={item.Tag} name={item.Name} tip={item.ToolTipText ?? item.Text} img={(item.Image != null)}");
+					}, TimeSpan.FromSeconds(3));
 			};
 			Activated += (s, e) => form.RaiseActivated();
 			Deactivated += (s, e) => form.RaiseDeactivate();

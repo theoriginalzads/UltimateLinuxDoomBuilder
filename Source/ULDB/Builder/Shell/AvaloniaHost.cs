@@ -135,7 +135,7 @@ namespace ULDB.Shell
 				{
 					window.Activate(); // dialogs take the focus (KDE may otherwise leave it on the main window)
 					form.RaiseShown();
-					DevCapture.Schedule(window, TimeSpan.FromSeconds(1.5));
+					DevCapture.Schedule(window, TimeSpan.FromSeconds(1.5), form);
 				};
 				window.Activated += (s, e) => form.RaiseActivated();
 				window.Deactivated += (s, e) => form.RaiseDeactivate();

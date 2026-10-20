@@ -30,8 +30,22 @@ namespace ULDB.Shell
 		{
 			return AppBuilder.Configure<App>()
 				.UsePlatformDetect()
-				.With(new X11PlatformOptions { WmClass = Branding.EXECUTABLE })
+				.With(X11Options())
 				.LogToTrace();
+		}
+
+		// Development aid: ULDB_RENDERING=glx|egl|software forces Avalonia's X11 rendering mode
+		// (headless Xvfb sessions otherwise fall back to software, which has no map view).
+		private static X11PlatformOptions X11Options()
+		{
+			X11PlatformOptions options = new X11PlatformOptions { WmClass = Branding.EXECUTABLE };
+			switch(Environment.GetEnvironmentVariable("ULDB_RENDERING")?.ToLowerInvariant())
+			{
+				case "glx": options.RenderingMode = new[] { X11RenderingMode.Glx }; break;
+				case "egl": options.RenderingMode = new[] { X11RenderingMode.Egl }; break;
+				case "software": options.RenderingMode = new[] { X11RenderingMode.Software }; break;
+			}
+			return options;
 		}
 	}
 }
