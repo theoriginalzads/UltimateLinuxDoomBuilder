@@ -93,6 +93,8 @@ namespace ULDB.Shell
 					for(int flash = 0; flash < 2; flash++)
 						for(int i = 0; i < 4; i++)
 							if(ReferenceEquals(form.STATUS_IMAGES[flash, i], item.Image)) return "status:" + names[i] + (flash == 1 ? ":dim" : "");
+					// The designer's own picture (before the first status change) is the "ready" one
+					return "status:ready";
 				}
 				if(item.Name == "warnsLabel") return item.Text == "0" ? "warns:off" : "warns:on";
 				return null;
@@ -486,6 +488,16 @@ namespace ULDB.Shell
 							try { Console.WriteLine("[devstep] view: " + FormViews.Create(General.Map.ScriptEditor)); }
 							catch(Exception ex) { Console.WriteLine("[devstep] view failed: " + ex); }
 							Console.WriteLine("[devstep] script editor window: " + (FormWindows.WindowFor(General.Map.ScriptEditor)?.ToString() ?? "none") + " visible=" + FormWindows.WindowFor(General.Map.ScriptEditor)?.IsVisible);
+							break;
+						case "quicksearch": // quicksearch:<text>, types into the script editor's quick search box
+						{
+							var panel = General.Map.ScriptEditor.Editor;
+							var box = (WF.ToolStripTextBox)typeof(CodeImp.DoomBuilder.Controls.ScriptEditorPanel).GetField("searchbox", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(panel);
+							box.Text = p[1];
+							break;
+						}
+						case "typeinscript": // typeinscript:<text>, inserts text at the start of the script editor's active script
+							General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.InsertText(0, p[1] + "\r\n"); Console.WriteLine("[devstep] changed=" + General.Map.ScriptEditor.Editor.ActiveTab.IsChanged + " title=" + General.Map.ScriptEditor.Editor.ActiveTab.Text + " undo=" + General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.CanUndo);
 							break;
 						case "effectbrowser": CodeImp.DoomBuilder.Windows.EffectBrowserForm.BrowseEffect(form, 0); break;
 						case "thingbrowser": CodeImp.DoomBuilder.Windows.ThingBrowserForm.BrowseThing(form, 1); break;

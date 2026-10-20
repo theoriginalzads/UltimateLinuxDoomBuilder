@@ -76,6 +76,8 @@ namespace ScintillaNET
 			Markers = new MarkerCollection();
 			Indicators = new IndicatorCollection();
 			Document.Changed += OnDocumentChanged;
+			// TextChanged after the change is complete and recorded for undo (Modified, CanUndo are right then)
+			Document.UpdateFinished += (s, e) => OnTextChanged(EventArgs.Empty);
 			Document.UndoStack.SizeLimit = 1000;
 		}
 
@@ -133,7 +135,6 @@ namespace ScintillaNET
 				anchor = AdjustOffset(anchor, e);
 				caret = AdjustOffset(caret, e);
 			}
-			OnTextChanged(EventArgs.Empty);
 		}
 
 		private static int AdjustOffset(int offset, DocumentChangeEventArgs e)

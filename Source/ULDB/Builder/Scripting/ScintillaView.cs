@@ -521,8 +521,9 @@ namespace ULDB.Scripting
 			}
 			else
 			{
+				// Select puts the caret at the end; only a backwards selection needs it moved
 				editor.Select(Math.Min(anchor, caret), Math.Abs(anchor - caret));
-				editor.CaretOffset = caret;
+				if(caret < anchor) editor.TextArea.Caret.Offset = caret;
 			}
 		}
 

@@ -832,8 +832,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// Enable/disable buttons
 			bool tabiseditable = (t != null && !t.IsReadOnly); //mxd
 
+#if ULDB
+			// ULDB: Save and Save All also work on the map's script lumps (which upstream only saves implicitly)
+			buttonsave.Enabled = (tabiseditable && t.IsChanged);
+			buttonsaveall.Enabled = AnyChangedScripts(explicitsavescripts);
+#else
 			buttonsave.Enabled = (tabiseditable && t.ExplicitSave && t.IsChanged);
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
+#endif
 			buttoncompile.Enabled = (tabiseditable && t.Config.Compiler != null);
 			buttonsearch.Enabled = (t != null); //mxd
 			buttonkeywordhelp.Enabled = (t != null && !string.IsNullOrEmpty(t.Config.KeywordHelp));
@@ -961,6 +967,10 @@ namespace CodeImp.DoomBuilder.Controls
 					buttonsave_Click(this, EventArgs.Empty);
 				else if(t.Config.Compiler != null) //mxd
 					buttoncompile_Click(this, EventArgs.Empty);
+#if ULDB
+				else if(!t.IsReadOnly && t.IsChanged) // ULDB: save the script lump into the map
+					buttonsave_Click(this, EventArgs.Empty);
+#endif
 				else
 					General.MessageBeep(MessageBeepType.Default);
 			}
@@ -1129,7 +1139,11 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(ScriptDocumentTab t in tabs.TabPages)
 			{
 				// Use explicit save for this script?
+#if ULDB
+				if(t.ExplicitSave || (!t.IsReadOnly && t.IsChanged))
+#else
 				if(t.ExplicitSave)
+#endif
 				{
 					if(!SaveScript(t)) break;
 				}
@@ -1418,9 +1432,24 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					buttonundo.Enabled = curtab.Editor.Scintilla.CanUndo;
 					buttonredo.Enabled = curtab.Editor.Scintilla.CanRedo;
+#if ULDB
+					buttonsave.Enabled = (!curtab.IsReadOnly && curtab.IsChanged);
+					buttonsaveall.Enabled = AnyChangedScripts(0);
+#endif
 				}
 			}
 		}
+
+#if ULDB
+		// ULDB: whether Save All has anything to do: explicit-save scripts, or any changed script
+		private bool AnyChangedScripts(int explicitsavescripts)
+		{
+			if(explicitsavescripts > 0) return true;
+			foreach(ScriptDocumentTab dt in tabs.TabPages)
+				if(!dt.IsReadOnly && dt.IsChanged) return true;
+			return false;
+		}
+#endif
 
 		//mxd
 		private void scintilla_OnUpdateUI(object sender, UpdateUIEventArgs e)
@@ -1496,14 +1525,22 @@ namespace CodeImp.DoomBuilder.Controls
 		private void filemenuitem_DropDownOpening(object sender, EventArgs e)
 		{
 			ScriptDocumentTab t = ActiveTab;
+#if ULDB
+			menusave.Enabled = (t != null && !t.IsReadOnly && t.IsChanged);
+#else
 			menusave.Enabled = (t != null && !t.IsReadOnly && t.ExplicitSave && t.IsChanged);
+#endif
 
 			// Any explicit save scripts?
 			int explicitsavescripts = 0;
 			foreach(ScriptDocumentTab dt in tabs.TabPages)
 				if(dt.ExplicitSave && !dt.IsReadOnly) explicitsavescripts++;
 
+#if ULDB
+			menusaveall.Enabled = AnyChangedScripts(explicitsavescripts);
+#else
 			menusaveall.Enabled = (explicitsavescripts > 0);
+#endif
 		}
 
 		private void editmenuitem_DropDownOpening(object sender, EventArgs e)
