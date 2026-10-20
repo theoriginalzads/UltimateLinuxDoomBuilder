@@ -27,7 +27,7 @@
         <StackPanel Spacing="8">
           <TextBlock TextWrapping="Wrap" Opacity="0.75" FontSize="12"
                      Text="Drag &amp; drop resources to add them. Drag items to change order (lower items override higher items). Use the context menu to cut, copy, paste or remove items."/>
-          <controls:ResourceListEditor x:Name="datalocations"/>
+          <controls:ResourceListEditorView x:Name="datalocations"/>
           <CheckBox x:Name="strictpatches" Content="Strictly load patches between P_START and P_END only for this file"/>
           <CheckBox x:Name="longtexturenames" Content="Use long texture names"/>
         </StackPanel>

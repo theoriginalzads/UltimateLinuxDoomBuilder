@@ -100,3 +100,6 @@ CodeImp.DoomBuilder.Controls.FolderSelectDialog
 CodeImp.DoomBuilder.Windows.LinedefEditForm
 CodeImp.DoomBuilder.Windows.SectorEditForm
 CodeImp.DoomBuilder.Windows.ThingEditForm
+CodeImp.DoomBuilder.Windows.PreferencesForm
+CodeImp.DoomBuilder.Windows.ConfigForm
+CodeImp.DoomBuilder.Windows.PreferencesController

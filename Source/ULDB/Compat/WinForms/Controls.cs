@@ -964,6 +964,9 @@ namespace System.Windows.Forms
 		public ImageList LargeImageList { get; set; }
 		public SortOrder Sorting { get; set; }
 		public bool LabelWrap { get; set; }
+		public ListViewGroupCollection Groups { get; } = new ListViewGroupCollection();
+		public void AutoResizeColumns(ColumnHeaderAutoResizeStyle headerAutoResize) { }
+		public void EnsureVisible(int index) { if(index >= 0 && index < Items.Count) Items[index].EnsureVisible(); }
 		/// <summary>The item with the focus; the views keep selection and focus together, so the first selected.</summary>
 		public ListViewItem FocusedItem { get { foreach(ListViewItem i in Items) if(i.Selected) return i; return null; } set { if(value != null && !value.Selected) { value.Selected = true; OnSelectionSetByCode(); } } }
 
@@ -981,6 +984,10 @@ namespace System.Windows.Forms
 		public ListView() { Items = new ListViewItemCollection(this); }
 
 		public event EventHandler SelectedIndexChanged;
+		public event ItemCheckedEventHandler ItemChecked;
+		public event ListViewItemSelectionChangedEventHandler ItemSelectionChanged;
+		internal void OnItemChecked(ListViewItem item) => ItemChecked?.Invoke(this, new ItemCheckedEventArgs(item));
+		internal void OnItemSelectionChanged(ListViewItem item) => ItemSelectionChanged?.Invoke(this, new ListViewItemSelectionChangedEventArgs(item, item.Index, item.Selected));
 
 		/// <summary>ULDB: the view calls this after changing the items' Selected, as WinForms raises it.</summary>
 		public void RaiseSelectedIndexChanged() => SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
@@ -1047,6 +1054,7 @@ namespace System.Windows.Forms
 			public ListViewItemCollection() { }
 			internal ListViewItemCollection(ListView owner) { this.owner = owner; }
 			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
+			public ListViewItem Add(string key, string text, int imageIndex) { ListViewItem item = new ListViewItem(text) { Name = key, ImageIndex = imageIndex }; Add(item); return item; }
 			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); return item; }
 			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); }
 			public void AddRange(ListViewItem[] items) { foreach(ListViewItem i in items) Add(i); }
@@ -1089,14 +1097,54 @@ namespace System.Windows.Forms
 			public ListViewSubItem Add(string text) { ListViewSubItem item = new ListViewSubItem(owner, text); base.Add(item); return item; }
 			public new ListViewSubItem Add(ListViewSubItem item) { base.Add(item); return item; }
 		}
-		public bool Checked { get; set; }
-		public bool Selected { get; set; }
+		private bool itemchecked, selected;
+		public bool Checked { get => itemchecked; set { if(itemchecked == value) return; itemchecked = value; ListView?.OnItemChecked(this); } }
+		public bool Selected { get => selected; set { if(selected == value) return; selected = value; ListView?.OnItemSelectionChanged(this); } }
 		public Color ForeColor { get; set; } = SystemColors.WindowText;
 		public Color BackColor { get; set; } = SystemColors.Window;
 		public object Tag { get; set; }
 		public string ToolTipText { get; set; }
 		public string Name { get; set; }
 		public int ImageIndex { get; set; } = -1;
+		public bool UseItemStyleForSubItems { get; set; } = true;
+		public ListViewGroup Group { get; set; }
+		public void Remove() { ListView?.Items.Remove(this); }
+	}
+
+	public class ListViewGroup
+	{
+		public ListViewGroup() { }
+		public ListViewGroup(string header) { Header = header; }
+		public ListViewGroup(string key, string header) { Name = key; Header = header; }
+		public string Header { get; set; }
+		public string Name { get; set; }
+		public object Tag { get; set; }
+	}
+
+	public class ListViewGroupCollection : List<ListViewGroup>
+	{
+		public ListViewGroup Add(string key, string headerText) { ListViewGroup g = new ListViewGroup(key, headerText); base.Add(g); return g; }
+		public new int Add(ListViewGroup group) { base.Add(group); return Count - 1; }
+		public ListViewGroup this[string key] { get { foreach(ListViewGroup g in this) if(g.Name == key) return g; return null; } }
+	}
+
+	public enum ColumnHeaderAutoResizeStyle { None, HeaderSize, ColumnContent }
+
+	public delegate void ItemCheckedEventHandler(object sender, ItemCheckedEventArgs e);
+	public delegate void ListViewItemSelectionChangedEventHandler(object sender, ListViewItemSelectionChangedEventArgs e);
+
+	public class ItemCheckedEventArgs : EventArgs
+	{
+		public ItemCheckedEventArgs(ListViewItem item) { Item = item; }
+		public ListViewItem Item { get; }
+	}
+
+	public class ListViewItemSelectionChangedEventArgs : EventArgs
+	{
+		public ListViewItemSelectionChangedEventArgs(ListViewItem item, int itemIndex, bool isSelected) { Item = item; ItemIndex = itemIndex; IsSelected = isSelected; }
+		public ListViewItem Item { get; }
+		public int ItemIndex { get; }
+		public bool IsSelected { get; }
 	}
 
 	public class ColumnHeader

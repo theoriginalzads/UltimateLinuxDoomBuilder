@@ -33,6 +33,7 @@ namespace ULDB.Shell
 			Register<SectorEditForm>(f => new SectorEditFormView(f));
 			Register<LinedefEditForm>(f => new LinedefEditFormView(f));
 			Register<ThingEditForm>(f => new ThingEditFormView(f));
+			Register<ConfigForm>(f => new ConfigFormView(f));
 			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 

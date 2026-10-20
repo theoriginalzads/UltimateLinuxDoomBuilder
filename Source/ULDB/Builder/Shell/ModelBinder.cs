@@ -186,10 +186,15 @@ namespace ULDB.Shell
 			}
 		}
 
+		/// <summary>Opacity for a ListItem's Dim flag (greyed items), for item templates.</summary>
+		public static readonly Avalonia.Data.Converters.IValueConverter DimOpacity = new Avalonia.Data.Converters.FuncValueConverter<bool, double>(dim => dim ? 0.45 : 1.0);
+
 		/// <summary>One ListView item, as shown by a view.</summary>
 		public sealed class ListItem
 		{
 			public string Text { get; init; }
+			/// <summary>The item's position in the ListView (a checkbox in the row writes its state back by it).</summary>
+			public int Index { get; init; }
 			/// <summary>The item's other columns (SubItems 1 and up), joined for a second line or column.</summary>
 			public string SubText { get; init; }
 			public bool Checked { get; init; }
@@ -206,7 +211,7 @@ namespace ULDB.Shell
 		/// </summary>
 		public ModelBinder Items(ItemsControl target, WF.ListView list)
 		{
-			bool updating = false;
+			bool updating = false, initialraised = false;
 			if(target is ListBox box)
 			{
 				box.SelectionMode = list.MultiSelect ? SelectionMode.Multiple : SelectionMode.Single;
@@ -216,6 +221,13 @@ namespace ULDB.Shell
 					for(int i = 0; i < list.Items.Count; i++) list.Items[i].Selected = box.Selection.IsSelected(i);
 					list.RaiseSelectedIndexChanged();
 				};
+				// A checkbox in a row (ListView.CheckBoxes) sets the model item's Checked.
+				box.AddHandler(Avalonia.Controls.Primitives.ToggleButton.IsCheckedChangedEvent, (s, e) =>
+				{
+					if(updating || !(e.Source is CheckBox cb) || !(cb.DataContext is ListItem row)) return;
+					if(row.Index >= 0 && row.Index < list.Items.Count) list.Items[row.Index].Checked = cb.IsChecked == true;
+				});
+				box.KeyUp += (s, e) => list.RaiseKeyUp(new WF.KeyEventArgs(WF.Keys.None));
 				box.DoubleTapped += (s, e) => { if(box.SelectedIndex >= 0) { list.RaiseDoubleClick(); Schedule(s, e); } };
 				// Upstream acts on MouseUp (Undo/Redo performs the undo there), after the selection changed.
 				box.AddHandler(Avalonia.Input.InputElement.PointerReleasedEvent, (s, e) =>
@@ -231,10 +243,11 @@ namespace ULDB.Shell
 				List<ListItem> items = list.Items.Select(i => new ListItem
 				{
 					Text = i.Text,
+					Index = list.Items.IndexOf(i),
 					SubText = string.Join(" · ", i.SubItems.Skip(1).Select(si => si.Text)),
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,
-					Dim = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.GrayText,
+					Dim = i.ForeColor.IsKnownColor && (i.ForeColor.ToKnownColor() == SD.KnownColor.GrayText || i.ForeColor.ToKnownColor() == SD.KnownColor.InactiveCaptionText),
 					Highlight = i.BackColor.IsKnownColor && i.BackColor.ToKnownColor() == SD.KnownColor.Highlight,
 				}).ToList();
 				// Only when something changed: replacing the items resets the selection and scrolling.
@@ -247,6 +260,12 @@ namespace ULDB.Shell
 					if(target is ListBox lb)
 						for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected) lb.Selection.Select(i);
 					updating = false;
+					// As WinForms raises SelectedIndexChanged when the control is created with items selected.
+					if(!initialraised && list.Items.Any(i => i.Selected))
+					{
+						initialraised = true;
+						Dispatcher.UIThread.Post(list.RaiseSelectedIndexChanged, DispatcherPriority.Background);
+					}
 				}
 				// Selection set by upstream's code (SelectedIndices.Clear(), Selected = ...) reaches the view.
 				if(target is ListBox sel)

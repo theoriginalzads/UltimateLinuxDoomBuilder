@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private AvComboBox config, scriptcompiler;
 		private AvTextBox levelname;
 		private AvRun examplelabel;
-		private ResourceListEditor datalocations;
+		private ResourceListEditorView datalocations;
 		private AvCheckBox strictpatches, longtexturenames;
 		private AvButton apply, cancel, prepostcommands;
 		private AvTextBlock scriptcompilerlabel;

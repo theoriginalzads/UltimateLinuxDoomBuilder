@@ -1,9 +1,9 @@
-<!-- ULDB: Avalonia port of upstream Controls/ResourceListEditor (the resource list in the
-     Open Map, Map Options and Game Configurations windows). Logic: ResourceListEditor.axaml.cs. -->
+<!-- ULDB: Avalonia port of upstream Controls/ResourceListEditorView (the resource list in the
+     Open Map, Map Options and Game Configurations windows). Logic: ResourceListEditorView.axaml.cs. -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:CodeImp.DoomBuilder.Controls"
-             x:Class="CodeImp.DoomBuilder.Controls.ResourceListEditor">
+             x:Class="CodeImp.DoomBuilder.Controls.ResourceListEditorView">
   <DockPanel>
     <!-- Warnings about missing or duplicate required archives, and maps without resources. -->
     <StackPanel x:Name="warningspanel" DockPanel.Dock="Top" Spacing="6"/>
@@ -34,7 +34,7 @@
           </Style>
         </ListBox.Styles>
         <ListBox.ItemTemplate>
-          <DataTemplate x:DataType="local:ResourceListEditor+Item">
+          <DataTemplate x:DataType="local:ResourceListEditorView+Item">
             <StackPanel Orientation="Horizontal" Spacing="6" Background="Transparent" ToolTip.Tip="{Binding Tooltip}">
               <PathIcon Data="{Binding Icon}" Width="16" Height="16" Opacity="{Binding IconOpacity}"/>
               <TextBlock Text="{Binding Location}" Opacity="{Binding TextOpacity}" Classes.invalid="{Binding !Valid}" VerticalAlignment="Center"/>

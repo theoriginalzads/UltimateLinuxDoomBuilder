@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private AvComboBox config, scriptcompiler;
 		private AvListBox mapslist;
 		private readonly ObservableCollection<string> mapnames = new ObservableCollection<string>();
-		private ResourceListEditor datalocations;
+		private ResourceListEditorView datalocations;
 		private AvCheckBox strictpatches, longtexturenames;
 		private AvButton apply, cancel;
 		private AvTextBlock scriptcompilerlabel;

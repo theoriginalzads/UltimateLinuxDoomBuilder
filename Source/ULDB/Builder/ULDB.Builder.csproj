@@ -157,6 +157,11 @@
     <Compile Include="$(UpstreamCore)Windows/SectorEditForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditForm.cs" />
     <Compile Include="$(UpstreamCore)Windows/ThingEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ConfigForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ConfigForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PreferencesController.cs" />
     <Compile Include="$(UpstreamCore)Controls/MultiSelectTreeview.cs" />
     <Compile Include="$(UpstreamCore)Controls/BufferedTreeView.cs" />
     <Compile Include="$(UpstreamCore)Controls/ColoredComboBox.cs" />
@@ -232,6 +237,8 @@
     <EmbeddedResource Update="FormResources/TextureBrowserForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.TextureBrowserForm.resources" />
     <EmbeddedResource Update="FormResources/ThingsFiltersForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ThingsFiltersForm.resources" />
     <EmbeddedResource Update="FormResources/TagStatisticsForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.TagStatisticsForm.resources" />
+    <EmbeddedResource Update="FormResources/PreferencesForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.PreferencesForm.resources" />
+    <EmbeddedResource Update="FormResources/ConfigForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.ConfigForm.resources" />
     <EmbeddedResource Update="FormResources/SectorEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.SectorEditFormUDMF.resources" />
     <EmbeddedResource Update="FormResources/LinedefEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF.resources" />
   </ItemGroup>

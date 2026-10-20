@@ -20,6 +20,10 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView..ctor#1
 		public OptimizedListView() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView.SetGroupCollapsed#2
+		public bool SetGroupCollapsed(ListViewGroup group, bool collapsed) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView.IsGroupCollapsed#3
+		public bool IsGroupCollapsed(ListViewGroup group) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.OptimizedListView.WndProc#5
 		protected virtual void WndProc(ref Message m) { }
 	}

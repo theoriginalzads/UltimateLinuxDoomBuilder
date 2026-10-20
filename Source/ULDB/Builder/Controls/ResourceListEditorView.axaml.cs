@@ -1,6 +1,6 @@
-// ULDB: Avalonia port of upstream Controls/ResourceListEditor.cs. Same public API and
+// ULDB: Avalonia port of upstream Controls/ResourceListEditorView.cs. Same public API and
 // method names as upstream, so callers (and future upstream changes) map across.
-// Differences: items are ResourceListEditor.Item objects instead of ListViewItems; icons
+// Differences: items are ResourceListEditorView.Item objects instead of ListViewItems; icons
 // are vector glyphs (upstream's ImageList can't be loaded on Linux); reordering is by
 // dragging an item onto another.
 
@@ -23,7 +23,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class ResourceListEditor : UserControl
+	public partial class ResourceListEditorView : UserControl
 	{
 		#region ================== Item
 
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Constructor
 
-		public ResourceListEditor()
+		public ResourceListEditorView()
 		{
 			InitializeComponent();
 

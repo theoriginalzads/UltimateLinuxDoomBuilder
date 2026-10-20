@@ -70,6 +70,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill list of configurations
 			foreach(ConfigurationInfo ci in General.Configs)
 			{
+#if ULDB
+				// ULDB: GZDoom and UZDoom configurations only (docs/scope-hidden.md)
+				if(!ULDB.Scope.ScopeFilter.IsConfigurationVisible(ci.Filename)) continue;
+#endif
 				// Add a copy
 				lvi = listconfigs.Items.Add(ci.Name);
 				lvi.Tag = ci.Clone();
@@ -89,8 +93,15 @@ namespace CodeImp.DoomBuilder.Windows
 			nodebuildertest.Items.Add(new NodebuilderInfo());
 			
 			// Fill comboboxes with nodebuilders
+#if ULDB
+			// ULDB: ZDBSP only (docs/scope-hidden.md)
+			NodebuilderInfo[] visiblenodebuilders = General.Nodebuilders.FindAll(n => ULDB.Scope.ScopeFilter.IsNodebuilderVisible(n.Name)).ToArray();
+			nodebuildersave.Items.AddRange(visiblenodebuilders);
+			nodebuildertest.Items.AddRange(visiblenodebuilders);
+#else
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
 			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
+#endif
 			
 			// Fill list of editing modes
 			foreach(EditModeInfo emi in General.Editing.ModesInfo)
@@ -422,8 +433,15 @@ namespace CodeImp.DoomBuilder.Windows
 				ci.Enabled = listconfigs.Items[i].Checked;
 
 				// Apply settings
+#if ULDB
+				// ULDB: hidden configurations aren't in the list, so match by file name
+				ConfigurationInfo target = General.Configs.Find(c => c.Filename == ci.Filename);
+				target.Enabled = ci.Enabled;
+				if(ci.Changed) target.Apply(ci);
+#else
 				General.Configs[i].Enabled = ci.Enabled;
 				if(ci.Changed) General.Configs[i].Apply(ci);
+#endif
 			}
 
 			General.SaveGameSettings();
