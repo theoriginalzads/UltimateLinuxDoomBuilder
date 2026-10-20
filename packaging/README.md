@@ -11,7 +11,7 @@ unchanged.
 | `io.github.theoriginalzads.UltimateLinuxDoomBuilder.desktop` | Menu entry | Yes, `desktop-file-validate` |
 | `io.github.theoriginalzads.UltimateLinuxDoomBuilder.metainfo.xml` | AppStream metadata (software centres) | Yes, `appstreamcli validate` |
 | `arch/PKGBUILD` | AUR/CachyOS package `uldb-git` | Syntax only (`bash -n`); `makepkg` not run yet |
-| `flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml` | Flatpak manifest | **Not tested**; `flatpak-builder` not run yet |
+| `flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml` | Flatpak manifest | Built by CI (`uldb-flatpak.yml`, bundle as an artifact); not yet installed on a desktop |
 
 The app ID is `io.github.theoriginalzads.UltimateLinuxDoomBuilder`, and the command is `uldb`.
 The window's `WM_CLASS` is `uldb` (set in `Source/ULDB/Builder/Shell/Program.cs`), so the

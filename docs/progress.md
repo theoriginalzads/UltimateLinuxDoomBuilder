@@ -127,6 +127,18 @@ Work the user approved doing without their machine. All on `phase-3/shell`.
 | CI | ✅ | `.github/workflows/uldb-ci.yml`: build + tests (first run passed, 20 Oct 2026) on ubuntu-24.04 with Freedoom and Mesa. Upstream's workflows are untouched (they may fail on the fork; disable them in the repo's Actions settings if they're noise). Flatpak artifact builds still to do |
 | Packaging | 🟨 | `packaging/`: `build.sh` (Release publish + plugins), `install.sh` (PREFIX/DESTDIR; app in `lib/uldb`, hicolor icons from Cacky), `.desktop` (`StartupWMClass=uldb`), AppStream metainfo (both validate), `arch/PKGBUILD` (`uldb-git`, `_arch=znver4` option), Flatpak manifest (runtime 26.08 + dotnet10 extension; **untested**, needs `nuget-sources.json` generated, see `packaging/README.md`). **To do on the user's machine:** `cd packaging/arch && makepkg -si`, then check the KDE menu entry, icon and taskbar grouping. The metainfo release (0.1.0) is a placeholder |
 
+### Cloud session 3 (20 Oct 2026, no screen): where it stopped
+
+**Resume here.** Everything is committed and pushed on `phase-3/shell`; 188 tests pass.
+
+- **Flatpak CI is green**: `.github/workflows/uldb-flatpak.yml` builds `uldb.flatpak` (download it from the run's artifacts in GitHub Actions). Fixes on the way: SDK-first PATH (the extension's `install.sh` runs after the build), ACC's static link on the Freedesktop SDK (`tools/compilers/CMakeLists.txt` gives it an empty `libatomic_asneeded.a`), failed compiler builds now print their errors. **Not yet run on a desktop**: `flatpak install --user uldb.flatpak`, then launch.
+- **User's review fixes:** Stair builder height cards on their own row; wider, single-line number boxes in the jitter forms.
+- **Ported this session** (model port + view; all captured in the container and look right):
+  - Tag Range's form; Tag Explorer docker (tree with Breeze icons); Comments docker (list, click-to-view/select, right-click menu); Sound Environments docker; 3D floors docker (cards per floor: not seen with content, it needs a hovered sector: **check on the user's machine**); BuilderModes' Undo/Redo docker.
+- **Shared plumbing added:** context menus (compat `ContextMenuStrip.Show` → Avalonia), `DataGridView.CellLocator`/`HitTest`, any compat `TreeView` gets the shared tree view via `ControlViews`, dockers set only the shown docker's control `Visible` (plugins refresh on `VisibleChanged`), compat ListView `SelectedIndexChanged`/`BeginUpdate`/`EndUpdate`/item `Index`/`EnsureVisible`, `ULDB_SHOW_FORM` step `docker:<name>`.
+- **Bug found and fixed:** plugins' `user32.dll`/`BuilderNative.dll` imports didn't resolve (only Builder had the resolver); BuilderModes' Undo/Redo panel would have crashed the app at startup once shown. `Platform/NativeLibraries.cs` now covers assemblies loaded from `Plugins/`.
+- **Next candidates:** BuilderModes' other dockers (Draw Settings and the draw-mode option panels, Edit Selection), Find/Replace, Error Check; then 3D floor editor window, slope vertex edit, control sector area config; ColorPicker (needs mouse testing, best with the user).
+
 ### Cloud session 2 (20 Oct 2026, no screen): where it stopped
 
 **Resume here.** Everything is committed and pushed on `phase-3/shell`; 188 tests pass.

@@ -38,8 +38,8 @@ The code for other targets stays in the source tree, so updates from upstream UD
 | 3 | Avalonia main window, menus, 2D/3D view | 🚧 In progress: main window, map view, input, save, UDMF edit dialogs and Breeze-style icons done; texture browser next |
 | 4 | Editing modes | ⬜ |
 | 5 | Dialogs (about 160) | ⬜ |
-| 6 | Plugins: 3D floors and slopes, stairs, effects, tag range, sound propagation | 🚧 All nine in-scope plugins build and load; their dialogs and panels aren't ported yet |
-| 7 | Desktop integration, settings import, Flatpak, AUR package | 🚧 Settings import, CI, `.desktop`/AppStream, AUR `PKGBUILD` and Flatpak manifest added; packages not yet tested on a desktop. See [`packaging/`](packaging/README.md) |
+| 6 | Plugins: 3D floors and slopes, stairs, effects, tag range, sound propagation | 🚧 All nine in-scope plugins build and load; stairs, effects, tag range, slope data, and the Tag Explorer, Comments, 3D floors, sound and Undo/Redo dockers are ported; 3D floor editor and colour pickers to do |
+| 7 | Desktop integration, settings import, Flatpak, AUR package | 🚧 Settings import, CI, `.desktop`/AppStream, AUR `PKGBUILD` and a Flatpak built by CI; packages not yet tested on a desktop. See [`packaging/`](packaging/README.md) |
 
 Details: [`docs/ULDB-Plan.md`](docs/ULDB-Plan.md) is the plan, and [`docs/progress.md`](docs/progress.md) tracks progress.
 
