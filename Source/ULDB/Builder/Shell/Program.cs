@@ -16,6 +16,10 @@ namespace ULDB.Shell
 			BuildAvaloniaApp().SetupWithoutStarting();
 			AvaloniaHost.Install();
 
+			// First run: offer to import existing UDB settings before upstream loads (and creates) ours.
+			// Also handles "--import-udb-settings[=PATH]", which upstream's argument parser mustn't see.
+			args = ULDB.Settings.UdbSettingsImport.RunAtStartup(args);
+
 			// Builds MainForm, loads configurations and plugins, then calls Application.Run,
 			// which runs the Avalonia main loop until the main window closes.
 			General.Main(args);

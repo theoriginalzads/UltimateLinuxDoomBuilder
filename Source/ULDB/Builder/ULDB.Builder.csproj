@@ -142,6 +142,8 @@
     <Compile Include="Input/**/*.cs" />
     <!-- GZDoom/UZDoom-only scope filter. -->
     <Compile Include="Scope/**/*.cs" />
+    <!-- Import of existing UDB settings (Mono build, Flatpak, Wine, Windows installs). -->
+    <Compile Include="Settings/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
     <Compile Include="Rendering/**/*.cs" />
     <!-- Avalonia ports of upstream windows and controls (.axaml), same names and namespaces. -->
