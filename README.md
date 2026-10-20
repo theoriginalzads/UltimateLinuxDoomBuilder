@@ -10,6 +10,9 @@
 > **Work in progress: early preview, not ready for real mapping yet.** The main window, 2D/3D map view, editing modes, saving and the main UDMF edit dialogs work. The texture browser, most other dialogs and most plugins aren't ported yet. See [Status](#status).
 
 Ultimate Linux Doom Builder (ULDB) is a **native Linux** map editor for **GZDoom and UZDoom**, based on Ultimate Doom Builder.
+<img width="1655" height="1180" alt="image" src="https://github.com/user-attachments/assets/aaf30540-6980-46c8-96d4-7b61d39cba94" />
+<img width="1090" height="798" alt="image" src="https://github.com/user-attachments/assets/3389c7e9-7585-4ead-89ed-a08765ae338e" />
+
 
 Upstream UDB is a Windows application. Its Linux build runs on Mono's WinForms, which is slow and doesn't fit into the Linux desktop. ULDB replaces that:
 
