@@ -17,7 +17,7 @@
       <TextBlock x:Name="label3" Text="New index:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="2"/>
       <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
         <ContentControl x:Name="bntNewIndex" Width="110"/>
-        <Image x:Name="pbWarning" Width="16" Height="16" VerticalAlignment="Center"/>
+        <ContentControl x:Name="pbWarning" VerticalAlignment="Center"/>
       </StackPanel>
     </Grid>
   </DockPanel>

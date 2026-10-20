@@ -7,7 +7,7 @@
         Title="Edit Thing" Width="960" Height="640" MinWidth="900" MinHeight="600" ShowInTaskbar="False">
   <DockPanel Margin="14">
     <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto" Margin="0,12,0,0">
-      <Image x:Name="hint" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0"/>
+      <ContentControl x:Name="hint" VerticalAlignment="Center" Margin="0,0,6,0"/>
       <TextBlock x:Name="hintlabel" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" Opacity="0.75" FontSize="12"/>
       <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
         <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
@@ -31,7 +31,7 @@
               <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
                   <TextBlock x:Name="settingsgroupTitle" Classes="uldb-group-title"/>
-                  <Image x:Name="missingflags" Width="16" Height="16" ToolTip.Tip="Some flags are missing from the game configuration"/>
+                  <ContentControl x:Name="missingflags" ToolTip.Tip="Some flags are missing from the game configuration"/>
                 </StackPanel>
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                   <ContentControl x:Name="flags"/>

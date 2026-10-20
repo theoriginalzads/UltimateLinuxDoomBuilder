@@ -154,7 +154,7 @@
                       <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="ceilingglowheight"  Width="92"/>
                         <Button x:Name="resetceilingglowheight"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                        <Image x:Name="ceilingglowheightrequired"  Width="16" Height="16" Margin="4,0" VerticalAlignment="Center"/>
+                        <ContentControl x:Name="ceilingglowheightrequired" Margin="4,0" VerticalAlignment="Center"/>
                       </StackPanel>
                     </Grid>
                   </StackPanel>
@@ -171,7 +171,7 @@
                       <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
                         <ContentControl x:Name="floorglowheight"  Width="92"/>
                         <Button x:Name="resetfloorglowheight"  Classes="uldb-tool" VerticalAlignment="Center"/>
-                        <Image x:Name="floorglowheightrequired"  Width="16" Height="16" Margin="4,0" VerticalAlignment="Center"/>
+                        <ContentControl x:Name="floorglowheightrequired" Margin="4,0" VerticalAlignment="Center"/>
                       </StackPanel>
                     </Grid>
                   </StackPanel>

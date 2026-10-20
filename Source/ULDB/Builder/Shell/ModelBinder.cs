@@ -93,6 +93,24 @@ namespace ULDB.Shell
 			return Custom(() => target.Opacity = c.Enabled ? 1.0 : 0.45, c);
 		}
 
+		/// <summary>A picture box shown as a ContentControl: ULDB's Breeze icon when its image is a known UDB resource, else the bitmap.</summary>
+		public ModelBinder Picture(ContentControl target, string field)
+		{
+			WF.PictureBox c = Field<WF.PictureBox>(field);
+			SD.Image shown = null;
+			return Custom(() =>
+			{
+				if(c.Image != shown || target.Content == null)
+				{
+					shown = c.Image;
+					target.Content = shown == null ? null : BreezeIcons.ForImage(shown, 16)
+						?? new Image { Source = AvaloniaImages.From(shown), Width = shown.Width, Height = shown.Height };
+				}
+				target.IsVisible = c.Visible;
+				ApplyTip(target, c);
+			}, c);
+		}
+
 		/// <summary>A picture box's image (or a control's background image).</summary>
 		public ModelBinder Image(Image target, string field)
 		{
@@ -141,6 +159,7 @@ namespace ULDB.Shell
 				else if(BindInput(c, Field<object>(name))) continue;
 				else if(c is TextBlock tb) Text(tb, name);
 				else if(c is Image img) Image(img, name);
+				else if(c is ContentControl pic && Field<object>(name) is WF.PictureBox) Picture(pic, name);
 				else if(c is Border sw && sw.Classes.Contains("uldb-swatch")) Swatch(sw, name);
 				else if(c is ItemsControl items && Field<object>(name) is WF.ListView list) Items(items, list);
 				else Visible(c, name);
