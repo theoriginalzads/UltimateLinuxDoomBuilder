@@ -28,6 +28,8 @@
     <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt).
          MenusForm is never shown: it only holds the plugin's menu items and toolbar buttons. -->
     <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
+    <!-- The drawing modes' option panels only hold toolbar items, which the main window shows. -->
+    <Compile Include="$(UpstreamPlugin)Interface/DrawLineOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawLineOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.Designer.cs" />
     <!-- Model ports with Avalonia views in Views/: the Undo/Redo and Draw Settings dockers. -->
     <Compile Include="$(UpstreamPlugin)Interface/UndoRedoPanel.cs;$(UpstreamPlugin)Interface/UndoRedoPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.cs;$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.Designer.cs" />

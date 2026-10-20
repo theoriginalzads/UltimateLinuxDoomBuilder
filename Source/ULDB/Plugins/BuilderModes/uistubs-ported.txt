@@ -1,3 +1,8 @@
-CodeImp.DoomBuilder.BuilderModes.MenusForm
+CodeImp.DoomBuilder.BuilderModes.DrawCurveOptionsPanel
+CodeImp.DoomBuilder.BuilderModes.DrawEllipseOptionsPanel
+CodeImp.DoomBuilder.BuilderModes.DrawLineOptionsPanel
+CodeImp.DoomBuilder.BuilderModes.DrawRectangleOptionsPanel
+CodeImp.DoomBuilder.BuilderModes.Interface.CurveLinedefsOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.Interface.SectorDrawingOptionsPanel
+CodeImp.DoomBuilder.BuilderModes.MenusForm
 CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel
