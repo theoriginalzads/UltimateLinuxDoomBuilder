@@ -205,6 +205,7 @@ namespace ULDB.Shell
 			Panel layers = new Panel { Background = Brushes.Transparent, Focusable = true };
 			layers.Children.Add(gl);
 			layers.Children.Add(splashlayer);
+			layers.Children.Add(new ToastOverlay(display));
 			input = layers;
 			Border frame = new Border { Child = layers, BorderThickness = new Thickness(1) };
 			frame.Classes.Add("uldb-display");
@@ -498,6 +499,9 @@ namespace ULDB.Shell
 						}
 						case "typeinscript": // typeinscript:<text>, inserts text at the start of the script editor's active script
 							General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.InsertText(0, p[1] + "\r\n"); Console.WriteLine("[devstep] changed=" + General.Map.ScriptEditor.Editor.ActiveTab.IsChanged + " title=" + General.Map.ScriptEditor.Editor.ActiveTab.Text + " undo=" + General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.CanUndo);
+							break;
+						case "toast": // toast:info|warning|error, shows a toast
+							General.ToastManager.ShowToast(p[1] == "error" ? CodeImp.DoomBuilder.ToastType.ERROR : p[1] == "warning" ? CodeImp.DoomBuilder.ToastType.WARNING : CodeImp.DoomBuilder.ToastType.INFO, "Information", "Example toast: a message that is long enough to wrap onto a second line in the card.", "short");
 							break;
 						case "effectbrowser": CodeImp.DoomBuilder.Windows.EffectBrowserForm.BrowseEffect(form, 0); break;
 						case "thingbrowser": CodeImp.DoomBuilder.Windows.ThingBrowserForm.BrowseThing(form, 1); break;

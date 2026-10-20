@@ -44,3 +44,5 @@ A map whose saved settings name a hidden config opens with the closest visible o
 | Open Map dialog | Script type list shows only visible script compilers | Scope filter |
 | Help menu | "Reference Manual" (UDB's help file) and "Check for updates" (UDB's updater) | Not ULDB's yet; hidden in `MainWindow` (`Available = false`) |
 | *(More filled in as UI lands in Phase 3, and in the Phase 5 audit pass.)* | | |
+
+| Update window (`UpdateForm`) | Not ported: ULDB is updated through the package manager or Flatpak, not by an in-app check | User decision, 20 Oct 2026 |

@@ -99,6 +99,14 @@ namespace ULDB.Controls
 			binder.UpdateNow();
 		}
 
+		// A stroked cross (PathIcon only fills, which would draw nothing for lines)
+		private static Control CloseGlyph()
+		{
+			Path cross = new Path { Width = 10, Height = 10, Data = Geometry.Parse("M1,1 L9,9 M9,1 L1,9"), StrokeThickness = 1.4, StrokeLineCap = PenLineCap.Round };
+			cross.Stroke = Brushes.Gray;
+			return cross;
+		}
+
 		#region ================== Tabs
 
 		private void RebuildTabs()
@@ -140,7 +148,7 @@ namespace ULDB.Controls
 			bool closable = !(page is ScriptDocumentTab t) || t.IsClosable;
 			if(tabsmodel.ShowClosingButton && closable)
 			{
-				Button close = new Button { Content = new PathIcon { Width = 8, Height = 8, Data = Geometry.Parse("M1,1 L9,9 M9,1 L1,9") }, Padding = new Thickness(3), MinWidth = 0, MinHeight = 0, Background = Brushes.Transparent, BorderThickness = new Thickness(0), VerticalAlignment = VerticalAlignment.Center };
+				Button close = new Button { Content = CloseGlyph(), Padding = new Thickness(3), MinWidth = 0, MinHeight = 0, Background = Brushes.Transparent, BorderThickness = new Thickness(0), VerticalAlignment = VerticalAlignment.Center };
 				close.Classes.Add("uldb-tool");
 				ToolTip.SetTip(close, "Close");
 				close.Click += (s, e) => tabsmodel.RaiseCloseTabClicked(page);

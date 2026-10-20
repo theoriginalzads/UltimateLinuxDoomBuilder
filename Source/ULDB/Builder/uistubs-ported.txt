@@ -152,3 +152,4 @@ CodeImp.DoomBuilder.Windows.ScriptFindReplaceForm
 CodeImp.DoomBuilder.Windows.ScriptGoToLineForm
 CodeImp.DoomBuilder.Controls.ScriptStyleType
 CodeImp.DoomBuilder.Controls.VSTabControl
+CodeImp.DoomBuilder.Controls.ToastControl
