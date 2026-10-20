@@ -38,6 +38,8 @@ namespace ULDB.Shell
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
 			// Any upstream tree (plugins' dockers: Tag Explorer, sound environments...)
 			Register<WF.TreeView>(m => new ULDB.Controls.TreeViewView(m));
+			// Plain grids that just list rows (Filter Selected Things); others have their own views.
+			Register<WF.DataGridView>(m => new ULDB.Controls.DataGridRowsView(m));
 		}
 
 		/// <summary>Registers the view for a model control type (and types derived from it).</summary>

@@ -18,6 +18,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ControlViews.Register<EditSelectionPanel>(m => new EditSelectionPanelView(m));
 			FormViews.Register<ErrorCheckForm>(f => new ErrorCheckFormView(f));
 			FormViews.Register<FindReplaceForm>(f => new FindReplaceFormView(f));
+			FormViews.Register<MakeDoorForm>(x => new MakeDoorFormView(x));
+			FormViews.Register<BridgeModeForm>(x => new BridgeModeFormView(x));
+			FormViews.Register<ChangeMapElementIndexForm>(x => new ChangeMapElementIndexFormView(x));
+			FormViews.Register<FitTexturesForm>(x => new FitTexturesFormView(x));
+			FormViews.Register<SlopeArchForm>(x => new SlopeArchFormView(x));
+			FormViews.Register<PastePropertiesOptionsForm>(x => new PastePropertiesOptionsFormView(x));
+			FormViews.Register<FilterSelectedThingsForm>(x => new FilterSelectedThingsFormView(x));
+			FormViews.Register<ImageExportSettingsForm>(x => new ImageExportSettingsFormView(x));
 		}
 	}
 }

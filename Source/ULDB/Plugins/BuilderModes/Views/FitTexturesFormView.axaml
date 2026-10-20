@@ -1,0 +1,44 @@
+<!-- ULDB: the window of BuilderModes' FitTexturesForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; group titles are the designer's group box texts. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.FitTexturesFormView"
+        Title="Fit Textures" Width="400" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="accept" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="8" Grid.IsSharedSizeScope="True">
+      <Border x:Name="groupBox2" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock Text="Options" Classes="uldb-group-title"/>
+          <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" RowSpacing="4">
+            <CheckBox x:Name="cbfitwidth"/>
+            <TextBlock x:Name="labelpatternwidth" Text="Pattern width:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Column="1"/>
+            <ContentControl x:Name="patternwidth" Grid.Column="2" Width="100"/>
+            <CheckBox x:Name="cbfitheight" Grid.Row="1"/>
+            <TextBlock x:Name="labelpatternheight" Text="Pattern height:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1"/>
+            <ContentControl x:Name="patternheight" Grid.Row="1" Grid.Column="2" Width="100"/>
+          </Grid>
+          <CheckBox x:Name="cbfitconnected"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="repeatgroup" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock Text="Texture Repeating" Classes="uldb-group-title"/>
+          <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,100,Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+            <TextBlock x:Name="labelhorizrepeat" Text="Horizontal:" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <ContentControl x:Name="horizrepeat" Grid.Column="1"/>
+            <Button x:Name="resethoriz" Grid.Column="2" Classes="uldb-tool" VerticalAlignment="Center"/>
+            <CheckBox x:Name="cbautowidth" Grid.Column="3"/>
+            <TextBlock x:Name="labelvertrepeat" Text="Vertical:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1"/>
+            <ContentControl x:Name="vertrepeat" Grid.Row="1" Grid.Column="1"/>
+            <Button x:Name="resetvert" Grid.Row="1" Grid.Column="2" Classes="uldb-tool" VerticalAlignment="Center"/>
+            <CheckBox x:Name="cbautoheight" Grid.Row="1" Grid.Column="3"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </DockPanel>
+</Window>

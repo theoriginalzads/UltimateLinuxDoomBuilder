@@ -627,6 +627,8 @@ namespace System.Windows.Forms
 		}
 
 		internal void SetSelectedSilently(bool value) => selected = value;
+		/// <summary>ULDB: the view's row selection (no change event back to the view).</summary>
+		public void SetSelectedFromView(bool value) => selected = value;
 
 		/// <summary>Creates a cell for each of the grid's columns (from the column's cell template).</summary>
 		public void CreateCells(DataGridView dataGridView)

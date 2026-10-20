@@ -37,6 +37,9 @@
     <Compile Include="$(UpstreamPlugin)Interface/EditSelectionPanel.cs;$(UpstreamPlugin)Interface/EditSelectionPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/ErrorCheckForm.cs;$(UpstreamPlugin)Interface/ErrorCheckForm.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/FindReplaceForm.cs;$(UpstreamPlugin)Interface/FindReplaceForm.Designer.cs" />
+    <!-- The smaller forms: Make Door, Bridge, Fit Textures, Filter Selected Things, Paste Properties
+         Options, Change Map Element Index, Slope Arch, Image Export Settings, Preferences page. -->
+    <Compile Include="$(UpstreamPlugin)Interface/MakeDoorForm.cs;$(UpstreamPlugin)Interface/MakeDoorForm.Designer.cs;$(UpstreamPlugin)Interface/BridgeModeForm.cs;$(UpstreamPlugin)Interface/BridgeModeForm.Designer.cs;$(UpstreamPlugin)Interface/FitTexturesForm.cs;$(UpstreamPlugin)Interface/FitTexturesForm.Designer.cs;$(UpstreamPlugin)Interface/FilterSelectedThingsForm.cs;$(UpstreamPlugin)Interface/FilterSelectedThingsForm.Designer.cs;$(UpstreamPlugin)Interface/PastePropertiesOptionsForm.cs;$(UpstreamPlugin)Interface/PastePropertiesOptionsForm.Designer.cs;$(UpstreamPlugin)Interface/ChangeMapElementIndexForm.cs;$(UpstreamPlugin)Interface/ChangeMapElementIndexForm.Designer.cs;$(UpstreamPlugin)Interface/SlopeArchForm.cs;$(UpstreamPlugin)Interface/SlopeArchForm.Designer.cs;$(UpstreamPlugin)Interface/ImageExportSettingsForm.cs;$(UpstreamPlugin)Interface/ImageExportSettingsForm.Designer.cs;$(UpstreamPlugin)Interface/PreferencesForm.cs;$(UpstreamPlugin)Interface/PreferencesForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- ULDB's Avalonia views for model-ported UI (.axaml), registered by PluginViews. -->
     <Compile Include="Views/**/*.cs" />

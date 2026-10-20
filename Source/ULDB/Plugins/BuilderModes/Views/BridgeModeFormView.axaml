@@ -1,0 +1,27 @@
+<!-- ULDB: the window of BuilderModes' BridgeModeForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; labels are designer locals upstream, so their text is set here. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.Interface.BridgeModeFormView"
+        Title="Options" Width="360" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="buttonOK" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="buttonCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="8" RowSpacing="6">
+      <TextBlock x:Name="label1" Text="Align floor:" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ComboBox x:Name="cbFloorAlign" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <TextBlock x:Name="label2" Text="Align ceiling:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1"/>
+      <ComboBox x:Name="cbCeilingAlign" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <TextBlock x:Name="label3" Text="Brightness:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="2"/>
+      <ComboBox x:Name="cbBrightness" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <TextBlock x:Name="label4" Text="Subdivisions:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="3"/>
+      <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Spacing="16">
+        <NumericUpDown x:Name="nudSubdivisions" Width="110"/>
+        <StackPanel><CheckBox x:Name="cbMirror"/><CheckBox x:Name="cbCopy"/></StackPanel>
+      </StackPanel>
+      <Button x:Name="buttonFlip" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Margin="0,4,0,0"/>
+    </Grid>
+  </DockPanel>
+</Window>

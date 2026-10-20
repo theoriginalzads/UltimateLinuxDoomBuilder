@@ -438,6 +438,15 @@ namespace ULDB.Shell
 							if(tabs != null) foreach(WF.TabPage page in tabs.TabPages)
 								if(page.Tag is CodeImp.DoomBuilder.Controls.Docker d && d.Name == p[1]) dockers.SelectDocker(d);
 							break;
+						case "selectone": // selectone:sectors|linedefs|things|vertices, the first of that type
+							switch(p[1])
+							{
+								case "sectors": System.Linq.Enumerable.First(General.Map.Map.Sectors).Selected = true; break;
+								case "linedefs": System.Linq.Enumerable.First(General.Map.Map.Linedefs).Selected = true; break;
+								case "things": System.Linq.Enumerable.First(General.Map.Map.Things).Selected = true; break;
+								case "vertices": System.Linq.Enumerable.First(General.Map.Map.Vertices).Selected = true; break;
+							}
+							break;
 						case "select": // select:sectors|linedefs|things|vertices, everything of that type
 							switch(p[1])
 							{
