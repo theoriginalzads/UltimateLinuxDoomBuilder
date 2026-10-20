@@ -229,6 +229,12 @@ namespace ULDB.Shell
 					if(updating || !(e.Source is CheckBox cb) || !(cb.DataContext is ListItem row)) return;
 					if(row.Index >= 0 && row.Index < list.Items.Count) list.Items[row.Index].Checked = cb.IsChecked == true;
 				});
+				// A TextBox in a row edits the label (ListView.LabelEdit): committed when it loses the focus.
+				box.AddHandler(Avalonia.Input.InputElement.LostFocusEvent, (s, e) =>
+				{
+					if(!list.LabelEdit || updating || !(e.Source is TextBox tb) || !(tb.DataContext is ListItem row)) return;
+					if(row.Index >= 0 && row.Index < list.Items.Count && tb.Text != row.Text) { list.EndLabelEdit(list.Items[row.Index], tb.Text); Schedule(s, e); }
+				});
 				box.KeyUp += (s, e) => list.RaiseKeyUp(new WF.KeyEventArgs(WF.Keys.None));
 				box.DoubleTapped += (s, e) => { if(box.SelectedIndex >= 0) { list.RaiseDoubleClick(); Schedule(s, e); } };
 				// Upstream acts on MouseUp (Undo/Redo performs the undo there), after the selection changed.

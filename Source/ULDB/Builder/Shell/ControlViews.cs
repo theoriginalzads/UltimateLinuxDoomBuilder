@@ -37,6 +37,7 @@ namespace ULDB.Shell
 			Register<TagsSelector>(m => new TagsSelectorView(m));
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
 			Register<ImageBrowserControl>(m => new ImageBrowserControlView(m));
+			Register<AngleControl>(m => new AngleControlView(m));
 			Register<ResourceListEditor>(m => m.View);
 			Register<PasteOptionsControl>(m => new PasteOptionsControlView(m));
 			Register<ExternalCommandControl>(m => new ExternalCommandControlView(m));

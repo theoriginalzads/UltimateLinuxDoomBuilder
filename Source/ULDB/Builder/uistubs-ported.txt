@@ -103,3 +103,9 @@ CodeImp.DoomBuilder.Windows.ThingEditForm
 CodeImp.DoomBuilder.Windows.PreferencesForm
 CodeImp.DoomBuilder.Windows.ConfigForm
 CodeImp.DoomBuilder.Windows.PreferencesController
+CodeImp.DoomBuilder.Windows.ThingBrowserForm
+CodeImp.DoomBuilder.Windows.EffectBrowserForm
+CodeImp.DoomBuilder.Windows.AngleForm
+CodeImp.DoomBuilder.Windows.ThingMultipleBrowserForm
+CodeImp.DoomBuilder.Windows.TextureSetForm
+CodeImp.DoomBuilder.Controls.AngleControl

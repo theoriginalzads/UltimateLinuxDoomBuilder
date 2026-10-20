@@ -473,6 +473,14 @@ namespace ULDB.Shell
 							pf.ShowDialog(form);
 							break;
 						}
+						case "newform": // newform:<form type with a default constructor>, shown modally
+						{
+							var nf = (WF.Form)Activator.CreateInstance(typeof(CodeImp.DoomBuilder.Windows.MapOptionsForm).Assembly.GetType("CodeImp.DoomBuilder.Windows." + p[1]), true);
+							nf.ShowDialog(form);
+							break;
+						}
+						case "effectbrowser": CodeImp.DoomBuilder.Windows.EffectBrowserForm.BrowseEffect(form, 0); break;
+						case "thingbrowser": CodeImp.DoomBuilder.Windows.ThingBrowserForm.BrowseThing(form, 1); break;
 						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode
 						case "docker": // docker:<short name>, e.g. docker:tagexplorerdockerpanel
 							// The panel itself: MainForm.SelectDocker expects to be called from the docker's plugin.

@@ -1,0 +1,16 @@
+<!-- ULDB: the view of upstream's AngleControl (model-ported): eight buttons around a dial, one per
+     45 degrees. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.AngleControlView">
+  <Canvas Width="84" Height="84">
+    <RadioButton x:Name="button0" GroupName="anglebuttons" Canvas.Left="59" Canvas.Top="31" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button1" GroupName="anglebuttons" Canvas.Left="51" Canvas.Top="11" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button2" GroupName="anglebuttons" Canvas.Left="31" Canvas.Top="3" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button3" GroupName="anglebuttons" Canvas.Left="11" Canvas.Top="11" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button4" GroupName="anglebuttons" Canvas.Left="3" Canvas.Top="31" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button5" GroupName="anglebuttons" Canvas.Left="11" Canvas.Top="51" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button6" GroupName="anglebuttons" Canvas.Left="31" Canvas.Top="59" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+    <RadioButton x:Name="button7" GroupName="anglebuttons" Canvas.Left="51" Canvas.Top="51" Width="22" Height="22" MinWidth="0" MinHeight="0" Padding="0"/>
+  </Canvas>
+</UserControl>

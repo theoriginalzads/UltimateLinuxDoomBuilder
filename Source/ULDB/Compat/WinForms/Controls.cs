@@ -964,6 +964,24 @@ namespace System.Windows.Forms
 		public ImageList LargeImageList { get; set; }
 		public SortOrder Sorting { get; set; }
 		public bool LabelWrap { get; set; }
+		public bool LabelEdit { get; set; }
+		/// <summary>ULDB: the item whose label the view should edit (BeginEdit).</summary>
+		public ListViewItem EditingItem { get; set; }
+		public event LabelEditEventHandler BeforeLabelEdit;
+		public event LabelEditEventHandler AfterLabelEdit;
+		/// <summary>ULDB: the view finished editing an item's label (label null when cancelled).</summary>
+		public void EndLabelEdit(ListViewItem item, string label)
+		{
+			LabelEditEventArgs e = new LabelEditEventArgs(item.Index, label);
+			AfterLabelEdit?.Invoke(this, e);
+			if(!e.CancelEdit && label != null) item.Text = label;
+		}
+		public bool RaiseBeforeLabelEdit(ListViewItem item)
+		{
+			LabelEditEventArgs e = new LabelEditEventArgs(item.Index);
+			BeforeLabelEdit?.Invoke(this, e);
+			return !e.CancelEdit;
+		}
 		public ListViewGroupCollection Groups { get; } = new ListViewGroupCollection();
 		public void AutoResizeColumns(ColumnHeaderAutoResizeStyle headerAutoResize) { }
 		public void EnsureVisible(int index) { if(index >= 0 && index < Items.Count) Items[index].EnsureVisible(); }
@@ -1109,6 +1127,7 @@ namespace System.Windows.Forms
 		public bool UseItemStyleForSubItems { get; set; } = true;
 		public ListViewGroup Group { get; set; }
 		public void Remove() { ListView?.Items.Remove(this); }
+		public void BeginEdit() { if(ListView != null) ListView.EditingItem = this; }
 	}
 
 	public class ListViewGroup
@@ -1129,6 +1148,16 @@ namespace System.Windows.Forms
 	}
 
 	public enum ColumnHeaderAutoResizeStyle { None, HeaderSize, ColumnContent }
+
+	public delegate void LabelEditEventHandler(object sender, LabelEditEventArgs e);
+	public class LabelEditEventArgs : EventArgs
+	{
+		public LabelEditEventArgs(int item) { Item = item; }
+		public LabelEditEventArgs(int item, string label) { Item = item; Label = label; }
+		public int Item { get; }
+		public string Label { get; }
+		public bool CancelEdit { get; set; }
+	}
 
 	public delegate void ItemCheckedEventHandler(object sender, ItemCheckedEventArgs e);
 	public delegate void ListViewItemSelectionChangedEventHandler(object sender, ListViewItemSelectionChangedEventArgs e);

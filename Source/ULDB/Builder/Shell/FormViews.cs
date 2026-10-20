@@ -35,6 +35,11 @@ namespace ULDB.Shell
 			Register<ThingEditForm>(f => new ThingEditFormView(f));
 			Register<ConfigForm>(f => new ConfigFormView(f));
 			Register<PreferencesForm>(f => new PreferencesFormView(f));
+			Register<ThingBrowserForm>(f => new ThingBrowserFormView(f));
+			Register<ThingMultipleBrowserForm>(f => new ThingMultipleBrowserFormView(f));
+			Register<EffectBrowserForm>(f => new EffectBrowserFormView(f));
+			Register<AngleForm>(f => new AngleFormView(f));
+			Register<TextureSetForm>(f => new TextureSetFormView(f));
 			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 

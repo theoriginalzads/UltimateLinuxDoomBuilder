@@ -1,0 +1,56 @@
+<!-- ULDB: the window of upstream's TextureSetForm ("Edit Texture Set", model-ported): a name, the
+     texture name patterns of the set, and the textures they match. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.Windows.TextureSetFormView"
+        Title="Edit Texture Set" Width="1000" Height="680" MinWidth="800" MinHeight="520" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid ColumnDefinitions="320,12,*">
+      <StackPanel Spacing="10">
+        <Border Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <TextBlock Text="Texture Set Name" Classes="uldb-group-title"/>
+            <TextBox x:Name="name"/>
+          </StackPanel>
+        </Border>
+        <Border Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <TextBlock Text="Filters" Classes="uldb-group-title"/>
+            <TextBlock x:Name="label2" TextWrapping="Wrap" Text="Add the names of the textures in this set below. You can use the following wildcards:"/>
+            <TextBlock x:Name="label3" Opacity="0.8" Text="? = matches exactly one character"/>
+            <TextBlock x:Name="label4" Opacity="0.8" Text="* = matches zero or more characters"/>
+            <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="260">
+              <ListBox x:Name="filters" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+                    <TextBox Text="{Binding Text, Mode=OneWay}" BorderThickness="0" Background="Transparent" Padding="4,2"/>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </Border>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Button x:Name="addfilter"/>
+              <Button x:Name="removefilter"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+      <Border Grid.Column="2" Classes="uldb-group">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="0,0,0,8">
+            <TextBlock Text="Results" Classes="uldb-group-title" VerticalAlignment="Center"/>
+            <RadioButton x:Name="matchesbutton" GroupName="matchmode"/>
+            <RadioButton x:Name="nomatchesbutton" GroupName="matchmode"/>
+          </StackPanel>
+          <TextBlock x:Name="noresultlabel" DockPanel.Dock="Top" TextWrapping="Wrap" Opacity="0.7"/>
+          <ContentControl x:Name="matcheslist"/>
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>
