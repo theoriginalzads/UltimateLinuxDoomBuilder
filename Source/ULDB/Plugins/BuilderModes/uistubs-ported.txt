@@ -4,6 +4,7 @@ CodeImp.DoomBuilder.BuilderModes.DrawGridOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.DrawLineOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.DrawRectangleOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.EditSelectionPanel
+CodeImp.DoomBuilder.BuilderModes.ErrorCheckForm
 CodeImp.DoomBuilder.BuilderModes.Interface.CurveLinedefsOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.Interface.SectorDrawingOptionsPanel
 CodeImp.DoomBuilder.BuilderModes.MenusForm

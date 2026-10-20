@@ -27,6 +27,8 @@ namespace ULDB.Shell
 				case Button link when model is WF.LinkLabel m: BindLink(link, m); return true;
 				case ContentControl links when model is WF.LinkLabel m && !(view is Button): BindLinks(links, m); return true;
 				case Slider slider when model is WF.TrackBar m: BindTrackBar(slider, m); return true;
+				case ListBox list when model is WF.ListBox m: BindListBox(list, m); return true;
+				case ProgressBar bar when model is WF.ProgressBar m: BindProgressBar(bar, m); return true;
 				case ComboBox combo when model is WF.ComboBox m: BindComboBox(combo, m); return true;
 				case NumericUpDown num when model is WF.NumericUpDown m: BindNumericUpDown(num, m); return true;
 				case TabControl tabs when model is WF.TabControl m: BindTabs(tabs, m); return true;
@@ -184,6 +186,74 @@ namespace ULDB.Shell
 				ApplyTip(view, m);
 			}, m);
 		}
+
+		#region ================== Lists and progress
+
+		private const int ListRowHeight = 16; // Model coordinates only: item i is at y = i * ListRowHeight
+
+		/// <summary>
+		/// A WinForms ListBox: its items (as text), selection both ways, and mouse and keys at item
+		/// positions (IndexFromPoint answers through the model's ItemLocator), so upstream's handlers run.
+		/// </summary>
+		public ModelBinder BindListBox(ListBox view, WF.ListBox m)
+		{
+			bool updating = false;
+			string shown = null;
+			m.ItemLocator = p => p.Y >= 0 && p.Y / ListRowHeight < m.Items.Count ? p.Y / ListRowHeight : -1;
+			view.SelectionChanged += (s, e) =>
+			{
+				if(updating) return;
+				m.SetSelectionFromView(Enumerable.Range(0, m.Items.Count).Where(i => view.Selection.IsSelected(i)).ToList());
+				Schedule(s, e);
+			};
+
+			WF.MouseEventArgs At(int index, WF.MouseButtons button, int clicks) =>
+				new WF.MouseEventArgs(button, clicks, 4, index * ListRowHeight + ListRowHeight / 2, 0);
+			view.DoubleTapped += (s, e) =>
+			{
+				if(view.SelectedIndex < 0) return;
+				m.RaiseMouseDoubleClick(At(view.SelectedIndex, WF.MouseButtons.Left, 2));
+				m.RaiseDoubleClick();
+				Schedule(s, e);
+			};
+			view.AddHandler(InputElement.PointerReleasedEvent, (s, e) =>
+			{
+				WF.MouseButtons button = e.InitialPressMouseButton == MouseButton.Right ? WF.MouseButtons.Right : WF.MouseButtons.Left;
+				m.RaiseMouseUp(At(Math.Max(0, view.SelectedIndex), button, 1));
+				Schedule(s, e);
+			}, RoutingStrategies.Bubble, true);
+			RouteKeyboard(view, m);
+
+			return Custom(() =>
+			{
+				view.SelectionMode = m.SelectionMode == WF.SelectionMode.One ? SelectionMode.Single : SelectionMode.Multiple;
+				List<string> items = new List<string>(m.Items.Count);
+				foreach(object o in m.Items) items.Add(o?.ToString() ?? "");
+				string sig = string.Join("\n", items);
+				updating = true;
+				if(sig != shown) { shown = sig; view.ItemsSource = items; }
+				view.Selection.Clear();
+				foreach(int i in m.SelectedIndices) view.Selection.Select(i);
+				updating = false;
+				view.IsVisible = m.Visible;
+				view.IsEnabled = m.Enabled;
+				ApplyTip(view, m);
+			}, m);
+		}
+
+		public ModelBinder BindProgressBar(ProgressBar view, WF.ProgressBar m)
+		{
+			return Custom(() =>
+			{
+				view.Minimum = m.Minimum;
+				view.Maximum = m.Maximum;
+				view.Value = m.Value;
+				view.IsIndeterminate = m.Style == WF.ProgressBarStyle.Marquee;
+				view.IsVisible = m.Visible;
+			}, m);
+		}
+
+		#endregion
 
 		#region ================== Keyboard and focus
 

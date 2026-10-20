@@ -1,0 +1,28 @@
+<!-- ULDB: the window of Map Analysis mode (ErrorCheckForm, model-ported: upstream's code runs
+     unchanged). Checks and Start Analysis on top; results, their explanation and fix buttons below. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.ErrorCheckFormView"
+        Title="Map Analysis" Width="540" Height="680" MinWidth="540" MinHeight="480" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Top" Spacing="6">
+      <CheckBox x:Name="toggleall" FontWeight="SemiBold"/>
+      <ContentControl x:Name="checks"/>
+      <Button x:Name="buttoncheck" Classes="accent" HorizontalAlignment="Left" MinWidth="140" HorizontalContentAlignment="Center" Margin="0,4,0,0"/>
+    </StackPanel>
+    <DockPanel x:Name="resultspanel" Margin="0,12,0,0">
+      <ProgressBar x:Name="progress" DockPanel.Dock="Top" Height="6" Margin="0,0,0,8"/>
+      <UniformGrid DockPanel.Dock="Bottom" Columns="3" ColumnSpacing="6" Margin="0,8,0,0">
+        <Button x:Name="fix1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="fix2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        <Button x:Name="fix3" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+      </UniformGrid>
+      <Border DockPanel.Dock="Bottom" Classes="uldb-group" Margin="0,8,0,0" MinHeight="64">
+        <TextBlock x:Name="resultinfo" TextWrapping="Wrap"/>
+      </Border>
+      <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+        <ListBox x:Name="results" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+      </Border>
+    </DockPanel>
+  </DockPanel>
+</Window>
