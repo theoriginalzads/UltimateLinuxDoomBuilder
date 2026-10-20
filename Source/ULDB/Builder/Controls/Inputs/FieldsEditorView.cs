@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(browsebutton.Visible && editor == null && grid.SelectedRows.Count > 0 && rowviews.TryGetValue(grid.SelectedRows[0], out RowView sel))
 			{
 				browseview.Content = browsebutton.Image != null
-					? new Image { Source = AvaloniaImages.From(browsebutton.Image), Width = 16, Height = 16 }
+					? BreezeIcons.ForImage(browsebutton.Image, 16) ?? new Image { Source = AvaloniaImages.From(browsebutton.Image), Width = 16, Height = 16 }
 					: (object)"...";
 				sel.ShowBrowse(browseview);
 			}

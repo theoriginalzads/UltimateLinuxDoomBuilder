@@ -367,12 +367,13 @@ namespace ULDB.Shell
 
 		#region ================== Helpers
 
-		/// <summary>The item's icon: ULDB's Breeze-style icon for its action (Tag) or name, else upstream's bitmap.</summary>
+		/// <summary>The item's icon: ULDB's Breeze-style icon for its action (Tag), name or resource image, else upstream's bitmap.</summary>
 		private static Control IconFor(WF.ToolStripItem item)
 		{
 			string key = IconKeyProvider?.Invoke(item);
 			return (key != null ? BreezeIcons.Create(key, ICON_SIZE) : null)
-				?? BreezeIcons.Create(item.Tag, ICON_SIZE) ?? BreezeIcons.Create(item.Name, ICON_SIZE) ?? IconFor(item.Image);
+				?? BreezeIcons.Create(item.Tag, ICON_SIZE) ?? BreezeIcons.Create(item.Name, ICON_SIZE)
+				?? BreezeIcons.ForImage(item.Image, ICON_SIZE) ?? IconFor(item.Image);
 		}
 
 		/// <summary>Set by the main window: an icon key for items whose icon shows a state (status bar), or null.</summary>

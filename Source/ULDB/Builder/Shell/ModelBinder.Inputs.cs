@@ -65,15 +65,22 @@ namespace ULDB.Shell
 		private static object ImageOrText(WF.Control m, System.Drawing.Image image, string text)
 		{
 			if(image != null && string.IsNullOrEmpty(text?.Trim()))
-				return new Image { Source = AvaloniaImages.From(image), Width = image.Width, Height = image.Height };
+				return Picture(image);
 			if(image != null)
 			{
 				StackPanel both = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 4 };
-				both.Children.Add(new Image { Source = AvaloniaImages.From(image), Width = image.Width, Height = image.Height });
+				both.Children.Add(Picture(image));
 				both.Children.Add(new TextBlock { Text = text, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center });
 				return both;
 			}
 			return text;
+		}
+
+		// ULDB's Breeze-style icon when the image is a known resource image, else the bitmap itself.
+		private static Control Picture(System.Drawing.Image image)
+		{
+			return BreezeIcons.ForImage(image, Math.Min(image.Width, image.Height))
+				?? new Image { Source = AvaloniaImages.From(image), Width = image.Width, Height = image.Height };
 		}
 
 		public ModelBinder BindRadioButton(RadioButton view, WF.RadioButton m)

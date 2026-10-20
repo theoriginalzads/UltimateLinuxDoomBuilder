@@ -152,7 +152,7 @@ namespace ULDB.Controls
 		{
 			int index = node.IsSelected && node.SelectedImageIndex >= 0 ? node.SelectedImageIndex : node.ImageIndex;
 			SD.Image image = model.ImageList?.Images[index];
-			if(image != null) return new Image { Source = AvaloniaImages.From(image), Width = 16, Height = 16 };
+			if(image != null) return BreezeIcons.ForImage(image, 16) ?? new Image { Source = AvaloniaImages.From(image), Width = 16, Height = 16 };
 			return IconProvider?.Invoke(node);
 		}
 
