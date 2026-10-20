@@ -234,8 +234,10 @@ namespace ULDB.Controls
 				}
 
 				// Picture, fitted into the tile, centred
-				Bitmap bmp = AvaloniaImages.From(item.Icon.GetPreview());
 				Rect pic = new Rect(r.X, r.Y, r.Width, Math.Max(1, pichight));
+				bool folder = item.ItemType != ImageBrowserItemType.IMAGE;
+				if(folder) DrawFolder(context, pic, item.ItemType == ImageBrowserItemType.FOLDER_UP, accent);
+				Bitmap bmp = folder ? null : AvaloniaImages.From(item.Icon.GetPreview());
 				if(bmp != null)
 				{
 					double scale = Math.Min(pic.Width / bmp.Size.Width, pic.Height / bmp.Size.Height);
@@ -283,6 +285,26 @@ namespace ULDB.Controls
 		}
 
 		#endregion
+
+		// Folder tiles (a texture set or "go up") are vector icons in the Breeze style, not UDB's bitmaps.
+		private static readonly Geometry FolderBack = Geometry.Parse("M1,3.5 Q1,2.5 2,2.5 H6 L8,4.5 H14 Q15,4.5 15,5.5 V13 Q15,14 14,14 H2 Q1,14 1,13 Z");
+		private static readonly Geometry FolderFront = Geometry.Parse("M1,6.5 Q1,5.5 2,5.5 H14 Q15,5.5 15,6.5 V13 Q15,14 14,14 H2 Q1,14 1,13 Z");
+		private static readonly Geometry UpArrow = Geometry.Parse("M8,12 V8 M5.8,9.9 L8,7.7 L10.2,9.9");
+
+		private static void DrawFolder(DrawingContext context, Rect box, bool up, Color accent)
+		{
+			double size = Math.Min(Math.Min(box.Width, box.Height) * 0.62, 96);
+			if(size < 16) size = Math.Min(box.Width, box.Height);
+			double scale = size / 16;
+			Matrix m = Matrix.CreateScale(scale, scale) * Matrix.CreateTranslation(box.X + (box.Width - size) / 2, box.Y + (box.Height - size) / 2);
+			using(context.PushTransform(m))
+			{
+				Color dark = Color.FromRgb((byte)(accent.R * 0.7), (byte)(accent.G * 0.7), (byte)(accent.B * 0.7));
+				context.DrawGeometry(new SolidColorBrush(dark), null, FolderBack);
+				context.DrawGeometry(new SolidColorBrush(accent), null, FolderFront);
+				if(up) context.DrawGeometry(null, new Pen(Brushes.White, 1.3, lineCap: PenLineCap.Round, lineJoin: PenLineJoin.Round), UpArrow);
+			}
+		}
 
 		#region ================== Scrolling
 
