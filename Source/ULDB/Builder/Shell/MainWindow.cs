@@ -405,7 +405,8 @@ namespace ULDB.Shell
 
 		/// <summary>
 		/// Development aid: ULDB_SHOW_FORM=vertex|linedef|sector|thing[:tab] opens that edit dialog, or
-		/// ULDB_SHOW_FORM=action:name runs an action (e.g. switching mode)
+		/// ULDB_SHOW_FORM=action:name runs an action (e.g. switching mode), select:sectors selects all sectors
+		/// (also linedefs, things, vertices); steps can be chained with "+"
 		/// on the first such map element once a map is open (optionally on the given tab index),
 		/// so dialogs can be checked and captured without clicking through the editor.
 		/// </summary>
@@ -419,13 +420,27 @@ namespace ULDB.Shell
 			if(tab >= 0) General.Settings.WriteSetting("windows." + configname + ".activetab", tab);
 			Dispatcher.UIThread.Post(() =>
 			{
-				switch(parts[0])
+				// Steps joined by "+" run in order, e.g. "action:buildermodes_sectorsmode+select:sectors+action:...".
+				foreach(string step in what.Split('+'))
 				{
-					case "vertex": form.ShowEditVertices(new[] { System.Linq.Enumerable.First(General.Map.Map.Vertices) }); break;
-					case "linedef": form.ShowEditLinedefs(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); break;
-					case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
-					case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
-					case "action": General.Actions.InvokeAction(parts[1]); break; // e.g. action:buildermodes_sectorsmode
+					string[] p = step.Split(':');
+					switch(p[0])
+					{
+						case "vertex": form.ShowEditVertices(new[] { System.Linq.Enumerable.First(General.Map.Map.Vertices) }); break;
+						case "linedef": form.ShowEditLinedefs(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); break;
+						case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
+						case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
+						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode
+						case "select": // select:sectors|linedefs|things|vertices, everything of that type
+							switch(p[1])
+							{
+								case "sectors": foreach(var e in General.Map.Map.Sectors) e.Selected = true; break;
+								case "linedefs": foreach(var e in General.Map.Map.Linedefs) e.Selected = true; break;
+								case "things": foreach(var e in General.Map.Map.Things) e.Selected = true; break;
+								case "vertices": foreach(var e in General.Map.Map.Vertices) e.Selected = true; break;
+							}
+							break;
+					}
 				}
 			}, DispatcherPriority.Background);
 		}

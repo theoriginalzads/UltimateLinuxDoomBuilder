@@ -186,6 +186,7 @@ namespace System.Windows.Forms
 		public void RaiseKeyPress(KeyPressEventArgs e) => OnKeyPress(e);
 		public void RaisePreviewKeyDown(PreviewKeyDownEventArgs e) => OnPreviewKeyDown(e);
 		public void RaiseClick() => OnClick(EventArgs.Empty);
+		public void RaiseDoubleClick() => OnDoubleClick(EventArgs.Empty);
 		public void RaiseResize() { OnResize(EventArgs.Empty); OnSizeChanged(EventArgs.Empty); }
 		public void RaiseGotFocus() => OnGotFocus(EventArgs.Empty);
 		public void RaiseLostFocus() => OnLostFocus(EventArgs.Empty);
@@ -687,6 +688,20 @@ namespace System.Windows.Forms
 		public bool AutoSize { get; set; }
 	}
 
+	/// <summary>
+	/// State only: upstream uses it to show a few lines of formatted help text (3D Floor Mode's slope
+	/// data sector dialog). ULDB's views show that text natively; DocumentText keeps what was set.
+	/// </summary>
+	public class WebBrowser : Control
+	{
+		private string documenttext = "";
+		public string DocumentText { get => documenttext; set { documenttext = value ?? ""; NotifyStylesChanged(); } }
+		public bool ScrollBarsEnabled { get; set; } = true;
+		public bool IsWebBrowserContextMenuEnabled { get; set; } = true;
+		public bool AllowWebBrowserDrop { get; set; } = true;
+		public bool WebBrowserShortcutsEnabled { get; set; } = true;
+	}
+
 	public class Label : Control
 	{
 		public bool AutoSize { get; set; }
@@ -941,6 +956,20 @@ namespace System.Windows.Forms
 		/// <summary>Item layout is up to the view; this reports one column of 16 px rows.</summary>
 		public Rectangle GetItemRect(int index) => new Rectangle(0, index * 16, Math.Max(1, Width), 16);
 
+		/// <summary>Indices of the selected items (a snapshot, in item order).</summary>
+		public List<int> SelectedIndices
+		{
+			get
+			{
+				List<int> result = new List<int>();
+				for(int i = 0; i < Items.Count; i++) if(Items[i].Selected) result.Add(i);
+				return result;
+			}
+		}
+
+		/// <summary>The selected items (a snapshot, in item order).</summary>
+		public List<ListViewItem> SelectedItems => Items.FindAll(i => i.Selected);
+
 		public class ListViewItemCollection : List<ListViewItem>
 		{
 			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
@@ -953,6 +982,34 @@ namespace System.Windows.Forms
 		public ListViewItem() { }
 		public ListViewItem(string text) { Text = text; }
 		public string Text { get; set; }
+
+		/// <summary>The item's columns. As in WinForms, SubItems[0] is the item itself (its Text).</summary>
+		public ListViewSubItemCollection SubItems => subitems ??= new ListViewSubItemCollection(this);
+		private ListViewSubItemCollection subitems;
+
+		public class ListViewSubItem
+		{
+			public ListViewSubItem() { }
+			public ListViewSubItem(ListViewItem owner, string text) { Text = text; }
+			public virtual string Text { get; set; }
+			public object Tag { get; set; }
+			public string Name { get; set; }
+		}
+
+		private sealed class OwnerText : ListViewSubItem
+		{
+			private readonly ListViewItem owner;
+			public OwnerText(ListViewItem owner) { this.owner = owner; }
+			public override string Text { get => owner.Text; set => owner.Text = value; }
+		}
+
+		public class ListViewSubItemCollection : List<ListViewSubItem>
+		{
+			private readonly ListViewItem owner;
+			internal ListViewSubItemCollection(ListViewItem owner) { this.owner = owner; base.Add(new OwnerText(owner)); }
+			public ListViewSubItem Add(string text) { ListViewSubItem item = new ListViewSubItem(owner, text); base.Add(item); return item; }
+			public new ListViewSubItem Add(ListViewSubItem item) { base.Add(item); return item; }
+		}
 		public bool Checked { get; set; }
 		public bool Selected { get; set; }
 		public Color ForeColor { get; set; } = SystemColors.WindowText;

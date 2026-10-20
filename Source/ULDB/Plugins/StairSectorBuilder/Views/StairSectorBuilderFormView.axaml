@@ -1,0 +1,169 @@
+<!-- ULDB: the window of Stair Sector Builder's StairSectorBuilderForm (model-ported: upstream's code
+     runs unchanged). Controls named like upstream's fields are bound to them by
+     ModelBinder.BindByName; groups and their order follow upstream's designer: settings and stair
+     types on the left, prefabs on the right, height changes below them, textures along the bottom. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="using:ULDB.Shell"
+        x:Class="CodeImp.DoomBuilder.StairSectorBuilderMode.StairSectorBuilderFormView"
+        Title="Stair Sector Builder" Width="720" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="btnOK" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="btnCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="8" RowSpacing="8" Grid.IsSharedSizeScope="True">
+
+      <!-- Left: number of sectors and the stair type tabs -->
+      <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Spacing="8">
+        <Border x:Name="groupBox1" Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock x:Name="label4" Classes="uldb-field"/>
+              <ContentControl x:Name="numberofsectors" Width="92"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+        <TabControl x:Name="tabcontrol" Padding="0,8,0,0">
+          <TabItem x:Name="tabPage1">
+            <StackPanel Spacing="6">
+              <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="4" ColumnSpacing="8">
+                <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ContentControl x:Name="sectordepth" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="label11" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ContentControl x:Name="spacing" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              </Grid>
+              <CheckBox x:Name="distinctbaseheights"/>
+              <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                <Border x:Name="groupBox2" Classes="uldb-group">
+                  <StackPanel Spacing="2">
+                    <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+                    <RadioButton x:Name="sidefront" GroupName="side"/>
+                    <RadioButton x:Name="sideback" GroupName="side"/>
+                  </StackPanel>
+                </Border>
+                <Border x:Name="groupBox3" Grid.Column="1" Classes="uldb-group">
+                  <StackPanel Spacing="2">
+                    <TextBlock x:Name="groupBox3Title" Classes="uldb-group-title"/>
+                    <CheckBox x:Name="singlesteps"/>
+                    <CheckBox x:Name="distinctsectors"/>
+                    <CheckBox x:Name="singledirection"/>
+                  </StackPanel>
+                </Border>
+              </Grid>
+            </StackPanel>
+          </TabItem>
+          <TabItem x:Name="tabPage2">
+            <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="4" ColumnSpacing="8">
+              <TextBlock x:Name="label12" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ComboBox x:Name="autocurveflipping" Grid.Column="1" Width="160" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label5" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="autocurveinnervertexmultiplier" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label6" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="autocurveoutervertexmultiplier" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+            </Grid>
+          </TabItem>
+          <TabItem x:Name="tabPage3">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="4" ColumnSpacing="8">
+              <TextBlock x:Name="label13" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ComboBox x:Name="splineflipping" Grid.Column="1" Width="160" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label17" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="splineinnervertexmultiplier" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label16" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="splineoutervertexmultiplier" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label10" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="numberofcontrolpoints" Grid.Row="3" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+            </Grid>
+          </TabItem>
+        </TabControl>
+      </StackPanel>
+
+      <!-- Right: prefabs -->
+      <Border x:Name="groupBox11" Grid.Row="0" Grid.Column="1" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox11Title" Classes="uldb-group-title"/>
+          <TextBox x:Name="prefabname"/>
+          <ListBox x:Name="prefabs" Height="110">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+                  <TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.65" VerticalAlignment="Center"/>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <Button x:Name="prefabsave"/>
+            <Button x:Name="prefabload"/>
+            <Button x:Name="prefabdelete"/>
+            <Button x:Name="prefabdefault"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Right, below: floor and ceiling height changes (the checkbox is the group's title) -->
+      <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+        <Border x:Name="groupBox6" Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <CheckBox x:Name="floorheightmodification" FontWeight="SemiBold"/>
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="4" ColumnSpacing="8">
+              <TextBlock x:Name="label" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="floorheightmod" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label14" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="floorbase" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label3" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <TextBlock x:Name="floorfirst" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+              <TextBlock x:Name="label7" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <TextBlock x:Name="floorlast" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+        <Border x:Name="groupBox9" Grid.Column="1" Classes="uldb-group">
+          <StackPanel Spacing="6">
+            <CheckBox x:Name="ceilingheightmodification" FontWeight="SemiBold"/>
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" RowSpacing="4" ColumnSpacing="8">
+              <TextBlock x:Name="label2" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="ceilingheightmod" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label15" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <ContentControl x:Name="ceilingbase" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+              <TextBlock x:Name="label9" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <TextBlock x:Name="ceilingfirst" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+              <TextBlock x:Name="label8" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+              <TextBlock x:Name="ceilinglast" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <!-- Bottom: textures and flats, each switched on by its checkbox -->
+      <Border Grid.Row="2" Grid.ColumnSpan="2" Classes="uldb-group">
+        <UniformGrid Columns="5" ColumnSpacing="8">
+          <StackPanel x:Name="groupBox4" Spacing="4">
+            <CheckBox x:Name="floorflat" FontWeight="SemiBold"/>
+            <ContentControl x:Name="floorflattexture" Height="130"/>
+          </StackPanel>
+          <StackPanel x:Name="groupBox5" Spacing="4">
+            <CheckBox x:Name="ceilingflat" FontWeight="SemiBold"/>
+            <ContentControl x:Name="ceilingflattexture" Height="130"/>
+          </StackPanel>
+          <StackPanel x:Name="groupBox8" Spacing="4">
+            <CheckBox x:Name="uppertexture" FontWeight="SemiBold"/>
+            <ContentControl x:Name="uppertexturetexture" Height="130"/>
+            <CheckBox x:Name="upperunpegged"/>
+          </StackPanel>
+          <StackPanel x:Name="groupBox10" Spacing="4">
+            <CheckBox x:Name="middletexture" FontWeight="SemiBold"/>
+            <ContentControl x:Name="middletexturetexture" Height="130"/>
+          </StackPanel>
+          <StackPanel x:Name="groupBox7" Spacing="4">
+            <CheckBox x:Name="lowertexture" FontWeight="SemiBold"/>
+            <ContentControl x:Name="lowertexturetexture" Height="130"/>
+            <CheckBox x:Name="lowerunpegged"/>
+          </StackPanel>
+        </UniformGrid>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>

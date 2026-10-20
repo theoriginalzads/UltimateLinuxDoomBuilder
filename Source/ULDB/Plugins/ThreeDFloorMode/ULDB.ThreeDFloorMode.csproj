@@ -28,11 +28,14 @@
     <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt):
          the 3D floor tooltip list, filled in by ThreeDFloorMode itself. -->
     <Compile Include="$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.cs;$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Windows/SlopeDataSectorDialog.cs;$(UpstreamPlugin)Windows/SlopeDataSectorDialog.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/ThreeDFloorPanel.cs;$(UpstreamPlugin)Interface/ThreeDFloorPanel.Designer.cs" />
     <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
          window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
     <Compile Include="$(UpstreamPlugin)Windows/MenusForm.cs;$(UpstreamPlugin)Windows/MenusForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia windows for model-ported forms (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
     <Compile Include="UIStubs/**/*.cs" />
     <Compile Include="UIStubFixes/**/*.cs" />
   </ItemGroup>
@@ -50,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Resources.Extensions" Version="10.0.13" />
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
     <EmbeddedResource Update="FormResources/MenusForm.resx" LogicalName="CodeImp.DoomBuilder.ThreeDFloorMode.MenusForm.resources" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />

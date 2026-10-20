@@ -171,20 +171,50 @@ namespace ULDB.Shell
 		public sealed class ListItem
 		{
 			public string Text { get; init; }
+			/// <summary>The item's other columns (SubItems 1 and up), joined for a second line or column.</summary>
+			public string SubText { get; init; }
 			public bool Checked { get; init; }
 			public bool Hot { get; init; }
 		}
 
+		/// <summary>
+		/// A ListView's items. A ListBox view also selects: its selection sets the model items'
+		/// Selected (upstream reads SelectedIndices), and a double-click raises the model's DoubleClick.
+		/// </summary>
 		public ModelBinder Items(ItemsControl target, WF.ListView list)
 		{
+			bool updating = false;
+			if(target is ListBox box)
+			{
+				box.SelectionMode = list.MultiSelect ? SelectionMode.Multiple : SelectionMode.Single;
+				box.SelectionChanged += (s, e) =>
+				{
+					if(updating) return;
+					for(int i = 0; i < list.Items.Count; i++) list.Items[i].Selected = box.Selection.IsSelected(i);
+				};
+				box.DoubleTapped += (s, e) => { if(box.SelectedIndex >= 0) { list.RaiseDoubleClick(); Schedule(s, e); } };
+			}
+			string shown = null;
 			return Custom(() =>
 			{
-				target.ItemsSource = list.Items.Select(i => new ListItem
+				List<ListItem> items = list.Items.Select(i => new ListItem
 				{
 					Text = i.Text,
+					SubText = string.Join(" · ", i.SubItems.Skip(1).Select(si => si.Text)),
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,
 				}).ToList();
+				// Only when something changed: replacing the items resets the selection and scrolling.
+				string sig = string.Join("\n", items.Select(i => i.Text + "\t" + i.SubText + "\t" + i.Checked + i.Hot));
+				if(sig != shown)
+				{
+					shown = sig;
+					updating = true;
+					target.ItemsSource = items;
+					if(target is ListBox lb)
+						for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected) lb.Selection.Select(i);
+					updating = false;
+				}
 				target.IsVisible = list.Visible;
 			}, list);
 		}
