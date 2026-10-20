@@ -34,6 +34,7 @@ namespace ULDB.Shell
 			Register<LinedefEditForm>(f => new LinedefEditFormView(f));
 			Register<ThingEditForm>(f => new ThingEditFormView(f));
 			Register<ConfigForm>(f => new ConfigFormView(f));
+			Register<PreferencesForm>(f => new PreferencesFormView(f));
 			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 

@@ -195,6 +195,8 @@ namespace ULDB.Shell
 			public string Text { get; init; }
 			/// <summary>The item's position in the ListView (a checkbox in the row writes its state back by it).</summary>
 			public int Index { get; init; }
+			/// <summary>The item's group header (ListView groups), or null.</summary>
+			public string Group { get; init; }
 			/// <summary>The item's other columns (SubItems 1 and up), joined for a second line or column.</summary>
 			public string SubText { get; init; }
 			public bool Checked { get; init; }
@@ -244,6 +246,7 @@ namespace ULDB.Shell
 				{
 					Text = i.Text,
 					Index = list.Items.IndexOf(i),
+					Group = i.Group?.Header,
 					SubText = string.Join(" · ", i.SubItems.Skip(1).Select(si => si.Text)),
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,

@@ -465,6 +465,14 @@ namespace ULDB.Shell
 						case "oldlinedef": { var f = new CodeImp.DoomBuilder.Windows.LinedefEditForm(); f.Setup(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); f.ShowDialog(form); break; }
 						case "oldthing": { var f = new CodeImp.DoomBuilder.Windows.ThingEditForm(); f.Setup(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); f.ShowDialog(form); break; }
 						case "config": form.ShowConfigurationPage(int.Parse(p[1])); break; // config:<tab>, Game Configurations
+						case "prefs": // prefs:<tab>, Preferences on that tab
+						{
+							var pf = new CodeImp.DoomBuilder.Windows.PreferencesForm();
+							var tabsfield = typeof(CodeImp.DoomBuilder.Windows.PreferencesForm).GetField("tabs", BindingFlags.NonPublic | BindingFlags.Instance);
+							((WF.TabControl)tabsfield.GetValue(pf)).SelectedIndex = int.Parse(p[1]);
+							pf.ShowDialog(form);
+							break;
+						}
 						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode
 						case "docker": // docker:<short name>, e.g. docker:tagexplorerdockerpanel
 							// The panel itself: MainForm.SelectDocker expects to be called from the docker's plugin.
