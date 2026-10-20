@@ -6,7 +6,7 @@
   <Grid ColumnSpacing="8">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
-      <ColumnDefinition Width="92"/>
+      <ColumnDefinition Width="110"/>
       <ColumnDefinition Width="*" MinWidth="120"/>
       <ColumnDefinition Width="Auto" MinWidth="28"/>
     </Grid.ColumnDefinitions>

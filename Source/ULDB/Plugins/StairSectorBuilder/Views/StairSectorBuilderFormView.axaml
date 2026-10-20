@@ -1,7 +1,7 @@
 <!-- ULDB: the window of Stair Sector Builder's StairSectorBuilderForm (model-ported: upstream's code
      runs unchanged). Controls named like upstream's fields are bound to them by
      ModelBinder.BindByName; groups and their order follow upstream's designer: settings and stair
-     types on the left, prefabs on the right, height changes below them, textures along the bottom. -->
+     types on the left, prefabs on the right, height changes below both, textures along the bottom. -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="using:ULDB.Shell"
@@ -15,7 +15,7 @@
     <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,*" ColumnSpacing="8" RowSpacing="8" Grid.IsSharedSizeScope="True">
 
       <!-- Left: number of sectors and the stair type tabs -->
-      <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Spacing="8">
+      <StackPanel Grid.Row="0" Grid.Column="0" Spacing="8">
         <Border x:Name="groupBox1" Classes="uldb-group">
           <StackPanel Spacing="6">
             <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
@@ -103,8 +103,8 @@
         </StackPanel>
       </Border>
 
-      <!-- Right, below: floor and ceiling height changes (the checkbox is the group's title) -->
-      <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" ColumnSpacing="8">
+      <!-- Below, full width: floor and ceiling height changes (the checkbox is the group's title) -->
+      <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,*" ColumnSpacing="8">
         <Border x:Name="groupBox6" Classes="uldb-group">
           <StackPanel Spacing="6">
             <CheckBox x:Name="floorheightmodification" FontWeight="SemiBold"/>
