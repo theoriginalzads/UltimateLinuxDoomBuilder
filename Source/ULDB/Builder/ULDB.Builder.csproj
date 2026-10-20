@@ -151,6 +151,12 @@
     <Compile Include="$(UpstreamCore)Controls/PasteOptionsControl.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/ExternalCommandControl.cs" />
     <Compile Include="$(UpstreamCore)Controls/ExternalCommandControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditForm.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/MultiSelectTreeview.cs" />
     <Compile Include="$(UpstreamCore)Controls/BufferedTreeView.cs" />
     <Compile Include="$(UpstreamCore)Controls/ColoredComboBox.cs" />

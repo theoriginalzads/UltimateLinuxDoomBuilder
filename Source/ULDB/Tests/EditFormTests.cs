@@ -62,6 +62,31 @@ namespace ULDB.Tests
 		}
 
 		[SkippableFact]
+		public void DoomFormatEditFormsSetUp()
+		{
+			WithMap(manager =>
+			{
+				using(SectorEditForm f = new SectorEditForm()) f.Setup(new List<Sector> { System.Linq.Enumerable.First(manager.Map.Sectors) });
+				using(ThingEditForm f = new ThingEditForm()) f.Setup(new List<Thing> { System.Linq.Enumerable.First(manager.Map.Things) });
+				using(LinedefEditForm f = new LinedefEditForm()) f.Setup(new List<Linedef> { System.Linq.Enumerable.First(manager.Map.Linedefs, l => l.Back != null) });
+			});
+		}
+
+		[SkippableFact]
+		public void SmallDialogsConstruct()
+		{
+			WithMap(manager =>
+			{
+				using(GridSetupForm f = new GridSetupForm()) { }
+				using(CenterOnCoordinatesForm f = new CenterOnCoordinatesForm()) { }
+				using(ThingsFiltersForm f = new ThingsFiltersForm()) { }
+				using(TagStatisticsForm f = new TagStatisticsForm()) { }
+				using(ThingStatisticsForm f = new ThingStatisticsForm()) { }
+				using(PasteOptionsForm f = new PasteOptionsForm()) { }
+			});
+		}
+
+		[SkippableFact]
 		public void VertexEditFormSetsUp()
 		{
 			WithMap(manager =>

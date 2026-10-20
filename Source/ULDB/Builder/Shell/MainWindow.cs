@@ -460,6 +460,10 @@ namespace ULDB.Shell
 						case "linedef": form.ShowEditLinedefs(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); break;
 						case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
 						case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
+						// The Doom/Hexen-format edit forms, opened on a UDMF map (their code runs, fields differ)
+						case "oldsector": { var f = new CodeImp.DoomBuilder.Windows.SectorEditForm(); f.Setup(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); f.ShowDialog(form); break; }
+						case "oldlinedef": { var f = new CodeImp.DoomBuilder.Windows.LinedefEditForm(); f.Setup(new[] { System.Linq.Enumerable.First(General.Map.Map.Linedefs, l => l.Back != null) }); f.ShowDialog(form); break; }
+						case "oldthing": { var f = new CodeImp.DoomBuilder.Windows.ThingEditForm(); f.Setup(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); f.ShowDialog(form); break; }
 						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode
 						case "docker": // docker:<short name>, e.g. docker:tagexplorerdockerpanel
 							// The panel itself: MainForm.SelectDocker expects to be called from the docker's plugin.

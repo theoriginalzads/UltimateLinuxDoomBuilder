@@ -30,6 +30,9 @@ namespace ULDB.Shell
 			Register<ThingStatisticsForm>(f => new ThingStatisticsFormView(f));
 			Register<PasteOptionsForm>(f => new PasteOptionsFormView(f));
 			Register<ThingsFiltersForm>(f => new ThingsFiltersFormView(f));
+			Register<SectorEditForm>(f => new SectorEditFormView(f));
+			Register<LinedefEditForm>(f => new LinedefEditFormView(f));
+			Register<ThingEditForm>(f => new ThingEditFormView(f));
 			Register<PreAndPostCommandsForm>(f => new PreAndPostCommandsFormView(f));
 		}
 

@@ -97,3 +97,6 @@ CodeImp.DoomBuilder.Windows.PreAndPostCommandsForm
 CodeImp.DoomBuilder.Controls.PasteOptionsControl
 CodeImp.DoomBuilder.Controls.ExternalCommandControl
 CodeImp.DoomBuilder.Controls.FolderSelectDialog
+CodeImp.DoomBuilder.Windows.LinedefEditForm
+CodeImp.DoomBuilder.Windows.SectorEditForm
+CodeImp.DoomBuilder.Windows.ThingEditForm
