@@ -1,0 +1,9 @@
+<!-- ULDB: the view of 3D Floor mode's docker (ThreeDFloorPanel, model-ported): the 3D floors of the
+     highlighted sector, one card each (ThreeDFloorTooltipView), as upstream's flow panel. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorPanelView">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="4">
+    <StackPanel x:Name="items"/>
+  </ScrollViewer>
+</UserControl>

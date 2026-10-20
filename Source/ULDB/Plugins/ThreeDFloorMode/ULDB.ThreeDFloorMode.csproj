@@ -26,7 +26,7 @@
     <Compile Include="$(UpstreamPlugin)**/*.cs"
              Exclude="$(UpstreamPlugin)obj/**;$(UpstreamPlugin)bin/**;$(UpstreamPlugin)Properties/Resources.Designer.cs;$(UpstreamPlugin)MergePoint.cs;$(UpstreamPlugin)Controls/**;$(UpstreamPlugin)Interface/**;$(UpstreamPlugin)Windows/**" />
     <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt):
-         the 3D floor tooltip list, filled in by ThreeDFloorMode itself. -->
+         the 3D floors docker's list, filled in by ThreeDFloorMode itself; views in Views/. -->
     <Compile Include="$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.cs;$(UpstreamPlugin)Controls/ThreeDFloorTooltipControl.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Windows/SlopeDataSectorDialog.cs;$(UpstreamPlugin)Windows/SlopeDataSectorDialog.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/ThreeDFloorPanel.cs;$(UpstreamPlugin)Interface/ThreeDFloorPanel.Designer.cs" />
