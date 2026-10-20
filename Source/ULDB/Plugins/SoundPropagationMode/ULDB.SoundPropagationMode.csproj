@@ -26,9 +26,11 @@
          window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
     <Compile Include="$(UpstreamPlugin)Windows/MenusForm.cs;$(UpstreamPlugin)Windows/MenusForm.designer.cs" />
     <!-- Model port (uistubs-ported.txt): the sound environments docker's tree, filled in by
-         SoundEnvironmentMode. Its view is still to come; the docker shows a placeholder note. -->
+         SoundEnvironmentMode. Its view is in Views/. -->
     <Compile Include="$(UpstreamPlugin)Interface/SoundEnvironmentPanel.cs;$(UpstreamPlugin)Interface/SoundEnvironmentPanel.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia views for model-ported controls (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
     <Compile Include="UIStubs/**/*.cs" />
     <Compile Include="UIStubFixes/**/*.cs" />
   </ItemGroup>
@@ -41,6 +43,10 @@
   <ItemGroup>
     <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png;$(UpstreamPlugin)Resources/*.txt"
                       LogicalName="CodeImp.DoomBuilder.SoundPropagationMode.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->
