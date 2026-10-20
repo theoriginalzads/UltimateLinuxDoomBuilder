@@ -5,6 +5,8 @@ name: ULDB Flatpak
 on:
   workflow_dispatch:
   push:
+    tags:
+      - 'v*'
     paths:
       - 'packaging/**'
       - '.github/workflows/uldb-flatpak.yml'
@@ -12,6 +14,9 @@ on:
 concurrency:
   group: uldb-flatpak-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   flatpak:
@@ -89,3 +94,13 @@ jobs:
           name: uldb-flatpak-log
           path: flatpak-builder.log
           if-no-files-found: ignore
+
+      - name: Publish release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp uldb.flatpak "ultimate-linux-doom-builder-${GITHUB_REF_NAME}.flatpak"
+          gh release create "$GITHUB_REF_NAME" "ultimate-linux-doom-builder-${GITHUB_REF_NAME}.flatpak" \
+            --repo "$GITHUB_REPOSITORY" --prerelease --title "Ultimate Linux Doom Builder ${GITHUB_REF_NAME} (early preview)" \
+            --notes-file packaging/RELEASE_NOTES.md
