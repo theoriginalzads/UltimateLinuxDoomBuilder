@@ -1,0 +1,29 @@
+<!-- ULDB: the view of upstream's ThingBrowserControl (model-ported): filter, the thing type tree
+     (upstream's MultiSelectTreeview) and details of the chosen type with its sprite. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ThingBrowserControlView">
+  <DockPanel>
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,6">
+      <TextBlock x:Name="label1" Classes="uldb-field"/>
+      <TextBox x:Name="tbFilter" Grid.Column="1" Watermark="Type or class name"/>
+      <Button x:Name="bClear" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0"/>
+    </Grid>
+    <Grid x:Name="infopanel" DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="0,8,0,0" RowSpacing="2">
+      <TextBlock x:Name="typecaption" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBox x:Name="typeid" Grid.Column="1" Width="80" HorizontalAlignment="Left"/>
+      <TextBlock x:Name="positioncaption" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBlock x:Name="positionlabel" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"/>
+      <TextBlock x:Name="sizecaption" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBlock x:Name="sizelabel" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"/>
+      <TextBlock x:Name="blockingcaption" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBlock x:Name="blockinglabel" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+      <TextBlock x:Name="labelclassname" Grid.Row="4" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <Button x:Name="classname" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+      <Border x:Name="spritepanel" Grid.Column="2" Grid.RowSpan="5" Classes="uldb-tile" Width="72" Height="72" VerticalAlignment="Top">
+        <Image x:Name="spritetex" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="None"/>
+      </Border>
+    </Grid>
+    <ContentControl x:Name="typelisthost"/>
+  </DockPanel>
+</UserControl>

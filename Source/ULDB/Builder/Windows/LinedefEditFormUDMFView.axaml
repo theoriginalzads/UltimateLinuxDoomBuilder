@@ -1,0 +1,271 @@
+<!-- ULDB: the window of upstream's LinedefEditFormUDMF (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; tabs,
+     groups and field order follow upstream's designer. Generated layout, then edited by hand. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMFView"
+        Title="Edit Linedef" Width="880" Height="920" MinWidth="800" MinHeight="840" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+    <TabControl x:Name="tabs" Padding="0,10,0,0">
+      <TabItem x:Name="tabproperties">
+        <Panel Grid.IsSharedSizeScope="True">
+          <StackPanel Spacing="6">
+            <Border x:Name="flagsgroup" Classes="uldb-group">
+              <StackPanel Spacing="6">
+                <TextBlock x:Name="flagsgroupTitle" Text="Flags" Classes="uldb-group-title"/>
+                <ContentControl x:Name="flags"/>
+              </StackPanel>
+            </Border>
+            <Border x:Name="groupsettings" Classes="uldb-group">
+              <StackPanel Spacing="6">
+                <TextBlock x:Name="groupsettingsTitle" Text="Settings" Classes="uldb-group-title"/>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                  <TextBlock x:Name="labelrenderstyle" Text="Render style:" Classes="uldb-field" HorizontalAlignment="Right"/>
+                  <ComboBox x:Name="renderStyle" Grid.Column="1" Width="170"/>
+                  <TextBlock x:Name="label6" Text="Alpha:" Grid.Column="2" Classes="uldb-field" Margin="16,0,8,0"/>
+                  <ContentControl x:Name="alpha" Grid.Column="3" Width="92"/>
+                  <Button x:Name="resetalpha" Grid.Column="4" Classes="uldb-tool" VerticalAlignment="Center"/>
+                  <TextBlock x:Name="labellockpick" Text="Lock number:" Grid.Column="6" Classes="uldb-field"/>
+                  <ComboBox x:Name="lockpick" Grid.Column="7" Width="200"/>
+                </Grid>
+              </StackPanel>
+            </Border>
+            <Border x:Name="actiongroup" Classes="uldb-group">
+              <StackPanel Spacing="6">
+                <TextBlock x:Name="actiongroupTitle" Text="Action" Classes="uldb-group-title"/>
+                <Grid>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                  <TextBlock x:Name="label2" Text="Action:" Classes="uldb-field" HorizontalAlignment="Right"/>
+                  <ContentControl x:Name="action" Grid.Column="1"/>
+                  <Button x:Name="browseaction" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0" ToolTip.Tip="Browse actions"/>
+                </Grid>
+                <ContentControl x:Name="argscontrol"/>
+              </StackPanel>
+            </Border>
+            <Border x:Name="activationGroup" Classes="uldb-group">
+              <StackPanel Spacing="6">
+                <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock x:Name="activationGroupTitle" Text="Activation" Classes="uldb-group-title"/><Image x:Name="missingactivation" Width="16" Height="16"/></StackPanel>
+                <ContentControl x:Name="udmfactivates"/>
+              </StackPanel>
+            </Border>
+            <Border x:Name="idgroup" Classes="uldb-group">
+              <StackPanel Spacing="6">
+                <TextBlock x:Name="idgroupTitle" Text="Identification" Classes="uldb-group-title"/>
+                <ContentControl x:Name="tagsselector"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Panel>
+      </TabItem>
+      <TabItem x:Name="tabfront">
+        <Panel Grid.IsSharedSizeScope="True">
+          <DockPanel>
+            <CheckBox x:Name="frontside" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <StackPanel x:Name="frontgroup" Spacing="6">
+              <Border x:Name="groupBox5" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  
+                  <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="label11" Text="Sector index:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="frontsector"  Width="92"/>
+                    </StackPanel>
+                    <TextBlock x:Name="labelLightFront" Text="Brightness:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="lightFront"  Width="92"/>
+                      <CheckBox x:Name="cbLightAbsoluteFront"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                      <Button x:Name="resetfrontlight"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock x:Name="labelFrontTextureOffset" Text="Sidedef offset:" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="frontTextureOffset" />
+                    </StackPanel>
+                  </Grid>
+                  <Button x:Name="customfrontbutton" HorizontalAlignment="Left"/>
+                </StackPanel>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Upper" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelFrontOffsetTop" Text="Upper offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontOffsetTop" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelFrontScaleTop" Text="Upper scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontScaleTop" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightfrontupper" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="fronthigh" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Middle" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelFrontOffsetMid" Text="Middle offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontOffsetMid" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelFrontScaleMid" Text="Middle scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontScaleMid" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightfrontmiddle" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="frontmid" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Lower" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelFrontOffsetBottom" Text="Lower offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontOffsetBottom" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelFrontScaleBottom" Text="Lower scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcFrontScaleBottom" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightfrontlower" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="frontlow" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border x:Name="frontflagsgroup" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="frontflagsgroupTitle" Text="Flags" Classes="uldb-group-title"/>
+                  <ContentControl x:Name="flagsFront"/>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </DockPanel>
+        </Panel>
+      </TabItem>
+      <TabItem x:Name="tabback">
+        <Panel Grid.IsSharedSizeScope="True">
+          <DockPanel>
+            <CheckBox x:Name="backside" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="0,0,0,6"/>
+            <StackPanel x:Name="backgroup" Spacing="6">
+              <Border x:Name="groupBox4" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  
+                  <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="label12" Text="Sector index:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="backsector"  Width="92"/>
+                    </StackPanel>
+                    <TextBlock x:Name="labelLightBack" Text="Brightness:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="lightBack"  Width="92"/>
+                      <CheckBox x:Name="cbLightAbsoluteBack"  Margin="6,0,0,0" VerticalAlignment="Center"/>
+                      <Button x:Name="resetbacklight"  Classes="uldb-tool" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock x:Name="labelBackTextureOffset" Text="Sidedef offset:" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                      <ContentControl x:Name="backTextureOffset" />
+                    </StackPanel>
+                  </Grid>
+                  <Button x:Name="custombackbutton" HorizontalAlignment="Left"/>
+                </StackPanel>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Upper" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelBackOffsetTop" Text="Upper offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackOffsetTop" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelBackScaleTop" Text="Upper scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackScaleTop" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightbackupper" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="backhigh" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Middle" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelBackOffsetMid" Text="Middle offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackOffsetMid" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelBackScaleMid" Text="Middle scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackScaleMid" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightbackmiddle" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="backmid" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border Classes="uldb-group">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="Lower" Classes="uldb-group-title" Margin="0,0,0,2"/>
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                      <TextBlock x:Name="labelBackOffsetBottom" Text="Lower offset:" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackOffsetBottom" />
+                      </StackPanel>
+                      <TextBlock x:Name="labelBackScaleBottom" Text="Lower scale:" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                        <ContentControl x:Name="pfcBackScaleBottom" />
+                      </StackPanel>
+                    </Grid>
+                    <ContentControl x:Name="lightbacklower" HorizontalAlignment="Left"/>
+                  </StackPanel>
+                  <ContentControl x:Name="backlow" Grid.Column="1" Width="150" Height="150"/>
+                </Grid>
+              </Border>
+              <Border x:Name="backflagsgroup" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="backflagsgroupTitle" Text="Flags" Classes="uldb-group-title"/>
+                  <ContentControl x:Name="flagsBack"/>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </DockPanel>
+        </Panel>
+      </TabItem>
+      <TabItem x:Name="tabcomment">
+        <ContentControl x:Name="commenteditor"/>
+      </TabItem>
+      <TabItem x:Name="tabcustom">
+        <ContentControl x:Name="fieldslist"/>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

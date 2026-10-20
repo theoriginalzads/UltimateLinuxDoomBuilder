@@ -1,0 +1,7 @@
+<!-- ULDB: the view of upstream's ActionSpecialHelpButton (model-ported): opens the help for the chosen action special.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ActionSpecialHelpButtonView">
+  <Button x:Name="button" Classes="uldb-tool"/>
+</UserControl>

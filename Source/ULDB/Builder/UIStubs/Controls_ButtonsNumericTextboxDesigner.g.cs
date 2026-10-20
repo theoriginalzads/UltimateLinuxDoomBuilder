@@ -10,6 +10,8 @@ using System.Collections;
 using System.ComponentModel;
 // stub-key: using:System.ComponentModel.Design
 using System.ComponentModel.Design;
+// stub-key: using:System.Windows.Forms.Design
+using System.Windows.Forms.Design;
 
 namespace CodeImp.DoomBuilder.Controls
 {
@@ -18,7 +20,7 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ButtonsNumericTextboxDesigner.SnapLines#0
 		public virtual IList SnapLines { get => default; }
-		protected ButtonsNumericTextboxDesigner() { }
+		public ButtonsNumericTextboxDesigner() { }
 	}
 }
 

@@ -34,6 +34,8 @@ namespace CodeImp.DoomBuilder.Controls
 		protected virtual void OnResize(EventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer.OnMouseDown#15
 		protected virtual void OnMouseDown(MouseEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer.OnPaint#21
+		protected virtual void OnPaint(PaintEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer.SetSizes#26
 		public void SetSizes() { }
 	}

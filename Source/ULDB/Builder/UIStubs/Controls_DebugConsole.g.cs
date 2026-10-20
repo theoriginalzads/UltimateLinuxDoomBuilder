@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder
 namespace CodeImp.DoomBuilder
 {
 	// stub-key: CodeImp.DoomBuilder.DebugConsole
-	public partial class DebugConsole : System.Windows.Forms.Control
+	public partial class DebugConsole : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.DebugConsole.AlwaysOnTop#10
 		public bool AlwaysOnTop { get => default; }

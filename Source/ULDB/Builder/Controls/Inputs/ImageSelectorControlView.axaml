@@ -1,0 +1,17 @@
+<!-- ULDB: the view of upstream's ImageSelectorControl (TextureSelectorControl, FlatSelectorControl;
+     model-ported): a texture/flat preview and its name. The preview fills the space the host
+     gives it. Left-click browses, right-click clears ("-"), as upstream handles the clicks. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ImageSelectorControlView">
+  <DockPanel>
+    <TextBox x:Name="name" DockPanel.Dock="Bottom" HorizontalContentAlignment="Center" Margin="0,4,0,0"/>
+    <Border x:Name="tile" Classes="uldb-picker" Cursor="Hand" MinWidth="64" MinHeight="64">
+      <Panel>
+        <Image x:Name="imagebox" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="None" Margin="2"/>
+        <Border Classes="uldb-badge"><TextBlock x:Name="labelSize"/></Border>
+        <Button x:Name="togglefullname" Classes="uldb-tool" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2"/>
+      </Panel>
+    </Border>
+  </DockPanel>
+</UserControl>

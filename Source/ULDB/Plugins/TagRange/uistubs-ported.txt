@@ -1,0 +1,2 @@
+CodeImp.DoomBuilder.TagRange.TagRangeForm
+CodeImp.DoomBuilder.TagRange.ToolsForm

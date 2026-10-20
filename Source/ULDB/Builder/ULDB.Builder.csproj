@@ -5,14 +5,25 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>Builder</AssemblyName>
+    <!-- An executable like upstream's Builder.exe. Upstream's General.Main is also a Main,
+         so name the entry point: ULDB's sets up Avalonia, then calls General.Main. -->
+    <OutputType>Exe</OutputType>
+    <StartupObject>ULDB.Shell.Program</StartupObject>
     <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older. C# 14 (the .NET 10 default) makes `field` a keyword inside
+         property accessors, which silently changes upstream properties that use a member named
+         `field` (ColorFieldsControl.Field). -->
+    <LangVersion>13</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
     <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+    <!-- Form resources (FormResources/, tools/resxgen/formresx.py) hold Bitmap/Icon file
+         references, created from a stream at runtime by System.Resources.Extensions. -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <PropertyGroup>
     <UpstreamCore>$(MSBuildThisFileDirectory)../../Core/</UpstreamCore>
@@ -21,6 +32,103 @@
     <Compile Include="$(UpstreamCore)**/*.cs"
              Exclude="$(UpstreamCore)obj/**;$(UpstreamCore)bin/**;$(UpstreamCore)Controls/**;$(UpstreamCore)Windows/**;$(UpstreamCore)Properties/Resources.Designer.cs" />
     <!-- Replacement for upstream's Properties/Resources.Designer.cs (tools/resxgen). -->
+    <!-- Model ports: upstream window/control files compiled unchanged against ULDB.Compat
+         (docs/architecture.md, "Two ways to port a window"; listed in uistubs-ported.txt). -->
+    <Compile Include="$(UpstreamCore)Windows/MainForm.cs;$(UpstreamCore)Windows/MainForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/StatusInfo.cs" />
+    <Compile Include="$(UpstreamCore)Windows/MenuSection.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ToolbarSection.cs" />
+    <Compile Include="$(UpstreamCore)Windows/MessageBeepType.cs" />
+    <Compile Include="$(UpstreamCore)Windows/FindReplaceOptions.cs" />
+    <Compile Include="$(UpstreamCore)Windows/PluginToolbarButton.cs" />
+    <Compile Include="$(UpstreamCore)Windows/IMainForm.cs" />
+    <Compile Include="$(UpstreamCore)Controls/Docker.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ControlExtensionMethods.cs" />
+    <Compile Include="$(UpstreamCore)Windows/DelayedForm.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripActionButton.cs" />
+    <Compile Include="$(UpstreamCore)Controls/RenderTargetControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripNumericUpDown.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PlaceholderToolStripTextBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ToolStripCheckBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/LinedefInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/LinedefInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/VertexInfoPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/VertexInfoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ConfigurablePictureBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentListView.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControlEx.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AngleControlEx.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/StatisticsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/StatisticsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DockersControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DockersControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/HintsPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/HintsPanel.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/AutoSelectTextbox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/NumericTextbox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ButtonsNumericTextbox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ButtonsNumericTextbox.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/FieldsEditorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/FieldsEditorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/FieldsEditorRow.cs" />
+    <Compile Include="$(UpstreamCore)Windows/VertexEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/VertexEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextEditForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/TextEditForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ActionBrowserForm.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditFormUDMF.cs" />
+    <Compile Include="$(UpstreamCore)Windows/SectorEditFormUDMF.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditFormUDMF.cs" />
+    <Compile Include="$(UpstreamCore)Windows/LinedefEditFormUDMF.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFieldsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFieldsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SidedefPartLightControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SidedefPartLightControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorSlopeControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/SectorSlopeControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagsSelector.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagsSelector.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedIntControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedIntControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/FlatSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TextureSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ImageSelectorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentTrackBar.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TransparentLabel.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.cs" />
+    <Compile Include="$(UpstreamCore)Windows/ThingEditFormUDMF.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingBrowserControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ThingBrowserControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFloatControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/PairedFloatControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ColorFieldsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ColorFieldsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ColorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ColorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ActionSpecialHelpButton.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ActionSpecialHelpButton.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ActionSelectorControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ActionSelectorControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ArgumentsControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ArgumentsControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ArgumentBox.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ArgumentBox.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagSelector.cs" />
+    <Compile Include="$(UpstreamCore)Controls/TagSelector.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CommentEditor.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CommentEditor.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.cs" />
+    <Compile Include="$(UpstreamCore)Controls/CheckboxArrayControl.Designer.cs" />
+    <Compile Include="$(UpstreamCore)Controls/MultiSelectTreeview.cs" />
+    <Compile Include="$(UpstreamCore)Controls/BufferedTreeView.cs" />
+    <Compile Include="$(UpstreamCore)Controls/ColoredComboBox.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- Generated placeholders for upstream windows/controls not ported yet (tools/uistubgen). -->
     <Compile Include="UIStubs/**/*.cs" />
@@ -28,14 +136,32 @@
     <Compile Include="UIStubFixes/**/*.cs" />
     <!-- ULDB platform helpers (Linux replacements for Windows-only code). -->
     <Compile Include="Platform/**/*.cs" />
+    <!-- ULDB-only code at the project root (Branding). -->
+    <Compile Include="*.cs" />
+    <!-- Input mapping between Avalonia and UDB's WinForms-style key codes. -->
+    <Compile Include="Input/**/*.cs" />
+    <!-- GZDoom/UZDoom-only scope filter. -->
+    <Compile Include="Scope/**/*.cs" />
+    <!-- Import of existing UDB settings (Mono build, Flatpak, Wine, Windows installs). -->
+    <Compile Include="Settings/**/*.cs" />
     <!-- ULDB rendering integration (hosted OpenGL context). -->
     <Compile Include="Rendering/**/*.cs" />
+    <!-- Avalonia ports of upstream windows and controls (.axaml), same names and namespaces. -->
+    <Compile Include="Windows/**/*.cs;Controls/**/*.cs" />
+    <!-- Avalonia app: entry point, IWinFormsHost, main loop. -->
+    <Compile Include="Shell/**/*.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Compat/ULDB.Compat.csproj" />
     <!-- Same SharpCompress version as the DLL upstream ships in Assets/Common. -->
     <PackageReference Include="SharpCompress" Version="0.20.0" />
+    <!-- UI toolkit (Phase 3+). Keep in step with Avalonia.Skia's SkiaSharp (ULDB.Compat). -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.4" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.1.4" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.13" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.13" />
   </ItemGroup>
   <!-- Upstream's embedded resources, under the same manifest names upstream uses. -->
   <ItemGroup>
@@ -67,6 +193,14 @@
     <EmbeddedResource Include="$(UpstreamCore)Resources/world3d.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d.shader" />
     <EmbeddedResource Include="$(UpstreamCore)Resources/world3d_skybox.shader" LogicalName="CodeImp.DoomBuilder.Resources.world3d_skybox.shader" />
   </ItemGroup>
+  <!-- Resources upstream's ported designer code reads through ComponentResourceManager. -->
+  <ItemGroup>
+    <EmbeddedResource Update="FormResources/MainForm.resx" LogicalName="CodeImp.DoomBuilder.Windows.MainForm.resources" />
+    <EmbeddedResource Update="FormResources/HintsPanel.resx" LogicalName="CodeImp.DoomBuilder.Controls.HintsPanel.resources" />
+    <EmbeddedResource Update="FormResources/ThingBrowserControl.resx" LogicalName="CodeImp.DoomBuilder.Controls.ThingBrowserControl.resources" />
+    <EmbeddedResource Update="FormResources/SectorEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.SectorEditFormUDMF.resources" />
+    <EmbeddedResource Update="FormResources/LinedefEditFormUDMF.resx" LogicalName="CodeImp.DoomBuilder.Windows.LinedefEditFormUDMF.resources" />
+  </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Data files next to the program, laid out like upstream's Build folder
        (Configurations/, Compilers/, Scripting/, UDBuilder.default.cfg, ...).
@@ -78,6 +212,9 @@
     <None Include="$(UpstreamAssets)Common/**/*"
           Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+    <!-- The Plugins folder and its load order; the plugins themselves are built from Phase 4 on.
+         Jint/Esprima (Plugins/Dependencies) are only used by UDBScript, which is out of scope. -->
+    <None Include="$(UpstreamAssets)Common/Plugins/Loadorder.cfg" Link="Plugins/Loadorder.cfg" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <!-- Upstream's prebuilt Linux ACC and ZDBSP are replaced by source builds (tools/compilers). -->
     <None Include="$(UpstreamAssets)Linux/**/*"
           Exclude="$(UpstreamAssets)Linux/Compilers/*/acc;$(UpstreamAssets)Linux/Compilers/Nodebuilders/zdbsp"
@@ -108,6 +245,7 @@
     <Exec Command="cmake --build &quot;$(NativeBuildDir)&quot;" />
     <ItemGroup>
       <None Include="$(NativeBuildDir)/libBuilderNative.so" Link="libBuilderNative.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+      <None Include="$(NativeBuildDir)/libuser32.so" Link="libuser32.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
   </Target>
   <!-- Script compilers and node builder, built from source (tools/compilers, git submodules). -->
@@ -117,7 +255,8 @@
   </PropertyGroup>
   <Target Name="BuildCompilers" BeforeTargets="AssignTargetPaths" Condition="'$(OS)' != 'Windows_NT'">
     <Exec Command="cmake -S &quot;$(CompilersSourceDir)&quot; -B &quot;$(CompilersBuildDir)&quot; -G Ninja -DUDB_ARCH=$(UldbArch) &gt; /dev/null" />
-    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; /dev/null" />
+    <!-- Quiet unless it fails: then its error lines and the end of the build log are shown. -->
+    <Exec Command="cmake --build &quot;$(CompilersBuildDir)&quot; &gt; &quot;$(CompilersBuildDir)/build.log&quot; 2&gt;&amp;1 || (grep -E -B12 &quot;error:|Error [0-9]|undefined reference|collect2&quot; &quot;$(CompilersBuildDir)/build.log&quot; | head -n 60; tail -n 20 &quot;$(CompilersBuildDir)/build.log&quot;; exit 1)" StandardOutputImportance="high" />
     <ItemGroup>
       <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/ZDoom/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />
       <None Include="$(CompilersBuildDir)/bin/acc" Link="Compilers/Zandronum/acc" CopyToOutputDirectory="PreserveNewest" Visible="false" />

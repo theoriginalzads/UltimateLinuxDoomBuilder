@@ -103,6 +103,18 @@ namespace ULDB.Tests
 			// An empty map, as for a new map; resource loading updates its things.
 			typeof(MapManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(manager, new MapSet());
 
+			// Resources, as after loading with no MAPINFO. The main window reads the map title from it.
+			CodeImp.DoomBuilder.Data.DataManager data = (CodeImp.DoomBuilder.Data.DataManager)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(CodeImp.DoomBuilder.Data.DataManager)); // Its constructor needs the renderer
+			typeof(CodeImp.DoomBuilder.Data.DataManager).GetField("mapinfo", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(data, new CodeImp.DoomBuilder.GZBuilder.Data.MapInfo());
+			// Empty lookup tables, so the main window's image callbacks find nothing instead of crashing.
+			foreach(FieldInfo f in typeof(CodeImp.DoomBuilder.Data.DataManager).GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
+			{
+				Type t = f.FieldType;
+				if(f.GetValue(data) == null && t.IsGenericType && !t.IsAbstract && t.Namespace == "System.Collections.Generic" && t.GetConstructor(Type.EmptyTypes) != null)
+					f.SetValue(data, Activator.CreateInstance(t));
+			}
+			typeof(MapManager).GetField("data", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(manager, data);
+
 			// Map options, as for a new map using this configuration.
 			MapOptions options = new MapOptions { ConfigFile = configfile, CurrentName = "MAP01" };
 			typeof(MapManager).GetField("options", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(manager, options);
@@ -142,6 +154,10 @@ namespace ULDB.Tests
 
 		/// <summary>Sets one of General's private static fields (e.g. "map").</summary>
 		public static void SetGeneralField(string name, object value) => SetField(name, value);
+
+		/// <summary>Reads one of General's private static fields.</summary>
+		public static object GetGeneralField(string name) =>
+			(typeof(General).GetField(name, BindingFlags.NonPublic | BindingFlags.Static) ?? throw new MissingFieldException(nameof(General), name)).GetValue(null);
 
 		private static void SetField(string name, object value)
 		{

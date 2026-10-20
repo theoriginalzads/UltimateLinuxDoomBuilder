@@ -18,8 +18,18 @@ namespace CodeImp.DoomBuilder.Controls
 	// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView
 	internal partial class ResourceListView : System.Windows.Forms.ListView
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.Sorting#2
+		public new SortOrder Sorting { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView..ctor#3
 		public ResourceListView() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragDrop#4
+		protected virtual void OnDragDrop(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragOver#5
+		protected virtual void OnDragOver(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnDragEnter#6
+		protected virtual void OnDragEnter(DragEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.ResourceListView.OnItemDrag#7
+		protected virtual void OnItemDrag(ItemDragEventArgs e) { }
 	}
 }
 

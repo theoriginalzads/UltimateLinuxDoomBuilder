@@ -1,0 +1,10 @@
+<!-- ULDB: the view of Sound Environment mode's docker (model-ported: upstream's
+     SoundEnvironmentPanel.cs runs unchanged): the sound environments tree and its filter. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.SoundPropagationMode.SoundEnvironmentPanelView">
+  <DockPanel Margin="4">
+    <CheckBox x:Name="showwarningsonly" DockPanel.Dock="Bottom" Margin="0,8,0,0"/>
+    <ContentControl x:Name="soundenvironments"/>
+  </DockPanel>
+</UserControl>

@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl
-	public partial class ScriptEditorControl : System.Windows.Forms.Control
+	public partial class ScriptEditorControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ExplicitSaveTabDelegate
 		public delegate void ExplicitSaveTabDelegate();
@@ -177,6 +177,10 @@ namespace CodeImp.DoomBuilder.Controls
 		internal List<CompilerError> UpdateNavigator(ScriptDocumentTab tab) { return default; }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.GetScriptStyle#67
 		internal ScriptStyleType GetScriptStyle(int scintillastyle) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ProcessCmdKey#72
+		protected virtual bool ProcessCmdKey(ref Message msg, Keys keydata) { return default; }
+		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.OnLayout#73
+		protected virtual void OnLayout(LayoutEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptEditorControl.ImageIndex
 		internal enum ImageIndex
 		{

@@ -49,3 +49,7 @@ endif()
 
 find_package(X11 REQUIRED)
 target_link_libraries(BuilderNative PRIVATE ${X11_LIBRARIES} ${X11_Xfixes_LIB} ${CMAKE_DL_LIBS})
+
+# libuser32.so: no-op stand-ins for the user32 functions upstream P/Invokes (User32Stubs.c).
+add_library(user32 SHARED User32Stubs.c)
+set_target_properties(user32 PROPERTIES C_VISIBILITY_PRESET hidden)

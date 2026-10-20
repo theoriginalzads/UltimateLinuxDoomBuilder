@@ -1,0 +1,20 @@
+<!-- ULDB: the view of upstream's CommentEditor (model-ported): a comment: its type (icons) and text.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.CommentEditorView">
+  <DockPanel>
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,6">
+      <TextBlock x:Name="label1" Classes="uldb-field"/>
+      <StackPanel x:Name="panel1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+        <RadioButton x:Name="radioButton1" GroupName="commenttype"/>
+        <RadioButton x:Name="radioButton2" GroupName="commenttype"/>
+        <RadioButton x:Name="radioButton3" GroupName="commenttype"/>
+        <RadioButton x:Name="radioButton4" GroupName="commenttype"/>
+        <RadioButton x:Name="radioButton5" GroupName="commenttype"/>
+      </StackPanel>
+      <Button x:Name="clear" Grid.Column="2"/>
+    </Grid>
+    <TextBox x:Name="textbox" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+  </DockPanel>
+</UserControl>

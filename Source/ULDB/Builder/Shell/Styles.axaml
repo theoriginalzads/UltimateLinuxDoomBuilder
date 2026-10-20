@@ -1,0 +1,335 @@
+<!-- ULDB: styles for the main window's bars and tool buttons, in light and dark. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:ULDB.Shell">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="UldbWindowBrush" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="UldbBarBrush" Color="#F0F0F0"/>
+          <SolidColorBrush x:Key="UldbLineBrush" Color="#D0D0D0"/>
+          <SolidColorBrush x:Key="UldbHoverBrush" Color="#1A000000"/>
+          <SolidColorBrush x:Key="UldbPressedBrush" Color="#2E000000"/>
+          <SolidColorBrush x:Key="UldbCheckedBrush" Color="#33116EBF"/>
+          <SolidColorBrush x:Key="UldbCheckedLineBrush" Color="#88116EBF"/>
+          <SolidColorBrush x:Key="UldbCardBrush" Color="#FFFFFF"/>
+          <SolidColorBrush x:Key="UldbTileBrush" Color="#E4E4E4"/>
+          <SolidColorBrush x:Key="UldbHotTextBrush" Color="#0063B1"/>
+          <SolidColorBrush x:Key="UldbRedTextBrush" Color="#C42B1C"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="UldbWindowBrush" Color="#1E1E1E"/>
+          <SolidColorBrush x:Key="UldbBarBrush" Color="#2A2A2A"/>
+          <SolidColorBrush x:Key="UldbLineBrush" Color="#404040"/>
+          <SolidColorBrush x:Key="UldbHoverBrush" Color="#22FFFFFF"/>
+          <SolidColorBrush x:Key="UldbPressedBrush" Color="#33FFFFFF"/>
+          <SolidColorBrush x:Key="UldbCheckedBrush" Color="#444C9BE8"/>
+          <SolidColorBrush x:Key="UldbCheckedLineBrush" Color="#AA4C9BE8"/>
+          <SolidColorBrush x:Key="UldbCardBrush" Color="#232323"/>
+          <SolidColorBrush x:Key="UldbTileBrush" Color="#141414"/>
+          <SolidColorBrush x:Key="UldbHotTextBrush" Color="#6CB8FF"/>
+          <SolidColorBrush x:Key="UldbRedTextBrush" Color="#FF6B60"/>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+      <!-- Density: Fluent's defaults are sized for touch; an editor's dialogs are dense, like UDB's.
+           Smaller text and controls everywhere (26 px fields instead of 32). -->
+      <x:Double x:Key="ControlContentThemeFontSize">13</x:Double>
+      <x:Double x:Key="TabItemHeaderFontSize">13</x:Double>
+      <x:Double x:Key="TabItemMinHeight">30</x:Double>
+      <x:Double x:Key="TextControlThemeMinHeight">26</x:Double>
+      <Thickness x:Key="TextControlThemePadding">7,3,6,3</Thickness>
+      <x:Double x:Key="ComboBoxMinHeight">26</x:Double>
+      <Thickness x:Key="ComboBoxPadding">8,3,0,3</Thickness>
+      <Thickness x:Key="ComboBoxItemThemePadding">8,4,8,4</Thickness>
+      <Thickness x:Key="ButtonPadding">10,3,10,4</Thickness>
+      <x:Double x:Key="CheckBoxMinHeight">24</x:Double>
+      <x:Double x:Key="RadioButtonMinHeight">24</x:Double>
+      <!-- A flag in an info panel's Flags card (ModelBinder.ListItem). -->
+      <DataTemplate x:Key="UldbFlagTemplate" x:DataType="shell:ModelBinder+ListItem">
+        <StackPanel Orientation="Horizontal" Spacing="5" Height="16" Margin="0,0,14,0">
+          <Path Data="M1.5,6 L4.5,9 L10.5,2" Stroke="{DynamicResource UldbHotTextBrush}" StrokeThickness="1.6"
+                Width="12" Height="11" VerticalAlignment="Center" IsVisible="{Binding Checked}"/>
+          <TextBlock Text="{Binding Text}" Classes.uldb-hot="{Binding Hot}" FontSize="12" VerticalAlignment="Center"/>
+        </StackPanel>
+      </DataTemplate>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource UldbWindowBrush}"/>
+  </Style>
+
+  <!-- Bars: menu row, toolbar, modes toolbar, status bar, info panel. -->
+  <Style Selector="Border.uldb-bar">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+  </Style>
+  <Style Selector="Border.uldb-infopanel">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Border.uldb-display">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Border.uldb-separator">
+    <Setter Property="Background" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Menu">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+
+  <!-- Tool buttons: flat, compact, with a hover and a "checked" state like UDB's toolbars. -->
+  <Style Selector=":is(Button).uldb-tool, DropDownButton.uldb-tool, SplitButton.uldb-tool">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="Padding" Value="4"/>
+    <Setter Property="Margin" Value="1"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="CornerRadius" Value="3"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+  <Style Selector=":is(Button).uldb-tool:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource UldbHoverBrush}"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+  </Style>
+  <Style Selector=":is(Button).uldb-tool:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource UldbPressedBrush}"/>
+  </Style>
+  <Style Selector="ToggleButton.uldb-tool:checked /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbCheckedLineBrush}"/>
+  </Style>
+  <Style Selector="ToggleButton.uldb-tool:checked:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbCheckedLineBrush}"/>
+  </Style>
+  <Style Selector=":is(Button).uldb-tool:disabled">
+    <Setter Property="Opacity" Value="0.4"/>
+  </Style>
+  <Style Selector="ComboBox.uldb-tool">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Padding" Value="6,2"/>
+    <Setter Property="Margin" Value="2,1"/>
+  </Style>
+
+  <!-- Info panel cards (linedef/sector/thing/vertex info, statistics). -->
+  <Style Selector="Border.uldb-card">
+    <Setter Property="Background" Value="{DynamicResource UldbCardBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Padding" Value="10,6,10,6"/>
+    <Setter Property="Margin" Value="0,0,6,0"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock">
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="LineHeight" Value="16"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock.uldb-card-title">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Margin" Value="0,0,0,3"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock.uldb-key">
+    <Setter Property="Opacity" Value="0.6"/>
+    <Setter Property="HorizontalAlignment" Value="Right"/>
+    <Setter Property="Margin" Value="0,0,6,0"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock.uldb-value">
+    <Setter Property="Margin" Value="0,0,14,0"/>
+  </Style>
+  <!-- Disabled fields (upstream greys them out): one step dimmer, name and value alike. -->
+  <Style Selector="Border.uldb-card TextBlock.uldb-disabled">
+    <Setter Property="Opacity" Value="0.4"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock.uldb-key.uldb-disabled">
+    <Setter Property="Opacity" Value="0.35"/>
+  </Style>
+  <Style Selector="Border.uldb-card TextBlock.uldb-small">
+    <Setter Property="FontSize" Value="11"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-hot">
+    <Setter Property="Foreground" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-red">
+    <Setter Property="Foreground" Value="{DynamicResource UldbRedTextBrush}"/>
+  </Style>
+  <!-- Texture/flat/sprite previews: a square tile with the size as a badge. -->
+  <Style Selector="Border.uldb-tile">
+    <Setter Property="Background" Value="{DynamicResource UldbTileBrush}"/>
+    <Setter Property="CornerRadius" Value="4"/>
+    <Setter Property="ClipToBounds" Value="True"/>
+    <Setter Property="Width" Value="64"/>
+    <Setter Property="Height" Value="64"/>
+  </Style>
+  <Style Selector="Border.uldb-badge">
+    <Setter Property="Background" Value="#A0000000"/>
+    <Setter Property="CornerRadius" Value="3"/>
+    <Setter Property="Padding" Value="3,0"/>
+    <Setter Property="Margin" Value="2"/>
+    <Setter Property="HorizontalAlignment" Value="Left"/>
+    <Setter Property="VerticalAlignment" Value="Top"/>
+  </Style>
+  <Style Selector="Border.uldb-badge TextBlock">
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="FontSize" Value="10"/>
+    <Setter Property="LineHeight" Value="14"/>
+  </Style>
+
+  <!-- Dockers (side panel): tabs on the outer edge; the selected tab shows an accent bar. -->
+  <Style Selector="Border.uldb-dockers">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab">
+    <Setter Property="Opacity" Value="0.75"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab.selected">
+    <Setter Property="Opacity" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbCheckedLineBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-docker-tab.notify">
+    <Setter Property="Opacity" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
+
+  <!-- Small up/down buttons beside number boxes. -->
+  <Style Selector="RepeatButton.uldb-spin">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="CornerRadius" Value="3"/>
+    <Setter Property="Margin" Value="0,0,0,1"/>
+  </Style>
+
+  <!-- Dialog groups (upstream's GroupBoxes): a rounded outline with a title. -->
+  <Style Selector="Border.uldb-group">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="6"/>
+    <Setter Property="Padding" Value="10,6,10,8"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-group-title">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <!-- A field's name in a dialog ("X:", "Absolute floor height:"). -->
+  <Style Selector="TextBlock.uldb-field">
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Margin" Value="0,0,8,0"/>
+  </Style>
+  <Style Selector="TextBlock.uldb-field.uldb-disabled">
+    <Setter Property="Opacity" Value="0.45"/>
+  </Style>
+  <Style Selector="TextBox.uldb-red">
+    <Setter Property="Foreground" Value="{DynamicResource UldbRedTextBrush}"/>
+  </Style>
+
+  <!-- Grids (custom fields editor). -->
+  <Style Selector="Border.uldb-grid">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+    <Setter Property="Background" Value="{DynamicResource UldbCardBrush}"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-header">
+    <Setter Property="Background" Value="{DynamicResource UldbBarBrush}"/>
+  </Style>
+  <Style Selector="Button.uldb-grid-headercell">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="CornerRadius" Value="0"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Padding" Value="6,4"/>
+    <Setter Property="MinHeight" Value="0"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row:pointerover">
+    <Setter Property="Background" Value="{DynamicResource UldbHoverBrush}"/>
+  </Style>
+  <Style Selector="Grid.uldb-grid-row.selected">
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+  </Style>
+
+  <!-- Trees (TreeViewView): compact rows of a fixed height, no item highlight (rows draw their own). -->
+  <Style Selector="ListBox.uldb-tree ListBoxItem">
+    <Setter Property="Padding" Value="4,0,0,0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Height" Value="22"/>
+  </Style>
+  <Style Selector="ListBox.uldb-tree ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="ListBox.uldb-tree Grid.uldb-tree-row">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="ListBox.uldb-tree Grid.uldb-tree-row.selected">
+    <Setter Property="Background" Value="{DynamicResource UldbCheckedBrush}"/>
+  </Style>
+
+  <!-- Link-styled buttons (LinkLabel). -->
+  <Style Selector="Button.uldb-link">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Padding" Value="2,0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Foreground" Value="{DynamicResource UldbHotTextBrush}"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+  <Style Selector="Button.uldb-link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
+  <!-- Texture/flat pickers: highlight on hover. -->
+  <Style Selector="Border.uldb-picker">
+    <Setter Property="Background" Value="{DynamicResource UldbTileBrush}"/>
+    <Setter Property="CornerRadius" Value="4"/>
+    <Setter Property="ClipToBounds" Value="True"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbLineBrush}"/>
+  </Style>
+  <Style Selector="Border.uldb-picker:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource UldbHotTextBrush}"/>
+  </Style>
+
+  <!-- Flag lists (CheckboxArrayControl): compact rows, like UDB's. -->
+  <Style Selector="CheckBox.uldb-flag">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Height" Value="22"/>
+    <Setter Property="Padding" Value="5,0,0,0"/>
+  </Style>
+  <Style Selector="CheckBox.uldb-flag /template/ ContentPresenter">
+    <Setter Property="TextBlock.TextWrapping" Value="NoWrap"/>
+    <Setter Property="TextBlock.TextTrimming" Value="CharacterEllipsis"/>
+  </Style>
+  <!-- Number boxes (NumericUpDown, used by plugin dialogs) look like ButtonsNumericTextbox's view:
+       the text box with slim stacked arrows on its right, instead of Fluent's wide side-by-side buttons. -->
+  <Style Selector="NumericUpDown /template/ ButtonSpinner">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Grid ColumnDefinitions="*,Auto">
+          <Border BorderBrush="{DynamicResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{DynamicResource ControlCornerRadius}"
+                  Background="{DynamicResource TextControlBackground}" ClipToBounds="True">
+            <ContentPresenter Name="PART_ContentPresenter" Content="{TemplateBinding Content}"/>
+          </Border>
+          <Grid Grid.Column="1" RowDefinitions="*,*" Width="18" Margin="2,0,0,0" IsVisible="{TemplateBinding ShowButtonSpinner}">
+            <RepeatButton Name="PART_IncreaseButton" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+              <PathIcon Data="M0,4 L4,0 L8,4 Z" Width="8" Height="4"/>
+            </RepeatButton>
+            <RepeatButton Name="PART_DecreaseButton" Grid.Row="1" Classes="uldb-spin" Padding="0" Delay="400" Interval="60"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+              <PathIcon Data="M0,0 L8,0 L4,4 Z" Width="8" Height="4"/>
+            </RepeatButton>
+          </Grid>
+        </Grid>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+  <Style Selector="NumericUpDown /template/ TextBox#PART_TextBox">
+    <Setter Property="MinWidth" Value="40"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+  </Style>
+</Styles>

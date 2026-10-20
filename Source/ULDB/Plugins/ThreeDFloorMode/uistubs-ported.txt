@@ -1,0 +1,8 @@
+CodeImp.DoomBuilder.ThreeDFloorMode.ControlSectorAreaConfig
+CodeImp.DoomBuilder.ThreeDFloorMode.MenusForm
+CodeImp.DoomBuilder.ThreeDFloorMode.SlopeDataSectorDialog
+CodeImp.DoomBuilder.ThreeDFloorMode.SlopeVertexEditForm
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorHelperControl
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorEditorWindow
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorHelperTooltipElementControl
+CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorPanel

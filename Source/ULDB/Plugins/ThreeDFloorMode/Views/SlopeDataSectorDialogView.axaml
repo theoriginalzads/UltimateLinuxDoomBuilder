@@ -1,0 +1,37 @@
+<!-- ULDB: the window of 3D Floor Mode's SlopeDataSectorDialog (model-ported: upstream's code runs
+     unchanged). Upstream shows its explanation in a WebBrowser; the same text is native here.
+     Buttons are bound by name (ModelBinder.BindByName); order and labels follow upstream. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.SlopeDataSectorDialogView"
+        Title="Slope data sector" Width="480" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="createnewsector" IsDefault="True" MinWidth="140" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="useselectedsector" MinWidth="140" HorizontalContentAlignment="Center"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="10">
+      <TextBlock TextWrapping="Wrap">The map does not contain a slope data sector. Slope mode needs this sector to store the data for the slope vertex groups.</TextBlock>
+      <TextBlock TextWrapping="Wrap">You have two options:</TextBlock>
+      <StackPanel Spacing="6" Margin="12,0,0,0">
+        <TextBlock TextWrapping="Wrap">
+          <Run FontWeight="SemiBold">Create sector in CSA:</Run>
+          <Run>automatically creates a new sector in the control sector area.</Run>
+          <Run Classes="warning">Do not edit or delete it!</Run>
+        </TextBlock>
+        <TextBlock TextWrapping="Wrap">
+          <Run FontWeight="SemiBold">Use selected sector:</Run>
+          <Run>uses the currently selected sector to store the slope data.</Run>
+          <Run Classes="warning">Make sure this sector is only used for this purpose! Do not edit or delete it!</Run>
+        </TextBlock>
+      </StackPanel>
+      <TextBlock TextWrapping="Wrap" FontWeight="SemiBold">Creating the sector in the CSA is the recommended method.</TextBlock>
+    </StackPanel>
+  </DockPanel>
+  <Window.Styles>
+    <Style Selector="Run.warning">
+      <Setter Property="Foreground" Value="#da4453"/>
+    </Style>
+  </Window.Styles>
+</Window>

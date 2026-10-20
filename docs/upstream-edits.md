@@ -36,3 +36,9 @@ Genuine upstream bugs found while porting. They aren't Linux-specific, so they'r
 | File | Fix | Symptom |
 |---|---|---|
 | `Source/Core/GZBuilder/Data/EngineInfo.cs` | `Dispose()`: `icon?.Dispose()` | The icon is created lazily. Disposing an `EngineInfo` whose icon was never requested threw `NullReferenceException`. Disposal runs from `ConfigurationInfo`'s finalizer, so this crashes the process (likely the "can't reproduce" crash reports referenced in `ConfigurationInfo.~ConfigurationInfo`) |
+| `Source/Core/Windows/MainForm.cs` | window title: no "(64-bit)"/"(32-bit)" (`#if ULDB`) | User request: there's one build, so it isn't needed |
+| `Source/Core/Windows/MainForm.cs` | `itemhelpissues_Click` opens ULDB's repository (`Branding.REPOSITORY_URL`) (`#if ULDB`) | The item pointed at upstream's bug tracker; ULDB problems go to the fork |
+
+## Native stand-ins (not edits)
+
+- `Source/ULDB/Native/User32Stubs.c` → `libuser32.so`: no-op `SendMessage`, `PostMessage`, `LockWindowUpdate`, `GetWindowLong`, `SetWindowLong`, `MessageBeep` for upstream's direct `user32.dll` P/Invokes (e.g. `ArgumentsControl.BeginUpdate`), which Mono used to emulate. Upstream files are unchanged.

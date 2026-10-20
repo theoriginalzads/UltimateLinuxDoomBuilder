@@ -138,6 +138,12 @@ namespace System.Drawing.Drawing2D
 		Vertical = 1,
 	}
 
+	public enum MatrixOrder
+	{
+		Append = 1,
+		Prepend = 0,
+	}
+
 	public enum PixelOffsetMode
 	{
 		Default = 0,
@@ -170,6 +176,24 @@ namespace System.Drawing.Drawing2D
 
 namespace System.Drawing.Imaging
 {
+	public enum ColorAdjustType
+	{
+		Any = 6,
+		Bitmap = 1,
+		Brush = 2,
+		Count = 5,
+		Default = 0,
+		Pen = 3,
+		Text = 4,
+	}
+
+	public enum ColorMatrixFlag
+	{
+		AltGrays = 2,
+		Default = 0,
+		SkipGrays = 1,
+	}
+
 	public enum ImageLockMode
 	{
 		ReadOnly = 1,

@@ -1,0 +1,2 @@
+CodeImp.DoomBuilder.SoundPropagationMode.MenusForm
+CodeImp.DoomBuilder.SoundPropagationMode.SoundEnvironmentPanel

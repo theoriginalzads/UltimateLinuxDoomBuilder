@@ -1,0 +1,32 @@
+<!-- ULDB: the view of one 3D floor in 3D Floor mode's docker (ThreeDFloorHelperTooltipElementControl,
+     model-ported): top, border and bottom heights over the top flat, border texture and bottom flat.
+     The highlighted 3D floor gets the accent outline. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.ThreeDFloorTooltipView">
+  <Border x:Name="frame" Classes="uldb-group" Padding="6" Margin="0,0,0,6">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" ColumnSpacing="6" RowSpacing="4">
+      <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+        <TextBlock x:Name="label1" Opacity="0.7"/>
+        <TextBlock x:Name="topHeight" FontWeight="SemiBold"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+        <TextBlock x:Name="label3" Opacity="0.7"/>
+        <TextBlock x:Name="borderHeight" FontWeight="SemiBold"/>
+      </StackPanel>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+        <TextBlock x:Name="label2" Opacity="0.7"/>
+        <TextBlock x:Name="bottomHeight" FontWeight="SemiBold"/>
+      </StackPanel>
+      <Image x:Name="sectorTopFlat" Grid.Row="1" Width="64" Height="64" Stretch="Uniform"/>
+      <Image x:Name="sectorBorderTexture" Grid.Row="1" Grid.Column="1" Width="64" Height="64" Stretch="Uniform"/>
+      <Image x:Name="sectorBottomFlat" Grid.Row="1" Grid.Column="2" Width="64" Height="64" Stretch="Uniform"/>
+    </Grid>
+  </Border>
+  <UserControl.Styles>
+    <Style Selector="Border.highlighted">
+      <Setter Property="BorderBrush" Value="#3daee9"/>
+      <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+  </UserControl.Styles>
+</UserControl>

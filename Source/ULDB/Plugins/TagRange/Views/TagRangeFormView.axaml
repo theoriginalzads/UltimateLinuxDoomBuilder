@@ -1,0 +1,42 @@
+<!-- ULDB: the window of Tag Range's TagRangeForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. Upstream's
+     warnings (used tags, out of range) sit on a yellow panel; here they're a tinted note. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.TagRange.TagRangeFormView"
+        Title="Tag Selected Range" Width="420" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="okbutton" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancelbutton" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="8">
+      <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" RowSpacing="4">
+        <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="rangestart" Grid.Column="1" Width="110"/>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center" Margin="8,0,0,0">
+          <TextBlock x:Name="label4" Classes="uldb-field"/>
+          <TextBlock x:Name="endtaglabel" FontWeight="SemiBold" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock x:Name="label2" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+        <ContentControl x:Name="rangestep" Grid.Row="1" Grid.Column="1" Width="110"/>
+        <CheckBox x:Name="relativemode" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+      </Grid>
+      <Border x:Name="warningnote" Classes="uldb-note" Padding="10,8" CornerRadius="4">
+        <StackPanel Spacing="4">
+          <TextBlock x:Name="doubletagwarning" TextWrapping="Wrap"/>
+          <TextBlock x:Name="outoftagswarning" TextWrapping="Wrap"/>
+          <CheckBox x:Name="skipdoubletags"/>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </DockPanel>
+  <Window.Styles>
+    <!-- Only shown while one of upstream's warnings is (the view hides empty notes in code). -->
+    <Style Selector="Border.uldb-note">
+      <Setter Property="Background" Value="#33f67400"/>
+      <Setter Property="BorderBrush" Value="#80f67400"/>
+      <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+  </Window.Styles>
+</Window>

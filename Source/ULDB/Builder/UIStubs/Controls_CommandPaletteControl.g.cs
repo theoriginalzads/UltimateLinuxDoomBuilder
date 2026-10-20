@@ -22,7 +22,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.CommandPaletteControl
-	public partial class CommandPaletteControl : System.Windows.Forms.Control
+	public partial class CommandPaletteControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.CommandPaletteControl..ctor#6
 		public CommandPaletteControl() { }

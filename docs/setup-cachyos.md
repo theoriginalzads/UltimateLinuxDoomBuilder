@@ -3,10 +3,22 @@
 ## 1. Install the toolchain
 
 ```sh
-sudo pacman -S --needed base-devel git cmake ninja python zlib \
+sudo pacman -S --needed base-devel git cmake ninja python \
     dotnet-sdk mono mono-msbuild \
-    libx11 libxfixes mesa freedoom
+    libx11 libxfixes mesa
 ```
+
+`zlib` (needed by ZDBSP) is left out because every Arch system already has it or a drop-in replacement; CachyOS uses `zlib-ng-compat`, which conflicts with the `zlib` package. Don't remove it.
+
+Freedoom isn't in the Arch or CachyOS repos (only the AUR), so it's left out above: if any package is missing, pacman installs nothing. Get it either from the AUR (`paru -S freedoom`) or by downloading the release zip:
+
+```sh
+mkdir -p ~/.local/share/doom
+curl -L -o /tmp/freedoom.zip https://github.com/freedoom/freedoom/releases/download/v0.13.0/freedoom-0.13.0.zip
+unzip -j /tmp/freedoom.zip '*/freedoom2.wad' '*/freedoom1.wad' -d ~/.local/share/doom
+```
+
+The tests look in `/usr/share/doom`, `/usr/share/games/doom` and `~/.local/share/doom`, or wherever `ULDB_TEST_IWAD` points.
 
 Then check the .NET version:
 
@@ -22,7 +34,7 @@ It should print `10.x`. If it prints an older version, install the versioned pac
 | `mono`, `mono-msbuild` | Only for the upstream reference build (step 3). Can be removed later |
 | `cmake`, `ninja`, `base-devel` | Native renderer, node builder and script compilers (built automatically by `dotnet build`) |
 | `libx11`, `libxfixes`, `mesa` | Needed by the upstream native renderer |
-| `freedoom` | Free IWADs (`/usr/share/doom/freedoom2.wad`), so test maps show real textures. Optional if you have your own Doom 2 IWAD |
+| Freedoom (AUR or zip, see above) | Free IWADs, so test maps show real textures. Optional if you have your own Doom 2 IWAD |
 
 ## 2. Clone
 

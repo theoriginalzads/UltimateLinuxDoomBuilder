@@ -20,6 +20,11 @@ namespace System.Windows.Forms
 		/// <summary>Shows a color picker. Returns the chosen color, or null when cancelled.</summary>
 		Color? ShowColorDialog(IWin32Window owner, Color initial, int[] customColors);
 
+		/// <summary>
+		/// Shows a ported form's window (view, an Avalonia Window). Modal: returns when it closes.
+		/// </summary>
+		void ShowForm(Form form, object view, IWin32Window owner, bool modal);
+
 		void SetCursor(Cursor cursor);
 		void SetClipboard(DataObject data);
 		DataObject GetClipboard();
@@ -99,6 +104,11 @@ namespace System.Windows.Forms
 			return null;
 		}
 
+		public void ShowForm(Form form, object view, IWin32Window owner, bool modal)
+		{
+			WinFormsHost.Log?.Invoke("[headless] Form '" + form.GetType().Name + "' not shown");
+		}
+
 		public Color? ShowColorDialog(IWin32Window owner, Color initial, int[] customColors) => null;
 		public void SetCursor(Cursor cursor) { }
 		public void SetClipboard(DataObject data) { clipboard = data ?? new DataObject(); }
@@ -109,18 +119,12 @@ namespace System.Windows.Forms
 		public void Invoke(Action action) => action();
 		public void BeginInvoke(Action action) => Threading.ThreadPool.QueueUserWorkItem(_ => action());
 
-		public IDisposable StartTimer(int interval, Action tick)
-		{
-			// No UI thread: run on the thread pool. Ticks never overlap.
-			object gate = new object();
-			Threading.Timer timer = new Threading.Timer(_ =>
-			{
-				if(!Threading.Monitor.TryEnter(gate)) return;
-				try { tick(); }
-				finally { Threading.Monitor.Exit(gate); }
-			}, null, interval, interval);
-			return timer;
-		}
+		// Like a WinForms timer with no message loop running: it never ticks. Timers belong
+		// to the UI (redraw, status bar blinking); running them on another thread would
+		// race with the code under test.
+		public IDisposable StartTimer(int interval, Action tick) => new NoTimer();
+
+		private sealed class NoTimer : IDisposable { public void Dispose() { } }
 
 		public Form ActiveForm => null;
 

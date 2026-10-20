@@ -1,0 +1,16 @@
+<!-- ULDB: the view of upstream's SidedefPartLightControl (model-ported): a wall part's brightness (relative or absolute) with reset.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.SidedefPartLightControlView">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/>
+      <ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock x:Name="lbLight" Classes="uldb-field" HorizontalAlignment="Right"/>
+    <ContentControl x:Name="light" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+    <CheckBox x:Name="cbAbsolute" Grid.Column="2" Margin="10,0,0,0"/>
+    <Button x:Name="reset" Grid.Column="3" Classes="uldb-tool" Margin="4,0,0,0"/>
+  </Grid>
+</UserControl>

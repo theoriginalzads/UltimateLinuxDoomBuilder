@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ToastControl
-	internal partial class ToastControl : System.Windows.Forms.Control
+	internal partial class ToastControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ToastControl..ctor#4
 		public ToastControl(ToastType type, string title, string text, long lifetime = 3000) { }

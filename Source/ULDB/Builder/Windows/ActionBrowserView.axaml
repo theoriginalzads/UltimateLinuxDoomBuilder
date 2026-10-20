@@ -1,0 +1,69 @@
+<!-- ULDB: the window of upstream's ActionBrowserForm ("Edit Action", model-ported): choose an
+     action special from the tree, or build a generalized action (Boom formats only). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ActionBrowserView"
+        Title="Edit Action" Width="560" Height="640" MinWidth="440" MinHeight="420" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <TabControl x:Name="tabs" Padding="0,10,0,0">
+      <TabItem x:Name="tabactions">
+        <DockPanel>
+          <Grid x:Name="filterPanel" DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,6">
+            <TextBlock x:Name="labelFilter" Classes="uldb-field"/>
+            <TextBox x:Name="tbFilter" Grid.Column="1" Watermark="Number or name"/>
+            <Button x:Name="btnClearFilter" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0"/>
+          </Grid>
+          <Grid x:Name="prefixespanel" DockPanel.Dock="Bottom" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="4,8,0,0" Opacity="0.75">
+            <TextBlock x:Name="label1" FontSize="12"/>
+            <TextBlock x:Name="label2" Grid.Column="1" FontSize="12"/>
+            <TextBlock x:Name="label3" Grid.Column="2" FontSize="12"/>
+            <TextBlock x:Name="label4" Grid.Row="1" FontSize="12"/>
+            <TextBlock x:Name="label5" Grid.Row="1" Grid.Column="1" FontSize="12"/>
+            <TextBlock x:Name="label6" Grid.Row="1" Grid.Column="2" FontSize="12"/>
+          </Grid>
+          <ContentControl x:Name="actionshost"/>
+        </DockPanel>
+      </TabItem>
+      <TabItem x:Name="tabgeneralized">
+        <StackPanel Spacing="10">
+          <Border x:Name="groupBox1" Classes="uldb-group">
+            <StackPanel Spacing="8">
+              <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+              <Grid ColumnDefinitions="Auto,*">
+                <TextBlock x:Name="label7" Classes="uldb-field"/>
+                <ComboBox x:Name="category" Grid.Column="1" HorizontalAlignment="Stretch"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+          <Border x:Name="groupBox2" Classes="uldb-group">
+            <StackPanel Spacing="8">
+              <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+              <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                <TextBlock x:Name="option0label" Grid.Row="0" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option0" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option1label" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option1" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option2label" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option2" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option3label" Grid.Row="3" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option3" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option4label" Grid.Row="4" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option4" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option5label" Grid.Row="5" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option5" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option6label" Grid.Row="6" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option6" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Stretch"/>
+                <TextBlock x:Name="option7label" Grid.Row="7" Classes="uldb-field" HorizontalAlignment="Right"/>
+                <ComboBox x:Name="option7" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

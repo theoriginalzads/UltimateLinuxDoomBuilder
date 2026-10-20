@@ -1,0 +1,24 @@
+<!-- ULDB: the window of BuilderModes' ChangeMapElementIndexForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; the warning icon shows when the new index is out of range. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.Interface.ChangeMapElementIndexFormView"
+        Title="Change Index" Width="340" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="btnOk" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="btnCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="12" RowSpacing="8">
+      <TextBlock x:Name="label1" Text="Current index:" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBlock x:Name="lbCurrentIndex" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"/>
+      <TextBlock x:Name="label2" Text="Maximum index:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1"/>
+      <TextBlock x:Name="lbMaximumIndex" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontWeight="SemiBold"/>
+      <TextBlock x:Name="label3" Text="New index:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="2"/>
+      <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <ContentControl x:Name="bntNewIndex" Width="110"/>
+        <ContentControl x:Name="pbWarning" VerticalAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>

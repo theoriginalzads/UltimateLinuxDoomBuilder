@@ -1,0 +1,35 @@
+<!-- ULDB: the window of BuilderModes' ImageExportSettingsForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; the export button replaces OK; progress shows while exporting. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.Interface.ImageExportSettingsFormView"
+        Title="Image export settings" Width="500" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="export" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="close" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,*" ColumnSpacing="10" RowSpacing="6">
+      <TextBlock x:Name="label1" Text="Path:" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <Grid Grid.Column="1" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" ColumnSpacing="4">
+        <TextBox x:Name="tbExportPath"/><Button x:Name="browse" Grid.Column="1" Classes="uldb-tool" VerticalAlignment="Center"/>
+      </Grid>
+      <TextBlock x:Name="label2" Text="Image format:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1"/>
+      <ComboBox x:Name="cbImageFormat" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="12"><RadioButton x:Name="rbFloor" GroupName="surface"/><RadioButton x:Name="rbCeiling" GroupName="surface"/></StackPanel>
+      <TextBlock x:Name="label3" Text="Color depth:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="2"/>
+      <ComboBox x:Name="cbPixelFormat" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <CheckBox x:Name="cbFullbright" Grid.Row="2" Grid.Column="2"/>
+      <TextBlock x:Name="label4" Text="Scale:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="3"/>
+      <ComboBox x:Name="cbScale" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <CheckBox x:Name="cbApplySectorColors" Grid.Row="3" Grid.Column="2"/>
+      <CheckBox x:Name="cbTransparency" Grid.Row="4" Grid.Column="2"/>
+      <CheckBox x:Name="cbBrightmap" Grid.Row="5" Grid.Column="2"/>
+      <CheckBox x:Name="cbTiles" Grid.Row="6" Grid.Column="2"/>
+      <StackPanel Grid.Row="4" Grid.RowSpan="3" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Spacing="4">
+        <TextBlock x:Name="lbPhase" Opacity="0.7"/>
+        <ProgressBar x:Name="progress" Height="6"/>
+      </StackPanel>
+    </Grid>
+  </DockPanel>
+</Window>

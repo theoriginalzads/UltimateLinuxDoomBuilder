@@ -1,0 +1,24 @@
+<!-- ULDB: the view of upstream's DockersControl (Controls/DockersControl.cs, model-ported): the
+     side panel holding dockers (Help, Undo / Redo, Draw Settings, ...). Pin button on top,
+     vertical tabs on the outer edge, the resize splitter on the inner edge. DockersView.axaml.cs
+     swaps the sides for a docker on the left. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.DockersView">
+  <Border x:Name="frame" Classes="uldb-dockers">
+    <DockPanel x:Name="layout">
+      <Border x:Name="splitter" DockPanel.Dock="Left" Width="5" Background="Transparent" Cursor="SizeWestEast"/>
+      <Border x:Name="tabstrip" DockPanel.Dock="Right" Width="26" Classes="uldb-docker-tabs">
+        <StackPanel x:Name="tabs" Spacing="2" Margin="0,4"/>
+      </Border>
+      <DockPanel x:Name="page">
+        <Button x:Name="pinbutton" DockPanel.Dock="Top" Classes="uldb-tool" HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center" Height="18" Padding="0" Margin="2,2,2,0">
+          <PathIcon x:Name="pinicon" Width="12" Height="12"/>
+        </Button>
+        <TextBlock x:Name="pagetitle" DockPanel.Dock="Top" FontWeight="SemiBold" Margin="10,4,10,6"/>
+        <ContentControl x:Name="content" Margin="6,0,6,6"/>
+      </DockPanel>
+    </DockPanel>
+  </Border>
+</UserControl>

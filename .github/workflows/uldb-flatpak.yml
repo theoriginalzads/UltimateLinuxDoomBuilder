@@ -1,0 +1,106 @@
+# ULDB: build the Flatpak (packaging/flatpak) and keep the bundle as a downloadable artifact.
+# Slow, so it runs on request (Actions → ULDB Flatpak → Run workflow) and when packaging changes.
+name: ULDB Flatpak
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+    paths:
+      - 'packaging/**'
+      - '.github/workflows/uldb-flatpak.yml'
+
+concurrency:
+  group: uldb-flatpak-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  flatpak:
+    name: Build Flatpak bundle
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-26.08
+      options: --privileged
+
+    steps:
+      - name: Check out (with compiler submodules, full history for flatpak-builder's git source)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Let git use the checkout (container runs as another user)
+        run: git config --global --add safe.directory '*'
+
+      - name: Install the .NET 10 SDK extension
+        run: |
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak install -y --noninteractive flathub org.freedesktop.Platform//26.08 org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
+
+      - name: Generate NuGet sources (offline restore inside flatpak-builder)
+        run: |
+          # Restore with the Flatpak's own .NET SDK (the dotnet10 extension), so implicit package
+          # versions match the offline build, then list the packages for flatpak-builder. Only the
+          # program and plugins: the tests aren't part of the Flatpak. The sandbox
+          # can't write the runner's home, so the SDK gets one in the checkout.
+          # The checkout belongs to the runner's user; the sandbox writes obj/ and the packages there.
+          mkdir -p .restore-home nuget-restore
+          chmod -R a+rwX .
+          if ! flatpak run --command=sh --runtime=org.freedesktop.Sdk//26.08 --share=network --filesystem=host \
+               --env=DOTNET_CLI_TELEMETRY_OPTOUT=1 --env=DOTNET_NOLOGO=1 \
+               --env=HOME="$PWD/.restore-home" --env=DOTNET_CLI_HOME="$PWD/.restore-home" \
+               org.freedesktop.Sdk.Extension.dotnet10//26.08 \
+               -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin" LD_LIBRARY_PATH="/usr/lib/sdk/dotnet10/lib"; for p in Source/ULDB/Builder/ULDB.Builder.csproj Source/ULDB/Plugins/*/*.csproj; do dotnet restore "$p" -r linux-x64 --packages "$PWD/nuget-restore" || exit 1; done' \
+               > restore.log 2>&1; then
+            cat restore.log
+            echo "::error title=NuGet restore in the Flatpak SDK failed::$(grep -v '^\s*$' restore.log | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
+          python3 tools/flatpak/nuget-sources.py nuget-restore packaging/flatpak/nuget-sources.json
+          rm -rf nuget-restore .restore-home
+
+      - name: Build
+        run: |
+          # Direct flatpak-builder rather than the flatpak-builder action, so a failure's log tail
+          # becomes an error annotation (job logs can't always be fetched from where ULDB is developed).
+          # Runtime, SDK and the .NET extension are installed system-wide in the step above.
+          if ! flatpak-builder --force-clean --disable-rofiles-fuse \
+               --repo=repo build-dir packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml > flatpak-builder.log 2>&1; then
+            tail -n 200 flatpak-builder.log
+            echo "::error title=flatpak-builder failed::$( (tr '\r' '\n' < flatpak-builder.log | grep -m1 -B14 'collect2'; tr '\r' '\n' < flatpak-builder.log | grep -iE 'error|fatal|not found|no such|undefined|cannot|failed' | grep -v 'warning' | tail -n 8) | cut -c1-200 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
+          echo "::notice title=flatpak-builder finished::$(grep -v '^\s*$' flatpak-builder.log | tail -n 8 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+          if ! flatpak build-bundle repo uldb.flatpak io.github.theoriginalzads.UltimateLinuxDoomBuilder > bundle.log 2>&1; then
+            echo "::error title=flatpak build-bundle failed::$(tail -n 15 bundle.log | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
+
+      - name: Upload bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: uldb-flatpak
+          path: uldb.flatpak
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uldb-flatpak-log
+          path: flatpak-builder.log
+          if-no-files-found: ignore
+
+      - name: Publish release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp uldb.flatpak "ultimate-linux-doom-builder-${GITHUB_REF_NAME}.flatpak"
+          gh release create "$GITHUB_REF_NAME" "ultimate-linux-doom-builder-${GITHUB_REF_NAME}.flatpak" \
+            --repo "$GITHUB_REPOSITORY" --prerelease --title "Ultimate Linux Doom Builder ${GITHUB_REF_NAME} (early preview)" \
+            --notes-file packaging/RELEASE_NOTES.md

@@ -1,0 +1,88 @@
+<!-- ULDB: the view of BuilderModes' Draw Settings docker (SectorDrawingOptionsPanel, model-ported:
+     upstream's code runs unchanged). Groups and their order follow upstream's designer. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.BuilderModes.SectorDrawingOptionsPanelView">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Spacing="8" Margin="4">
+      <Border x:Name="groupBox1" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+          <UniformGrid Columns="2" ColumnSpacing="6">
+            <StackPanel Spacing="4">
+              <CheckBox x:Name="cbOverrideCeilingTexture"/>
+              <ContentControl x:Name="ceiling" Height="104"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <CheckBox x:Name="cbOverrideFloorTexture"/>
+              <ContentControl x:Name="floor" Height="104"/>
+            </StackPanel>
+          </UniformGrid>
+          <Button x:Name="getsectortexturesfromselection" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox3" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox3Title" Classes="uldb-group-title"/>
+          <UniformGrid Columns="3" ColumnSpacing="6">
+            <StackPanel Spacing="4">
+              <CheckBox x:Name="cbOverrideTopTexture"/>
+              <ContentControl x:Name="top" Height="96"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <CheckBox x:Name="cbOverrideMiddleTexture"/>
+              <ContentControl x:Name="middle" Height="96"/>
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <CheckBox x:Name="cbOverrideBottomTexture"/>
+              <ContentControl x:Name="bottom" Height="96"/>
+            </StackPanel>
+          </UniformGrid>
+          <Button x:Name="getsidetexturesfromselection" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox2" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+          <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6" RowSpacing="4" Margin="0,0,8,0">
+            <CheckBox x:Name="cbCeilHeight"/>
+            <ContentControl x:Name="ceilHeight" Grid.Column="1"/>
+            <TextBlock x:Name="label14" Grid.Column="2" VerticalAlignment="Center" Opacity="0.65"/>
+            <CheckBox x:Name="cbFloorHeight" Grid.Row="1"/>
+            <ContentControl x:Name="floorHeight" Grid.Row="1" Grid.Column="1"/>
+            <TextBlock x:Name="label1" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Opacity="0.65"/>
+            <CheckBox x:Name="cbBrightness" Grid.Row="2"/>
+            <ContentControl x:Name="brightness" Grid.Row="2" Grid.Column="1"/>
+          </Grid>
+          <Button x:Name="getheightandbrightnessfromselection" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox4" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox4Title" Classes="uldb-group-title"/>
+          <UniformGrid Columns="6" ColumnSpacing="4">
+            <Button x:Name="fillall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="fillceiling" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="fillfloor" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="fillupper" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="fillmiddle" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="filllower" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          </UniformGrid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox5" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox5Title" Classes="uldb-group-title"/>
+          <UniformGrid Columns="6" ColumnSpacing="4">
+            <Button x:Name="clearall" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="clearceiling" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="clearfloor" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="clearupper" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="clearmiddle" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button x:Name="clearlower" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          </UniformGrid>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

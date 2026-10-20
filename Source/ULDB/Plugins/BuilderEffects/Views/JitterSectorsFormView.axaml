@@ -1,0 +1,75 @@
+<!-- ULDB: the window of BuilderEffects' JitterSectorsForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; groups and
+     their order follow upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderEffects.JitterSectorsFormView"
+        Title="Jitter Settings" Width="500" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="bApply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="bCancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="8" Grid.IsSharedSizeScope="True">
+      <Border x:Name="groupBox1" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+            <ContentControl x:Name="positionJitterAmmount"/>
+            <Button x:Name="bUpdateTranslation" Grid.Column="1" Classes="uldb-tool" VerticalAlignment="Center"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox2" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+            <ContentControl x:Name="ceilingHeightAmmount"/>
+            <Button x:Name="bUpdateCeilingHeight" Grid.Column="1" Classes="uldb-tool" VerticalAlignment="Center"/>
+          </Grid>
+          <Grid RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <ComboBox x:Name="ceiloffsetmode" Grid.Column="1" Width="200"/>
+            <CheckBox x:Name="cbUseCeilingVertexHeights" Grid.Row="1" Grid.Column="1"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox3" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox3Title" Classes="uldb-group-title"/>
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
+            <ContentControl x:Name="floorHeightAmmount"/>
+            <Button x:Name="bUpdateFloorHeight" Grid.Column="1" Classes="uldb-tool" VerticalAlignment="Center"/>
+          </Grid>
+          <Grid RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+            <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="uldblabel"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+            <TextBlock x:Name="label2" Classes="uldb-field" HorizontalAlignment="Right"/>
+            <ComboBox x:Name="flooroffsetmode" Grid.Column="1" Width="200"/>
+            <CheckBox x:Name="cbUseFloorVertexHeights" Grid.Row="1" Grid.Column="1"/>
+          </Grid>
+        </StackPanel>
+      </Border>
+      <Border x:Name="groupBox4" Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="groupBox4Title" Classes="uldb-group-title"/>
+          <CheckBox x:Name="cbKeepExistingTextures"/>
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="6">
+            <ComboBox x:Name="cbUpperTexStyle" HorizontalAlignment="Stretch"/>
+            <ComboBox x:Name="cbLowerTexStyle" Grid.Column="1" HorizontalAlignment="Stretch"/>
+            <StackPanel x:Name="gbUpperTexture" Grid.Row="1" Spacing="4">
+              <TextBlock x:Name="gbUpperTextureTitle" FontWeight="SemiBold"/>
+              <CheckBox x:Name="cbPegTop"/>
+              <ContentControl x:Name="textureUpper" Height="130" Width="120" HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel x:Name="gbLowerTexture" Grid.Row="1" Grid.Column="1" Spacing="4">
+              <TextBlock x:Name="gbLowerTextureTitle" FontWeight="SemiBold"/>
+              <CheckBox x:Name="cbPegBottom"/>
+              <ContentControl x:Name="textureLower" Height="130" Width="120" HorizontalAlignment="Left"/>
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </DockPanel>
+</Window>

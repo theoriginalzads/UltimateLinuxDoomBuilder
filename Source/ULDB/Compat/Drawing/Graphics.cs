@@ -28,6 +28,24 @@ namespace System.Drawing
 			throw new ArgumentException("ULDB only supports drawing on Bitmaps", nameof(image));
 		}
 
+		/// <summary>There are no window handles: returns a measuring-only Graphics (1x1 bitmap).</summary>
+		public static Graphics FromHwnd(IntPtr hwnd) => new Graphics(new Bitmap(1, 1));
+		public static Graphics FromHwndInternal(IntPtr hwnd) => FromHwnd(hwnd);
+
+		/// <summary>
+		/// Copies screen pixels into this Graphics. Routed to the UI (ScreenCapture), since
+		/// only it can read the window's contents; unsupported without one.
+		/// </summary>
+		public void CopyFromScreen(Point upperLeftSource, Point upperLeftDestination, Size blockRegionSize)
+		{
+			Bitmap shot = ScreenCapture?.Invoke(new Rectangle(upperLeftSource, blockRegionSize))
+				?? throw new NotSupportedException("Screen capture isn't available");
+			using(shot) DrawImage(shot, upperLeftDestination.X, upperLeftDestination.Y, blockRegionSize.Width, blockRegionSize.Height);
+		}
+
+		/// <summary>ULDB: installed by the UI. Returns the given screen area as a new bitmap, or null.</summary>
+		public static Func<Rectangle, Bitmap> ScreenCapture { get; set; }
+
 		#region Properties
 
 		// GDI+ quality settings, mapped onto the closest Skia behaviour.
@@ -103,6 +121,28 @@ namespace System.Drawing
 			DrawImageCore(image, new RectangleF(srcX, srcY, srcWidth, srcHeight), destRect, imageAttr);
 		}
 
+		// destPoints: where the source's upper-left, upper-right and lower-left corners go
+		// (a parallelogram: rotation, skew, flips).
+		public void DrawImage(Image image, Point[] destPoints) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), new RectangleF(0, 0, image.Width, image.Height), GraphicsUnit.Pixel, null);
+		public void DrawImage(Image image, PointF[] destPoints) => DrawImage(image, destPoints, new RectangleF(0, 0, image.Width, image.Height), GraphicsUnit.Pixel, null);
+		public void DrawImage(Image image, Point[] destPoints, Rectangle srcRect, GraphicsUnit srcUnit) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), srcRect, srcUnit, null);
+		public void DrawImage(Image image, Point[] destPoints, Rectangle srcRect, GraphicsUnit srcUnit, ImageAttributes imageAttr) => DrawImage(image, Array.ConvertAll(destPoints, p => (PointF)p), srcRect, srcUnit, imageAttr);
+
+		public void DrawImage(Image image, PointF[] destPoints, RectangleF srcRect, GraphicsUnit srcUnit, ImageAttributes imageAttr)
+		{
+			if(destPoints == null || destPoints.Length != 3) throw new ArgumentException("Expected three destination points", nameof(destPoints));
+			PointF p0 = destPoints[0], p1 = destPoints[1], p2 = destPoints[2];
+			float w = srcRect.Width, h = srcRect.Height;
+			SKMatrix map = new SKMatrix(
+				(p1.X - p0.X) / w, (p2.X - p0.X) / h, p0.X,
+				(p1.Y - p0.Y) / w, (p2.Y - p0.Y) / h, p0.Y,
+				0, 0, 1);
+			canvas.Save();
+			canvas.Concat(in map);
+			DrawImageCore(image, srcRect, new RectangleF(0, 0, w, h), imageAttr);
+			canvas.Restore();
+		}
+
 		public void DrawImageUnscaled(Image image, int x, int y) => DrawImage(image, x, y);
 		public void DrawImageUnscaled(Image image, Point point) => DrawImage(image, point.X, point.Y);
 		public void DrawImageUnscaled(Image image, Rectangle rect) => DrawImage(image, rect.X, rect.Y); // GDI+ ignores the size here
@@ -118,7 +158,8 @@ namespace System.Drawing
 		{
 			using(SKBitmap source = Bitmap.ToPremul(image.Native))
 			using(SKImage skimage = SKImage.FromBitmap(source))
-			using(SKPaint paint = new SKPaint { BlendMode = BlendMode, IsAntialias = Antialias })
+			using(SKColorFilter filter = attributes?.CreateColorFilter())
+			using(SKPaint paint = new SKPaint { BlendMode = BlendMode, IsAntialias = Antialias, ColorFilter = filter })
 			{
 				// GDI+ samples edge pixels from outside the source rect unless told to
 				// wrap (UDB uses TileFlipXY to avoid dark edges when scaling skies).
@@ -152,6 +193,7 @@ namespace System.Drawing
 
 		public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) => DrawLine(pen, (float)x1, y1, x2, y2);
 		public void DrawLine(Pen pen, Point p1, Point p2) => DrawLine(pen, (float)p1.X, p1.Y, p2.X, p2.Y);
+		public void DrawLine(Pen pen, PointF p1, PointF p2) => DrawLine(pen, p1.X, p1.Y, p2.X, p2.Y);
 
 		public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
 		{
@@ -199,6 +241,18 @@ namespace System.Drawing
 
 		public void FillEllipse(Brush brush, Rectangle rect) => FillEllipse(brush, rect.X, rect.Y, rect.Width, rect.Height);
 
+		public void FillPolygon(Brush brush, Point[] points) => FillPolygon(brush, Array.ConvertAll(points, p => (PointF)p));
+
+		public void FillPolygon(Brush brush, PointF[] points)
+		{
+			using(SKPath path = new SKPath())
+			using(SKPaint paint = brush.CreatePaint(Antialias, BlendMode))
+			{
+				path.AddPoly(Array.ConvertAll(points, p => new SKPoint(p.X, p.Y)), true);
+				canvas.DrawPath(path, paint);
+			}
+		}
+
 		public void DrawEllipse(Pen pen, float x, float y, float width, float height)
 		{
 			using(SKPaint paint = pen.CreatePaint(Antialias))
@@ -213,6 +267,7 @@ namespace System.Drawing
 
 		public SizeF MeasureString(string text, Font font) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, int width) => font.Measure(text, DpiY);
+		public SizeF MeasureString(string text, Font font, int width, StringFormat format) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, SizeF layoutArea) => font.Measure(text, DpiY);
 		public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat format) => font.Measure(text, DpiY);
 
@@ -319,6 +374,98 @@ namespace System.Drawing
 		}
 
 		public override object Clone() => new SolidBrush(Color);
+	}
+
+	public static class Pens
+	{
+		public static Pen Black => new Pen(Color.Black);
+		public static Pen White => new Pen(Color.White);
+		public static Pen Red => new Pen(Color.Red);
+		public static Pen Green => new Pen(Color.Green);
+		public static Pen Blue => new Pen(Color.Blue);
+		public static Pen Gray => new Pen(Color.Gray);
+		public static Pen DarkGray => new Pen(Color.DarkGray);
+		public static Pen LightGray => new Pen(Color.LightGray);
+		public static Pen Yellow => new Pen(Color.Yellow);
+		public static Pen Transparent => new Pen(Color.Transparent);
+	}
+
+	/// <summary>Brushes in the system colours (WinForms' SystemBrushes).</summary>
+	public static class SystemBrushes
+	{
+		public static Brush ActiveBorder => new SolidBrush(SystemColors.ActiveBorder);
+		public static Brush ActiveCaption => new SolidBrush(SystemColors.ActiveCaption);
+		public static Brush ActiveCaptionText => new SolidBrush(SystemColors.ActiveCaptionText);
+		public static Brush AppWorkspace => new SolidBrush(SystemColors.AppWorkspace);
+		public static Brush ButtonFace => new SolidBrush(SystemColors.ButtonFace);
+		public static Brush ButtonHighlight => new SolidBrush(SystemColors.ButtonHighlight);
+		public static Brush ButtonShadow => new SolidBrush(SystemColors.ButtonShadow);
+		public static Brush Control => new SolidBrush(SystemColors.Control);
+		public static Brush ControlDark => new SolidBrush(SystemColors.ControlDark);
+		public static Brush ControlDarkDark => new SolidBrush(SystemColors.ControlDarkDark);
+		public static Brush ControlLight => new SolidBrush(SystemColors.ControlLight);
+		public static Brush ControlLightLight => new SolidBrush(SystemColors.ControlLightLight);
+		public static Brush ControlText => new SolidBrush(SystemColors.ControlText);
+		public static Brush Desktop => new SolidBrush(SystemColors.Desktop);
+		public static Brush GradientActiveCaption => new SolidBrush(SystemColors.GradientActiveCaption);
+		public static Brush GradientInactiveCaption => new SolidBrush(SystemColors.GradientInactiveCaption);
+		public static Brush GrayText => new SolidBrush(SystemColors.GrayText);
+		public static Brush Highlight => new SolidBrush(SystemColors.Highlight);
+		public static Brush HighlightText => new SolidBrush(SystemColors.HighlightText);
+		public static Brush HotTrack => new SolidBrush(SystemColors.HotTrack);
+		public static Brush InactiveBorder => new SolidBrush(SystemColors.InactiveBorder);
+		public static Brush InactiveCaption => new SolidBrush(SystemColors.InactiveCaption);
+		public static Brush InactiveCaptionText => new SolidBrush(SystemColors.InactiveCaptionText);
+		public static Brush Info => new SolidBrush(SystemColors.Info);
+		public static Brush InfoText => new SolidBrush(SystemColors.InfoText);
+		public static Brush Menu => new SolidBrush(SystemColors.Menu);
+		public static Brush MenuBar => new SolidBrush(SystemColors.MenuBar);
+		public static Brush MenuHighlight => new SolidBrush(SystemColors.MenuHighlight);
+		public static Brush MenuText => new SolidBrush(SystemColors.MenuText);
+		public static Brush ScrollBar => new SolidBrush(SystemColors.ScrollBar);
+		public static Brush Window => new SolidBrush(SystemColors.Window);
+		public static Brush WindowFrame => new SolidBrush(SystemColors.WindowFrame);
+		public static Brush WindowText => new SolidBrush(SystemColors.WindowText);
+		public static Brush FromSystemColor(Color c) => new SolidBrush(c);
+	}
+
+	/// <summary>Pens in the system colours (WinForms' SystemPens).</summary>
+	public static class SystemPens
+	{
+		public static Pen ActiveBorder => new Pen(SystemColors.ActiveBorder);
+		public static Pen ActiveCaption => new Pen(SystemColors.ActiveCaption);
+		public static Pen ActiveCaptionText => new Pen(SystemColors.ActiveCaptionText);
+		public static Pen AppWorkspace => new Pen(SystemColors.AppWorkspace);
+		public static Pen ButtonFace => new Pen(SystemColors.ButtonFace);
+		public static Pen ButtonHighlight => new Pen(SystemColors.ButtonHighlight);
+		public static Pen ButtonShadow => new Pen(SystemColors.ButtonShadow);
+		public static Pen Control => new Pen(SystemColors.Control);
+		public static Pen ControlDark => new Pen(SystemColors.ControlDark);
+		public static Pen ControlDarkDark => new Pen(SystemColors.ControlDarkDark);
+		public static Pen ControlLight => new Pen(SystemColors.ControlLight);
+		public static Pen ControlLightLight => new Pen(SystemColors.ControlLightLight);
+		public static Pen ControlText => new Pen(SystemColors.ControlText);
+		public static Pen Desktop => new Pen(SystemColors.Desktop);
+		public static Pen GradientActiveCaption => new Pen(SystemColors.GradientActiveCaption);
+		public static Pen GradientInactiveCaption => new Pen(SystemColors.GradientInactiveCaption);
+		public static Pen GrayText => new Pen(SystemColors.GrayText);
+		public static Pen Highlight => new Pen(SystemColors.Highlight);
+		public static Pen HighlightText => new Pen(SystemColors.HighlightText);
+		public static Pen HotTrack => new Pen(SystemColors.HotTrack);
+		public static Pen InactiveBorder => new Pen(SystemColors.InactiveBorder);
+		public static Pen InactiveCaption => new Pen(SystemColors.InactiveCaption);
+		public static Pen InactiveCaptionText => new Pen(SystemColors.InactiveCaptionText);
+		public static Pen Info => new Pen(SystemColors.Info);
+		public static Pen InfoText => new Pen(SystemColors.InfoText);
+		public static Pen Menu => new Pen(SystemColors.Menu);
+		public static Pen MenuBar => new Pen(SystemColors.MenuBar);
+		public static Pen MenuHighlight => new Pen(SystemColors.MenuHighlight);
+		public static Pen MenuText => new Pen(SystemColors.MenuText);
+		public static Pen ScrollBar => new Pen(SystemColors.ScrollBar);
+		public static Pen Window => new Pen(SystemColors.Window);
+		public static Pen WindowFrame => new Pen(SystemColors.WindowFrame);
+		public static Pen WindowText => new Pen(SystemColors.WindowText);
+		public static Pen FromSystemColor(Color c) => new Pen(c);
 	}
 
 	public static class Brushes
@@ -452,9 +599,19 @@ namespace System.Drawing.Drawing2D
 			Native.AddOval(new SKRect(x, y, x + width, y + height));
 		}
 
+		public void AddEllipse(RectangleF rect) => AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
+		public void AddEllipse(Rectangle rect) => AddEllipse(rect.X, rect.Y, rect.Width, rect.Height);
+		public void AddRectangle(Rectangle rect) => AddRectangle((RectangleF)rect);
+
 		public void CloseFigure()
 		{
 			Native.Close();
+			started = false;
+		}
+
+		public void Reset()
+		{
+			Native.Reset();
 			started = false;
 		}
 

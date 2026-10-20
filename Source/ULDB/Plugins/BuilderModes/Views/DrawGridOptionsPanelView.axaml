@@ -1,0 +1,42 @@
+<!-- ULDB: the view of Draw Grid mode's docker (DrawGridOptionsPanel, model-ported: upstream's code
+     runs unchanged). Groups and their order follow upstream's designer. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.BuilderModes.DrawGridOptionsPanelView">
+  <StackPanel Spacing="8" Margin="4" Grid.IsSharedSizeScope="True">
+    <Border x:Name="groupBox1" Classes="uldb-group">
+      <StackPanel Spacing="6">
+        <TextBlock x:Name="groupBox1Title" Classes="uldb-group-title"/>
+        <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6" RowSpacing="4">
+          <TextBlock x:Name="label1" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <NumericUpDown x:Name="slicesH" Grid.Column="1"/>
+          <Button x:Name="reset" Grid.Column="2" Grid.RowSpan="2" Classes="uldb-tool" VerticalAlignment="Center"/>
+          <TextBlock x:Name="label2" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <NumericUpDown x:Name="slicesV" Grid.Row="1" Grid.Column="1"/>
+          <TextBlock x:Name="label5" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ComboBox x:Name="gridlockmode" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch"/>
+        </Grid>
+        <CheckBox x:Name="triangulate"/>
+      </StackPanel>
+    </Border>
+    <Border x:Name="groupBox2" Classes="uldb-group">
+      <StackPanel Spacing="6">
+        <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*" ColumnSpacing="6" RowSpacing="4">
+          <TextBlock x:Name="label4" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ComboBox x:Name="interphmode" Grid.Column="1" HorizontalAlignment="Stretch"/>
+          <TextBlock x:Name="label3" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ComboBox x:Name="interpvmode" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch"/>
+        </Grid>
+      </StackPanel>
+    </Border>
+    <Border x:Name="groupBox3" Classes="uldb-group">
+      <StackPanel Spacing="2">
+        <TextBlock x:Name="groupBox3Title" Classes="uldb-group-title" Margin="0,0,0,4"/>
+        <CheckBox x:Name="continuousdrawing"/>
+        <CheckBox x:Name="showguidelines"/>
+        <CheckBox x:Name="relativeinterpolation"/>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

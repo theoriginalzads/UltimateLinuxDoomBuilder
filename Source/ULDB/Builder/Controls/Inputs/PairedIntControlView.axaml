@@ -1,0 +1,11 @@
+<!-- ULDB: the view of upstream's PairedIntControl (model-ported): two whole numbers (sidedef offsets) with a reset button.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.PairedIntControlView">
+  <Grid ColumnDefinitions="92,92,Auto" ColumnSpacing="4" HorizontalAlignment="Left">
+    <ContentControl x:Name="value1"/>
+    <ContentControl x:Name="value2" Grid.Column="1"/>
+    <Button x:Name="bReset" Grid.Column="2" Classes="uldb-tool"/>
+  </Grid>
+</UserControl>

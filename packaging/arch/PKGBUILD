@@ -1,0 +1,62 @@
+# Maintainer: theoriginalzads <adrianzadow@gmail.com>
+#
+# Ultimate Linux Doom Builder, built from the latest git sources (AUR style: uldb-git).
+# Set _arch to tune the native code (renderer, ACC, ZDBSP, BCC) for one CPU, for example
+#   _arch=znver4 makepkg -si
+# Choices: generic (default), x86-64-v3, x86-64-v4, znver4, native.
+
+pkgname=uldb-git
+pkgver=r0.0000000
+pkgrel=1
+pkgdesc="Map editor for GZDoom and UZDoom (unofficial, AI-coded Linux fork of Ultimate Doom Builder)"
+arch=('x86_64')
+url="https://github.com/theoriginalzads/UltimateLinuxDoomBuilder"
+license=('GPL-3.0-or-later')
+# The program targets .NET 10 and won't run on a newer major runtime alone. When Arch's
+# dotnet-runtime/dotnet-sdk move to .NET 11, switch to dotnet-runtime-10.0/dotnet-sdk-10.0.
+depends=('dotnet-runtime>=10' 'libx11' 'libxfixes' 'libglvnd' 'mesa' 'fontconfig' 'zlib' 'hicolor-icon-theme')
+makedepends=('dotnet-sdk>=10' 'cmake' 'ninja' 'python' 'git')
+optdepends=('gzdoom: test maps in GZDoom'
+            'freedoom: free IWADs to map with')
+provides=('uldb')
+conflicts=('uldb')
+options=('!strip' '!debug')
+source=("$pkgname::git+$url.git"
+        "acc::git+https://github.com/ZDoom/acc.git"
+        "zdbsp::git+https://github.com/ZDoom/zdbsp.git"
+        "zt-bcc::git+https://github.com/zeta-group/zt-bcc.git"
+        "bcc::git+https://github.com/wormt/bcc.git")
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+
+: "${_arch:=generic}"
+
+pkgver() {
+	cd "$pkgname"
+	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short=7 HEAD)"
+}
+
+prepare() {
+	cd "$pkgname"
+	# The compiler and node builder sources are git submodules (tools/compilers/src).
+	# Point them at the clones makepkg already made, so nothing is fetched here.
+	git submodule init
+	local sub
+	for sub in acc zdbsp zt-bcc bcc; do
+		git config "submodule.tools/compilers/src/$sub.url" "$srcdir/$sub"
+	done
+	git -c protocol.file.allow=always submodule update
+}
+
+build() {
+	cd "$pkgname"
+	export DOTNET_CLI_TELEMETRY_OPTOUT=1
+	export DOTNET_NOLOGO=1
+	# Keep NuGet's cache inside the build directory instead of ~/.nuget.
+	export NUGET_PACKAGES="$srcdir/nuget-packages"
+	ULDB_ARCH="$_arch" ./packaging/build.sh
+}
+
+package() {
+	cd "$pkgname"
+	DESTDIR="$pkgdir" PREFIX=/usr ./packaging/install.sh
+}

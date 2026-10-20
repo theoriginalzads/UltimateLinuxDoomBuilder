@@ -17,6 +17,334 @@ namespace System.Windows.Forms
 		Top = 1,
 	}
 
+	public enum Appearance
+	{
+		Button = 1,
+		Normal = 0,
+	}
+
+	public enum AutoCompleteMode
+	{
+		Append = 2,
+		None = 0,
+		Suggest = 1,
+		SuggestAppend = 3,
+	}
+
+	public enum AutoCompleteSource
+	{
+		AllSystemSources = 7,
+		AllUrl = 6,
+		CustomSource = 64,
+		FileSystem = 1,
+		FileSystemDirectories = 32,
+		HistoryList = 2,
+		ListItems = 256,
+		None = 128,
+		RecentlyUsedList = 4,
+	}
+
+	public enum AutoScaleMode
+	{
+		Dpi = 2,
+		Font = 1,
+		Inherit = 3,
+		None = 0,
+	}
+
+	public enum AutoSizeMode
+	{
+		GrowAndShrink = 0,
+		GrowOnly = 1,
+	}
+
+	public enum Border3DStyle
+	{
+		Adjust = 8192,
+		Bump = 9,
+		Etched = 6,
+		Flat = 16394,
+		Raised = 5,
+		RaisedInner = 4,
+		RaisedOuter = 1,
+		Sunken = 10,
+		SunkenInner = 8,
+		SunkenOuter = 2,
+	}
+
+	public enum BorderStyle
+	{
+		Fixed3D = 2,
+		FixedSingle = 1,
+		None = 0,
+	}
+
+	public enum ButtonBorderStyle
+	{
+		Dashed = 2,
+		Dotted = 1,
+		Inset = 4,
+		None = 0,
+		Outset = 5,
+		Solid = 3,
+	}
+
+	public enum CharacterCasing
+	{
+		Lower = 2,
+		Normal = 0,
+		Upper = 1,
+	}
+
+	public enum CheckState
+	{
+		Checked = 1,
+		Indeterminate = 2,
+		Unchecked = 0,
+	}
+
+	public enum ColorDepth
+	{
+		Depth16Bit = 16,
+		Depth24Bit = 24,
+		Depth32Bit = 32,
+		Depth4Bit = 4,
+		Depth8Bit = 8,
+	}
+
+	public enum ColumnHeaderStyle
+	{
+		Clickable = 2,
+		Nonclickable = 1,
+		None = 0,
+	}
+
+	public enum ComboBoxStyle
+	{
+		DropDown = 1,
+		DropDownList = 2,
+		Simple = 0,
+	}
+
+	[Flags]
+	public enum ControlStyles
+	{
+		AllPaintingInWmPaint = 8192,
+		CacheText = 16384,
+		ContainerControl = 1,
+		DoubleBuffer = 65536,
+		EnableNotifyMessage = 32768,
+		FixedHeight = 64,
+		FixedWidth = 32,
+		Opaque = 4,
+		OptimizedDoubleBuffer = 131072,
+		ResizeRedraw = 16,
+		Selectable = 512,
+		StandardClick = 256,
+		StandardDoubleClick = 4096,
+		SupportsTransparentBackColor = 2048,
+		UserMouse = 1024,
+		UserPaint = 2,
+		UseTextForAccessibility = 262144,
+	}
+
+	public enum DataGridViewAutoSizeColumnMode
+	{
+		AllCells = 6,
+		AllCellsExceptHeader = 4,
+		ColumnHeader = 2,
+		DisplayedCells = 10,
+		DisplayedCellsExceptHeader = 8,
+		Fill = 16,
+		None = 1,
+		NotSet = 0,
+	}
+
+	public enum DataGridViewAutoSizeColumnsMode
+	{
+		AllCells = 6,
+		AllCellsExceptHeader = 4,
+		ColumnHeader = 2,
+		DisplayedCells = 10,
+		DisplayedCellsExceptHeader = 8,
+		Fill = 16,
+		None = 1,
+	}
+
+	public enum DataGridViewAutoSizeRowsMode
+	{
+		AllCells = 7,
+		AllCellsExceptHeaders = 6,
+		AllHeaders = 5,
+		DisplayedCells = 11,
+		DisplayedCellsExceptHeaders = 10,
+		DisplayedHeaders = 9,
+		None = 0,
+	}
+
+	public enum DataGridViewCellBorderStyle
+	{
+		Custom = 0,
+		None = 4,
+		Raised = 2,
+		RaisedHorizontal = 9,
+		RaisedVertical = 6,
+		Single = 1,
+		SingleHorizontal = 8,
+		SingleVertical = 5,
+		Sunken = 3,
+		SunkenHorizontal = 10,
+		SunkenVertical = 7,
+	}
+
+	public enum DataGridViewClipboardCopyMode
+	{
+		Disable = 0,
+		EnableAlwaysIncludeHeaderText = 3,
+		EnableWithAutoHeaderText = 1,
+		EnableWithoutHeaderText = 2,
+	}
+
+	public enum DataGridViewColumnHeadersHeightSizeMode
+	{
+		AutoSize = 2,
+		DisableResizing = 1,
+		EnableResizing = 0,
+	}
+
+	public enum DataGridViewColumnSortMode
+	{
+		Automatic = 1,
+		NotSortable = 0,
+		Programmatic = 2,
+	}
+
+	public enum DataGridViewComboBoxDisplayStyle
+	{
+		ComboBox = 0,
+		DropDownButton = 1,
+		Nothing = 2,
+	}
+
+	public enum DataGridViewContentAlignment
+	{
+		BottomCenter = 512,
+		BottomLeft = 256,
+		BottomRight = 1024,
+		MiddleCenter = 32,
+		MiddleLeft = 16,
+		MiddleRight = 64,
+		NotSet = 0,
+		TopCenter = 2,
+		TopLeft = 1,
+		TopRight = 4,
+	}
+
+	[Flags]
+	public enum DataGridViewDataErrorContexts
+	{
+		ClipboardContent = 16384,
+		Commit = 512,
+		CurrentCellChange = 4096,
+		Display = 2,
+		Formatting = 1,
+		InitialValueRestoration = 1024,
+		LeaveControl = 2048,
+		Parsing = 256,
+		PreferredSize = 4,
+		RowDeletion = 8,
+		Scroll = 8192,
+	}
+
+	public enum DataGridViewEditMode
+	{
+		EditOnEnter = 0,
+		EditOnF2 = 3,
+		EditOnKeystroke = 1,
+		EditOnKeystrokeOrF2 = 2,
+		EditProgrammatically = 4,
+	}
+
+	[Flags]
+	public enum DataGridViewElementStates
+	{
+		Displayed = 1,
+		Frozen = 2,
+		None = 0,
+		ReadOnly = 4,
+		Resizable = 8,
+		ResizableSet = 16,
+		Selected = 32,
+		Visible = 64,
+	}
+
+	public enum DataGridViewHeaderBorderStyle
+	{
+		Custom = 0,
+		None = 4,
+		Raised = 2,
+		Single = 1,
+		Sunken = 3,
+	}
+
+	public enum DataGridViewHitTestType
+	{
+		Cell = 1,
+		ColumnHeader = 2,
+		HorizontalScrollBar = 5,
+		None = 0,
+		RowHeader = 3,
+		TopLeftHeader = 4,
+		VerticalScrollBar = 6,
+	}
+
+	public enum DataGridViewImageCellLayout
+	{
+		Normal = 1,
+		NotSet = 0,
+		Stretch = 2,
+		Zoom = 3,
+	}
+
+	[Flags]
+	public enum DataGridViewPaintParts
+	{
+		All = 127,
+		Background = 1,
+		Border = 2,
+		ContentBackground = 4,
+		ContentForeground = 8,
+		ErrorIcon = 16,
+		Focus = 32,
+		None = 0,
+		SelectionBackground = 64,
+	}
+
+	public enum DataGridViewRowHeadersWidthSizeMode
+	{
+		AutoSizeToAllHeaders = 2,
+		AutoSizeToDisplayedHeaders = 3,
+		AutoSizeToFirstHeader = 4,
+		DisableResizing = 1,
+		EnableResizing = 0,
+	}
+
+	public enum DataGridViewSelectionMode
+	{
+		CellSelect = 0,
+		ColumnHeaderSelect = 4,
+		FullColumnSelect = 2,
+		FullRowSelect = 1,
+		RowHeaderSelect = 3,
+	}
+
+	public enum DataGridViewTriState
+	{
+		False = 2,
+		NotSet = 0,
+		True = 1,
+	}
+
 	public enum DialogResult
 	{
 		Abort = 3,
@@ -37,6 +365,84 @@ namespace System.Windows.Forms
 		None = 0,
 		Right = 4,
 		Top = 1,
+	}
+
+	[Flags]
+	public enum DragDropEffects
+	{
+		All = -2147483645,
+		Copy = 1,
+		Link = 4,
+		Move = 2,
+		None = 0,
+		Scroll = -2147483648,
+	}
+
+	[Flags]
+	public enum DrawItemState
+	{
+		Checked = 8,
+		ComboBoxEdit = 4096,
+		Default = 32,
+		Disabled = 4,
+		Focus = 16,
+		Grayed = 2,
+		HotLight = 64,
+		Inactive = 128,
+		NoAccelerator = 256,
+		NoFocusRect = 512,
+		None = 0,
+		Selected = 1,
+	}
+
+	public enum DrawMode
+	{
+		Normal = 0,
+		OwnerDrawFixed = 1,
+		OwnerDrawVariable = 2,
+	}
+
+	public enum FixedPanel
+	{
+		None = 0,
+		Panel1 = 1,
+		Panel2 = 2,
+	}
+
+	public enum FlatStyle
+	{
+		Flat = 0,
+		Popup = 1,
+		Standard = 2,
+		System = 3,
+	}
+
+	public enum FlowDirection
+	{
+		BottomUp = 3,
+		LeftToRight = 0,
+		RightToLeft = 2,
+		TopDown = 1,
+	}
+
+	public enum FormBorderStyle
+	{
+		Fixed3D = 2,
+		FixedDialog = 3,
+		FixedSingle = 1,
+		FixedToolWindow = 5,
+		None = 0,
+		Sizable = 4,
+		SizableToolWindow = 6,
+	}
+
+	public enum FormStartPosition
+	{
+		CenterParent = 4,
+		CenterScreen = 1,
+		Manual = 0,
+		WindowsDefaultBounds = 3,
+		WindowsDefaultLocation = 2,
 	}
 
 	public enum FormWindowState
@@ -64,6 +470,24 @@ namespace System.Windows.Forms
 		Stretch = 3,
 		Tile = 1,
 		Zoom = 4,
+	}
+
+	public enum ImeMode
+	{
+		Alpha = 8,
+		AlphaFull = 7,
+		Close = 11,
+		Disable = 3,
+		Hangul = 10,
+		HangulFull = 9,
+		Hiragana = 4,
+		Inherit = -1,
+		Katakana = 5,
+		KatakanaHalf = 6,
+		NoControl = 0,
+		Off = 2,
+		On = 1,
+		OnHalf = 12,
 	}
 
 	[Flags]
@@ -265,6 +689,29 @@ namespace System.Windows.Forms
 		Zoom = 251,
 	}
 
+	public enum LeftRightAlignment
+	{
+		Left = 0,
+		Right = 1,
+	}
+
+	public enum LinkBehavior
+	{
+		AlwaysUnderline = 1,
+		HoverUnderline = 2,
+		NeverUnderline = 3,
+		SystemDefault = 0,
+	}
+
+	public enum MergeAction
+	{
+		Append = 0,
+		Insert = 1,
+		MatchOnly = 4,
+		Remove = 3,
+		Replace = 2,
+	}
+
 	public enum MessageBoxButtons
 	{
 		AbortRetryIgnore = 2,
@@ -313,6 +760,66 @@ namespace System.Windows.Forms
 		Right = 2097152,
 		XButton1 = 8388608,
 		XButton2 = 16777216,
+	}
+
+	public enum Orientation
+	{
+		Horizontal = 0,
+		Vertical = 1,
+	}
+
+	public enum PictureBoxSizeMode
+	{
+		AutoSize = 2,
+		CenterImage = 3,
+		Normal = 0,
+		StretchImage = 1,
+		Zoom = 4,
+	}
+
+	public enum RichTextBoxScrollBars
+	{
+		Both = 3,
+		ForcedBoth = 19,
+		ForcedHorizontal = 17,
+		ForcedVertical = 18,
+		Horizontal = 1,
+		None = 0,
+		Vertical = 2,
+	}
+
+	public enum RightToLeft
+	{
+		Inherit = 2,
+		No = 0,
+		Yes = 1,
+	}
+
+	public enum ScrollBars
+	{
+		Both = 3,
+		Horizontal = 1,
+		None = 0,
+		Vertical = 2,
+	}
+
+	public enum ScrollEventType
+	{
+		EndScroll = 8,
+		First = 6,
+		LargeDecrement = 2,
+		LargeIncrement = 3,
+		Last = 7,
+		SmallDecrement = 0,
+		SmallIncrement = 1,
+		ThumbPosition = 4,
+		ThumbTrack = 5,
+	}
+
+	public enum ScrollOrientation
+	{
+		HorizontalScroll = 0,
+		VerticalScroll = 1,
 	}
 
 	public enum Shortcut
@@ -473,6 +980,202 @@ namespace System.Windows.Forms
 		ShiftIns = 65581,
 	}
 
+	public enum SizeGripStyle
+	{
+		Auto = 0,
+		Hide = 2,
+		Show = 1,
+	}
+
+	public enum SortOrder
+	{
+		Ascending = 1,
+		Descending = 2,
+		None = 0,
+	}
+
+	public enum TabAlignment
+	{
+		Bottom = 1,
+		Left = 2,
+		Right = 3,
+		Top = 0,
+	}
+
+	public enum TabAppearance
+	{
+		Buttons = 1,
+		FlatButtons = 2,
+		Normal = 0,
+	}
+
+	public enum TabControlAction
+	{
+		Deselected = 3,
+		Deselecting = 2,
+		Selected = 1,
+		Selecting = 0,
+	}
+
+	public enum TabSizeMode
+	{
+		FillToRight = 1,
+		Fixed = 2,
+		Normal = 0,
+	}
+
+	public enum TextImageRelation
+	{
+		ImageAboveText = 1,
+		ImageBeforeText = 4,
+		Overlay = 0,
+		TextAboveImage = 2,
+		TextBeforeImage = 8,
+	}
+
+	public enum TickStyle
+	{
+		Both = 3,
+		BottomRight = 2,
+		None = 0,
+		TopLeft = 1,
+	}
+
+	public enum ToolStripDropDownCloseReason
+	{
+		AppClicked = 1,
+		AppFocusChange = 0,
+		CloseCalled = 4,
+		ItemClicked = 2,
+		Keyboard = 3,
+	}
+
+	public enum ToolStripDropDownDirection
+	{
+		AboveLeft = 0,
+		AboveRight = 1,
+		BelowLeft = 2,
+		BelowRight = 3,
+		Default = 7,
+		Left = 4,
+		Right = 5,
+	}
+
+	public enum ToolStripGripStyle
+	{
+		Hidden = 0,
+		Visible = 1,
+	}
+
+	public enum ToolStripItemAlignment
+	{
+		Left = 0,
+		Right = 1,
+	}
+
+	public enum ToolStripItemDisplayStyle
+	{
+		Image = 2,
+		ImageAndText = 3,
+		None = 0,
+		Text = 1,
+	}
+
+	public enum ToolStripItemImageScaling
+	{
+		None = 0,
+		SizeToFit = 1,
+	}
+
+	public enum ToolStripItemOverflow
+	{
+		Always = 1,
+		AsNeeded = 2,
+		Never = 0,
+	}
+
+	public enum ToolStripLayoutStyle
+	{
+		Flow = 3,
+		HorizontalStackWithOverflow = 1,
+		StackWithOverflow = 0,
+		Table = 4,
+		VerticalStackWithOverflow = 2,
+	}
+
+	public enum ToolStripRenderMode
+	{
+		Custom = 0,
+		ManagerRenderMode = 3,
+		Professional = 2,
+		System = 1,
+	}
+
+	[Flags]
+	public enum ToolStripStatusLabelBorderSides
+	{
+		All = 15,
+		Bottom = 8,
+		Left = 1,
+		None = 0,
+		Right = 4,
+		Top = 2,
+	}
+
+	public enum ToolTipIcon
+	{
+		Error = 3,
+		Info = 1,
+		None = 0,
+		Warning = 2,
+	}
+
+	[Flags]
+	public enum TreeNodeStates
+	{
+		Checked = 8,
+		Default = 32,
+		Focused = 16,
+		Grayed = 2,
+		Hot = 64,
+		Indeterminate = 256,
+		Marked = 128,
+		Selected = 1,
+		ShowKeyboardCues = 512,
+	}
+
+	public enum TreeViewAction
+	{
+		ByKeyboard = 1,
+		ByMouse = 2,
+		Collapse = 3,
+		Expand = 4,
+		Unknown = 0,
+	}
+
+	public enum TreeViewDrawMode
+	{
+		Normal = 0,
+		OwnerDrawAll = 2,
+		OwnerDrawText = 1,
+	}
+
+	[Flags]
+	public enum TreeViewHitTestLocations
+	{
+		AboveClientArea = 256,
+		BelowClientArea = 512,
+		Image = 2,
+		Indent = 8,
+		Label = 4,
+		LeftOfClientArea = 2048,
+		None = 1,
+		PlusMinus = 16,
+		RightOfClientArea = 1024,
+		RightOfLabel = 32,
+		StateImage = 64,
+	}
+
 	public enum View
 	{
 		Details = 1,
@@ -480,6 +1183,20 @@ namespace System.Windows.Forms
 		List = 3,
 		SmallIcon = 2,
 		Tile = 4,
+	}
+}
+
+namespace System.Windows.Forms.Design
+{
+	[Flags]
+	public enum ToolStripItemDesignerAvailability
+	{
+		All = 15,
+		ContextMenuStrip = 4,
+		MenuStrip = 2,
+		None = 0,
+		StatusStrip = 8,
+		ToolStrip = 1,
 	}
 }
 

@@ -1,7 +1,7 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 2 done (branch `phase-2/renderer`, based on `phase-1/core`). Next: Phase 3. Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 3 (branch `phase-3/shell`): **milestone reached on 20 Oct 2026** (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -77,9 +77,106 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 
 **Tests:** 106 passing.
 
-## Next: Phase 3 (Avalonia shell)
+## Phase 3: Avalonia shell 🚧 (branch `phase-3/shell`)
 
-1. `UDB.Avalonia` app (or the UI in the `Builder` assembly) with Avalonia 12.1.4. It installs an `IWinFormsHost`, `Application.RunHandler` and a `HostedGL` context shared with Avalonia's, whose FBO it displays.
-2. `MainForm` port: menus and toolbars from UDB's action and menu configs, status bar, info panel, dockers.
-3. Viewport: render UDB into the shared context's FBO and show it in an `OpenGlControlBase`. Input goes into UDB's action system, with key code mapping.
-4. Scope filter (GZDoom/UZDoom only) and branding, as the first config UI lands.
+| Item | Status | Notes |
+|---|---|---|
+| Branding | ✅ | `ULDB.Branding`; a module initializer brands `Application.ProductName`, so upstream's message boxes say "Ultimate Linux Doom Builder" |
+| Scope filter | ✅ | `ULDB.Scope.ScopeFilter`: 14 visible configs, ZDBSP only, ACC/ZT-BCC/BCC; closest-config suggestion. `docs/scope-hidden.md` |
+| Key mapping | ✅ | `ULDB.Input.KeyMapping`: Avalonia keys/modifiers/mouse buttons to WinForms codes; every default shortcut in the in-scope Actions.cfg files is reachable |
+| Avalonia app entry point | ✅ | `Source/ULDB/Builder/Shell/Program.cs`: `Builder` is now an executable (`uldb` launcher script next to it). Avalonia is set up first (`SetupWithoutStarting`), then upstream's `General.Main` runs unchanged; `Application.Run` runs Avalonia's main loop |
+| `IWinFormsHost` | ✅ (untested by hand) | `Shell/AvaloniaHost.cs`: message boxes, portal file dialogs, colour dialog (ColorView), clipboard (text to the desktop, UDB formats in-process), cursors, timers, `Invoke`/`BeginInvoke`, `ActiveForm`. `Shell/FormWindows.cs` links compat `Form`s to Avalonia windows |
+| Viewport | ✅ | `ViewportContext` (UDB's own GL context, shared with Avalonia's; renders into an FBO) and `ViewportControl` (blits it). Present callback added to `HostedContext` |
+| BuilderModes plugin | ✅ (logic) | Builds with generated placeholders for `Interface/`; upstream `MenusForm` compiles unchanged. UI ports are Phase 4 |
+| Main window | 🟨 | **Model port**: upstream `MainForm.cs`/`.Designer.cs` compile unchanged on compat models; `Shell/MainWindow.cs` + `ToolStripViews.cs` show menus, toolbars, modes toolbar, status bar, map view. Info panels and dockers still placeholders |
+| Open Map dialog | ✅ | `.axaml` ports of `OpenMapOptionsForm`, `ResourceOptionsForm`, `ResourceListEditor` (user tested). Ported forms show through `Form.CreateView` → `AvaloniaHost.ShowForm` (`docs/architecture.md`) |
+| Save | ✅ | Ctrl+S in the UI: ZDBSP runs, `TEXTMAP` + `ZNODES` written (user tested 20 Oct 2026) |
+| Input | ✅ | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook: `Shell/X11Pointer.cs` (XQueryPointer/XWarpPointer) + screen mappers; user-tested on KDE Wayland (XWayland): "feels just like the original" |
+
+**Tests:** 188 passing.
+
+### Remaining Phase 3 work (pick up here)
+
+The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
+
+**Session ended 20 Oct 2026 (evening); resume with item 1 below (texture browser).** All work is committed and pushed on `phase-3/shell`; 188 tests pass. Later cloud sessions (no screen) finished item 2 (the icons: show them to the user first) and work from Phases 6 and 7: see "Done ahead of order" below.
+
+**State on 20 Oct 2026 (user tested):** open via the Open Map dialog, edit, save; info panels (modern cards), dockers (Help docker; plugin dockers say "not ported"), and the edit dialogs Vertex, Thing (UDMF), Sector (UDMF), Linedef (UDMF), Edit Action and Edit Text all work as model ports with .axaml windows. The user reviewed the dialogs against UDB screenshots and approved the compact, aligned layout (shared label column per tab, 92 px number boxes, previews filling space, Linedef sides grouped by wall part like Sector surfaces, no action help button). First pass of Breeze-style toolbar icons (`Shell/BreezeIcons.cs`). Next, in order:
+1. **Texture browser** (`TextureBrowserForm`): clicking texture/flat pickers does nothing until it's ported (its placeholder returns null and the picker keeps its texture).
+2. ~~Remaining icons~~ ✅ done in a cloud session, 20 Oct 2026, **not yet seen on a real screen**: show the user the menus (Edit, View, Tools, Help, the lights/models dropdowns) and the Sector dialog's reset buttons, and adjust any they don't like. `Shell/ResourceImageNames.cs` matches any upstream image to its `Properties.Resources` name by pixel content (this also catches form .resx copies), so `BreezeIcons` has `res:<Name>` specs plus aliases to the action icons. `tools/iconsheet` renders all icons to light/dark preview sheets; `BreezeIconTests` checks the specs and the lookup. BuilderEffects' three menu icons are in place for Phase 6. Not converted on purpose: splash/About artwork, `ErrorLarge*`/`WarningLarge*` (Errors window), `Monster2/3` and engine icons (Test menu), thing/texture images.
+3. Non-UDMF edit forms (`LinedefEditForm`, `SectorEditForm`, `ThingEditForm`) for GZDoom's Doom/Hexen-format configs; Map Options, game configurations (`ConfigForm`, with `ScopeFilter`), preferences, script editor.
+4. BuilderModes' docker panels (Undo/Redo, Draw Settings, Edit Selection, Draw Grid...) register views in `ControlViews` (Phase 4).
+5. Window geometry persistence for the main window; startup polish (window shows empty for 1–2 s); resource list drop marker.
+6. Modernise the main window further (plan section 4; user wants it): toolbars, status bar, menus.
+7. 3D mouselook has no pointer grab for `Cursor.Clip`; add one if users report the pointer escaping.
+
+**How the dialogs are built (read before porting more):** `docs/architecture.md` ("Two ways to port a window", item 3, and "Language version"). Large layouts are generated by `tools/axamlgen` (see its README); check any dialog with `ULDB_SHOW_FORM=linedef:1` (form, tab) or `ULDB_SHOW_FORM=action:buildermodes_sectorsmode`, and add `ULDB_CAPTURE=file.png` to have ULDB render its own window to a PNG (`Shell/DevCapture.cs`). **Never use screen captures**: they can catch the user's other windows. **In a cloud container**, `tools/capture/capture.sh OUT.png [FORM]` opens a test map with Freedoom under Xvfb (`ULDB_RENDERING=egl`, Mesa llvmpipe) and captures the main window or a dialog; the Errors window is skipped, and ULDB exits after the capture (`ULDB_CAPTURE_EXIT=1`). The map area itself captures white (the GL view isn't part of Avalonia's render-to-bitmap); dialogs capture fully. `ULDB_DUMP_TOOLBARS=1` lists toolbar items and their tags (for icons). Headless tests (`EditFormTests`) construct each model-ported form and run its Setup on a real map: add one for every new form.
+
+App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. **About dialog (user request, 20 Oct 2026): when `AboutForm` is ported, show Cacky as its image/icon** (in place of UDB's logo artwork), alongside the UZDoom/GZDoom reference and the AI disclosure from `Branding`. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
+
+**Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
+
+## Done ahead of order (cloud session, 20 Oct 2026, no screen)
+
+Work the user approved doing without their machine. All on `phase-3/shell`.
+
+| Item | Status | Notes |
+|---|---|---|
+| Plugins (Phases 4 and 6) | 🟨 logic | All nine in-scope plugins build and load: `Source/ULDB/Plugins/<Name>/` for ThreeDFloorMode, BuilderEffects, StairSectorBuilder, TagRange, SoundPropagationMode, ColorPicker, TagExplorer, CommentsPanel (plus BuilderModes). Same setup as BuilderModes: placeholders for the UI (`tools/uistubgen/prune.py <Name>`), resxgen resources. Model ports (compile unchanged): every plugin's menu holder (`MenusForm`/`ToolsForm`), 3D floors' tooltip list (`ThreeDFloorPanel`, `ThreeDFloorHelperTooltipElementControl`), sound environments' tree (`SoundEnvironmentPanel`). `PluginTests` loads them all and switches into every plugin mode on a real map. **Not yet usable:** modes that open a dialog first (Stair Sector Builder, Slope and Draw Slopes modes ask for a slope data sector, OBJ terrain import) cancel, because the dialog placeholders answer Cancel; the plugins' dockers (Tag Explorer, Comments, 3D floors, sound environments) show the "not ported" note; ColorPicker's windows and BuilderEffects' jitter forms are placeholders. Porting these is Phase 4/6 UI work |
+| Settings import (Phase 7) | ✅ (untested by hand) | `Source/ULDB/Builder/Settings/` (`ULDB.Settings.UdbSettingsImport`), user doc `docs/settings-import.md`. Sources: Mono build, Flatpak, Wine prefixes, legacy `GZBuilder.cfg`, or a picked file/folder. Converts Windows/Wine paths, lists unresolved ones in a summary (`UDBImport.txt`), keeps shortcuts as-is (ULDB uses WinForms `Keys` codes too), never touches the source. First start: Yes/No question (`Shell/Program.cs`, before `General.Main`); `--import-udb-settings[=PATH]`. ULDB's own settings: `$XDG_CONFIG_HOME/UltimateLinuxDoomBuilder/`. 22 tests. **To do:** click through it on the user's machine with their real UDB settings; *Preferences → Import UDB settings…* once Preferences is ported (with a drive-letter mapping for mounted Windows installs) |
+| CI | ✅ | `.github/workflows/uldb-ci.yml`: build + tests (first run passed, 20 Oct 2026) on ubuntu-24.04 with Freedoom and Mesa. Upstream's workflows are untouched (they may fail on the fork; disable them in the repo's Actions settings if they're noise). Flatpak artifact builds still to do |
+| Packaging | 🟨 | `packaging/`: `build.sh` (Release publish + plugins), `install.sh` (PREFIX/DESTDIR; app in `lib/uldb`, hicolor icons from Cacky), `.desktop` (`StartupWMClass=uldb`), AppStream metainfo (both validate), `arch/PKGBUILD` (`uldb-git`, `_arch=znver4` option), Flatpak manifest (runtime 26.08 + dotnet10 extension; **untested**, needs `nuget-sources.json` generated, see `packaging/README.md`). **To do on the user's machine:** `cd packaging/arch && makepkg -si`, then check the KDE menu entry, icon and taskbar grouping. The metainfo release (0.1.0) is a placeholder |
+
+### Cloud session 3 (20 Oct 2026, no screen): where it stopped
+
+**Resume here.** Everything is committed and pushed on `phase-3/shell`; 188 tests pass.
+
+- **Flatpak CI is green**: `.github/workflows/uldb-flatpak.yml` builds `uldb.flatpak` (download it from the run's artifacts in GitHub Actions). Fixes on the way: SDK-first PATH (the extension's `install.sh` runs after the build), ACC's static link on the Freedesktop SDK (`tools/compilers/CMakeLists.txt` gives it an empty `libatomic_asneeded.a`), failed compiler builds now print their errors. **Not yet run on a desktop**: `flatpak install --user uldb.flatpak`, then launch.
+- **User's review fixes:** Stair builder height cards on their own row; wider, single-line number boxes in the jitter forms.
+- **Ported this session** (model port + view; all captured in the container and look right):
+  - Tag Range's form; Tag Explorer docker (tree with Breeze icons); Comments docker (list, click-to-view/select, right-click menu); Sound Environments docker; 3D floors docker (cards per floor: not seen with content, it needs a hovered sector: **check on the user's machine**).
+  - BuilderModes: Undo/Redo, Draw Settings, Draw Grid and Edit Selection dockers; the drawing modes' toolbar options (line, curve, rectangle, ellipse, curve linedefs) compile unchanged and show in the toolbar.
+- **Shared plumbing added:** context menus (compat `ContextMenuStrip.Show` → Avalonia), `DataGridView.CellLocator`/`HitTest`, any compat `TreeView` gets the shared tree view via `ControlViews`, dockers set only the shown docker's control `Visible` (plugins refresh on `VisibleChanged`), compat ListView `SelectedIndexChanged`/`BeginUpdate`/`EndUpdate`/item `Index`/`EnsureVisible`, `ULDB_SHOW_FORM` step `docker:<name>`.
+- **Bug found and fixed:** plugins' `user32.dll`/`BuilderNative.dll` imports didn't resolve (only Builder had the resolver); BuilderModes' Undo/Redo panel would have crashed the app at startup once shown. `Platform/NativeLibraries.cs` now covers assemblies loaded from `Plugins/`.
+  - BuilderModes: Map Analysis (`ErrorCheckForm`) and Find and Replace (`FindReplaceForm`) windows, on new compat `ListBox`/`ProgressBar` models (ModelBinder binds them both ways). Not yet run end to end here (an analysis or search needs clicks): **try both on the user's machine**.
+  - BuilderModes' smaller windows: Make Door, Bridge options, Fit Textures, Filter Selected Things, Paste Properties Special, Change Map Element Index, Slope Arch, Image Export Settings. Captured and checked: Make Door, Filter Selected Things, Change Index, Image Export. **Not captured** (need a particular selection or Visual mode): Bridge, Fit Textures, Slope Arch, Paste Properties Special: **try them on the user's machine**. The BuilderModes Preferences page (`PreferencesForm`) compiles unchanged but has no view yet: it's a tab of the core Preferences window, so do it with that.
+  - **User review fix:** Edit Selection number boxes were cut off; fixed.
+  - New shared view `Controls/Inputs/DataGridRowsView.cs`: any plain compat `DataGridView` (header + rows, multi-select) via `ControlViews`; grids with editing have their own views. Dev switch step `selectone:<type>`.
+  - 3DFloorMode: the 3D floors editor window (one card per floor), Edit Slope Vertex and Control Sector Area config. Compat gets `CheckedListBox` (+ `ItemCheck`), `Panel.ScrollControlIntoView`; ModelBinder binds a CheckedListBox with a checkbox per row. **Only the editor's empty state was captured** ("There are no 3D floors"); the cards, Edit Slope Vertex and the CSA dialog need real 3D floors/slopes: **try them on the user's machine**. Dev switch step `call:<plugin>:<BuilderPlug method>`. Sizable forms open at UDB's designer size but never below the view's `MinWidth`/`MinHeight`, so set those to what the layout needs.
+- **Next:** the colour pickers (need mouse testing, best with the user); then the core windows from the Phase 3 list (texture browser, Map Options, Preferences, ...), which need the user's review. Plugin UI left: ColorPicker windows, SoundPropagation colour configuration/reverbs picker, preferences pages (with the core Preferences window), 3D floor sector settings if any.
+- Captures can show colour fringes on grey text (subpixel antialiasing in the render-to-bitmap); not a real colour.
+
+### Cloud session 2 (20 Oct 2026, no screen): where it stopped
+
+**Resume here.** Everything is committed and pushed on `phase-3/shell`; 188 tests pass.
+
+- **Dialogs can be checked in the container now.** `tools/capture/capture.sh OUT.png "STEPS"` opens a test map (Xvfb, `ULDB_RENDERING=egl`) and captures a dialog. Steps are chained with `+`: `action:<name>`, `select:sectors|linedefs|things|vertices`, `sector`, `linedef:1`... e.g. `"action:buildermodes_sectorsmode+select:sectors+action:buildereffects_applyjitter"`. About 13 s per capture.
+- **Plugin dialogs ported (model port + `.axaml` in the plugin's `Views/`, registered by `Views/PluginViews.cs`):**
+  - ThreeDFloorMode: slope data sector dialog (Slope and Draw Slopes modes now get past it)
+  - StairSectorBuilder: the whole Stair Sector Builder window
+  - BuilderEffects: all of it (jitter vertices/sectors/things, directional shading, OBJ import settings, `IntControl`)
+  - Captured and checked here; **show the user the screenshots for sign-off** (they haven't seen them).
+- **Still placeholders:** TagRange's form, 3D floor editor window, control sector area config, slope vertex edit form, 3D floors preferences, ColorPicker windows, SoundPropagation's colour configuration and reverbs picker, and the dockers (Tag Explorer, Comments, 3D floors, sound environments). Next in order: TagRangeForm (small), then the dockers.
+- **App-wide style change:** `NumericUpDown` now looks like `ButtonsNumericTextbox` (slim stacked arrows; `Shell/Styles.axaml`).
+- **Icons:** plugin edit modes and 3D floors' slope buttons have Breeze icons; plugin resources can have their own spec as `res:<Assembly>/<Name>` (BuilderEffects' `Update` is a re-roll arrow, not check-for-updates). The edit-modes toolbar scrolls.
+- **Flatpak CI (`.github/workflows/uldb-flatpak.yml`) is not green yet.** Fixed so far: system-wide SDK, `dir` source (the git source built `master`), NuGet restore with the Flatpak's own .NET SDK (10.0.401) via `tools/flatpak/nuget-sources.py`, a writable home and checkout for the sandbox. The last finished run failed in flatpak-builder while downloading NuGet sources (it was restoring the Tests project too); run 39361072710 (program and plugins only) was still running at the end of the session. Job logs can't be downloaded from the cloud container (Azure blob is blocked), so failures are reported as **annotations**: `gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/check-runs/<job id>/annotations`.
+- Main CI (`uldb-ci.yml`) is green.
+
+## Handoff notes (for the next session)
+
+- **Branches:**
+  - `phase-1/core` → `phase-2/renderer` → `phase-3/shell` (each builds on the previous).
+  - Phases 0–2 are in PR [#1](https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/pull/1) into `master`; it may already be merged when you read this.
+  - Continue on `phase-3/shell`. If #1 has been merged, merge `master` into it first.
+- **User's machine checklist** (`docs/setup-cachyos.md`). Ask whether these are done:
+  - install the toolchain
+  - clone with `--recurse-submodules`
+  - `dotnet test Builder.Linux.sln`, expecting 149 passing
+  - the Mono reference build, reference screenshots in `docs/reference-screenshots/`
+  - own maps in `tests/maps/user/` (optional)
+- **On the user's machine the window is real:** the Avalonia app runs on their KDE Plasma (X11 backend; XWayland on Wayland sessions). Use `-p:UldbArch=znver4` for their builds if they want it.
+- **User's machine (CachyOS):** VS Code runs as a **Flatpak**, so the agent's shell is sandboxed: run `dotnet`, `git push` and the app through `flatpak-spawn --host sh -c "cd '$PWD' && …"`. The sandbox's `/tmp` is private; put files the host must write (screenshots: `spectacle -b -n -a -o ~/.cache/uldb-shots/x.png`) under `$HOME`. Freedoom is in `~/.local/share/doom/`.
+- **GitHub from cloud sessions:**
+  - `gh` GraphQL is blocked; use `gh api` (REST).
+  - The repo is a fork, so always target `theoriginalzads/UltimateLinuxDoomBuilder` explicitly when opening PRs, never upstream.
+- **Open decisions:** none. Everything is in `docs/ULDB-Plan.md` sections 0 and 7.

@@ -81,10 +81,26 @@ namespace System.Drawing
 			using(FileStream fs = File.Create(filename)) Save(fs, format);
 		}
 
-		public void Save(Stream stream, ImageFormat format)
+		public void Save(string filename, ImageCodecInfo encoder, EncoderParameters encoderParams)
+		{
+			using(FileStream fs = File.Create(filename)) Save(fs, encoder, encoderParams);
+		}
+
+		public void Save(Stream stream, ImageCodecInfo encoder, EncoderParameters encoderParams)
+		{
+			int quality = -1;
+			if(encoderParams?.Param != null)
+				foreach(EncoderParameter p in encoderParams.Param)
+					if(p != null && p.Encoder.Guid == Encoder.Quality.Guid) quality = (int)Math.Clamp(p.Value, 0, 100);
+			Save(stream, ImageFormat.FromGuid(encoder.FormatID), quality);
+		}
+
+		public void Save(Stream stream, ImageFormat format) => Save(stream, format, -1);
+
+		private void Save(Stream stream, ImageFormat format, int quality)
 		{
 			SKEncodedImageFormat skformat = format.SkiaFormat;
-			int quality = (skformat == SKEncodedImageFormat.Jpeg) ? 90 : 100;
+			if(quality < 0) quality = (skformat == SKEncodedImageFormat.Jpeg) ? 90 : 100;
 			using(SKBitmap premul = Bitmap.ToPremul(Native))
 			using(SKData data = premul.Encode(skformat, quality))
 			{
@@ -462,27 +478,147 @@ namespace System.Drawing.Imaging
 		internal readonly SKEncodedImageFormat SkiaFormat;
 		private readonly string name;
 
-		private ImageFormat(string name, SKEncodedImageFormat format)
+		private ImageFormat(string name, SKEncodedImageFormat format, string guid)
 		{
 			this.name = name;
 			SkiaFormat = format;
+			Guid = new Guid(guid);
 		}
 
-		public static ImageFormat Png { get; } = new ImageFormat("Png", SKEncodedImageFormat.Png);
-		public static ImageFormat Jpeg { get; } = new ImageFormat("Jpeg", SKEncodedImageFormat.Jpeg);
-		public static ImageFormat Bmp { get; } = new ImageFormat("Bmp", SKEncodedImageFormat.Bmp);
-		public static ImageFormat Gif { get; } = new ImageFormat("Gif", SKEncodedImageFormat.Gif);
-		public static ImageFormat Webp { get; } = new ImageFormat("Webp", SKEncodedImageFormat.Webp);
+		// GDI+'s format GUIDs, so code comparing ImageCodecInfo.FormatID with them works.
+		public static ImageFormat Png { get; } = new ImageFormat("Png", SKEncodedImageFormat.Png, "b96b3caf-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Jpeg { get; } = new ImageFormat("Jpeg", SKEncodedImageFormat.Jpeg, "b96b3cae-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Bmp { get; } = new ImageFormat("Bmp", SKEncodedImageFormat.Bmp, "b96b3cab-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Gif { get; } = new ImageFormat("Gif", SKEncodedImageFormat.Gif, "b96b3cb0-0728-11d3-9d7b-0000f81ef32e");
+		public static ImageFormat Webp { get; } = new ImageFormat("Webp", SKEncodedImageFormat.Webp, "b96b3cb8-0728-11d3-9d7b-0000f81ef32e");
+
+		public Guid Guid { get; }
+
+		internal static ImageFormat FromGuid(Guid guid)
+		{
+			foreach(ImageFormat f in new[] { Png, Jpeg, Bmp, Gif, Webp }) if(f.Guid == guid) return f;
+			return Png;
+		}
 
 		public override string ToString() => name;
+	}
+
+	/// <summary>The encoders ULDB can write (via Skia), described as GDI+ does.</summary>
+	public sealed class ImageCodecInfo
+	{
+		private ImageCodecInfo(ImageFormat format, string mime, string extensions)
+		{
+			FormatID = format.Guid;
+			Clsid = format.Guid;
+			FormatDescription = format.ToString().ToUpperInvariant();
+			CodecName = "ULDB " + FormatDescription + " Codec";
+			MimeType = mime;
+			FilenameExtension = extensions;
+		}
+
+		public Guid Clsid { get; set; }
+		public Guid FormatID { get; set; }
+		public string CodecName { get; set; }
+		public string FormatDescription { get; set; }
+		public string MimeType { get; set; }
+		public string FilenameExtension { get; set; }
+
+		private static readonly ImageCodecInfo[] codecs =
+		{
+			new ImageCodecInfo(ImageFormat.Bmp, "image/bmp", "*.BMP;*.DIB;*.RLE"),
+			new ImageCodecInfo(ImageFormat.Jpeg, "image/jpeg", "*.JPG;*.JPEG;*.JPE;*.JFIF"),
+			new ImageCodecInfo(ImageFormat.Gif, "image/gif", "*.GIF"),
+			new ImageCodecInfo(ImageFormat.Png, "image/png", "*.PNG"),
+		};
+
+		public static ImageCodecInfo[] GetImageEncoders() => (ImageCodecInfo[])codecs.Clone();
+		public static ImageCodecInfo[] GetImageDecoders() => (ImageCodecInfo[])codecs.Clone();
+	}
+
+	public sealed class Encoder
+	{
+		public Encoder(Guid guid) { Guid = guid; }
+		public Guid Guid { get; }
+		public static readonly Encoder Quality = new Encoder(new Guid("1d5be4b5-fa4a-452d-9cdd-5db35105e7eb"));
+		public static readonly Encoder Compression = new Encoder(new Guid("e09d739d-ccd4-44ee-8eba-3fbf8be4fc58"));
+		public static readonly Encoder ColorDepth = new Encoder(new Guid("66087055-ad66-4c7c-9a18-38a2310b8337"));
+	}
+
+	public sealed class EncoderParameter : IDisposable
+	{
+		public EncoderParameter(Encoder encoder, long value) { Encoder = encoder; Value = value; }
+		public EncoderParameter(Encoder encoder, byte value) : this(encoder, (long)value) { }
+		public EncoderParameter(Encoder encoder, short value) : this(encoder, (long)value) { }
+		public Encoder Encoder { get; set; }
+		internal long Value { get; }
+		public void Dispose() { }
+	}
+
+	public sealed class EncoderParameters : IDisposable
+	{
+		public EncoderParameters() : this(1) { }
+		public EncoderParameters(int count) { Param = new EncoderParameter[count]; }
+		public EncoderParameter[] Param { get; set; }
+		public void Dispose() { }
 	}
 
 	public sealed class ImageAttributes : IDisposable
 	{
 		internal WrapMode WrapMode { get; private set; } = WrapMode.Clamp;
+		internal ColorMatrix ColorMatrix { get; private set; }
 
 		public void SetWrapMode(WrapMode mode) { WrapMode = mode; }
 		public void SetWrapMode(WrapMode mode, Color color) { WrapMode = mode; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix) { ColorMatrix = newColorMatrix; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix, ColorMatrixFlag flags) { ColorMatrix = newColorMatrix; }
+		public void SetColorMatrix(ColorMatrix newColorMatrix, ColorMatrixFlag mode, ColorAdjustType type) { ColorMatrix = newColorMatrix; }
+		public void ClearColorMatrix() { ColorMatrix = null; }
 		public void Dispose() { }
+
+		/// <summary>The colour matrix as a Skia colour filter (null if none).</summary>
+		internal SKColorFilter CreateColorFilter()
+		{
+			if(ColorMatrix == null) return null;
+
+			// GDI+: [r g b a 1] x M (row vector, 5x5, offsets in row 4 on a 0..1 scale).
+			// Skia: 4x5, one row per output channel, offsets in column 4 (also 0..1).
+			float[] m = new float[20];
+			for(int output = 0; output < 4; output++)
+			{
+				for(int input = 0; input < 4; input++) m[output * 5 + input] = ColorMatrix[input, output];
+				m[output * 5 + 4] = ColorMatrix[4, output];
+			}
+			return SKColorFilter.CreateColorMatrix(m);
+		}
+	}
+
+	/// <summary>A 5x5 matrix that transforms colours (RGBA plus an offset row), as in GDI+.</summary>
+	public sealed class ColorMatrix
+	{
+		private readonly float[,] m = new float[5, 5];
+
+		/// <summary>The identity matrix.</summary>
+		public ColorMatrix()
+		{
+			for(int i = 0; i < 5; i++) m[i, i] = 1f;
+		}
+
+		public ColorMatrix(float[][] newColorMatrix)
+		{
+			for(int row = 0; row < 5; row++)
+				for(int col = 0; col < 5; col++)
+					m[row, col] = newColorMatrix[row][col];
+		}
+
+		public float this[int row, int column] { get => m[row, column]; set => m[row, column] = value; }
+
+		public float Matrix00 { get => m[0, 0]; set => m[0, 0] = value; }
+		public float Matrix11 { get => m[1, 1]; set => m[1, 1] = value; }
+		public float Matrix22 { get => m[2, 2]; set => m[2, 2] = value; }
+		public float Matrix33 { get => m[3, 3]; set => m[3, 3] = value; }
+		public float Matrix40 { get => m[4, 0]; set => m[4, 0] = value; }
+		public float Matrix41 { get => m[4, 1]; set => m[4, 1] = value; }
+		public float Matrix42 { get => m[4, 2]; set => m[4, 2] = value; }
+		public float Matrix43 { get => m[4, 3]; set => m[4, 3] = value; }
 	}
 }

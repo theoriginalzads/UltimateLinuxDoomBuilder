@@ -22,8 +22,10 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl
-	public partial class VSTabControl : System.Windows.Forms.Control
+	public partial class VSTabControl : System.Windows.Forms.TabControl
 	{
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnCloseTabClicked#0
+		public event EventHandler<TabControlEventArgs> OnCloseTabClicked;
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.ShowClosingButton#1
 		public bool ShowClosingButton { get => default; set { } }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.ActiveColor#2
@@ -42,12 +44,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public VSTabControl() { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.CreateHandle#18
 		protected virtual void CreateHandle() { }
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnDragOver#19
+		protected virtual void OnDragOver(DragEventArgs drgevent) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseDown#20
 		protected virtual void OnMouseDown(MouseEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseMove#21
 		protected virtual void OnMouseMove(MouseEventArgs e) { }
 		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnMouseUp#22
 		protected virtual void OnMouseUp(MouseEventArgs e) { }
+		// stub-key: CodeImp.DoomBuilder.Controls.VSTabControl.OnPaint#23
+		protected virtual void OnPaint(PaintEventArgs e) { }
 	}
 }
 

@@ -205,7 +205,7 @@ namespace ScintillaNET
 		public bool Underline { get => default; set { } }
 		// stub-key: ScintillaNET.Style.Case#14
 		public StyleCase Case { get => default; set { } }
-		protected Style() { }
+		public Style() { }
 	}
 }
 
@@ -255,7 +255,7 @@ namespace ScintillaNET
 		public MarginCursor Cursor { get => default; set { } }
 		// stub-key: ScintillaNET.Margin.Sensitive#4
 		public bool Sensitive { get => default; set { } }
-		protected Margin() { }
+		public Margin() { }
 	}
 }
 
@@ -318,7 +318,7 @@ namespace ScintillaNET
 		public void SetForeColor(Color color) { }
 		// stub-key: ScintillaNET.Marker.DefineRgbaImage#11
 		public void DefineRgbaImage(Bitmap image) { }
-		protected Marker() { }
+		public Marker() { }
 	}
 }
 
@@ -360,7 +360,7 @@ namespace ScintillaNET
 		public int OutlineAlpha { get => default; set { } }
 		// stub-key: ScintillaNET.Indicator.Alpha#4
 		public int Alpha { get => default; set { } }
-		protected Indicator() { }
+		public Indicator() { }
 	}
 }
 
@@ -425,7 +425,7 @@ namespace ScintillaNET
 namespace ScintillaNET
 {
 	// stub-key: ScintillaNET.Scintilla
-	public partial class Scintilla : System.Windows.Forms.Control
+	public partial class Scintilla : System.Windows.Forms.UserControl
 	{
 		// stub-key: ScintillaNET.Scintilla..ctor#1
 		public Scintilla() { }
@@ -433,6 +433,8 @@ namespace ScintillaNET
 		protected virtual void OnResize(EventArgs e) { }
 		// stub-key: ScintillaNET.Scintilla.InvalidPosition#3
 		public const int InvalidPosition = -1;
+		// stub-key: ScintillaNET.Scintilla.BorderStyle#4
+		public new BorderStyle BorderStyle { get => default; set { } }
 		// stub-key: ScintillaNET.Scintilla.CaretWidth#5
 		public int CaretWidth { get => default; set { } }
 		// stub-key: ScintillaNET.Scintilla.ExtraAscent#6
@@ -643,7 +645,7 @@ namespace ScintillaNET
 	// stub-key: ScintillaNET.UpdateUIEventArgs
 	public partial class UpdateUIEventArgs
 	{
-		protected UpdateUIEventArgs() { }
+		public UpdateUIEventArgs() { }
 	}
 }
 
@@ -654,7 +656,7 @@ namespace ScintillaNET
 	{
 		// stub-key: ScintillaNET.CharAddedEventArgs.Char#0
 		public char Char { get => default; set { } }
-		protected CharAddedEventArgs() { }
+		public CharAddedEventArgs() { }
 	}
 }
 
@@ -665,7 +667,7 @@ namespace ScintillaNET
 	{
 		// stub-key: ScintillaNET.InsertCheckEventArgs.Text#0
 		public string Text { get => default; set { } }
-		protected InsertCheckEventArgs() { }
+		public InsertCheckEventArgs() { }
 	}
 }
 
@@ -676,7 +678,7 @@ namespace ScintillaNET
 	{
 		// stub-key: ScintillaNET.AutoCSelectionEventArgs.Text#0
 		public string Text { get => default; set { } }
-		protected AutoCSelectionEventArgs() { }
+		public AutoCSelectionEventArgs() { }
 	}
 }
 

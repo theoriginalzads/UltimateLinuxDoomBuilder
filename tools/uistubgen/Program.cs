@@ -7,7 +7,7 @@
 // can't exist until the real port), and types listed in the ported file are skipped
 // entirely (ULDB has a real implementation).
 //
-// Usage: uistubgen --out DIR --prune FILE --ported FILE --root UPSTREAM_DIR SOURCE_DIR...
+// Usage: uistubgen --out DIR --prune FILE --ported FILE --root UPSTREAM_DIR SOURCE_DIR_OR_FILE...
 
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -23,6 +23,22 @@ static class Program
 	static HashSet<string> manual = new(); // "Type.Member": implemented by hand in UIStubFixes
 	static HashSet<string> winformsTypes = new();
 	static HashSet<string> onlyFiles; // Relative paths upstream's project compiles (null = all)
+
+	// Controls ULDB.Compat provides (Compat/WinForms): kept as bases.
+	static readonly HashSet<string> compatControlTypes = new()
+	{
+		"Panel", "FlowLayoutPanel", "ComboBox", "ListView", "Label", "Button", "GroupBox", "CheckBox",
+		"NumericUpDown", "TabControl", "TabPage", "ContainerControl", "UserControl", "DataGridView",
+	};
+
+	// The menu/toolbar model ULDB.Compat provides (Compat/WinForms/ToolStrip.cs): kept as bases.
+	static readonly HashSet<string> compatToolStripTypes = new()
+	{
+		"ToolStrip", "MenuStrip", "StatusStrip", "ToolStripDropDown", "ToolStripDropDownMenu", "ContextMenuStrip",
+		"ToolStripItem", "ToolStripButton", "ToolStripLabel", "ToolStripStatusLabel", "ToolStripSeparator",
+		"ToolStripDropDownItem", "ToolStripMenuItem", "ToolStripDropDownButton", "ToolStripSplitButton",
+		"ToolStripControlHost", "ToolStripTextBox", "ToolStripComboBox",
+	};
 
 	static int Main(string[] args)
 	{
@@ -54,13 +70,18 @@ static class Program
 		var types = new Dictionary<string, TypeInfo>();
 		foreach(string dir in sourceDirs)
 		{
-			foreach(string file in Directory.EnumerateFiles(dir, "*.cs", SearchOption.AllDirectories).OrderBy(f => f, StringComparer.Ordinal))
+			// A source can also be a single file (plugins with their forms at the top level).
+			IEnumerable<string> files = File.Exists(dir) ? new[] { dir } : Directory.EnumerateFiles(dir, "*.cs", SearchOption.AllDirectories);
+			foreach(string file in files.OrderBy(f => f, StringComparer.Ordinal))
 			{
 				if(file.EndsWith(".Designer.cs", StringComparison.OrdinalIgnoreCase)) continue;
 				if(onlyFiles != null && !onlyFiles.Contains(Path.GetRelativePath(root, file).Replace('\\', '/'))) continue;
 				var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file), new CSharpParseOptions(LanguageVersion.Preview, preprocessorSymbols: new[] { "NO_SCINTILLA", "NO_WIN32", "NO_UPDATER", "ULDB" }));
 				var rootNode = tree.GetCompilationUnitRoot();
-				var usings = rootNode.Usings.Select(u => u.Name.ToString()).ToList();
+				// Keep aliases ("X = A.B") and static usings, not just the name.
+				var usings = rootNode.Usings.Select(u =>
+					(u.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) ? "static " : "") +
+					(u.Alias != null ? u.Alias.Name.Identifier.Text + " = " : "") + u.Name.ToString()).ToList();
 				foreach(var t in rootNode.DescendantNodes().OfType<BaseTypeDeclarationSyntax>())
 				{
 					if(t.Parent is BaseTypeDeclarationSyntax) continue; // Nested: handled by the parent
@@ -173,7 +194,7 @@ static class Program
 			else if(name == "IWin32Window") bases.Add("System.Windows.Forms.IWin32Window");
 			else if(name.StartsWith("I") && name.Length > 1 && char.IsUpper(name[1])) continue;
 			else if(name == "Form") bases.Add("System.Windows.Forms.Form");
-			else if(name is "Panel" or "ComboBox" or "ListView") bases.Add("System.Windows.Forms." + name);
+			else if(compatControlTypes.Contains(name) || compatToolStripTypes.Contains(name)) bases.Add("System.Windows.Forms." + name);
 			else if(IsControlType(name)) bases.Add("System.Windows.Forms.Control");
 		}
 		// A class's base class must come first.
@@ -219,9 +240,11 @@ static class Program
 			sb.AppendLine(Indent(code, ind + "\t"));
 		}
 
-		// Derived placeholders call the parameterless base constructor implicitly.
+		// Derived placeholders call the parameterless base constructor implicitly. A class that
+		// declares no constructors has C#'s implicit public one, which callers may use ("new X()").
+		bool anyCtor = decls.OfType<TypeDeclarationSyntax>().SelectMany(d => d.Members).OfType<ConstructorDeclarationSyntax>().Any(c => !c.Modifiers.Any(SyntaxKind.StaticKeyword));
 		if(kind == "class" && !hasParameterlessCtor && !isStatic)
-			sb.AppendLine(ind + "\tprotected " + td.Identifier.Text + "() { }");
+			sb.AppendLine(ind + "\t" + (anyCtor ? "protected " : "public ") + td.Identifier.Text + "() { }");
 
 		foreach(var kv in nested) EmitType(sb, kv.Value, key + "." + kv.Key, stubbedNames, depth + 1);
 		sb.AppendLine(ind + "}");

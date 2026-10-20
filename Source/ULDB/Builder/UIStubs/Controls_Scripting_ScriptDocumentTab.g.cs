@@ -32,7 +32,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ScriptDocumentTab
-	public abstract partial class ScriptDocumentTab : System.Windows.Forms.Control
+	public abstract partial class ScriptDocumentTab : System.Windows.Forms.TabPage
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ScriptDocumentTab.editor#5
 		protected ScriptEditorControl editor;

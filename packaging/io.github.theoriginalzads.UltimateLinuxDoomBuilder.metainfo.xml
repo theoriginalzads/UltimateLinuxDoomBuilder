@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2026 theoriginalzads -->
+<component type="desktop-application">
+  <id>io.github.theoriginalzads.UltimateLinuxDoomBuilder</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>Ultimate Linux Doom Builder</name>
+  <summary>Map editor for GZDoom and UZDoom</summary>
+
+  <description>
+    <p>
+      Ultimate Linux Doom Builder (ULDB) is an unofficial, native Linux fork of Ultimate Doom Builder.
+      It edits maps for GZDoom and UZDoom: UDMF maps, ZDoom-style ACS and BCS scripts, 3D floors,
+      slopes and dynamic lights, in 2D and 3D modes.
+    </p>
+    <p>
+      ULDB runs on .NET and Avalonia instead of Mono and WinForms. It aims to keep the editor familiar
+      to Ultimate Doom Builder users. Other Doom engines and map formats are hidden.
+    </p>
+    <p>
+      The Linux port is AI-coded: it is developed with AI assistance (Claude by Anthropic).
+      ULDB is not affiliated with or endorsed by the Ultimate Doom Builder team. Please report
+      problems to the ULDB project, not to upstream.
+    </p>
+  </description>
+
+  <developer id="io.github.theoriginalzads">
+    <name>theoriginalzads</name>
+  </developer>
+
+  <launchable type="desktop-id">io.github.theoriginalzads.UltimateLinuxDoomBuilder.desktop</launchable>
+  <provides>
+    <binary>uldb</binary>
+  </provides>
+
+  <categories>
+    <category>Development</category>
+    <category>Game</category>
+  </categories>
+
+  <keywords>
+    <keyword>Doom</keyword>
+    <keyword>GZDoom</keyword>
+    <keyword>UZDoom</keyword>
+    <keyword>map editor</keyword>
+    <keyword>UDMF</keyword>
+  </keywords>
+
+  <url type="homepage">https://github.com/theoriginalzads/UltimateLinuxDoomBuilder</url>
+  <url type="bugtracker">https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/issues</url>
+  <url type="vcs-browser">https://github.com/theoriginalzads/UltimateLinuxDoomBuilder</url>
+
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.0" date="2026-10-20" type="development">
+      <description>
+        <p>Development snapshot. The editor shell, the main edit windows and the 2D and 3D modes are being ported. Not ready for real mapping work yet.</p>
+      </description>
+    </release>
+  </releases>
+</component>

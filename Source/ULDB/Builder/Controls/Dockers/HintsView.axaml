@@ -1,0 +1,8 @@
+<!-- ULDB: the view of upstream's HintsPanel (the "Help" docker): hints for the current mode. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.HintsView">
+  <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+    <SelectableTextBlock x:Name="hints" TextWrapping="Wrap" FontSize="12" LineHeight="17" Margin="4,0"/>
+  </ScrollViewer>
+</UserControl>

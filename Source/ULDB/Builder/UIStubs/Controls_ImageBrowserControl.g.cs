@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Controls
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ImageBrowserControl
-	internal partial class ImageBrowserControl : System.Windows.Forms.Control
+	internal partial class ImageBrowserControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate
 		public delegate void SelectedItemChangedDelegate(ImageBrowserItem item);

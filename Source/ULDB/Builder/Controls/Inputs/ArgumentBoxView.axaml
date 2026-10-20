@@ -1,0 +1,11 @@
+<!-- ULDB: the view of upstream's ArgumentBox (model-ported): one action argument: value or choice, with browse or up/down buttons.
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.Controls.ArgumentBoxView">
+  <Grid ColumnDefinitions="*,Auto,Auto">
+    <ComboBox x:Name="combobox" HorizontalAlignment="Stretch" MaxDropDownHeight="360"/>
+    <Button x:Name="button" Grid.Column="1" Classes="uldb-tool" Margin="2,0,0,0"/>
+    <ContentControl x:Name="spin" Grid.Column="2"/>
+  </Grid>
+</UserControl>

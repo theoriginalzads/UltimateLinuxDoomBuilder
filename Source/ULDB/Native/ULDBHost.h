@@ -19,11 +19,15 @@ class IOpenGLContext;
 typedef void* (*ULDB_GetProcAddressFn)(const char* name, void* user);
 typedef int (*ULDB_MakeCurrentFn)(void* user);
 typedef void (*ULDB_ClearCurrentFn)(void* user);
+typedef void (*ULDB_PresentFn)(void* user);
 
 extern "C"
 {
 	// Registers the host context. getproc and makecurrent are required; clearcurrent may be null.
 	void ULDB_SetHostContext(ULDB_GetProcAddressFn getproc, ULDB_MakeCurrentFn makecurrent, ULDB_ClearCurrentFn clearcurrent, void* user);
+
+	// Called when the renderer presents a frame (instead of swapping buffers). Optional.
+	void ULDB_SetHostPresent(ULDB_PresentFn present);
 
 	// Unregisters the host context. RenderDevices created with it must be deleted first.
 	void ULDB_ClearHostContext();

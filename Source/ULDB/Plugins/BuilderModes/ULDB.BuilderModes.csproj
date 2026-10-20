@@ -1,0 +1,76 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The BuilderModes plugin (classic and visual editing modes): upstream's
+       Source/Plugins/BuilderModes, included by glob. Its WinForms UI (Interface/) is
+       replaced by generated placeholders until ported (tools/uistubgen/prune.py BuilderModes). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BuilderModes</AssemblyName>
+    <RootNamespace>CodeImp.DoomBuilder.BuilderModes</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
+    <!-- Upstream code is C# 13 or older. C# 14 (the .NET 10 default) makes `field` a keyword inside
+         property accessors, which silently changes upstream properties that use a member named
+         `field` (ColorFieldsControl.Field). -->
+    <LangVersion>13</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <DefineConstants>$(DefineConstants);NO_SCINTILLA;NO_FORMS_DESIGN;NO_WIN32;NO_UPDATER;ULDB;MONO_WINFORMS</DefineConstants>
+    <NoWarn>$(NoWarn);CS0618;CS0649;CS0169;CS0414;CS0108;CS0162;CS0219;CS0168</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <UpstreamPlugin>$(MSBuildThisFileDirectory)../../../Plugins/BuilderModes/</UpstreamPlugin>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- BlockMapMode and TriangulatorMode are on disk but not in upstream's build. -->
+    <Compile Include="$(UpstreamPlugin)**/*.cs"
+             Exclude="$(UpstreamPlugin)obj/**;$(UpstreamPlugin)bin/**;$(UpstreamPlugin)Interface/**;$(UpstreamPlugin)Properties/Resources.Designer.cs;$(UpstreamPlugin)ClassicModes/BlockMapMode.cs;$(UpstreamPlugin)ClassicModes/TriangulatorMode.cs" />
+    <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt).
+         MenusForm is never shown: it only holds the plugin's menu items and toolbar buttons. -->
+    <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
+    <!-- The drawing modes' option panels only hold toolbar items, which the main window shows. -->
+    <Compile Include="$(UpstreamPlugin)Interface/DrawLineOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawLineOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.Designer.cs" />
+    <!-- Model ports with Avalonia views in Views/: the Undo/Redo, Draw Settings, Draw Grid and Edit Selection dockers; Map Analysis; Find and Replace. -->
+    <Compile Include="$(UpstreamPlugin)Interface/UndoRedoPanel.cs;$(UpstreamPlugin)Interface/UndoRedoPanel.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.cs;$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/DrawGridOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawGridOptionsPanel.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/EditSelectionPanel.cs;$(UpstreamPlugin)Interface/EditSelectionPanel.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/ErrorCheckForm.cs;$(UpstreamPlugin)Interface/ErrorCheckForm.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/FindReplaceForm.cs;$(UpstreamPlugin)Interface/FindReplaceForm.Designer.cs" />
+    <!-- The smaller forms: Make Door, Bridge, Fit Textures, Filter Selected Things, Paste Properties
+         Options, Change Map Element Index, Slope Arch, Image Export Settings, Preferences page. -->
+    <Compile Include="$(UpstreamPlugin)Interface/MakeDoorForm.cs;$(UpstreamPlugin)Interface/MakeDoorForm.Designer.cs;$(UpstreamPlugin)Interface/BridgeModeForm.cs;$(UpstreamPlugin)Interface/BridgeModeForm.Designer.cs;$(UpstreamPlugin)Interface/FitTexturesForm.cs;$(UpstreamPlugin)Interface/FitTexturesForm.Designer.cs;$(UpstreamPlugin)Interface/FilterSelectedThingsForm.cs;$(UpstreamPlugin)Interface/FilterSelectedThingsForm.Designer.cs;$(UpstreamPlugin)Interface/PastePropertiesOptionsForm.cs;$(UpstreamPlugin)Interface/PastePropertiesOptionsForm.Designer.cs;$(UpstreamPlugin)Interface/ChangeMapElementIndexForm.cs;$(UpstreamPlugin)Interface/ChangeMapElementIndexForm.Designer.cs;$(UpstreamPlugin)Interface/SlopeArchForm.cs;$(UpstreamPlugin)Interface/SlopeArchForm.Designer.cs;$(UpstreamPlugin)Interface/ImageExportSettingsForm.cs;$(UpstreamPlugin)Interface/ImageExportSettingsForm.Designer.cs;$(UpstreamPlugin)Interface/PreferencesForm.cs;$(UpstreamPlugin)Interface/PreferencesForm.Designer.cs" />
+    <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia views for model-ported UI (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
+    <Compile Include="UIStubs/**/*.cs" />
+    <Compile Include="UIStubFixes/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Loaded by the plugin host at runtime from Builder's folder, so not copied here. -->
+    <ProjectReference Include="../../Builder/ULDB.Builder.csproj" Private="false" />
+    <ProjectReference Include="../../Compat/ULDB.Compat.csproj" Private="false" />
+  </ItemGroup>
+  <!-- Upstream's embedded resources (Actions.cfg, mode icons, ...), under the names upstream
+       uses; Plugin.GetResourceStream finds them by suffix. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png;$(UpstreamPlugin)Resources/*.txt"
+                      LogicalName="CodeImp.DoomBuilder.BuilderModes.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- MenusForm's designer reads a tooltip through ComponentResourceManager (strings only). -->
+    <EmbeddedResource Include="$(UpstreamPlugin)Interface/MenusForm.resx" LogicalName="CodeImp.DoomBuilder.BuilderModes.MenusForm.resources" />
+    <!-- Edit Selection's designer reads a tooltip; strings only (tools/resxgen/formresx.py). -->
+    <EmbeddedResource Update="FormResources/EditSelectionPanel.resx" LogicalName="CodeImp.DoomBuilder.BuilderModes.EditSelectionPanel.resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+  </ItemGroup>
+  <Import Project="Properties/Resources.g.props" />
+  <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->
+  <Target Name="CopyToBuilderPlugins" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb"
+          DestinationFolder="$(MSBuildThisFileDirectory)../../Builder/bin/$(Configuration)/net10.0/Plugins" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

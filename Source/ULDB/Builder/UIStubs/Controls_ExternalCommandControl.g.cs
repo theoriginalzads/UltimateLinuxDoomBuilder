@@ -14,7 +14,7 @@ using System.Windows.Forms;
 namespace CodeImp.DoomBuilder.Controls
 {
 	// stub-key: CodeImp.DoomBuilder.Controls.ExternalCommandControl
-	public partial class ExternalCommandControl : System.Windows.Forms.Control
+	public partial class ExternalCommandControl : System.Windows.Forms.UserControl
 	{
 		// stub-key: CodeImp.DoomBuilder.Controls.ExternalCommandControl..ctor#0
 		public ExternalCommandControl() { }

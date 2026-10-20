@@ -7,7 +7,7 @@
 > ULDB is not affiliated with or endorsed by the Ultimate Doom Builder team. **Please report ULDB problems [here](https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/issues), not to the UDB team.**
 
 > [!WARNING]
-> **Work in progress: not usable as an editor yet.** The editor core runs on Linux and passes its tests, but there's no user interface yet. See [Status](#status).
+> **Work in progress: early preview, not ready for real mapping yet.** The main window, 2D/3D map view, editing modes, saving and the main UDMF edit dialogs work. The texture browser, most other dialogs and most plugins aren't ported yet. See [Status](#status).
 
 Ultimate Linux Doom Builder (ULDB) is a **native Linux** map editor for **GZDoom and UZDoom**, based on Ultimate Doom Builder.
 
@@ -35,17 +35,17 @@ The code for other targets stays in the source tree, so updates from upstream UD
 | 0 | Fork, plan, toolchain, test maps | ✅ Done |
 | 1 | Editor core on .NET 10 without WinForms; load/save tests | ✅ Done |
 | 2 | 3D renderer on a host-provided OpenGL context; ACC/ZDBSP/ZT-BCC/BCC built from source | ✅ Done |
-| 3 | Avalonia main window, menus, 2D/3D view | ⬜ |
+| 3 | Avalonia main window, menus, 2D/3D view | 🚧 In progress: main window, map view, input, save, UDMF edit dialogs and Breeze-style icons done; texture browser next |
 | 4 | Editing modes | ⬜ |
 | 5 | Dialogs (about 160) | ⬜ |
-| 6 | Plugins: 3D floors and slopes, stairs, effects, tag range, sound propagation | ⬜ |
-| 7 | Desktop integration, settings import, Flatpak, AUR package | ⬜ |
+| 6 | Plugins: 3D floors and slopes, stairs, effects, tag range, sound propagation | 🚧 All nine in-scope plugins build and load; stairs, effects, tag range, slope data, and the Tag Explorer, Comments, 3D floors, sound and Undo/Redo dockers are ported; 3D floor editor and colour pickers to do |
+| 7 | Desktop integration, settings import, Flatpak, AUR package | 🚧 Settings import, CI, `.desktop`/AppStream, AUR `PKGBUILD` and a Flatpak built by CI; packages not yet tested on a desktop. See [`packaging/`](packaging/README.md) |
 
 Details: [`docs/ULDB-Plan.md`](docs/ULDB-Plan.md) is the plan, and [`docs/progress.md`](docs/progress.md) tracks progress.
 
 ## Building (developers)
 
-There's nothing to run yet. You can build the core and run its tests:
+Build, run the tests, then start the editor with `Source/ULDB/Builder/bin/Debug/net10.0/uldb`:
 
 ```sh
 # Arch/CachyOS: sudo pacman -S dotnet-sdk python cmake ninja base-devel libx11 libxfixes mesa zlib freedoom

@@ -1,0 +1,34 @@
+<!-- ULDB: the window of BuilderModes' SlopeArchForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; angle presets (quarter, half circle) sit beside the angle. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.SlopeArchFormView"
+        Title="Create arch" Width="400" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="accept" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,110,*" ColumnSpacing="8" RowSpacing="6">
+      <TextBlock x:Name="label1" Text="Angle:" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <ContentControl x:Name="theta" Grid.Column="1"/>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+        <Button x:Name="quartercircleleft" Classes="uldb-tool"/><Button x:Name="halfcircle" Classes="uldb-tool"/><Button x:Name="quartercircleright" Classes="uldb-tool"/>
+      </StackPanel>
+      <TextBlock x:Name="label2" Text="Angle offset:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="1"/>
+      <ContentControl x:Name="offset" Grid.Row="1" Grid.Column="1"/>
+      <CheckBox x:Name="lockoffset" Grid.Row="1" Grid.Column="2"/>
+      <TextBlock x:Name="label4" Text="Height offset:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="2"/>
+      <ContentControl x:Name="heightoffset" Grid.Row="2" Grid.Column="1"/>
+      <Border x:Name="groupBox1" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Classes="uldb-group">
+        <StackPanel Spacing="2">
+          <TextBlock Text="Direction" Classes="uldb-group-title"/>
+          <RadioButton x:Name="up" GroupName="dir"/><RadioButton x:Name="down" GroupName="dir"/>
+          <Button x:Name="invert" Margin="0,4,0,0"/>
+        </StackPanel>
+      </Border>
+      <TextBlock x:Name="label3" Text="Scale %:" Classes="uldb-field" HorizontalAlignment="Right" Grid.Row="3"/>
+      <ContentControl x:Name="scale" Grid.Row="3" Grid.Column="1"/>
+    </Grid>
+  </DockPanel>
+</Window>

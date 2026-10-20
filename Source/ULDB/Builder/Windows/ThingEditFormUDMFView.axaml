@@ -1,0 +1,162 @@
+<!-- ULDB: the window of upstream's ThingEditFormUDMF ("Edit Thing", UDMF maps; model-ported:
+     upstream's code runs unchanged). Controls named like upstream's fields are bound to them by
+     ModelBinder.BindByName; tabs, groups and field order follow upstream's designer. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.ThingEditFormUDMFView"
+        Title="Edit Thing" Width="960" Height="640" MinWidth="900" MinHeight="600" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto" Margin="0,12,0,0">
+      <ContentControl x:Name="hint" VerticalAlignment="Center" Margin="0,0,6,0"/>
+      <TextBlock x:Name="hintlabel" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap" Opacity="0.75" FontSize="12"/>
+      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+        <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </Grid>
+
+    <TabControl x:Name="tabs" Padding="0,10,0,0">
+      <!-- Properties -->
+      <TabItem x:Name="tabproperties">
+        <Grid ColumnDefinitions="270,*,110" ColumnSpacing="8" Grid.IsSharedSizeScope="True">
+          <Border x:Name="groupBox1" Classes="uldb-group">
+            <DockPanel>
+              <TextBlock x:Name="groupBox1Title" DockPanel.Dock="Top" Classes="uldb-group-title" Margin="0,0,0,8"/>
+              <ContentControl x:Name="thingtype"/>
+            </DockPanel>
+          </Border>
+
+          <Grid Grid.Column="1" RowDefinitions="*,Auto" RowSpacing="6">
+            <Border x:Name="settingsgroup" Classes="uldb-group">
+              <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,8">
+                  <TextBlock x:Name="settingsgroupTitle" Classes="uldb-group-title"/>
+                  <ContentControl x:Name="missingflags" ToolTip.Tip="Some flags are missing from the game configuration"/>
+                </StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                  <ContentControl x:Name="flags"/>
+                </ScrollViewer>
+              </DockPanel>
+            </Border>
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="6">
+              <Border x:Name="groupBox4" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="groupBox4Title" Classes="uldb-group-title"/>
+                  <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                    <TextBlock x:Name="label4" Classes="uldb-field"/>
+                    <ContentControl x:Name="posX" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="label5" Grid.Row="1" Classes="uldb-field"/>
+                    <ContentControl x:Name="posY" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="zlabel" Grid.Row="2" Classes="uldb-field"/>
+                    <ContentControl x:Name="posZ" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <CheckBox x:Name="cbAbsoluteHeight" Grid.Row="3" Grid.Column="1"/>
+                  </Grid>
+                </StackPanel>
+              </Border>
+              <Border x:Name="groupBox2" Grid.Column="1" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="groupBox2Title" Classes="uldb-group-title"/>
+                  <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                    <TextBlock x:Name="labelAngle" Classes="uldb-field"/>
+                    <ContentControl x:Name="angle" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <CheckBox x:Name="cbrandomangle" Grid.Column="2" Margin="8,0,0,0"/>
+                    <TextBlock x:Name="labelpitch" Grid.Row="1" Classes="uldb-field"/>
+                    <ContentControl x:Name="pitch" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <CheckBox x:Name="cbrandompitch" Grid.Row="1" Grid.Column="2" Margin="8,0,0,0"/>
+                    <TextBlock x:Name="labelroll" Grid.Row="2" Classes="uldb-field"/>
+                    <ContentControl x:Name="roll" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <CheckBox x:Name="cbrandomroll" Grid.Row="2" Grid.Column="2" Margin="8,0,0,0"/>
+                  </Grid>
+                </StackPanel>
+              </Border>
+            </Grid>
+          </Grid>
+
+          <StackPanel Grid.Column="2" Spacing="6">
+            <Border x:Name="grouproll" Classes="uldb-group">
+              <StackPanel Spacing="6"><TextBlock x:Name="grouprollTitle" Classes="uldb-group-title"/><ContentControl x:Name="rollControl" HorizontalAlignment="Center"/></StackPanel>
+            </Border>
+            <Border x:Name="grouppitch" Classes="uldb-group">
+              <StackPanel Spacing="6"><TextBlock x:Name="grouppitchTitle" Classes="uldb-group-title"/><ContentControl x:Name="pitchControl" HorizontalAlignment="Center"/></StackPanel>
+            </Border>
+            <Border x:Name="groupangle" Classes="uldb-group">
+              <StackPanel Spacing="6"><TextBlock x:Name="groupangleTitle" Classes="uldb-group-title"/><ContentControl x:Name="anglecontrol" HorizontalAlignment="Center"/></StackPanel>
+            </Border>
+          </StackPanel>
+        </Grid>
+      </TabItem>
+
+      <!-- Action / Tag / Misc. -->
+      <TabItem x:Name="tabeffects">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.IsSharedSizeScope="True">
+          <StackPanel Spacing="6">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="6">
+              <Border x:Name="grouprendering" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="grouprenderingTitle" Classes="uldb-group-title"/>
+                  <Grid ColumnDefinitions="Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                    <TextBlock x:Name="labelScale" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ContentControl x:Name="scale" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="labelrenderstyle" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ComboBox x:Name="renderStyle" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="188"/>
+                    <TextBlock x:Name="label8" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ContentControl x:Name="alpha" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <Button x:Name="resetalpha" Grid.Row="2" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0" HorizontalAlignment="Left"/>
+                    <ContentControl x:Name="color" Grid.Row="3" Grid.ColumnSpan="3"/>
+                  </Grid>
+                </StackPanel>
+              </Border>
+              <Border x:Name="groupbehaviour" Grid.Column="1" Classes="uldb-group">
+                <StackPanel Spacing="6">
+                  <TextBlock x:Name="groupbehaviourTitle" Classes="uldb-group-title"/>
+                  <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                    <TextBlock x:Name="labelGravity" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ContentControl x:Name="gravity" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="labelID" Grid.Column="2" Classes="uldb-field" HorizontalAlignment="Right" Margin="16,0,8,0"/>
+                    <ContentControl x:Name="conversationID" Grid.Column="3" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="label9" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ContentControl x:Name="score" Grid.Row="1" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="label1" Grid.Row="1" Grid.Column="2" Classes="uldb-field" HorizontalAlignment="Right" Margin="16,0,8,0"/>
+                    <ContentControl x:Name="floatbobphase" Grid.Row="1" Grid.Column="3" Width="92" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="label10" Grid.Row="2" Classes="uldb-field" HorizontalAlignment="Right"/>
+                    <ContentControl x:Name="health" Grid.Row="2" Grid.Column="1" Width="92" HorizontalAlignment="Left"/>
+                  </Grid>
+                </StackPanel>
+              </Border>
+            </Grid>
+            <Border x:Name="actiongroup" Classes="uldb-group">
+              <StackPanel Spacing="8">
+                <TextBlock x:Name="actiongroupTitle" Classes="uldb-group-title"/>
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                  <TextBlock x:Name="label7" Classes="uldb-field"/>
+                  <ContentControl x:Name="action" Grid.Column="1"/>
+                  <Button x:Name="browseaction" Grid.Column="2" Classes="uldb-tool" Margin="4,0,0,0" ToolTip.Tip="Browse actions"/>
+                </Grid>
+                <ContentControl x:Name="argscontrol"/>
+              </StackPanel>
+            </Border>
+            <Border x:Name="grouptag" Classes="uldb-group">
+              <StackPanel Spacing="8">
+                <TextBlock x:Name="grouptagTitle" Classes="uldb-group-title"/>
+                <ContentControl x:Name="tagSelector"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <!-- Comment -->
+      <TabItem x:Name="tabcomment">
+        <ContentControl x:Name="commenteditor"/>
+      </TabItem>
+
+      <!-- Custom -->
+      <TabItem x:Name="tabcustom">
+        <DockPanel>
+          <CheckBox x:Name="hidefixedfields" DockPanel.Dock="Bottom" Margin="0,8,0,0"/>
+          <ContentControl x:Name="fieldslist"/>
+        </DockPanel>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>

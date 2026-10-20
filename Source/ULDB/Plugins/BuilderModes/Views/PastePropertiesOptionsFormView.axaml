@@ -1,0 +1,23 @@
+<!-- ULDB: the window of BuilderModes' PastePropertiesOptionsForm (model-ported: upstream's code runs unchanged).
+     Controls named like upstream's fields are bound to them by ModelBinder.BindByName; one tab per element type, each with its flag checkboxes. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.Interface.PastePropertiesOptionsFormView"
+        Title="Paste Properties Special" Width="440" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,14,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <StackPanel Spacing="8">
+      <TabControl x:Name="tabcontrol" Height="260">
+        <TabItem x:Name="sectors"><ScrollViewer><ContentControl x:Name="sectorflags"/></ScrollViewer></TabItem>
+        <TabItem x:Name="linedefs"><ScrollViewer><ContentControl x:Name="lineflags"/></ScrollViewer></TabItem>
+        <TabItem x:Name="sidedefs"><ScrollViewer><ContentControl x:Name="sideflags"/></ScrollViewer></TabItem>
+        <TabItem x:Name="things"><ScrollViewer><ContentControl x:Name="thingflags"/></ScrollViewer></TabItem>
+        <TabItem x:Name="vertices"><ScrollViewer><ContentControl x:Name="vertexflags"/></ScrollViewer></TabItem>
+      </TabControl>
+      <Button x:Name="enableall" HorizontalAlignment="Left"/>
+    </StackPanel>
+  </DockPanel>
+</Window>

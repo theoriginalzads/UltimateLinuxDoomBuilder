@@ -1,0 +1,8 @@
+CodeImp.DoomBuilder.BuilderEffects.DirectionalShadingForm
+CodeImp.DoomBuilder.BuilderEffects.IntControl
+CodeImp.DoomBuilder.BuilderEffects.JitterSectorsForm
+CodeImp.DoomBuilder.BuilderEffects.JitterThingsForm
+CodeImp.DoomBuilder.BuilderEffects.JitterVerticesForm
+CodeImp.DoomBuilder.BuilderEffects.MenusForm
+CodeImp.DoomBuilder.BuilderEffects.NumericUpDownEx
+CodeImp.DoomBuilder.BuilderEffects.ObjImportSettingsForm

@@ -12,6 +12,7 @@ namespace ULDB.Rendering
 		private static Func<string, IntPtr> getprocaddress;
 		private static Func<bool> makecurrent;
 		private static Action clearcurrent;
+		private static Action present;
 
 		public static bool IsRegistered => getprocaddress != null;
 
@@ -19,12 +20,15 @@ namespace ULDB.Rendering
 		/// <param name="getProcAddress">Resolves an OpenGL entry point by name (e.g. eglGetProcAddress).</param>
 		/// <param name="makeCurrent">Makes the host context current on the calling thread; returns false on failure.</param>
 		/// <param name="clearCurrent">Releases the context from the calling thread (optional).</param>
-		public static void Register(Func<string, IntPtr> getProcAddress, Func<bool> makeCurrent, Action clearCurrent = null)
+		/// <param name="present">Called when the renderer presents a finished frame (optional).</param>
+		public static void Register(Func<string, IntPtr> getProcAddress, Func<bool> makeCurrent, Action clearCurrent = null, Action present = null)
 		{
 			getprocaddress = getProcAddress ?? throw new ArgumentNullException(nameof(getProcAddress));
 			makecurrent = makeCurrent ?? throw new ArgumentNullException(nameof(makeCurrent));
 			clearcurrent = clearCurrent;
+			HostedGL.present = present;
 			ULDB_SetHostContext(&GetProcAddressCallback, &MakeCurrentCallback, &ClearCurrentCallback, IntPtr.Zero);
+			ULDB_SetHostPresent(&PresentCallback);
 		}
 
 		/// <summary>Unregisters the host context. Dispose RenderDevices created with it first.</summary>
@@ -34,6 +38,7 @@ namespace ULDB.Rendering
 			getprocaddress = null;
 			makecurrent = null;
 			clearcurrent = null;
+			present = null;
 		}
 
 		/// <summary>The framebuffer the renderer draws to when it has no render target texture, and its size in pixels.</summary>
@@ -66,6 +71,15 @@ namespace ULDB.Rendering
 			delegate* unmanaged[Cdecl]<IntPtr, int> makecurrent,
 			delegate* unmanaged[Cdecl]<IntPtr, void> clearcurrent,
 			IntPtr user);
+
+		[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+		private static void PresentCallback(IntPtr user)
+		{
+			present?.Invoke();
+		}
+
+		[DllImport("BuilderNative", CallingConvention = CallingConvention.Cdecl)]
+		private static extern void ULDB_SetHostPresent(delegate* unmanaged[Cdecl]<IntPtr, void> present);
 
 		[DllImport("BuilderNative", CallingConvention = CallingConvention.Cdecl)]
 		private static extern void ULDB_ClearHostContext();
