@@ -8,7 +8,7 @@ How the fork is put together. The aim throughout is that upstream UDB source fil
 |---|---|---|
 | `Source/ULDB/Compat/ULDB.Compat.csproj` | `ULDB.Compat` | Compatibility layer: the parts of `System.Drawing` and `System.Windows.Forms` that UDB uses, reimplemented for .NET 10 on Linux |
 | `Source/ULDB/Builder/ULDB.Builder.csproj` | `Builder` | Upstream's `Source/Core/**/*.cs`, included by glob, plus ULDB's own code. Same assembly name as upstream's `Builder.exe`, so plugins reference it the same way. An executable: `ULDB.Shell.Program` sets up Avalonia, then runs upstream's `General.Main` |
-| `Source/ULDB/Plugins/<Name>/ULDB.<Name>.csproj` | `<Name>` | An in-scope plugin: upstream's `Source/Plugins/<Name>`, by glob, minus its WinForms UI (placeholders instead). Copied into `Plugins/` next to `Builder`, where upstream's plugin manager loads it |
+| `Source/ULDB/Plugins/<Name>/ULDB.<Name>.csproj` (BuilderModes, ThreeDFloorMode, BuilderEffects, StairSectorBuilder, TagRange, SoundPropagationMode, ColorPicker, TagExplorer, CommentsPanel) | `<Name>` | An in-scope plugin: upstream's `Source/Plugins/<Name>`, by glob, minus its WinForms UI (placeholders instead). Copied into `Plugins/` next to `Builder`, where upstream's plugin manager loads it |
 
 Upstream's `Builder.sln`, `BuilderMono.sln` and `*.csproj` files are left untouched.
 
@@ -105,3 +105,11 @@ ACC 1.60, ZDBSP 1.19, ZT-BCC 0.10.0-alpha.8 and BCC (master) are **git submodule
 BCS (ZT-BCC and BCC) support was Windows-only upstream. ULDB adds Linux compiler configs and fixes found while testing; see `upstream-edits.md`.
 
 `OpenSaveMapTests` checks the whole chain through upstream's own `MapManager.InitializeOpenMap` and `SaveMap`: it opens a UZDoom map with Freedoom, saves it, and verifies the output has `ZNODES` from ZDBSP and `BEHAVIOR` from each compiler.
+
+## Settings import (`Source/ULDB/Builder/Settings`)
+
+ULDB keeps its settings in `$XDG_CONFIG_HOME/UltimateLinuxDoomBuilder/` (`ULDB.Platform.Paths`), not in UDB's folders. `ULDB.Settings.UdbSettingsImport` copies existing UDB settings over: it reads them with upstream's `Configuration` class, converts Windows and Wine paths, and writes ULDB's file. `Shell/Program.cs` runs it before `General.Main` (first-start question, `--import-udb-settings`). Details for users: `settings-import.md`.
+
+## CI and packaging (`.github/workflows/uldb-ci.yml`, `packaging/`)
+
+The ULDB workflow builds `Builder.Linux.sln` and runs the tests on Ubuntu; upstream's workflows are left as they are. `packaging/build.sh` publishes a framework-dependent Release tree (with every plugin) and `packaging/install.sh` installs it with the `.desktop` file, AppStream metadata and icons. The AUR `PKGBUILD` and the Flatpak manifest use those two scripts. See `packaging/README.md`.

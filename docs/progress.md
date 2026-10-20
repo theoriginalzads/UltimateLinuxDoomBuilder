@@ -93,13 +93,13 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Save | ✅ | Ctrl+S in the UI: ZDBSP runs, `TEXTMAP` + `ZNODES` written (user tested 20 Oct 2026) |
 | Input | ✅ | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook: `Shell/X11Pointer.cs` (XQueryPointer/XWarpPointer) + screen mappers; user-tested on KDE Wayland (XWayland): "feels just like the original" |
 
-**Tests:** 162 passing.
+**Tests:** 188 passing.
 
 ### Remaining Phase 3 work (pick up here)
 
 The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
 
-**Session ended 20 Oct 2026 (evening); resume with item 1 below (texture browser).** All work is committed and pushed on `phase-3/shell`; 162 tests pass. A later cloud session (no screen) finished item 2, the icons: show them to the user first.
+**Session ended 20 Oct 2026 (evening); resume with item 1 below (texture browser).** All work is committed and pushed on `phase-3/shell`; 188 tests pass. Later cloud sessions (no screen) finished item 2 (the icons: show them to the user first) and work from Phases 6 and 7: see "Done ahead of order" below.
 
 **State on 20 Oct 2026 (user tested):** open via the Open Map dialog, edit, save; info panels (modern cards), dockers (Help docker; plugin dockers say "not ported"), and the edit dialogs Vertex, Thing (UDMF), Sector (UDMF), Linedef (UDMF), Edit Action and Edit Text all work as model ports with .axaml windows. The user reviewed the dialogs against UDB screenshots and approved the compact, aligned layout (shared label column per tab, 92 px number boxes, previews filling space, Linedef sides grouped by wall part like Sector surfaces, no action help button). First pass of Breeze-style toolbar icons (`Shell/BreezeIcons.cs`). Next, in order:
 1. **Texture browser** (`TextureBrowserForm`): clicking texture/flat pickers does nothing until it's ported (its placeholder returns null and the picker keeps its texture).
@@ -115,6 +115,17 @@ The user wants this done **on their machine**, with them watching the window. Wo
 App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. **About dialog (user request, 20 Oct 2026): when `AboutForm` is ported, show Cacky as its image/icon** (in place of UDB's logo artwork), alongside the UZDoom/GZDoom reference and the AI disclosure from `Branding`. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
 
 **Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
+
+## Done ahead of order (cloud session, 20 Oct 2026, no screen)
+
+Work the user approved doing without their machine. All on `phase-3/shell`.
+
+| Item | Status | Notes |
+|---|---|---|
+| Plugins (Phases 4 and 6) | 🟨 logic | All nine in-scope plugins build and load: `Source/ULDB/Plugins/<Name>/` for ThreeDFloorMode, BuilderEffects, StairSectorBuilder, TagRange, SoundPropagationMode, ColorPicker, TagExplorer, CommentsPanel (plus BuilderModes). Same setup as BuilderModes: placeholders for the UI (`tools/uistubgen/prune.py <Name>`), resxgen resources. Model ports (compile unchanged): every plugin's menu holder (`MenusForm`/`ToolsForm`), 3D floors' tooltip list (`ThreeDFloorPanel`, `ThreeDFloorHelperTooltipElementControl`), sound environments' tree (`SoundEnvironmentPanel`). `PluginTests` loads them all and switches into every plugin mode on a real map. **Not yet usable:** modes that open a dialog first (Stair Sector Builder, Slope and Draw Slopes modes ask for a slope data sector, OBJ terrain import) cancel, because the dialog placeholders answer Cancel; the plugins' dockers (Tag Explorer, Comments, 3D floors, sound environments) show the "not ported" note; ColorPicker's windows and BuilderEffects' jitter forms are placeholders. Porting these is Phase 4/6 UI work |
+| Settings import (Phase 7) | ✅ (untested by hand) | `Source/ULDB/Builder/Settings/` (`ULDB.Settings.UdbSettingsImport`), user doc `docs/settings-import.md`. Sources: Mono build, Flatpak, Wine prefixes, legacy `GZBuilder.cfg`, or a picked file/folder. Converts Windows/Wine paths, lists unresolved ones in a summary (`UDBImport.txt`), keeps shortcuts as-is (ULDB uses WinForms `Keys` codes too), never touches the source. First start: Yes/No question (`Shell/Program.cs`, before `General.Main`); `--import-udb-settings[=PATH]`. ULDB's own settings: `$XDG_CONFIG_HOME/UltimateLinuxDoomBuilder/`. 22 tests. **To do:** click through it on the user's machine with their real UDB settings; *Preferences → Import UDB settings…* once Preferences is ported (with a drive-letter mapping for mounted Windows installs) |
+| CI | ✅ (not run yet) | `.github/workflows/uldb-ci.yml`: build + tests on ubuntu-24.04 with Freedoom and Mesa. Upstream's workflows are untouched (they may fail on the fork; disable them in the repo's Actions settings if they're noise). Flatpak artifact builds still to do |
+| Packaging | 🟨 | `packaging/`: `build.sh` (Release publish + plugins), `install.sh` (PREFIX/DESTDIR; app in `lib/uldb`, hicolor icons from Cacky), `.desktop` (`StartupWMClass=uldb`), AppStream metainfo (both validate), `arch/PKGBUILD` (`uldb-git`, `_arch=znver4` option), Flatpak manifest (runtime 26.08 + dotnet10 extension; **untested**, needs `nuget-sources.json` generated, see `packaging/README.md`). **To do on the user's machine:** `cd packaging/arch && makepkg -si`, then check the KDE menu entry, icon and taskbar grouping. The metainfo release (0.1.0) is a placeholder |
 
 ## Handoff notes (for the next session)
 
