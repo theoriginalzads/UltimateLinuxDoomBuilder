@@ -28,6 +28,7 @@ New ULDB code lives in its own files (`Source/ULDB/`, `tools/`, `docs/`) and isn
 | `Source/Core/Compilers/NodesCompiler.cs` | `Run` | Same timing fix (broke every node build) |
 | `Source/Core/General/Launcher.cs` | Test map start and `TestingFinished` | Same timing fix (would have thrown when the test engine exits) |
 | `Source/Core/General/MapManager.cs` | `ExecuteExternalCommand` | User pre/post commands run as a `/bin/sh` script (argument as `$1`) instead of a `cmd.exe` batch file |
+| `Source/Core/Windows/ConfigForm.cs` | configuration list, node builder lists, applying changes (`#if ULDB`) | Only GZDoom/UZDoom configurations and ZDBSP node builders are offered (`ScopeFilter`); changes are applied by file name because hidden configurations aren't in the list |
 | `Source/Core/Windows/MainForm.cs` | shortcut reference file and config folder (`#if ULDB`) | `Process.Start(path)` on a file or folder fails on .NET; use `ULDB.Platform.Desktop.Open` (xdg-open) |
 | `Source/Core/General/General.cs` | `OpenMapFileWithOptions` (`#if ULDB`) | `ULDB.Platform.Busy.Begin/End` show a "Opening map..." overlay (Avalonia doesn't paint while the UI thread is blocked) |
 

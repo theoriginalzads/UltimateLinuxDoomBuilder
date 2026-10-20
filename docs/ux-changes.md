@@ -32,4 +32,5 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 | Opening a map | A dimmed "Opening map..." cover appears while the map loads, since the window can't repaint during the load | Issue #13 |
 | Unexpected error window | ULDB's own port of UDB's (system info for Linux, Continue/Quit, link to ULDB's issue tracker) | Issue #7 |
 | Texture and flat browser | Same sets tree, filter, size, "used first", classic view and size filters; the tile grid is drawn natively (size badges, accent-colour selection, the group title across the top); the tree's icons are vector icons. Opens larger (1000x640) the first time | Phase 3 port; not yet reviewed by the user |
+| Preferences, Game Configurations, Map Options, Grid Setup, Go To Coordinates, Change Map, Things Filters, Tag/Thing statistics, Paste Special, Texture Set, thing/effect browsers, Doom/Hexen-format edit forms | Same fields and order as UDB in the card style of the other dialogs. Preferences' script editor preview is a placeholder until the editor is ported | Phase 3 ports; not yet reviewed by the user |
 | *(More entries are added as UI work continues in Phase 3.)* | | |
