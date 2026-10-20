@@ -1,0 +1,3 @@
+CodeImp.DoomBuilder.TagExplorer.SelectedNode
+CodeImp.DoomBuilder.TagExplorer.SortMode
+CodeImp.DoomBuilder.TagExplorer.TagExplorer

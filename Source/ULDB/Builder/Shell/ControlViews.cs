@@ -36,6 +36,8 @@ namespace ULDB.Shell
 			Register<SectorSlopeControl>(m => new SectorSlopeControlView(m));
 			Register<TagsSelector>(m => new TagsSelectorView(m));
 			Register<ImageSelectorControl>(m => new ImageSelectorControlView(m));
+			// Any upstream tree (plugins' dockers: Tag Explorer, sound environments...)
+			Register<WF.TreeView>(m => new ULDB.Controls.TreeViewView(m));
 		}
 
 		/// <summary>Registers the view for a model control type (and types derived from it).</summary>

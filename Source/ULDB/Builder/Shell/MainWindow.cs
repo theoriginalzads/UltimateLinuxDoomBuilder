@@ -406,7 +406,7 @@ namespace ULDB.Shell
 		/// <summary>
 		/// Development aid: ULDB_SHOW_FORM=vertex|linedef|sector|thing[:tab] opens that edit dialog, or
 		/// ULDB_SHOW_FORM=action:name runs an action (e.g. switching mode), select:sectors selects all sectors
-		/// (also linedefs, things, vertices); steps can be chained with "+"
+		/// (also linedefs, things, vertices), docker:name selects a docker; steps can be chained with "+"
 		/// on the first such map element once a map is open (optionally on the given tab index),
 		/// so dialogs can be checked and captured without clicking through the editor.
 		/// </summary>
@@ -431,6 +431,13 @@ namespace ULDB.Shell
 						case "sector": form.ShowEditSectors(new[] { System.Linq.Enumerable.First(General.Map.Map.Sectors) }); break;
 						case "thing": form.ShowEditThings(new[] { System.Linq.Enumerable.First(General.Map.Map.Things) }); break;
 						case "action": General.Actions.InvokeAction(p[1]); break; // e.g. action:buildermodes_sectorsmode
+						case "docker": // docker:<short name>, e.g. docker:tagexplorerdockerpanel
+							// The panel itself: MainForm.SelectDocker expects to be called from the docker's plugin.
+							CodeImp.DoomBuilder.Controls.DockersControl dockers = Field<CodeImp.DoomBuilder.Controls.DockersControl>("dockerspanel");
+							WF.TabControl tabs = typeof(CodeImp.DoomBuilder.Controls.DockersControl).GetField("tabs", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(dockers) as WF.TabControl;
+							if(tabs != null) foreach(WF.TabPage page in tabs.TabPages)
+								if(page.Tag is CodeImp.DoomBuilder.Controls.Docker d && d.Name == p[1]) dockers.SelectDocker(d);
+							break;
 						case "select": // select:sectors|linedefs|things|vertices, everything of that type
 							switch(p[1])
 							{
