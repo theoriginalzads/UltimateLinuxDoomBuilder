@@ -87,24 +87,22 @@ resources and test engines. File dialogs and opening links go through portals, w
 allowed by default.
 
 flatpak-builder has no network access during the build, so NuGet packages must be listed as
-sources first. Generate `packaging/flatpak/nuget-sources.json` with
-[flatpak-dotnet-generator](https://github.com/flatpak/flatpak-builder-tools/tree/master/dotnet)
-(it needs `flatpak`, plus the 26.08 SDK and the dotnet10 extension installed):
+sources first. Restore with the Flatpak's own .NET SDK (so implicit package versions match the
+offline build), then list the packages with `tools/flatpak/nuget-sources.py`:
 
 ```sh
 flatpak install flathub org.freedesktop.Sdk//26.08 org.freedesktop.Sdk.Extension.dotnet10//26.08
-git clone https://github.com/flatpak/flatpak-builder-tools
-python3 flatpak-builder-tools/dotnet/flatpak-dotnet-generator.py \
-  --dotnet 10 --freedesktop 26.08 --runtime linux-x64 \
-  packaging/flatpak/nuget-sources.json \
-  Source/ULDB/Builder/ULDB.Builder.csproj \
-  Source/ULDB/Plugins/BuilderModes/ULDB.BuilderModes.csproj
+flatpak run --command=sh --runtime=org.freedesktop.Sdk//26.08 --share=network --filesystem=host \
+  org.freedesktop.Sdk.Extension.dotnet10//26.08 \
+  -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin"; dotnet restore Builder.Linux.sln -r linux-x64 --packages "$PWD/nuget-restore"'
+tools/flatpak/nuget-sources.py nuget-restore packaging/flatpak/nuget-sources.json
+rm -rf nuget-restore
 ```
 
-List every plugin project there, and generate the file again whenever a `PackageReference`
-changes. The file is not committed (`packaging/flatpak/.gitignore`). `build.sh` builds the
-plugins and the program for the same runtime identifier (`linux-x64`), so this one restore
-covers both.
+Generate the file again whenever a `PackageReference` changes. It is not committed
+(`packaging/flatpak/.gitignore`). `build.sh` builds the plugins and the program for the same
+runtime identifier (`linux-x64`), so this one restore covers both. The ULDB Flatpak workflow
+(`.github/workflows/uldb-flatpak.yml`) does exactly this and keeps the bundle as an artifact.
 
 Then build and install:
 
@@ -114,8 +112,8 @@ flatpak-builder --user --install --force-clean build-dir \
 flatpak run io.github.theoriginalzads.UltimateLinuxDoomBuilder
 ```
 
-The manifest builds the **committed** state of your checkout (a `git` source with
-`path: ../..`), including the submodules. Commit first, or the build won't see your changes.
+The manifest builds your checkout as it is (a `dir` source with `path: ../..`), including the
+submodules, so run `git submodule update --init` first.
 
 ## What has been tested
 

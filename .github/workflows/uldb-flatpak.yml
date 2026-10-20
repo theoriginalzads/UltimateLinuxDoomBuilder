@@ -39,12 +39,18 @@ jobs:
 
       - name: Generate NuGet sources (offline restore inside flatpak-builder)
         run: |
-          # flatpak-builder-tools, pinned
-          curl -fsSLo /tmp/flatpak-dotnet-generator.py \
-            https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/74697c75b630d7330e77250fc13cb5ea688d9479/dotnet/flatpak-dotnet-generator.py
-          python3 /tmp/flatpak-dotnet-generator.py packaging/flatpak/nuget-sources.json Builder.Linux.sln \
-            --runtime linux-x64 --freedesktop 26.08 --dotnet 10
-          echo "::notice title=NuGet sources::$(grep -c '"url"' packaging/flatpak/nuget-sources.json) packages; starts: $(head -c 300 packaging/flatpak/nuget-sources.json | tr '\n' ' ')"
+          # Restore with the Flatpak's own .NET SDK (the dotnet10 extension), so implicit package
+          # versions match the offline build, then list the packages for flatpak-builder.
+          if ! flatpak run --command=sh --runtime=org.freedesktop.Sdk//26.08 --share=network --filesystem=host \
+               --env=DOTNET_CLI_TELEMETRY_OPTOUT=1 --env=DOTNET_NOLOGO=1 org.freedesktop.Sdk.Extension.dotnet10//26.08 \
+               -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin" LD_LIBRARY_PATH="/usr/lib/sdk/dotnet10/lib"; dotnet restore Builder.Linux.sln -r linux-x64 --packages "$PWD/nuget-restore"' \
+               > restore.log 2>&1; then
+            cat restore.log
+            echo "::error title=NuGet restore in the Flatpak SDK failed::$(grep -v '^\s*$' restore.log | tail -n 40 | cut -c1-220 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
+          python3 tools/flatpak/nuget-sources.py nuget-restore packaging/flatpak/nuget-sources.json
+          rm -rf nuget-restore
 
       - name: Build
         run: |
