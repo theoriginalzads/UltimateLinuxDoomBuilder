@@ -28,6 +28,9 @@ namespace System.Windows.Forms
 		private readonly SortedSet<int> selected = new SortedSet<int>();
 		private int updating;
 
+		public const int NoMatches = -1;
+		public const int DefaultItemHeight = 13;
+
 		public ListBox()
 		{
 			Items = new ObjectCollection(this);

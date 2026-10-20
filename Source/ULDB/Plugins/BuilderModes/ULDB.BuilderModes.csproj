@@ -30,12 +30,13 @@
     <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
     <!-- The drawing modes' option panels only hold toolbar items, which the main window shows. -->
     <Compile Include="$(UpstreamPlugin)Interface/DrawLineOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawLineOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawCurveOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawRectangleOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawEllipseOptionsPanel.Designer.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.cs;$(UpstreamPlugin)Interface/CurveLinedefsOptionsPanel.Designer.cs" />
-    <!-- Model ports with Avalonia views in Views/: the Undo/Redo, Draw Settings, Draw Grid and Edit Selection dockers; Map Analysis. -->
+    <!-- Model ports with Avalonia views in Views/: the Undo/Redo, Draw Settings, Draw Grid and Edit Selection dockers; Map Analysis; Find and Replace. -->
     <Compile Include="$(UpstreamPlugin)Interface/UndoRedoPanel.cs;$(UpstreamPlugin)Interface/UndoRedoPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.cs;$(UpstreamPlugin)Interface/SectorDrawingOptionsPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/DrawGridOptionsPanel.cs;$(UpstreamPlugin)Interface/DrawGridOptionsPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/EditSelectionPanel.cs;$(UpstreamPlugin)Interface/EditSelectionPanel.Designer.cs" />
     <Compile Include="$(UpstreamPlugin)Interface/ErrorCheckForm.cs;$(UpstreamPlugin)Interface/ErrorCheckForm.Designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Interface/FindReplaceForm.cs;$(UpstreamPlugin)Interface/FindReplaceForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
     <!-- ULDB's Avalonia views for model-ported UI (.axaml), registered by PluginViews. -->
     <Compile Include="Views/**/*.cs" />

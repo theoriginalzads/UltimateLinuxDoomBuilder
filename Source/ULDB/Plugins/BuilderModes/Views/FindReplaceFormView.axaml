@@ -1,0 +1,32 @@
+<!-- ULDB: the window of Find and Replace mode (FindReplaceForm, model-ported: upstream's code runs
+     unchanged). Search type, find and replace fields on top; the results list below. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.BuilderModes.FindReplaceFormView"
+        Title="Find and Replace" Width="480" Height="560" MinWidth="420" MinHeight="300" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <Grid DockPanel.Dock="Top" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="6" RowSpacing="6">
+      <TextBlock Text="Search type:" Classes="uldb-field" HorizontalAlignment="Right"/> <!-- a designer local upstream -->
+      <ComboBox x:Name="searchtypes" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" MaxDropDownHeight="400"/>
+      <Button x:Name="findbutton" Grid.Column="3" IsDefault="True" Classes="accent" MinWidth="90" HorizontalContentAlignment="Center"/>
+      <TextBlock x:Name="labelfind" Grid.Row="1" Classes="uldb-field" HorizontalAlignment="Right"/>
+      <TextBox x:Name="findinput" Grid.Row="1" Grid.Column="1"/>
+      <Button x:Name="browsefind" Grid.Row="1" Grid.Column="2" Classes="uldb-tool" VerticalAlignment="Center"/>
+      <Button x:Name="closebutton" Grid.Row="1" Grid.Column="3" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+      <CheckBox x:Name="withinselection" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
+      <CheckBox x:Name="doreplace" Grid.Row="3" HorizontalAlignment="Right"/>
+      <TextBox x:Name="replaceinput" Grid.Row="3" Grid.Column="1"/>
+      <Button x:Name="browsereplace" Grid.Row="3" Grid.Column="2" Classes="uldb-tool" VerticalAlignment="Center"/>
+    </Grid>
+    <DockPanel x:Name="resultspanel" Margin="0,12,0,0">
+      <TextBlock x:Name="resultscount" DockPanel.Dock="Top" Margin="0,0,0,6"/>
+      <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+        <Button x:Name="editbutton" MinWidth="120" HorizontalContentAlignment="Center"/>
+        <Button x:Name="deletebutton" MinWidth="120" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+      <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+        <ListBox x:Name="resultslist" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+      </Border>
+    </DockPanel>
+  </DockPanel>
+</Window>
