@@ -52,7 +52,7 @@ jobs:
                -c 'export PATH="$PATH:/usr/lib/sdk/dotnet10/bin" LD_LIBRARY_PATH="/usr/lib/sdk/dotnet10/lib"; dotnet restore Builder.Linux.sln -r linux-x64 --packages "$PWD/nuget-restore"' \
                > restore.log 2>&1; then
             cat restore.log
-            echo "::error title=NuGet restore in the Flatpak SDK failed::$(grep -v '^\s*$' restore.log | tail -n 40 | cut -c1-220 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=NuGet restore in the Flatpak SDK failed::$(grep -v '^\s*$' restore.log | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
             exit 1
           fi
           python3 tools/flatpak/nuget-sources.py nuget-restore packaging/flatpak/nuget-sources.json
@@ -66,10 +66,14 @@ jobs:
           if ! flatpak-builder --force-clean --disable-rofiles-fuse \
                --repo=repo build-dir packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml > flatpak-builder.log 2>&1; then
             tail -n 200 flatpak-builder.log
-            echo "::error title=flatpak-builder failed::$(grep -v '^\s*$' flatpak-builder.log | tail -n 45 | cut -c1-220 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=flatpak-builder failed::$(grep -v '^\s*$' flatpak-builder.log | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
             exit 1
           fi
-          flatpak build-bundle repo uldb.flatpak io.github.theoriginalzads.UltimateLinuxDoomBuilder
+          echo "::notice title=flatpak-builder finished::$(grep -v '^\s*$' flatpak-builder.log | tail -n 8 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+          if ! flatpak build-bundle repo uldb.flatpak io.github.theoriginalzads.UltimateLinuxDoomBuilder > bundle.log 2>&1; then
+            echo "::error title=flatpak build-bundle failed::$(tail -n 15 bundle.log | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            exit 1
+          fi
 
       - name: Upload bundle
         uses: actions/upload-artifact@v4
