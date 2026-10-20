@@ -67,7 +67,7 @@ jobs:
           if ! flatpak-builder --force-clean --disable-rofiles-fuse \
                --repo=repo build-dir packaging/flatpak/io.github.theoriginalzads.UltimateLinuxDoomBuilder.yml > flatpak-builder.log 2>&1; then
             tail -n 200 flatpak-builder.log
-            echo "::error title=flatpak-builder failed::$(tr '\r' '\n' < flatpak-builder.log | grep -v '^\s*$' | grep -v '^Downloading ' | tail -n 22 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
+            echo "::error title=flatpak-builder failed::$(tr '\r' '\n' < flatpak-builder.log | grep -iE 'error|fatal|not found|no such|undefined|cannot|failed' | grep -v 'warning' | tail -n 22 | cut -c1-200 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
             exit 1
           fi
           echo "::notice title=flatpak-builder finished::$(grep -v '^\s*$' flatpak-builder.log | tail -n 8 | cut -c1-160 | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')"
