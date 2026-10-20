@@ -433,10 +433,15 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void UpdateTitle()
 		{
+#if ULDB
+			// ULDB: no bitness in the title (there is one build, 64-bit).
+			string programname = this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
+#else
 			string programname = this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
             if (Environment.Is64BitProcess)
                 programname += " (64-bit)";
             else programname += " (32-bit)";
+#endif
 
 			// Map opened?
 			if (General.Map != null)
@@ -3397,7 +3402,11 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Github issues clicked
 		private void itemhelpissues_Click(object sender, EventArgs e)
 		{
+#if ULDB
+			General.OpenWebsite(ULDB.Branding.REPOSITORY_URL); // The fork's repository, not upstream's tracker
+#else
 			General.OpenWebsite("https://github.com/jewalky/GZDoom-Builder-Bugfix/issues");
+#endif
 		}
 		
 		// About clicked

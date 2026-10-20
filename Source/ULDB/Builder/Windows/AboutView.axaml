@@ -1,0 +1,37 @@
+<!-- ULDB: the About window (upstream's AboutForm shows UDB's artwork and links; ULDB's says what this
+     fork is). Cacky, the ULDB Cacodemon, is the image. Written for ULDB rather than a layout port. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.AboutView"
+        Title="About" Width="560" SizeToContent="Height" CanResize="False" ShowInTaskbar="False">
+  <DockPanel Margin="20">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+      <Button x:Name="closebutton" Content="Close" IsDefault="True" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+    </StackPanel>
+    <StackPanel Spacing="14">
+      <Grid ColumnDefinitions="Auto,*" ColumnSpacing="18">
+        <Image x:Name="cacky" Width="112" Height="112" VerticalAlignment="Top"/>
+        <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+          <TextBlock x:Name="appname" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap"/>
+          <TextBlock x:Name="tagline" Opacity="0.75" TextWrapping="Wrap"/>
+          <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+            <TextBlock x:Name="version" VerticalAlignment="Center"/>
+            <Button x:Name="copyversion" Classes="uldb-tool" ToolTip.Tip="Copy the version to the clipboard" VerticalAlignment="Center"/>
+          </StackPanel>
+        </StackPanel>
+      </Grid>
+      <Border Classes="uldb-group">
+        <StackPanel Spacing="6">
+          <TextBlock x:Name="notice" TextWrapping="Wrap"/>
+          <TextBlock x:Name="disclosure" TextWrapping="Wrap" FontWeight="SemiBold"/>
+        </StackPanel>
+      </Border>
+      <WrapPanel>
+        <Button x:Name="repolink" Margin="0,0,8,6"/>
+        <Button x:Name="issueslink" Margin="0,0,8,6"/>
+        <Button x:Name="upstreamlink" Margin="0,0,8,6"/>
+      </WrapPanel>
+      <TextBlock x:Name="credits" TextWrapping="Wrap" Opacity="0.8" FontSize="12"/>
+    </StackPanel>
+  </DockPanel>
+</Window>

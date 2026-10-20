@@ -21,6 +21,7 @@ namespace ULDB.Shell
 			Register<ActionBrowserForm>(f => new ActionBrowserView(f));
 			Register<SectorEditFormUDMF>(f => new SectorEditFormUDMFView(f));
 			Register<LinedefEditFormUDMF>(f => new LinedefEditFormUDMFView(f));
+			Register<AboutForm>(f => new AboutView(f));
 		}
 
 		/// <summary>Registers the window for a form type.</summary>

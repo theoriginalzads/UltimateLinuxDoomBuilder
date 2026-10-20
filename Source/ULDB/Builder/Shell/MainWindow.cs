@@ -50,6 +50,12 @@ namespace ULDB.Shell
 
 			// Top: menu bar with the mode's own controls beside it, then the main toolbar.
 			Grid menurow = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
+			// Help menu: no link to UDB's help file for now (it isn't ours), no update check (UDB's updater
+			// isn't part of ULDB); the issues item goes to ULDB's repository (MainForm, #if ULDB).
+			Field<WF.ToolStripItem>("itemhelprefmanual").Available = false;
+			Field<WF.ToolStripItem>("itemhelpcheckupdates").Available = false;
+			Field<WF.ToolStripItem>("itemhelpissues").Text = "&" + Branding.SHORT_NAME + " on GitHub";
+			Field<WF.ToolStripItem>("itemhelpabout").Text = "&About " + Branding.NAME + "...";
 			Menu menu = ToolStripViews.CreateMenuBar(Field<WF.MenuStrip>("menumain"));
 			Control modecontrols = ToolStripViews.CreateToolBar(Field<WF.ToolStrip>("modecontrolsloolbar"), Orientation.Horizontal);
 			Grid.SetColumn(modecontrols, 1);
@@ -439,6 +445,7 @@ namespace ULDB.Shell
 							if(tabs != null) foreach(WF.TabPage page in tabs.TabPages)
 								if(page.Tag is CodeImp.DoomBuilder.Controls.Docker d && d.Name == p[1]) dockers.SelectDocker(d);
 							break;
+						case "about": Field<WF.ToolStripItem>("itemhelpabout").PerformClick(); break;
 						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{

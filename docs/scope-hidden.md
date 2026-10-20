@@ -42,4 +42,5 @@ A map whose saved settings name a hidden config opens with the closest visible o
 |---|---|---|
 | Open Map dialog | Game configurations list shows only visible configurations; a map whose saved settings name a hidden configuration gets the closest visible one suggested | Scope filter |
 | Open Map dialog | Script type list shows only visible script compilers | Scope filter |
+| Help menu | "Reference Manual" (UDB's help file) and "Check for updates" (UDB's updater) | Not ULDB's yet; hidden in `MainWindow` (`Available = false`) |
 | *(More filled in as UI lands in Phase 3, and in the Phase 5 audit pass.)* | | |
