@@ -28,7 +28,11 @@
     <!-- Interface types that compile unchanged against ULDB.Compat (see uistubs-ported.txt).
          MenusForm is never shown: it only holds the plugin's menu items and toolbar buttons. -->
     <Compile Include="$(UpstreamPlugin)Interface/MenusForm.cs;$(UpstreamPlugin)Interface/MenusForm.Designer.cs" />
+    <!-- Model ports with Avalonia views in Views/: the Undo/Redo docker. -->
+    <Compile Include="$(UpstreamPlugin)Interface/UndoRedoPanel.cs;$(UpstreamPlugin)Interface/UndoRedoPanel.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia views for model-ported UI (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
     <Compile Include="UIStubs/**/*.cs" />
     <Compile Include="UIStubFixes/**/*.cs" />
   </ItemGroup>
@@ -46,6 +50,10 @@
   <ItemGroup>
     <!-- MenusForm's designer reads a tooltip through ComponentResourceManager (strings only). -->
     <EmbeddedResource Include="$(UpstreamPlugin)Interface/MenusForm.resx" LogicalName="CodeImp.DoomBuilder.BuilderModes.MenusForm.resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->

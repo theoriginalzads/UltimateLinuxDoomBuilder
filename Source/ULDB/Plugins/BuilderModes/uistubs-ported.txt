@@ -1,1 +1,2 @@
 CodeImp.DoomBuilder.BuilderModes.MenusForm
+CodeImp.DoomBuilder.BuilderModes.UndoRedoPanel

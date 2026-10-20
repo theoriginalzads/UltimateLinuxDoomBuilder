@@ -175,6 +175,8 @@ namespace ULDB.Shell
 			public string SubText { get; init; }
 			public bool Checked { get; init; }
 			public bool Hot { get; init; }
+			/// <summary>Upstream greys it out (GrayText), e.g. Undo/Redo's redo levels.</summary>
+			public bool Dim { get; init; }
 		}
 
 		/// <summary>
@@ -191,6 +193,7 @@ namespace ULDB.Shell
 				{
 					if(updating) return;
 					for(int i = 0; i < list.Items.Count; i++) list.Items[i].Selected = box.Selection.IsSelected(i);
+					list.RaiseSelectedIndexChanged();
 				};
 				box.DoubleTapped += (s, e) => { if(box.SelectedIndex >= 0) { list.RaiseDoubleClick(); Schedule(s, e); } };
 			}
@@ -203,9 +206,10 @@ namespace ULDB.Shell
 					SubText = string.Join(" · ", i.SubItems.Skip(1).Select(si => si.Text)),
 					Checked = i.Checked,
 					Hot = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.HotTrack,
+					Dim = i.ForeColor.IsKnownColor && i.ForeColor.ToKnownColor() == SD.KnownColor.GrayText,
 				}).ToList();
 				// Only when something changed: replacing the items resets the selection and scrolling.
-				string sig = string.Join("\n", items.Select(i => i.Text + "\t" + i.SubText + "\t" + i.Checked + i.Hot));
+				string sig = string.Join("\n", items.Select(i => i.Text + "\t" + i.SubText + "\t" + i.Checked + i.Hot + i.Dim));
 				if(sig != shown)
 				{
 					shown = sig;
@@ -214,6 +218,12 @@ namespace ULDB.Shell
 					if(target is ListBox lb)
 						for(int i = 0; i < list.Items.Count; i++) if(list.Items[i].Selected) lb.Selection.Select(i);
 					updating = false;
+				}
+				if(target is ListBox scroll && list.EnsureVisibleItem != null)
+				{
+					int index = list.EnsureVisibleItem.Index;
+					list.EnsureVisibleItem = null;
+					if(index >= 0) scroll.ScrollIntoView(index);
 				}
 				target.IsVisible = list.Visible;
 			}, list);

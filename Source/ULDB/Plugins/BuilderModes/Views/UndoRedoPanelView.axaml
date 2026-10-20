@@ -1,0 +1,22 @@
+<!-- ULDB: the view of BuilderModes' Undo/Redo docker (model-ported: upstream's UndoRedoPanel.cs runs
+     unchanged). Picking an entry undoes or redoes to it; entries that would become redo levels are
+     greyed, as upstream. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:shell="using:ULDB.Shell"
+             x:Class="CodeImp.DoomBuilder.BuilderModes.UndoRedoPanelView">
+  <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Margin="4">
+    <ListBox x:Name="list" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+      <ListBox.ItemTemplate>
+        <DataTemplate x:DataType="shell:ModelBinder+ListItem">
+          <TextBlock Text="{Binding Text}" Classes.dim="{Binding Dim}" TextTrimming="CharacterEllipsis"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Border>
+  <UserControl.Styles>
+    <Style Selector="TextBlock.dim">
+      <Setter Property="Opacity" Value="0.45"/>
+    </Style>
+  </UserControl.Styles>
+</UserControl>

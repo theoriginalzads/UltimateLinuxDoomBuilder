@@ -952,7 +952,22 @@ namespace System.Windows.Forms
 		public bool UseCompatibleStateImageBehavior { get; set; }
 		public BorderStyle BorderStyle { get; set; }
 		public ColumnHeaderStyle HeaderStyle { get; set; }
-		public ListViewItemCollection Items { get; } = new ListViewItemCollection();
+		public ListViewItemCollection Items { get; }
+
+		public ListView() { Items = new ListViewItemCollection(this); }
+
+		public event EventHandler SelectedIndexChanged;
+
+		/// <summary>ULDB: the view calls this after changing the items' Selected, as WinForms raises it.</summary>
+		public void RaiseSelectedIndexChanged() => SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
+
+		// Batch updates: the view refreshes when they end.
+		private int updating;
+		public void BeginUpdate() => updating++;
+		public void EndUpdate() { if(updating > 0 && --updating == 0) NotifyStylesChanged(); }
+
+		/// <summary>ULDB: set to the item the view should scroll to (EnsureVisible).</summary>
+		public ListViewItem EnsureVisibleItem { get; set; }
 		public List<ColumnHeader> Columns { get; } = new List<ColumnHeader>();
 
 		/// <summary>Item layout is up to the view; this reports one column of 16 px rows.</summary>
@@ -974,8 +989,13 @@ namespace System.Windows.Forms
 
 		public class ListViewItemCollection : List<ListViewItem>
 		{
+			private readonly ListView owner;
+			public ListViewItemCollection() { }
+			internal ListViewItemCollection(ListView owner) { this.owner = owner; }
 			public ListViewItem Add(string text) { ListViewItem item = new ListViewItem(text); Add(item); return item; }
-			public void AddRange(ListViewItem[] items) => base.AddRange(items);
+			public new ListViewItem Add(ListViewItem item) { item.ListView = owner; base.Add(item); return item; }
+			public new void Insert(int index, ListViewItem item) { item.ListView = owner; base.Insert(index, item); }
+			public void AddRange(ListViewItem[] items) { foreach(ListViewItem i in items) Add(i); }
 		}
 	}
 
@@ -984,6 +1004,9 @@ namespace System.Windows.Forms
 		public ListViewItem() { }
 		public ListViewItem(string text) { Text = text; }
 		public string Text { get; set; }
+		public ListView ListView { get; internal set; }
+		public int Index => ListView?.Items.IndexOf(this) ?? -1;
+		public void EnsureVisible() { if(ListView != null) ListView.EnsureVisibleItem = this; }
 
 		/// <summary>The item's columns. As in WinForms, SubItems[0] is the item itself (its Text).</summary>
 		public ListViewSubItemCollection SubItems => subitems ??= new ListViewSubItemCollection(this);
