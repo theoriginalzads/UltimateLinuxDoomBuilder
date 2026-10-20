@@ -25,7 +25,11 @@
     <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
          window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
     <Compile Include="$(UpstreamPlugin)ToolsForm.cs;$(UpstreamPlugin)ToolsForm.Designer.cs" />
+    <!-- Model port (uistubs-ported.txt) with an Avalonia window in Views/. -->
+    <Compile Include="$(UpstreamPlugin)TagRangeForm.cs;$(UpstreamPlugin)TagRangeForm.Designer.cs" />
     <Compile Include="Properties/**/*.cs" />
+    <!-- ULDB's Avalonia windows for model-ported forms (.axaml), registered by PluginViews. -->
+    <Compile Include="Views/**/*.cs" />
     <Compile Include="UIStubs/**/*.cs" />
     <Compile Include="UIStubFixes/**/*.cs" />
   </ItemGroup>
@@ -40,6 +44,10 @@
   <ItemGroup>
     <EmbeddedResource Include="$(UpstreamPlugin)Resources/*.cfg;$(UpstreamPlugin)Resources/*.png"
                       LogicalName="CodeImp.DoomBuilder.TagRange.Resources.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Same Avalonia as Builder (loaded from Builder's folder at runtime); compiles the views' .axaml. -->
+    <PackageReference Include="Avalonia" Version="12.1.4" />
   </ItemGroup>
   <Import Project="Properties/Resources.g.props" />
   <!-- Into Builder's Plugins folder, like upstream's Build/Plugins. -->
