@@ -142,7 +142,7 @@ scriptedit = cols(
         card('Formatting', stack(chk('scriptusetabs'), '<StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Text="Tab width:" Classes="uldb-field"/><ContentControl x:Name="scripttabwidth" Width="92"/></StackPanel>',
                                  chk('scriptautoindent'), chk('scriptautoclosebrackets'), chk('scriptallmanstyle'), chk('scriptautoshowautocompletion'))),
         card('Appearance', stack(chk('scriptshowlinenumbers'), chk('scriptshowfolding'))),
-        card('Preview', '<TextBlock Text="The preview needs the script editor, which isn\'t available yet." Opacity="0.6" TextWrapping="Wrap"/>'),
+        card('Preview', '<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="170"><ContentControl x:Name="scriptedit"/></Border>').replace('<Border ', '<Border x:Name="previewgroup" ', 1),
     ), widths=['290', '*'])
 
 # ---- Pasting
@@ -158,7 +158,7 @@ recovery = card('Autosave', chk('autosave'), '<Border x:Name="autosavedisabledwa
 toasts = stack(
     card('Toasts', chk('cbToastsEnabled'), rows([('Duration (seconds):', num('tbToastDuration'))], 'lbl7'),
          '<TextBlock Text="Toast position" Classes="uldb-field" Margin="0,6,0,0"/><UniformGrid Columns="2" Width="260" HorizontalAlignment="Left"><RadioButton x:Name="rbToastPosTL" GroupName="toastpos" Content="Top left"/><RadioButton x:Name="rbToastPosTR" GroupName="toastpos" Content="Top right"/><RadioButton x:Name="rbToastPosBL" GroupName="toastpos" Content="Bottom left"/><RadioButton x:Name="rbToastPosBR" GroupName="toastpos" Content="Bottom right"/></UniformGrid>'),
-    card('Show toasts for', '<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="260"><ListBox x:Name="lvToastActions" SelectionMode="Single"><ListBox.ItemTemplate><DataTemplate x:DataType="shell:ModelBinder+ListItem"><Grid ColumnDefinitions="*,*"><CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/><TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border>'),
+    card('Show toasts for', '<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="340"><ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist"><ListBox.ItemTemplate><DataTemplate x:DataType="shell:ModelBinder+ListItem"><Grid ColumnDefinitions="*,*"><CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/><TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border>'),
     spacing=10)
 
 def tab(name, header, body, scrolling=True):

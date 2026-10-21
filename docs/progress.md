@@ -130,11 +130,15 @@ Ported (model ports unless noted): Map Options (hand port), Game Configurations,
 
 **Script editor (new engine).** Upstream's Linux build stubs the ScintillaNET API over a plain TextBox (`Controls/Scripting/TextEditorControl.cs`, `#if NO_SCINTILLA`), which is what draws the lines through the text and crashes in the search code. ULDB implements that API for real: `Source/ULDB/Builder/Scripting/` has the `ScintillaNET` types over an AvaloniaEdit document (`Scintilla.cs`, `ScintillaTypes.cs`), a lexer that gives every character upstream's Scintilla style numbers (`ScriptLexer.cs`), and the AvaloniaEdit view (`ScintillaView.cs`: JetBrains Mono, syntax colours from Preferences, line numbers, error markers, brace matching, word highlights, folding, autocompletion, call tips). Upstream's `ScriptEditorControl`, `ScriptHandler`, the document tabs, `ScriptEditorPanel` and `ScriptEditorForm` compile unchanged on top; views: `ScriptEditorControlView`, `ScriptEditorPanelView` (tabs with an unsaved-changes dot), the form, go-to-line and find/replace windows. See `docs/ux-changes.md`.
 
+## Issues #17, #19, #20 (branch `phase-3/issues-17-19-20`, 21 Oct 2026, no screen)
+
+Dialogs lose the minimise button (#17); Game Configurations list/spacing/garbled checkbox (#19: the two Windows-only path options are hidden); Preferences (#20): colour name labels, live script editor preview, eight extra colour presets (`ULDB.Scripting.ScriptColorPresets`, hooked into `PreferencesForm` with `#if ULDB`), plugin tabs (Builder Modes "Editing", 3D Floor Mode) via `TabPageViews`. All checked with container captures; **to verify on the real machine:** the layouts at your window size (the cut-off texts in #20 didn't reproduce at 1040x760, so say if any remain), picking a preset and OK, the 3D Floor Mode tab, the Builder Modes tab's lower groups. Font combo lists are empty in the container (no installed fonts to list?): check yours. Still open: #18 (menu icons), the plugin windows left (ColorPicker, SoundPropagation), #13.
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.
 - Tag `v0.1.0-preview` pushed; the Flatpak workflow built the bundle on the tag (the build and bundle steps passed). Its release step failed because the release had already been created by hand, so PR #3 changed it to attach to an existing release (and a manual run can take `release_tag`).
-- GitHub pre-release **v0.1.0 (Early Preview)** is published with `uldb.flatpak` (about 45.9 MB) attached by hand. Its text is the first version of the notes; the newer wording is `packaging/RELEASE_NOTES.md` (PR #4, unmerged at the time of writing) and has to be pasted in by hand, since the cloud session can't edit releases.
+- GitHub pre-release **v0.1.0 (Early Preview)** is published with `uldb.flatpak` (about 45.9 MB) attached by hand. Its text is the first version of the notes; the newer wording is `packaging/RELEASE_NOTES.md` (PR #4, merged) and has to be pasted in by hand, since the cloud session can't edit releases.
 - Not verified on a real desktop: installing and running the Flatpak, `makepkg -si` for the AUR PKGBUILD, and the dialogs listed under "Remaining Phase 3 work".
 - Cloud-session limits found: no tag pushes, no release edits and no PR merges from the container; the user does those.
 

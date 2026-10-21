@@ -3,8 +3,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="CodeImp.DoomBuilder.Controls.ColorControlView">
-  <Grid ColumnDefinitions="88,Auto">
-    <TextBlock x:Name="label" Classes="uldb-field" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+  <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="8">
+    <TextBlock x:Name="label" Classes="uldb-field" HorizontalAlignment="Right" MinWidth="132"/>
     <Border x:Name="panel" Grid.Column="1" Classes="uldb-swatch" Width="40" Height="22" CornerRadius="4"
             BorderThickness="1" BorderBrush="{DynamicResource UldbLineBrush}" Cursor="Hand" ToolTip.Tip="Choose colour..."/>
   </Grid>

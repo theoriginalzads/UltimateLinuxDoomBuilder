@@ -259,6 +259,10 @@ namespace CodeImp.DoomBuilder.Windows
 			colorfoldfore.Color = General.Colors.ScriptFoldForeColor; //mxd
 			colorfoldback.Color = General.Colors.ScriptFoldBackColor; //mxd
 
+#if ULDB
+			// ULDB: more presets, the common editor palettes (ULDB.Scripting.ScriptColorPresets)
+			if(scriptcolorpresets.Items.Count == 3) foreach(string name in ULDB.Scripting.ScriptColorPresets.Names) scriptcolorpresets.Items.Add(name);
+#endif
 			//mxd. Select "Current colors" preset
 			scriptcolorpresets.SelectedIndex = 0;
 
@@ -1283,6 +1287,18 @@ namespace CodeImp.DoomBuilder.Windows
 					colorfoldback.Color = new PixelColor(255, 41, 49, 52);
 					colorselectionfore.Color = new PixelColor(255, 255, 255, 255);
 					colorselectionback.Color = new PixelColor(255, 71, 71, 71);
+					break;
+				default: // ULDB: a named preset
+#if ULDB
+					if(ULDB.Scripting.ScriptColorPresets.TryGet(scriptcolorpresets.SelectedItem as string, out PixelColor[] p))
+					{
+						colorscriptbackground.Color = p[0]; colorlinenumbers.Color = p[1]; colorplaintext.Color = p[2]; colorcomments.Color = p[3];
+						colorkeywords.Color = p[4]; colorproperties.Color = p[5]; colorliterals.Color = p[6]; colorconstants.Color = p[7];
+						colorstrings.Color = p[8]; colorincludes.Color = p[9]; colorindicator.Color = p[10]; colorbrace.Color = p[11];
+						colorbracebad.Color = p[12]; colorwhitespace.Color = p[13]; colorfoldfore.Color = p[14]; colorfoldback.Color = p[15];
+						colorselectionfore.Color = p[16]; colorselectionback.Color = p[17];
+					}
+#endif
 					break;
 			}
 
