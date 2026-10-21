@@ -29,6 +29,9 @@ ULDB_RENDERING=egl ULDB_CAPTURE="$OUT" ULDB_CAPTURE_EXIT=1 ULDB_SHOW_FORM="$FORM
 	timeout 90 xvfb-run -a -s "-screen 0 1600x1000x24" \
 	"$APP" -nosettings "$WORK/map.wad" -map MAP01 -cfg "$CFG" -resource wad "$IWAD" > "$WORK/log.txt" 2>&1 || true
 
+# ULDB_KEEP_LOG=path keeps ULDB's console output (e.g. the ULDB_DUMP_TOOLBARS listing).
+[ -z "${ULDB_KEEP_LOG:-}" ] || cp "$WORK/log.txt" "$ULDB_KEEP_LOG"
+
 if [ -f "$OUT" ]; then
 	echo "$OUT"
 else
