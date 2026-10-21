@@ -136,7 +136,14 @@ namespace ULDB.Shell
 				}
 				window.CanResize = window.CanResize && sizable;
 				window.CanMinimize = false; // a minimised dialog leaves the main window blocked and looking frozen (issue #17)
-				if(form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty)
+				// A dialog that has never had a saved position opens centred on the main window: upstream's
+				// DelayedForm works out "centred" from the form's size, which isn't the window's size here.
+				bool savedposition = CodeImp.DoomBuilder.General.Settings.ReadSetting("windows." + form.GetType().Name.ToLowerInvariant() + ".positionx", int.MaxValue) != int.MaxValue;
+				if(ownerwindow != null && !savedposition && form is CodeImp.DoomBuilder.Windows.DelayedForm)
+				{
+					window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+				}
+				else if(form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty)
 				{
 					window.WindowStartupLocation = WindowStartupLocation.Manual;
 					window.Position = new Avalonia.PixelPoint(form.Location.X, form.Location.Y);
