@@ -134,6 +134,10 @@ Ported (model ports unless noted): Map Options (hand port), Game Configurations,
 
 Dialogs lose the minimise button (#17); Game Configurations list/spacing/garbled checkbox (#19: the two Windows-only path options are hidden); Preferences (#20): colour name labels, live script editor preview, eight extra colour presets (`ULDB.Scripting.ScriptColorPresets`, hooked into `PreferencesForm` with `#if ULDB`), plugin tabs (Builder Modes "Editing", 3D Floor Mode) via `TabPageViews`. All checked with container captures; **to verify on the real machine:** the layouts at your window size (the cut-off texts in #20 didn't reproduce at 1040x760, so say if any remain), picking a preset and OK, the 3D Floor Mode tab, the Builder Modes tab's lower groups. Font combo lists are empty in the container (no installed fonts to list?): check yours. #18: 28 new menu icons (see `docs/ux-changes.md`); `ULDB_DUMP_TOOLBARS=1` (with `ULDB_KEEP_LOG=file` on `capture.sh`) now lists every menu item with `icon=True/False`, submenus included. Still open: the plugin windows left (ColorPicker, SoundPropagation), #13.
 
+## ColorPicker and Sound Propagation windows (branch `phase-3/plugin-windows`, 21 Oct 2026, no screen)
+
+Both plugins' remaining windows are ported (see `docs/port-map.md`): ColorPicker's wheel control, sliders and the light and sector pickers; Sound Propagation's colour configuration and reverbs picker. Compat `Control` gained `Invalidated` and `RaisePaint(Graphics, Rectangle)` so owner-drawn controls can be painted into a bitmap by their view. New dev step `plugform:<assembly>:<form type>` opens a plugin form. **To try on the real machine:** dragging in the colour wheel and brightness strip (mouse; only the static drawing was captured), typing hex/float values, OK/Cancel colours, the relative mode and secondary-intensity sliders on spot lights, picking a reverb from a real list. The plugin windows list in "Remaining Phase 3 work" is now done apart from the BuilderModes preferences (done in PR #21).
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.

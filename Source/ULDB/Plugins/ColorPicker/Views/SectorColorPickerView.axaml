@@ -1,0 +1,16 @@
+<!-- ULDB: the window of the ColorPicker plugin's SectorColorPicker (model-ported: upstream's code runs unchanged). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.ColorPicker.Windows.SectorColorPickerView"
+        Title="Sector color" SizeToContent="WidthAndHeight" CanResize="False" ShowInTaskbar="False">
+  <StackPanel Margin="8" Spacing="8">
+    <ContentControl x:Name="colorPickerControl1"/>
+    <Border Classes="uldb-group">
+      <StackPanel Spacing="4">
+        <TextBlock Text="Edit:" Classes="uldb-group-title"/>
+        <RadioButton x:Name="rbSectorColor" GroupName="edit"/>
+        <RadioButton x:Name="rbFadeColor" GroupName="edit"/>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</Window>
