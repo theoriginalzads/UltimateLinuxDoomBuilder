@@ -138,6 +138,14 @@ Dialogs lose the minimise button (#17); Game Configurations list/spacing/garbled
 
 Both plugins' remaining windows are ported (see `docs/port-map.md`): ColorPicker's wheel control, sliders and the light and sector pickers; Sound Propagation's colour configuration and reverbs picker. Compat `Control` gained `Invalidated` and `RaisePaint(Graphics, Rectangle)` so owner-drawn controls can be painted into a bitmap by their view. New dev step `plugform:<assembly>:<form type>` opens a plugin form. **To try on the real machine:** dragging in the colour wheel and brightness strip (mouse; only the static drawing was captured), typing hex/float values, OK/Cancel colours, the relative mode and secondary-intensity sliders on spot lights, picking a reverb from a real list. The plugin windows list in "Remaining Phase 3 work" is now done apart from the BuilderModes preferences (done in PR #21).
 
+## Leftover placeholders, window geometry, About centring (branch `phase-3/leftovers`, 21 Oct 2026, no screen)
+
+- **Ported** (captured in the container; see `docs/port-map.md`): Flags, BitFlags, BitFlags and Options, Custom Fields, Linedef Color Presets (with a new coloured checklist binder), Run External Command (error lines in red; `#if ULDB` edit for killing the process tree), the command palette (overlay), and `DebugConsole`'s static logging/profiler. **Not ported on purpose:** the Update window (hidden), `OptimizedListView`/`ResourceListView`/`ButtonsNumericTextboxDesigner` (nothing uses them), `AboutForm` (ULDB's own `AboutView`).
+- **Window position and size:** the main window restores what upstream's `DelayedForm` saved (size, place, maximised) and raises `ResizeEnd` half a second after a change so it's remembered; a first start keeps the default size. Checked by closing and restarting under Xvfb; **try on the real machine, incl. a second monitor and Wayland (the compositor may ignore the position)**.
+- **Dialogs** with no saved position open centred on the main window (the About window measured centred to within 1 px).
+- **Splash:** a placeholder picture at `Source/ULDB/Assets/Overrides/Splash3_trans.png` (725x354); drop your own PNG there to replace it (see `docs/ux-changes.md`).
+- **To try by hand:** the command palette (typing, arrows, Enter, Escape, clicking), Run External Command in a real before/after-save command, Linedef Color Presets (add/delete/move, colours, actions), Flags dialogs from Find & Replace and thing args, Custom Fields from the linedef dialog.
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.

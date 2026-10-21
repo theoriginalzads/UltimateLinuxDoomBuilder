@@ -26,7 +26,9 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+#if !ULDB
 using System.Management;
+#endif
 using System.Threading;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
@@ -222,6 +224,16 @@ namespace CodeImp.DoomBuilder.Windows
 		/// <param name="pid">Process id</param>
 		private static void KillProcessAndChildren(int pid)
 		{
+#if ULDB
+			// ULDB: no WMI on Linux; .NET kills the whole process tree
+			try
+			{
+				Process proc = Process.GetProcessById(pid);
+				if(!proc.HasExited) proc.Kill(true);
+			}
+			catch(ArgumentException) { } // Process already exited
+			catch(InvalidOperationException) { }
+#else
 			ManagementObjectSearcher processSearcher = new ManagementObjectSearcher("Select * From Win32_Process Where ParentProcessID=" + pid);
 			ManagementObjectCollection processCollection = processSearcher.Get();
 
@@ -244,6 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Process already exited.
 			}
+#endif
 		}
 
 		#endregion

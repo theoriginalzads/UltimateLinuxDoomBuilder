@@ -1,0 +1,13 @@
+<!-- ULDB: the window of upstream's BitFlagsForm ("Flags", model-ported: upstream's code runs unchanged). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.BitFlagsFormView"
+        Title="Flags" Width="300" Height="360" MinWidth="260" MinHeight="260" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Border x:Name="groupoptions" Classes="uldb-group"><DockPanel><TextBlock DockPanel.Dock="Top" Text="Flags" Classes="uldb-group-title" Margin="0,0,0,6"/><ScrollViewer><ContentControl x:Name="options"/></ScrollViewer></DockPanel></Border>
+  </DockPanel>
+</Window>

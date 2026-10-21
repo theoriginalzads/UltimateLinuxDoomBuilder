@@ -206,6 +206,7 @@ namespace ULDB.Shell
 			layers.Children.Add(gl);
 			layers.Children.Add(splashlayer);
 			layers.Children.Add(new ToastOverlay(display));
+			layers.Children.Add(new CommandPaletteOverlay(() => input?.Focus()));
 			input = layers;
 			Border frame = new Border { Child = layers, BorderThickness = new Thickness(1) };
 			frame.Classes.Add("uldb-display");
@@ -575,6 +576,49 @@ namespace ULDB.Shell
 						case "texbrowser": // texbrowser:textures|flats[:name], the texture/flat browser
 							CodeImp.DoomBuilder.Windows.TextureBrowserForm.Browse(form, p.Length > 2 ? p[2] : "STARTAN3", p.Length > 1 && p[1] == "flats");
 							break;
+						case "window": // window:<width>x<height>, resizes the main window (to test saving its geometry)
+						{
+							string[] wh = p[1].Split('x');
+							Width = double.Parse(wh[0]); Height = double.Parse(wh[1]);
+							break;
+						}
+						case "closeapp": // closes the main window as the user would, after the pending geometry save
+							DispatcherTimer.RunOnce(Close, TimeSpan.FromSeconds(1.5));
+							break;
+						case "reportdialogs": // reportdialogs:<ms>, after that time prints each open window's place (run before a modal step)
+							DispatcherTimer.RunOnce(() =>
+							{
+								foreach(Window w in FormWindows.Open)
+									Console.WriteLine($"[devstep] open window '{w.Title}' {w.Bounds.Width}x{w.Bounds.Height} at {w.Position.X},{w.Position.Y}");
+							}, TimeSpan.FromMilliseconds(int.Parse(p[1])));
+							break;
+						case "reportwindow":
+							Console.WriteLine($"[devstep] window {Width}x{Height} at {Position.X},{Position.Y} state {WindowState}");
+							break;
+						case "runcommand": // Run External Command window, running a short shell script (output and an error line)
+						{
+							var info = new System.Diagnostics.ProcessStartInfo("sh", "-c \"echo compiling...; echo all fine; echo broken thing >&2; sleep 1; echo done\"");
+							new CodeImp.DoomBuilder.Windows.RunExternalCommandForm(info, new CodeImp.DoomBuilder.Config.ExternalCommandSettings { StdErrIsError = true }).ShowDialog(form);
+							break;
+						}
+						case "flagsdialogs": // flagsdialogs:flags|bitflags|bitoptions|customfields, with sample data
+						{
+							var sample = new CodeImp.DoomBuilder.Config.EnumList();
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("1", "First flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("2", "Second flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("4", "Third flag"));
+							switch(p[1])
+							{
+								case "flags": CodeImp.DoomBuilder.Windows.FlagsForm.ShowDialog(form, "a", new System.Collections.Generic.Dictionary<string, string> { ["a"] = "Alpha", ["b"] = "Beta", ["c"] = "Gamma" }); break;
+								case "bitflags": CodeImp.DoomBuilder.Windows.BitFlagsForm.ShowDialog(form, sample, 3); break;
+								case "bitoptions": CodeImp.DoomBuilder.Windows.BitFlagsAndOptionsForm.ShowDialog(form, sample, sample, 5); break;
+								case "customfields":
+									CodeImp.DoomBuilder.Windows.CustomFieldsForm.ShowDialog(form, () => { }, "Front side custom fields", "sidedef",
+										new System.Collections.Generic.List<CodeImp.DoomBuilder.Map.MapElement> { System.Linq.Enumerable.First(General.Map.Map.Sidedefs) }, General.Map.Config.SidedefFields);
+									break;
+							}
+							break;
+						}
 						case "plugform": // plugform:<plugin assembly>:<form type>, shown modally; a Thing parameter gets the first thing
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{
@@ -659,8 +703,12 @@ namespace ULDB.Shell
 				else closing = true;
 			};
 
-			Resized += (s, e) => SyncFormGeometry();
-			PositionChanged += (s, e) => SyncFormGeometry();
+			// Upstream's DelayedForm remembers the window's size and place from ResizeEnd (WinForms raises it when
+			// a resize or drag ends); here that's half a second after the last change.
+			DispatcherTimer geometrytimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+			geometrytimer.Tick += (s, e) => { geometrytimer.Stop(); SyncFormGeometry(); form.RaiseResizeEnd(); };
+			Resized += (s, e) => { SyncFormGeometry(); geometrytimer.Stop(); geometrytimer.Start(); };
+			PositionChanged += (s, e) => { SyncFormGeometry(); geometrytimer.Stop(); geometrytimer.Start(); };
 			PropertyChanged += (s, e) => { if(e.Property == WindowStateProperty) SyncFormGeometry(); };
 		}
 
@@ -668,6 +716,20 @@ namespace ULDB.Shell
 		public void Load()
 		{
 			form.RaiseLoad();
+
+			// DelayedForm.OnLoad has put the saved size and place on the form; the window takes them (only when
+			// something was saved, so a first start keeps ULDB's default size).
+			if(General.Settings.ReadSetting("windows.mainform.sizewidth", 0) > 0 && General.Settings.ReadSetting("windows.mainform.sizeheight", 0) > 0)
+			{
+				double scale = Screens.Primary?.Scaling ?? 1.0;
+				Width = Math.Max(MinWidth, form.Width / scale);
+				Height = Math.Max(MinHeight, form.Height / scale);
+			}
+			if(form.StartPosition == WF.FormStartPosition.Manual)
+			{
+				WindowStartupLocation = WindowStartupLocation.Manual;
+				Position = new PixelPoint(form.Location.X, form.Location.Y);
+			}
 			if(form.WindowState == WF.FormWindowState.Maximized) WindowState = WindowState.Maximized;
 		}
 
