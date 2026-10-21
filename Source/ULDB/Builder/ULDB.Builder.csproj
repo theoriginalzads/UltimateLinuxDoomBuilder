@@ -68,6 +68,8 @@
     <Compile Include="$(UpstreamCore)Controls/DockersControl.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/TransparentPanel.cs" />
     <Compile Include="$(UpstreamCore)Controls/HintsPanel.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DebugConsole.cs" />
+    <Compile Include="$(UpstreamCore)Controls/DebugConsole.designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/HintsPanel.Designer.cs" />
     <Compile Include="$(UpstreamCore)Controls/AutoSelectTextbox.cs" />
     <Compile Include="$(UpstreamCore)Controls/NumericTextbox.cs" />

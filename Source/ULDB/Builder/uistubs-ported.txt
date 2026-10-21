@@ -162,3 +162,5 @@ CodeImp.DoomBuilder.Controls.CheckedColoredListBox
 CodeImp.DoomBuilder.Controls.IColoredListBoxItem
 CodeImp.DoomBuilder.Windows.RunExternalCommandForm
 CodeImp.DoomBuilder.Controls.CommandPaletteControl
+CodeImp.DoomBuilder.Controls.DebugConsole
+CodeImp.DoomBuilder.DebugMessageType
