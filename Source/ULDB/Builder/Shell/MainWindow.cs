@@ -607,6 +607,14 @@ namespace ULDB.Shell
 			}, DispatcherPriority.Background);
 		}
 
+		// Development aid: one line per item, submenus included; icon=False marks an item without an icon.
+		private static void DumpItem(string path, WF.ToolStripItem item)
+		{
+			if(item is WF.ToolStripSeparator) return;
+			Console.WriteLine($"[toolbar] {path} {item.GetType().Name} tag={item.Tag} name={item.Name} text={item.Text} icon={ToolStripViews.HasIcon(item)}");
+			if(item is WF.ToolStripDropDownItem d) foreach(WF.ToolStripItem sub in d.DropDownItems) DumpItem(path + "/" + item.Name, sub);
+		}
+
 		private void HookLifecycle()
 		{
 			// Upstream opens command-line maps on Shown, which needs the renderer's OpenGL
@@ -626,7 +634,7 @@ namespace ULDB.Shell
 					{
 						foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar", "menumain" })
 							foreach(WF.ToolStripItem item in Field<WF.ToolStrip>(bar).Items)
-								Console.WriteLine($"[toolbar] {bar} {item.GetType().Name} tag={item.Tag} name={item.Name} tip={item.ToolTipText ?? item.Text} img={(item.Image != null)}");
+								DumpItem(bar, item);
 					}, TimeSpan.FromSeconds(3));
 			};
 			Activated += (s, e) => form.RaiseActivated();

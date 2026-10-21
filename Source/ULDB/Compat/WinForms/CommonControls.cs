@@ -421,6 +421,7 @@ namespace System.Windows.Forms
 
 			public new void Add(TabPage page)
 			{
+				if(page.OwnerForm == null) page.OwnerForm = page.FindForm(); // plugins move their pages into Preferences; the view needs the form they came from
 				page.Parent = owner;
 				base.Add(page);
 				if(owner.selectedindex < 0) owner.selectedindex = 0;
@@ -451,6 +452,8 @@ namespace System.Windows.Forms
 		public string ToolTipText { get; set; }
 		public bool UseVisualStyleBackColor { get; set; }
 		public int ImageIndex { get; set; } = -1;
+		/// <summary>ULDB: the form this page was first on (a page can be moved to another tab control).</summary>
+		public Form OwnerForm { get; internal set; }
 	}
 
 	public class TabControlEventArgs : EventArgs

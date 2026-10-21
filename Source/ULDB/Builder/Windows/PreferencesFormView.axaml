@@ -358,10 +358,11 @@
 <StackPanel Spacing="4">
 <CheckBox x:Name="scriptshowlinenumbers"/>
 <CheckBox x:Name="scriptshowfolding"/></StackPanel></StackPanel></Border>
-<Border Classes="uldb-group">
+<Border x:Name="previewgroup" Classes="uldb-group">
 <StackPanel Spacing="6">
 <TextBlock Text="Preview" Classes="uldb-group-title"/>
-<TextBlock Text="The preview needs the script editor, which isn't available yet." Opacity="0.6" TextWrapping="Wrap"/></StackPanel></Border></StackPanel></StackPanel></Grid></Grid></ScrollViewer></TabItem>
+<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="170">
+<ContentControl x:Name="scriptedit"/></Border></StackPanel></Border></StackPanel></StackPanel></Grid></Grid></ScrollViewer></TabItem>
       <TabItem x:Name="tabpasting" Header="Pasting">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
 <Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
@@ -420,8 +421,8 @@
 <Border Classes="uldb-group">
 <StackPanel Spacing="6">
 <TextBlock Text="Show toasts for" Classes="uldb-group-title"/>
-<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="260">
-<ListBox x:Name="lvToastActions" SelectionMode="Single">
+<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="340">
+<ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist">
 <ListBox.ItemTemplate>
 <DataTemplate x:DataType="shell:ModelBinder+ListItem">
 <Grid ColumnDefinitions="*,*">

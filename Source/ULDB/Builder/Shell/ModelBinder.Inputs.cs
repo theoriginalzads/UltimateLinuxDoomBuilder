@@ -508,6 +508,16 @@ namespace ULDB.Shell
 				updating = true;
 				try
 				{
+					// Pages added at run time (plugins' Preferences tabs) get an item when a view is registered for them.
+					foreach(WF.TabPage page in m.TabPages.ToList())
+					{
+						if(pairs.Any(p => p.page == page)) continue;
+						Control content = TabPageViews.Create(page);
+						if(content == null) continue;
+						TabItem added = new TabItem { Header = page.Text?.Trim(), Content = content };
+						view.Items.Add(added);
+						pairs.Add((added, page));
+					}
 					foreach((TabItem item, WF.TabPage page) in pairs)
 					{
 						item.IsVisible = m.TabPages.Contains(page);

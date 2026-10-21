@@ -12,6 +12,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[ModuleInitializer]
 		internal static void Register()
 		{
+			TabPageViews.Register<PreferencesForm>((f, page) => new PreferencesFormView(f));
 			ControlViews.Register<UndoRedoPanel>(m => new UndoRedoPanelView(m));
 			ControlViews.Register<SectorDrawingOptionsPanel>(m => new SectorDrawingOptionsPanelView(m));
 			ControlViews.Register<DrawGridOptionsPanel>(m => new DrawGridOptionsPanelView(m));

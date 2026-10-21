@@ -11,6 +11,7 @@ namespace CodeImp.DoomBuilder.ThreeDFloorMode
 		[ModuleInitializer]
 		internal static void Register()
 		{
+			TabPageViews.Register<PreferencesForm>((f, page) => new PreferencesFormView(f));
 			FormViews.Register<SlopeDataSectorDialog>(f => new SlopeDataSectorDialogView(f));
 			ControlViews.Register<ThreeDFloorPanel>(m => new ThreeDFloorPanelView(m));
 			ControlViews.Register<ThreeDFloorHelperTooltipElementControl>(m => new ThreeDFloorTooltipView(m));

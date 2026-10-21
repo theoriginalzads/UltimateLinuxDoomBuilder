@@ -294,6 +294,18 @@
     <Setter Property="BorderBrush" Value="{DynamicResource UldbHotTextBrush}"/>
   </Style>
 
+  <!-- Check lists (Game Configurations): compact rows; the box ticks, the text selects the row. -->
+  <Style Selector="ListBox.uldb-checklist ListBoxItem">
+    <Setter Property="Padding" Value="4,0,4,0"/>
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="Height" Value="22"/>
+  </Style>
+  <Style Selector="ListBox.uldb-checklist CheckBox">
+    <Setter Property="MinHeight" Value="0"/>
+    <Setter Property="MinWidth" Value="0"/>
+    <Setter Property="Height" Value="20"/>
+    <Setter Property="Padding" Value="0"/>
+  </Style>
   <!-- Flag lists (CheckboxArrayControl): compact rows, like UDB's. -->
   <Style Selector="CheckBox.uldb-flag">
     <Setter Property="MinHeight" Value="0"/>

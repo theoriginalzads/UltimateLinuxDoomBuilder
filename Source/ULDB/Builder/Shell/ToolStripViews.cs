@@ -433,6 +433,9 @@ namespace ULDB.Shell
 
 		#region ================== Helpers
 
+		/// <summary>Whether the item shows an icon (development aid: ULDB_DUMP_TOOLBARS lists the ones that don't).</summary>
+		internal static bool HasIcon(WF.ToolStripItem item) => IconFor(item) != null;
+
 		/// <summary>The item's icon: ULDB's Breeze-style icon for its action (Tag), name or resource image, else upstream's bitmap.</summary>
 		private static Control IconFor(WF.ToolStripItem item)
 		{

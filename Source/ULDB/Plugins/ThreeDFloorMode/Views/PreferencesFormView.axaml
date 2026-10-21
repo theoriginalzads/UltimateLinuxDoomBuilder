@@ -1,0 +1,20 @@
+<!-- ULDB: 3D Floor Mode's tab in the Preferences dialog (model-ported: upstream's PreferencesForm runs
+     unchanged; its tab page is shown by ULDB.Shell.TabPageViews). -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.ThreeDFloorMode.PreferencesFormView">
+  <StackPanel Margin="0,10,10,0" Spacing="10">
+    <Border Classes="uldb-group">
+      <StackPanel Spacing="6">
+        <TextBlock Text="Slope Mode" Classes="uldb-group-title"/>
+        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" RowSpacing="6" ColumnSpacing="10">
+          <TextBlock Text="Show sector labels:" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ComboBox x:Name="sectorlabels" Grid.Column="1" Width="220"/>
+          <TextBlock Grid.Row="1" Text="Show slope vertex labels:" Classes="uldb-field" HorizontalAlignment="Right"/>
+          <ComboBox x:Name="slopevertexlabels" Grid.Row="1" Grid.Column="1" Width="220"/>
+        </Grid>
+        <TextBlock Text="Holding the Alt key will always show the labels" Opacity="0.7" FontSize="12"/>
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>
