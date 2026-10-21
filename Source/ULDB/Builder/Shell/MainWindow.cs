@@ -575,6 +575,30 @@ namespace ULDB.Shell
 						case "texbrowser": // texbrowser:textures|flats[:name], the texture/flat browser
 							CodeImp.DoomBuilder.Windows.TextureBrowserForm.Browse(form, p.Length > 2 ? p[2] : "STARTAN3", p.Length > 1 && p[1] == "flats");
 							break;
+						case "runcommand": // Run External Command window, running a short shell script (output and an error line)
+						{
+							var info = new System.Diagnostics.ProcessStartInfo("sh", "-c \"echo compiling...; echo all fine; echo broken thing >&2; sleep 1; echo done\"");
+							new CodeImp.DoomBuilder.Windows.RunExternalCommandForm(info, new CodeImp.DoomBuilder.Config.ExternalCommandSettings { StdErrIsError = true }).ShowDialog(form);
+							break;
+						}
+						case "flagsdialogs": // flagsdialogs:flags|bitflags|bitoptions|customfields, with sample data
+						{
+							var sample = new CodeImp.DoomBuilder.Config.EnumList();
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("1", "First flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("2", "Second flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("4", "Third flag"));
+							switch(p[1])
+							{
+								case "flags": CodeImp.DoomBuilder.Windows.FlagsForm.ShowDialog(form, "a", new System.Collections.Generic.Dictionary<string, string> { ["a"] = "Alpha", ["b"] = "Beta", ["c"] = "Gamma" }); break;
+								case "bitflags": CodeImp.DoomBuilder.Windows.BitFlagsForm.ShowDialog(form, sample, 3); break;
+								case "bitoptions": CodeImp.DoomBuilder.Windows.BitFlagsAndOptionsForm.ShowDialog(form, sample, sample, 5); break;
+								case "customfields":
+									CodeImp.DoomBuilder.Windows.CustomFieldsForm.ShowDialog(form, () => { }, "Front side custom fields", "sidedef",
+										new System.Collections.Generic.List<CodeImp.DoomBuilder.Map.MapElement> { System.Linq.Enumerable.First(General.Map.Map.Sidedefs) }, General.Map.Config.SidedefFields);
+									break;
+							}
+							break;
+						}
 						case "plugform": // plugform:<plugin assembly>:<form type>, shown modally; a Thing parameter gets the first thing
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{
