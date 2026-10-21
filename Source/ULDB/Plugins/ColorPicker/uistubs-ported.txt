@@ -1,1 +1,7 @@
 CodeImp.DoomBuilder.ColorPicker.ToolsForm
+CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerControl
+CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSlider
+CodeImp.DoomBuilder.ColorPicker.Windows.LightColorPicker
+CodeImp.DoomBuilder.ColorPicker.Windows.SectorColorPicker
+CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerSliderEventArgs
+CodeImp.DoomBuilder.ColorPicker.Windows.LightProps

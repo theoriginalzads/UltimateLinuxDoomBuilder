@@ -575,6 +575,16 @@ namespace ULDB.Shell
 						case "texbrowser": // texbrowser:textures|flats[:name], the texture/flat browser
 							CodeImp.DoomBuilder.Windows.TextureBrowserForm.Browse(form, p.Length > 2 ? p[2] : "STARTAN3", p.Length > 1 && p[1] == "flats");
 							break;
+						case "plugform": // plugform:<plugin assembly>:<form type>, shown modally; a Thing parameter gets the first thing
+							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+							{
+								if(asm.GetName().Name != p[1]) continue;
+								Type ft = asm.GetTypes().First(t => t.Name == p[2]);
+								System.Reflection.ConstructorInfo ci = ft.GetConstructors().First();
+								object[] cargs = ci.GetParameters().Select(pi => pi.ParameterType == typeof(CodeImp.DoomBuilder.Map.Thing) ? (object)System.Linq.Enumerable.First(General.Map.Map.Things) : null).ToArray();
+								((WF.Form)ci.Invoke(cargs)).ShowDialog(form);
+							}
+							break;
 						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{
