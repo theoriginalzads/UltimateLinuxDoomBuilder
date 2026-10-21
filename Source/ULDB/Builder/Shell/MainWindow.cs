@@ -592,6 +592,8 @@ namespace ULDB.Shell
 									Console.WriteLine($"[devstep] open window '{w.Title}' {w.Bounds.Width}x{w.Bounds.Height} at {w.Position.X},{w.Position.Y}");
 							}, TimeSpan.FromMilliseconds(int.Parse(p[1])));
 							break;
+						case "markchanged": General.Map.IsChanged = true; break; // makes the map count as edited (autosave only saves edited maps)
+						case "mapbackup": General.Map.SaveMapBackup(); break; // what Quit in the error dialog does
 						case "reportwindow":
 							Console.WriteLine($"[devstep] window {Width}x{Height} at {Position.X},{Position.Y} state {WindowState}");
 							break;

@@ -682,6 +682,10 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Remove the previous log file and start logging
+#if ULDB
+			// ULDB: keep the previous session's log next to the new one (a crash is usually reported after a restart)
+			try { if(File.Exists(logfile)) File.Copy(logfile, Path.ChangeExtension(logfile, ".previous.log"), true); } catch(Exception) { }
+#endif
 			if(File.Exists(logfile)) File.Delete(logfile);
             string platform = Environment.Is64BitProcess ? "x64" : "x86";
 			General.WriteLogLine("Ultimate Doom Builder R" + thisasm.GetName().Version.Revision + " (" + platform + ", " + commithash + ") startup"); //mxd

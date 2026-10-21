@@ -43,6 +43,7 @@ Genuine upstream bugs found while porting. They aren't Linux-specific, so they'r
 | `Source/Core/Windows/MainForm.cs` | window title: no "(64-bit)"/"(32-bit)" (`#if ULDB`) | User request: there's one build, so it isn't needed |
 | `Source/Core/Windows/MainForm.cs` | `itemhelpissues_Click` opens ULDB's repository (`Branding.REPOSITORY_URL`) (`#if ULDB`) | The item pointed at upstream's bug tracker; ULDB problems go to the fork |
 | `Source/Core/Windows/RunExternalCommandForm.cs` | `KillProcessAndChildren` uses `Process.Kill(true)`; no `System.Management` (`#if ULDB`) | WMI is Windows-only |
+| `Source/Core/General/General.cs` | at startup the previous log is copied to `UDBuilder.previous.log` before it's deleted (`#if ULDB`) | A crash is usually reported after a restart, which deleted the log of the crashed session |
 | `Source/Core/Windows/PreferencesForm.cs` | script editor colour presets: extra names added to the combo, a `default:` case in `scriptcolorpresets_SelectedIndexChanged` applies them (`#if ULDB`, `ULDB.Scripting.ScriptColorPresets`) | Issue #20: common editor palettes (Monokai, Dracula, One Dark, Nord, Gruvbox, Solarized, GitHub Light) as choices |
 
 ## Native stand-ins (not edits)
