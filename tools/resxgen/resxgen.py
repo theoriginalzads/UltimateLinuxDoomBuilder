@@ -34,6 +34,10 @@ def main():
             continue
         path, typename = value.split(";")[0:2]
         path = os.path.normpath(os.path.join(os.path.dirname(resx), path.replace("\\", "/")))
+        # ULDB's own pictures replace upstream's of the same file name (e.g. the splash logo).
+        override = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "Source", "ULDB", "Assets", "Overrides", os.path.basename(path))
+        if os.path.exists(override):
+            path = os.path.normpath(override)
         entries.append((name, path, typename.split(",")[0].strip(), wanted[name]))
 
     missing = sorted(set(wanted) - {e[0] for e in entries})
