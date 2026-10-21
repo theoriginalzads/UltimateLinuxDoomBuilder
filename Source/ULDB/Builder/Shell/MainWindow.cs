@@ -206,6 +206,7 @@ namespace ULDB.Shell
 			layers.Children.Add(gl);
 			layers.Children.Add(splashlayer);
 			layers.Children.Add(new ToastOverlay(display));
+			layers.Children.Add(new CommandPaletteOverlay(() => input?.Focus()));
 			input = layers;
 			Border frame = new Border { Child = layers, BorderThickness = new Thickness(1) };
 			frame.Classes.Add("uldb-display");
