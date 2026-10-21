@@ -19,10 +19,13 @@
     </Grid>
     <Grid ColumnDefinitions="300,12,*">
       <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
-        <ListBox x:Name="listconfigs" SelectionMode="Single">
+        <ListBox x:Name="listconfigs" SelectionMode="Single" Classes="uldb-checklist">
           <ListBox.ItemTemplate>
             <DataTemplate x:DataType="shell:ModelBinder+ListItem">
-              <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}" Opacity="{Binding Dim, Converter={x:Static shell:ModelBinder.DimOpacity}}" Margin="2,0"/>
+              <StackPanel Orientation="Horizontal" Spacing="6" Opacity="{Binding Dim, Converter={x:Static shell:ModelBinder.DimOpacity}}">
+                <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+              </StackPanel>
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
@@ -68,7 +71,7 @@
                 <TextBlock x:Name="labelresult" Grid.Row="5" Classes="uldb-field" VerticalAlignment="Top"/>
                 <TextBox x:Name="testresult" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80"/>
                 <TextBlock x:Name="noresultlabel" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" TextWrapping="Wrap" Opacity="0.7"/>
-                <CheckBox x:Name="shortpaths" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"/>
+                <CheckBox x:Name="shortpaths" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" IsVisible="False"/>
                 <CheckBox x:Name="linuxpaths" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"/>
               </Grid>
             </StackPanel>
@@ -88,10 +91,10 @@
               <Button x:Name="exporttexturesets" Grid.Row="1" Grid.Column="5"/>
             </Grid>
             <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
-              <ListBox x:Name="listtextures" SelectionMode="Single">
+              <ListBox x:Name="listtextures" SelectionMode="Single" Classes="uldb-checklist">
                 <ListBox.ItemTemplate>
                   <DataTemplate x:DataType="shell:ModelBinder+ListItem">
-                    <TextBlock Text="{Binding Text}" Margin="4,2"/>
+                    <TextBlock Text="{Binding Text}" Margin="4,0" VerticalAlignment="Center"/>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
@@ -106,11 +109,11 @@
               <ComboBox x:Name="startmode" Grid.Column="1" HorizontalAlignment="Stretch"/>
             </Grid>
             <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
-              <ListBox x:Name="listmodes" SelectionMode="Single">
+              <ListBox x:Name="listmodes" SelectionMode="Single" Classes="uldb-checklist">
                 <ListBox.ItemTemplate>
                   <DataTemplate x:DataType="shell:ModelBinder+ListItem">
                     <Grid ColumnDefinitions="*,200">
-                      <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}" Margin="2,0"/>
+                      <StackPanel Orientation="Horizontal" Spacing="6"><CheckBox IsChecked="{Binding Checked, Mode=OneWay}" VerticalAlignment="Center"/><TextBlock Text="{Binding Text}" VerticalAlignment="Center"/></StackPanel>
                       <TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/>
                     </Grid>
                   </DataTemplate>

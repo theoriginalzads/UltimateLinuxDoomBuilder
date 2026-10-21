@@ -135,6 +135,7 @@ namespace ULDB.Shell
 					window.Height = form.Height / scale;
 				}
 				window.CanResize = window.CanResize && sizable;
+				window.CanMinimize = false; // a minimised dialog leaves the main window blocked and looking frozen (issue #17)
 				if(form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty)
 				{
 					window.WindowStartupLocation = WindowStartupLocation.Manual;
