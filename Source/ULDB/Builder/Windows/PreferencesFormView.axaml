@@ -14,7 +14,7 @@
     <TabControl x:Name="tabs">
       <TabItem x:Name="tabinterface" Header="Interface">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <Grid ColumnSpacing="10">
 <Grid.ColumnDefinitions>
 <ColumnDefinition Width="*"/>
@@ -41,22 +41,22 @@
 <TextBlock Grid.Row="1" Text="Auto-scroll speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="1" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="autoscrollspeed" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="autoscrollspeed" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="autoscrollspeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="2" Text="Zoom factor:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="2" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="zoomfactor" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="zoomfactor" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="zoomfactorlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="3" Text="Vertex scale (2D):" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="3" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="vertexScale" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="vertexScale" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="vertexScaleLabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="4" Text="Max. recent files:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="4" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="recentFiles" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="recentFiles" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="labelRecentFiles" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <ContentPresenter Grid.Row="5" Grid.ColumnSpan="2">
 <StackPanel Spacing="4">
@@ -95,27 +95,27 @@
 <TextBlock Grid.Row="0" Text="Field of view:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="0" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="fieldofview" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="fieldofview" Width="150" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="fieldofviewlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="1" Text="Mouse speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="1" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="mousespeed" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="mousespeed" Width="150" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="mousespeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="2" Text="Move speed:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="2" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="movespeed" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="movespeed" Width="150" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="movespeedlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="3" Text="Vertex scale (3D):" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="3" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="vertexScale3D" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="vertexScale3D" Width="150" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="vertexScale3DLabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="4" Text="View distance:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="4" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="viewdistance" Width="150" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="viewdistance" Width="150" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="viewdistancelabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <ContentPresenter Grid.Row="5" Grid.ColumnSpan="2">
 <CheckBox x:Name="invertyaxis"/></ContentPresenter></Grid></StackPanel></Border>
@@ -188,7 +188,7 @@
 </Grid></TabItem>
       <TabItem x:Name="tabcolors" Header="Appearance">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <Grid ColumnSpacing="10">
 <Grid.ColumnDefinitions>
 <ColumnDefinition Width="290"/>
@@ -231,42 +231,42 @@
 <TextBlock Grid.Row="0" Text="Passable lines transparency:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="0" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="doublesidedalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="doublesidedalpha" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="doublesidedalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="1" Text="Things transparency (Things mode):" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="1" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="activethingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="activethingsalpha" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="activethingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="2" Text="Things transparency (other modes):" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="2" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="inactivethingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="inactivethingsalpha" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="inactivethingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="3" Text="Hidden things transparency:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="3" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="hiddenthingsalpha" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="hiddenthingsalpha" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="hiddenthingsalphalabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="4" Text="Textures and flats brightness:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="4" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="imagebrightness" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="imagebrightness" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="imagebrightnesslabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="5" Text="Dynamic lights count:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="5" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="tbDynLightCount" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="tbDynLightCount" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="labelDynLightCount" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="6" Text="Anisotropic filtering:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="6" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="anisotropicfiltering" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="anisotropicfiltering" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="labelanisotropicfiltering" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="7" Text="Edge anti-aliasing:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="7" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="antialiasing" Width="170" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="antialiasing" Width="170" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="labelantialiasing" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <ContentPresenter Grid.Row="8" Grid.ColumnSpan="2">
 <StackPanel Spacing="4">
@@ -283,7 +283,7 @@
 <CheckBox x:Name="cbParallelizedVertexPlotting"/></StackPanel></ContentPresenter></Grid></StackPanel></Border></StackPanel></Grid></Grid></ScrollViewer></TabItem>
       <TabItem x:Name="tabscripteditor" Header="Script Editor">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <Grid ColumnSpacing="10">
 <Grid.ColumnDefinitions>
 <ColumnDefinition Width="290"/>
@@ -365,13 +365,13 @@
 <ContentControl x:Name="scriptedit"/></Border></StackPanel></Border></StackPanel></StackPanel></Grid></Grid></ScrollViewer></TabItem>
       <TabItem x:Name="tabpasting" Header="Pasting">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <StackPanel Spacing="10">
 <TextBlock x:Name="label16" TextWrapping="Wrap" Text="These are the default options for pasting geometry. You can also choose these options when you use the Paste Special function. These options also apply when inserting prefabs."/>
 <ContentControl x:Name="pasteoptions"/></StackPanel></Grid></ScrollViewer></TabItem>
       <TabItem x:Name="tabrecovery" Header="Recovery">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <Border Classes="uldb-group">
 <StackPanel Spacing="6">
 <TextBlock Text="Autosave" Classes="uldb-group-title"/>
@@ -388,16 +388,16 @@
 <TextBlock Grid.Row="0" Text="Autosave interval:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="0" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="autosaveinterval" Width="200" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="autosaveinterval" Width="200" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="autosaveintervallabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter>
 <TextBlock Grid.Row="1" Text="Number of autosaves:" Classes="uldb-field" HorizontalAlignment="Right"/>
 <ContentPresenter Grid.Row="1" Grid.Column="1">
 <StackPanel Orientation="Horizontal" Spacing="8">
-<Slider x:Name="autosavecount" Width="200" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/>
+<Slider x:Name="autosavecount" Width="200" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/>
 <TextBlock x:Name="autosavecountlabel" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel></ContentPresenter></Grid></StackPanel></Border></Grid></ScrollViewer></TabItem>
       <TabItem x:Name="tabtoasts" Header="Toasts">
 <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">
+<Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">
 <StackPanel Spacing="10">
 <Border Classes="uldb-group">
 <StackPanel Spacing="6">
@@ -422,10 +422,10 @@
 <StackPanel Spacing="6">
 <TextBlock Text="Show toasts for" Classes="uldb-group-title"/>
 <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="340">
-<ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist">
+<ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist" ScrollViewer.HorizontalScrollBarVisibility="Auto">
 <ListBox.ItemTemplate>
 <DataTemplate x:DataType="shell:ModelBinder+ListItem">
-<Grid ColumnDefinitions="*,*">
+<Grid ColumnDefinitions="280,Auto">
 <CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/>
 <TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border></StackPanel></Border></StackPanel></Grid></ScrollViewer></TabItem>
     </TabControl>

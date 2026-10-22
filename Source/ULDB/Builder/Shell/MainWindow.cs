@@ -381,9 +381,10 @@ namespace ULDB.Shell
 			// a text field has focus.
 			AddHandler(KeyDownEvent, (s, e) =>
 			{
-				modifiers = KeyMapping.ToModifiers(e.KeyModifiers);
+				KeyModifiers mods = WithOwnModifier(e.Key, e.KeyModifiers, true);
+				modifiers = KeyMapping.ToModifiers(mods);
 				if(IsTextInput(e.Source)) return;
-				WF.Keys keys = KeyMapping.ToKeys(e.Key, e.KeyModifiers);
+				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
 				display.RaisePreviewKeyDown(new WF.PreviewKeyDownEventArgs(keys));
 				form.RaiseKeyDown(new WF.KeyEventArgs(keys));
@@ -392,15 +393,32 @@ namespace ULDB.Shell
 
 			AddHandler(KeyUpEvent, (s, e) =>
 			{
-				modifiers = KeyMapping.ToModifiers(e.KeyModifiers);
+				KeyModifiers mods = WithOwnModifier(e.Key, e.KeyModifiers, false);
+				modifiers = KeyMapping.ToModifiers(mods);
 				if(IsTextInput(e.Source)) return;
-				WF.Keys keys = KeyMapping.ToKeys(e.Key, e.KeyModifiers);
+				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
 				WF.KeyEventArgs args = new WF.KeyEventArgs(keys);
 				form.RaiseKeyUp(args);
 				if(!args.Handled) display.RaiseKeyUp(args);
 				e.Handled = true;
 			}, Avalonia.Interactivity.RoutingStrategies.Tunnel);
+		}
+
+		// Avalonia (Wayland in particular) reports the modifier state from before the event: pressing Shift says
+		// "no modifiers", releasing it says "Shift". UDB reads Shift/Ctrl/Alt from these events, so a Shift-drag
+		// selection replaced the selection and Shift then looked stuck down (issue #28). A modifier key's own
+		// press and release set and clear its flag.
+		internal static KeyModifiers WithOwnModifier(Key key, KeyModifiers mods, bool down)
+		{
+			KeyModifiers own = key switch
+			{
+				Key.LeftShift or Key.RightShift => KeyModifiers.Shift,
+				Key.LeftCtrl or Key.RightCtrl => KeyModifiers.Control,
+				Key.LeftAlt or Key.RightAlt => KeyModifiers.Alt,
+				_ => KeyModifiers.None,
+			};
+			return down ? mods | own : mods & ~own;
 		}
 
 		private static bool IsTextInput(object source) =>
@@ -589,11 +607,35 @@ namespace ULDB.Shell
 							DispatcherTimer.RunOnce(() =>
 							{
 								foreach(Window w in FormWindows.Open)
-									Console.WriteLine($"[devstep] open window '{w.Title}' {w.Bounds.Width}x{w.Bounds.Height} at {w.Position.X},{w.Position.Y}");
+									Console.WriteLine($"[devstep] open window '{w.Title}' visible={w.IsVisible} {w.Bounds.Width}x{w.Bounds.Height} at {w.Position.X},{w.Position.Y}");
 							}, TimeSpan.FromMilliseconds(int.Parse(p[1])));
 							break;
 						case "markchanged": General.Map.IsChanged = true; break; // makes the map count as edited (autosave only saves edited maps)
 						case "mapbackup": General.Map.SaveMapBackup(); break; // what Quit in the error dialog does
+						case "closetop": // closes the newest open window other than the main one, as the title bar's close button does
+						{
+							Window top = null;
+							foreach(Window w in FormWindows.Open) if(w != this && w.IsVisible) top = w;
+							Console.WriteLine("[devstep] closetop " + (top?.Title ?? "(no window)"));
+							top?.Close();
+							break;
+						}
+						case "clicktag": // clicktag:<tag>, clicks the toolbar or menu item with that Tag (like pressing the button)
+						{
+							WF.ToolStripItem found = null;
+							void Look(System.Collections.IEnumerable items)
+							{
+								foreach(WF.ToolStripItem item in items)
+							{
+									if(found == null && (item.Tag as string) == p[1] && item.Available) found = item;
+									if(item is WF.ToolStripDropDownItem d) Look(d.DropDownItems);
+								}
+							}
+							foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar", "menumain" }) Look(Field<WF.ToolStrip>(bar).Items);
+							Console.WriteLine("[devstep] clicktag " + p[1] + ": " + (found != null ? found.Text : "(not found)"));
+							found?.PerformClick();
+							break;
+						}
 						case "reportwindow":
 							Console.WriteLine($"[devstep] window {Width}x{Height} at {Position.X},{Position.Y} state {WindowState}");
 							break;

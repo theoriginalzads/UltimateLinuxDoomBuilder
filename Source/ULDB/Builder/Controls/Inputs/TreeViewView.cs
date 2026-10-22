@@ -47,7 +47,8 @@ namespace ULDB.Controls
 			this.model = model;
 			list = new ListBox
 			{
-				ItemTemplate = new FuncDataTemplate<Row>((row, _) => BuildRow(row), true),
+				// Avalonia asks for a null row when it clears a recycled row (issue #26)
+				ItemTemplate = new FuncDataTemplate<Row>((row, _) => row == null ? null : BuildRow(row), true),
 				SelectionMode = SelectionMode.Single,
 				Focusable = true,
 			};

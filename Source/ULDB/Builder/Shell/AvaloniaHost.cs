@@ -184,7 +184,13 @@ namespace ULDB.Shell
 					form.RaiseResizeEnd();
 					try
 					{
-						if(!form.RequestClose(CloseReason.UserClosing)) e.Cancel = true;
+						if(!form.RequestClose(CloseReason.UserClosing))
+						{
+							e.Cancel = true;
+							// A form that answers a close by hiding itself (Stair Sector Builder cancels its mode, which hides the
+								// form) has had its Hide() ignored while closing: hide the window now (issue #32).
+							if(!form.Visible) Dispatcher.UIThread.Post(() => { if(window.IsVisible) window.Hide(); });
+						}
 						else closed = true;
 					}
 					finally { closing = false; }

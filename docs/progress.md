@@ -7,7 +7,7 @@
 
 **Where the project is.** ULDB is a working early preview (releases `v0.1.0-preview`, and `v0.2.0-preview` with the script editor and core dialogs). Every window the editor opens now has a real Avalonia view (the few placeholders left are on purpose: Update window, unused list-view helpers, `ButtonsNumericTextboxDesigner`). The main work left is **real-use testing by the user** and what that finds, then polish.
 
-**Branches and pull requests.** `master` has everything up to PR #16. The user is merging the stack in this order (each is stacked on the one before; check which are merged with `gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/pulls?state=all`):
+**Branches and pull requests (read the 22 Oct section: PRs #22 to #24 landed on stacked branches, not `master`; the bug-fix branch carries everything).** `master` has everything up to PR #16 and #21. The user was merging the stack in this order (each is stacked on the one before; check which are merged with `gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/pulls?state=all`):
 1. #21 `phase-3/issues-17-19-20`: issues #17 (no minimise button on dialogs), #18 (28 menu icons), #19 (Game Configurations), #20 (Preferences: layout, live script preview, 8 colour presets, plugin tabs for Builder Modes and 3D Floor Mode).
 2. #22 `phase-3/plugin-windows`: ColorPicker and Sound Propagation windows.
 3. #23 `phase-3/leftovers`: Flags/BitFlags/CustomFields/Linedef Color Presets/Run External Command windows, command palette overlay, DebugConsole, main window size/position saving, dialogs centred on the main window, placeholder splash (`Source/ULDB/Assets/Overrides/Splash3_trans.png`).
@@ -142,6 +142,23 @@ GitHub issues #6–#15 worked through. #6, #8–#12, #14, #15 fixed and checked 
 Ported (model ports unless noted): Map Options (hand port), Game Configurations, Preferences, Grid Setup, Go To Coordinates, Change Map, Things Filters, tag/thing statistics, Paste Special, pre/post commands, Texture Set, thing/effect browsers, Angle, and the Doom/Hexen-format edit forms. `tools/resxgen/autoresx.py` generates the form `.resx` files a new model port needs; `tools/axamlgen/preferences.py` writes Preferences' layout. Dev steps: `newform:<Type>`, `prefs:<tab>`, `config:<tab>`, `texbrowser:`, `oldsector|oldlinedef|oldthing`.
 
 **Script editor (new engine).** Upstream's Linux build stubs the ScintillaNET API over a plain TextBox (`Controls/Scripting/TextEditorControl.cs`, `#if NO_SCINTILLA`), which is what draws the lines through the text and crashes in the search code. ULDB implements that API for real: `Source/ULDB/Builder/Scripting/` has the `ScintillaNET` types over an AvaloniaEdit document (`Scintilla.cs`, `ScintillaTypes.cs`), a lexer that gives every character upstream's Scintilla style numbers (`ScriptLexer.cs`), and the AvaloniaEdit view (`ScintillaView.cs`: JetBrains Mono, syntax colours from Preferences, line numbers, error markers, brace matching, word highlights, folding, autocompletion, call tips). Upstream's `ScriptEditorControl`, `ScriptHandler`, the document tabs, `ScriptEditorPanel` and `ScriptEditorForm` compile unchanged on top; views: `ScriptEditorControlView`, `ScriptEditorPanelView` (tabs with an unsaved-changes dot), the form, go-to-line and find/replace windows. See `docs/ux-changes.md`.
+
+## Bug fixes from the first real-use issues (branch `phase-3/bugfixes-22oct`, 22 Oct 2026, no screen)
+
+**Important:** PRs #22 to #24 were merged into their *stacked base branches*, not into `master` (only #21 reached it), so a build from `master` lacked the ColorPicker windows, the leftover windows, the robustness work and more. This branch is based on `origin/phase-3/leftovers`, which contains all of it; **one PR from `phase-3/bugfixes-22oct` into `master` brings everything**. Several of the issues below were just that (#30: the colour picker windows were still placeholders on `master`).
+
+| Issue | Cause and fix |
+|---|---|
+| #26 crash switching to Tag Explorer | Avalonia asks list templates for a null row when it clears a recycled row; `TreeViewView`, the Comments docker and the grid view now return nothing for null |
+| #32 Stair Sector Builder hang, #31 Map Analysis won't close | Their forms answer a close by cancelling the mode, which hides the form; the window's `Hide` was ignored while closing so the window stayed up (and the next close hung). `AvaloniaHost` now hides the window when a cancelled close left the form hidden. Checked with the new `closetop` dev step (the window hides and the app exits) |
+| #28 Shift-select | Avalonia reports the modifier state from before a key event: pressing Shift said "none", releasing it said "Shift", so UDB saw Shift one step late. A modifier key's own press/release now sets/clears its flag (`MainWindow.WithOwnModifier`, tested). **Check on the real machine (Wayland)** |
+| #30 colour picker does nothing | the windows were placeholders on `master` (see above); checked here that the toolbar button opens the sector colour picker |
+| #29 Preferences | slider thumbs cut off (fixed height removed), card bottoms cut off (bottom margin), toast list text (horizontal scrollbar, compact rows), colour preset didn't redraw the preview until clicked (script `Style` changes now schedule a redraw) |
+| #31 compact list | Map Analysis results use the compact row style |
+| #27 texture browser grid | with a set preview size every tile is the same width so tiles form columns; long names are trimmed |
+| #25 old bitmap icons | the Errors window's large error/warning pictures, the docker's unpin picture and the script editor's keyword/constant/property/snippet/palette/new/open/save pictures now have Breeze-style icons (`res:ErrorLarge` etc.). The issue's screenshot couldn't be read from the container, so **ask the reporter which corner icon they meant** if one is still bitmap |
+
+New dev steps: `closetop` (close the newest window), `clicktag:<tag>` (click the toolbar/menu item with that Tag), `reportdialogs` now shows visibility.
 
 ## Issues #17, #19, #20 (branch `phase-3/issues-17-19-20`, 21 Oct 2026, no screen)
 
