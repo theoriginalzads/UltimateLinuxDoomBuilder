@@ -183,6 +183,16 @@ Both plugins' remaining windows are ported (see `docs/port-map.md`): ColorPicker
 - **Autosave and recovery checked in a container:** with the interval at 0 an edited map writes `<map>.wad.MAP01.autosave1..N` next to the WAD (N = the *number of autosaves* setting, older ones shift up); the files are valid WADs that open (rename or open them as `.wad`; the Open Map dialog doesn't offer them by extension). Quit in the error dialog (and a crash that reaches it) saves a map backup to `<settings>/Restore/<map>.<hash>.restore`; opening the same map again asks whether to restore it (the question window appeared; **not clicked through here**). A force-kill (SIGKILL, power loss) saves nothing extra: you have the last autosave. Dev steps added: `markchanged`, `mapbackup`.
 - **To try by hand:** make a real crash if you can (the unexpected-error window, *Copy to clipboard*, the report folder link), kill ULDB while editing and look for the newest `.autosave` file, and answer the restore question.
 
+## Review for hidden bugs (22 Oct 2026, no screen)
+
+Checked: the whole test suite under a German culture (`LANG=de_DE.UTF-8`, decimal comma; passes, so map save/load isn't culture-dependent), a sweep of 29 editing-mode switches and the 3D visual mode on the 3D-floors test map (no exceptions; the slope modes ask for a slope sector first and block the sweep), shell-outs (`Process.Start` calls all go through `xdg-open` helpers), blocking waits on the UI thread, and NuGet vulnerabilities. **Fixed:** the folder picker got Windows-style start folders (`C:\dir\`; `ResourceOptionsForm` adds a trailing backslash) and now normalises them.
+
+**Findings left for the user to decide:**
+1. **Test Map in the Flatpak (probably broken for most engines).** `Launcher` starts the engine with `Process.Start` inside the sandbox. A native UZDoom/GZDoom binary under `$HOME` may or may not run against the Flatpak runtime's libraries, and a Flatpak-installed engine can't be started at all. The usual fix is `flatpak-spawn --host <engine> <args>` with the `--talk-name=org.freedesktop.Flatpak` permission, which opens a sandbox hole (Flathub reviews that); it's a decision for the user. Not tested here (no engine in the container).
+2. **SharpCompress 0.20.0** (the version upstream ships) has three moderate advisories (GHSA-6c8g-7p36-r338, -fxh6-w476-hgr4, -jp7f-grcv-6mjf; zip/bzip2 reading, mainly denial of service on hostile archives). Newer versions change the API (`BZip2Stream` constructor in `SharpCompressHelper.cs`, an upstream file) and still showed the first advisory at 0.37.2, so it isn't a quick bump; ULDB only reads the user's own PK3s and its own backups.
+3. Autosave files (`<map>.wad.MAP01.autosaveN`) aren't offered by Open Map's file filter, so recovering one means renaming it or typing its name.
+4. Modifier-only key presses in dialogs (not the main window) still use Avalonia's lagging modifier flags; nothing known depends on it.
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.
