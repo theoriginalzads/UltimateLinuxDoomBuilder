@@ -636,6 +636,10 @@ namespace ULDB.Shell
 							found?.PerformClick();
 							break;
 						}
+						case "testengine": // testengine:<program or pseudo path>: sets it as this configuration's test engine and tests the map
+							General.Map.ConfigSettings.TestProgram = string.Join(":", p.Skip(1));
+							General.Map.Launcher.Test();
+							break;
 						case "reportwindow":
 							Console.WriteLine($"[devstep] window {Width}x{Height} at {Position.X},{Position.Y} state {WindowState}");
 							break;

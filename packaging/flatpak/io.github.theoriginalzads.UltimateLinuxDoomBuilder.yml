@@ -26,6 +26,9 @@ finish-args:
   - --device=dri
   # Maps, resources (WADs, PK3s) and test engines usually live somewhere in home.
   - --filesystem=home
+  # Test Map: the engine runs on the host (or as its own Flatpak), which the sandbox can only start
+  # through flatpak-spawn --host. Same permission other Linux Doom launchers (DoomRunner) ask for.
+  - --talk-name=org.freedesktop.Flatpak
   # The program is framework-dependent; the .NET runtime is copied to /app/lib/dotnet.
   - --env=DOTNET_ROOT=/app/lib/dotnet
   - --env=DOTNET_CLI_TELEMETRY_OPTOUT=1

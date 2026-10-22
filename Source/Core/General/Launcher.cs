@@ -306,7 +306,11 @@ namespace CodeImp.DoomBuilder
 			Cursor oldcursor = Cursor.Current;
 
 			// Check if configuration is OK
+			#if ULDB
+			if(!ULDB.Platform.Engines.Exists(General.Map.ConfigSettings.TestProgram)) // ULDB: also accepts flatpak:/host: engines
+#else
 			if(string.IsNullOrEmpty(General.Map.ConfigSettings.TestProgram) || !File.Exists(General.Map.ConfigSettings.TestProgram))
+#endif
 			{
 				//mxd. Let's be more precise
 				string message;
@@ -389,6 +393,11 @@ namespace CodeImp.DoomBuilder
 						General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
 						General.MainWindow.DisplayStatus(StatusType.Info, "Launching " + processinfo.FileName + "...");
 
+#if ULDB
+						// ULDB: Flatpak engines and ULDB's own Flatpak sandbox need a different command (ULDB.Platform.Engines)
+						ULDB.Platform.Engines.Prepare(processinfo);
+						General.WriteLogLine("Started as:           " + processinfo.FileName + " " + string.Join(" ", processinfo.ArgumentList));
+#endif
 						try
 						{
 							// Start the program

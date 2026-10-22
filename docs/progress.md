@@ -193,6 +193,15 @@ Checked: the whole test suite under a German culture (`LANG=de_DE.UTF-8`, decima
 3. Autosave files (`<map>.wad.MAP01.autosaveN`) aren't offered by Open Map's file filter, so recovering one means renaming it or typing its name.
 4. Modifier-only key presses in dialogs (not the main window) still use Avalonia's lagging modifier flags; nothing known depends on it.
 
+## Test Map from the Flatpak and engine presets (branch `phase-3/engine-presets`, 22 Oct 2026, no screen)
+
+User request: Test Map has to work from inside the Flatpak, and the engine settings should offer GZDoom and UZDoom presets with launch options (like DoomRunner, which the user uses; its approach was read, not copied).
+- **Starting engines** (`Source/ULDB/Builder/Platform/Engines.cs`): inside ULDB's Flatpak every engine is started with `flatpak-spawn --host` (the manifest now has `--talk-name=org.freedesktop.Flatpak`, the same permission DoomRunner's Flatpak asks for); an engine that is itself a Flatpak is started with `flatpak run --filesystem=<folder>:ro ... <app id>` for the folders named on the command line (not `/usr`, `/tmp` etc.). Engines that aren't plain files are stored in the game configuration as pseudo paths: `flatpak:<application id>` and `host:<command or path>`; `Launcher` checks them with `Engines.Exists` and starts them through `Engines.Prepare` (`#if ULDB` edits, listed in `docs/upstream-edits.md`).
+- **Temp folder:** the test map used to be written to `/tmp`, which a sandboxed ULDB doesn't share with the host and a Flatpak engine can't read. The temp folder is now `~/.cache/UltimateLinuxDoomBuilder/tmp` (the real home inside the Flatpak too).
+- **Presets:** `EnginePresets.cs` holds the launch options per family (GZDoom and UZDoom share the ZDoom switches); the Testing tab has a quick-setup card (installed engines found by `Engines.Detect`, in the background; engine type; option checkboxes that edit the parameters text, switching on *Customize parameters*). The family is read from the program's name, and an option is "on" when its switches are in the parameters, so nothing new is stored.
+- **Checked here:** unit tests (command building for native/host/Flatpak, inside and outside the sandbox; detection parsing; option editing; a fake engine started through `host:`), and a headless Test Map run with a fake engine script (both a plain path and `host:`): the engine received the right IWAD, skill, resources and the temp WAD. **Not testable in the container (needs the user's machine):** `flatpak-spawn --host`, `flatpak run` and a real GZDoom/UZDoom, installed natively and as a Flatpak; whether the Flatpak engines can read the folders granted (the app ids differ per engine; detection matches any Flatpak whose id contains `gzdoom` or `uzdoom`). First thing to try: install the new Flatpak, open Game Configurations → Testing, pick the engine, press Test Map.
+- Dev step `testengine:<program>` sets a test engine and runs Test Map.
+
 ## Early preview release (20 Oct 2026)
 
 - `phase-3/shell` merged into `master` (PR #2); CI green on `master`.

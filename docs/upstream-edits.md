@@ -43,6 +43,9 @@ Genuine upstream bugs found while porting. They aren't Linux-specific, so they'r
 | `Source/Core/Windows/MainForm.cs` | window title: no "(64-bit)"/"(32-bit)" (`#if ULDB`) | User request: there's one build, so it isn't needed |
 | `Source/Core/Windows/MainForm.cs` | `itemhelpissues_Click` opens ULDB's repository (`Branding.REPOSITORY_URL`) (`#if ULDB`) | The item pointed at upstream's bug tracker; ULDB problems go to the fork |
 | `Source/Core/Windows/RunExternalCommandForm.cs` | `KillProcessAndChildren` uses `Process.Kill(true)`; no `System.Management` (`#if ULDB`) | WMI is Windows-only |
+| `Source/Core/General/General.cs` | the temporary folder is `ULDB.Platform.Paths.TempDirectory` (`~/.cache/UltimateLinuxDoomBuilder/tmp`) instead of `/tmp` (`#if ULDB`) | The test map must be readable by an engine that runs outside ULDB's sandbox or in its own Flatpak (private `/tmp`) |
+| `Source/Core/General/Launcher.cs` | the test program check uses `Engines.Exists` and the process start goes through `Engines.Prepare` (`#if ULDB`) | Test Map from inside the Flatpak (`flatpak-spawn --host`) and with Flatpak engines (`flatpak run`) |
+| `Source/Core/Windows/ConfigForm.cs` | engines given as `flatpak:`/`host:` pseudo paths are named by `Engines.DisplayName` (`#if ULDB`) | otherwise the name came from the pseudo path's text |
 | `Source/Core/General/General.cs` | at startup the previous log is copied to `UDBuilder.previous.log` before it's deleted (`#if ULDB`) | A crash is usually reported after a restart, which deleted the log of the crashed session |
 | `Source/Core/Windows/PreferencesForm.cs` | script editor colour presets: extra names added to the combo, a `default:` case in `scriptcolorpresets_SelectedIndexChanged` applies them (`#if ULDB`, `ULDB.Scripting.ScriptColorPresets`) | Issue #20: common editor palettes (Monokai, Dracula, One Dark, Nord, Gruvbox, Solarized, GitHub Light) as choices |
 

@@ -648,7 +648,11 @@ namespace CodeImp.DoomBuilder
 			ParseCommandLineArgs(args);
 
 			// Setup directories
+#if ULDB
+			temppath = ULDB.Platform.Paths.TempDirectory; // ULDB: ~/.cache/UltimateLinuxDoomBuilder/tmp, a folder the engine can read when it runs outside ULDB (see Paths.TempDirectory)
+#else
 			temppath = Path.GetTempPath();
+#endif
 #if ULDB
 			// ULDB: XDG config directory (~/.config/UltimateLinuxDoomBuilder), separate from upstream UDB's settings.
 			settingspath = (portablemode ? apppath : ULDB.Platform.Paths.SettingsDirectory);
