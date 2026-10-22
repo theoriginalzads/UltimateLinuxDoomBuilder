@@ -28,11 +28,11 @@ namespace CodeImp.DoomBuilder.Windows
 			public Row(ErrorItem item)
 			{
 				Item = item;
-				Icon = ULDB.Shell.AvaloniaImages.From(item.Icon);
+				Icon = ULDB.Shell.BreezeIcons.ForImage(item.Icon, 24) ?? (Avalonia.Controls.Control)new Avalonia.Controls.Image { Source = ULDB.Shell.AvaloniaImages.From(item.Icon), Width = 24, Height = 24 };
 			}
 
 			public ErrorItem Item { get; }
-			public Avalonia.Media.Imaging.Bitmap Icon { get; }
+			public Avalonia.Controls.Control Icon { get; }
 			public string Description => Item.Description;
 		}
 

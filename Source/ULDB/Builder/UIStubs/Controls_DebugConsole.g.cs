@@ -19,67 +19,9 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder
 {
-	// stub-key: CodeImp.DoomBuilder.DebugMessageType
-	[Flags]
-	public enum DebugMessageType
-	{
-		LOG = 1,
-		INFO = 2,
-		WARNING = 4,
-		ERROR = 8,
-		SPECIAL = 16,
-	}
-}
-
-namespace CodeImp.DoomBuilder
-{
 	// stub-key: CodeImp.DoomBuilder.DebugConsole
 	public partial class DebugConsole : System.Windows.Forms.UserControl
 	{
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.AlwaysOnTop#10
-		public bool AlwaysOnTop { get => default; }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.Counter#11
-		public static int Counter { get => default; }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole..ctor#12
-		public DebugConsole() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StoreText#13
-		public static void StoreText(string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.SetStoredText#14
-		public static void SetStoredText() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.SetText#15
-		public static void SetText(string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.WriteLine#16
-		public static void WriteLine(string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.WriteLine#17
-		public static void WriteLine(DebugMessageType type, string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.Write#18
-		public static void Write(string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.Write#19
-		public static void Write(DebugMessageType type, string text) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.Write#20
-		public static void Write(DebugMessageType type, string text, bool append) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.Clear#21
-		public static void Clear() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StartTimer#22
-		public static void StartTimer() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.PauseTimer#23
-		public static void PauseTimer() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StopTimer#24
-		public static void StopTimer(string message) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.IncrementCounter#25
-		public static void IncrementCounter() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.IncrementCounter#26
-		public static void IncrementCounter(int incrementby) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.ResetCounter#27
-		public static void ResetCounter() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.ResetCounter#28
-		public static void ResetCounter(string message) { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StartProfiler#29
-		public static void StartProfiler() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StopProfiler#30
-		public static void StopProfiler() { }
-		// stub-key: CodeImp.DoomBuilder.DebugConsole.StopProfiler#31
-		public static void StopProfiler(bool savesnapshot) { }
 	}
 }
 

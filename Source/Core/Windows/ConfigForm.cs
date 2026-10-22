@@ -356,6 +356,10 @@ namespace CodeImp.DoomBuilder.Windows
 					enginename = Path.GetFileNameWithoutExtension(configinfo.TestProgram);
 				}
 				
+#if ULDB
+				// ULDB: Flatpak and host engines are pseudo paths (flatpak:org.zdoom.GZDoom); name them for what they are
+				if(ULDB.Platform.Engines.IsVirtual(configinfo.TestProgram)) enginename = ULDB.Platform.Engines.DisplayName(configinfo.TestProgram);
+#endif
 				configinfo.TestProgramName = enginename;
 				cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = enginename;
 			}

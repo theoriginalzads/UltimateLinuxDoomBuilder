@@ -1,0 +1,23 @@
+<!-- ULDB: the window of Sound Propagation mode's ReverbsPickerForm (model-ported: upstream's code runs unchanged). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.SoundPropagationMode.ReverbsPickerFormView"
+        Title="Sound environment" Width="380" Height="560" MinWidth="300" MinHeight="380" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Spacing="10" Margin="0,12,0,0">
+      <CheckBox x:Name="cbactiveenv"/>
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+        <Button x:Name="accept" IsDefault="True" MinWidth="90" HorizontalContentAlignment="Center" Classes="accent"/>
+        <Button x:Name="cancel" IsCancel="True" MinWidth="90" HorizontalContentAlignment="Center"/>
+      </StackPanel>
+    </StackPanel>
+    <Border Classes="uldb-group">
+      <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="Sound Environments:" Classes="uldb-group-title" Margin="0,0,0,6"/>
+        <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+          <ListBox x:Name="list" SelectionMode="Single" Classes="uldb-checklist"/>
+        </Border>
+      </DockPanel>
+    </Border>
+  </DockPanel>
+</Window>

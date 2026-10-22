@@ -18,10 +18,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool ShowDialog(IntPtr hWndOwner)
 		{
-			FolderBrowserDialog dialog = new FolderBrowserDialog { Description = title ?? "", SelectedPath = initialdirectory ?? "" };
+			FolderBrowserDialog dialog = new FolderBrowserDialog { Description = title ?? "", SelectedPath = NormalisedStart() };
 			if(dialog.ShowDialog(Form.ActiveForm) != DialogResult.OK) return false;
 			filename = dialog.SelectedPath;
 			return true;
+		}
+
+		// Upstream hands over Windows-style folders ("C:\\dir\\" with a trailing backslash); the picker wants a plain path.
+		private string NormalisedStart()
+		{
+			string path = (initialdirectory ?? "").Replace('\\', '/');
+			return path.Length > 1 ? path.TrimEnd('/') : path;
 		}
 	}
 }

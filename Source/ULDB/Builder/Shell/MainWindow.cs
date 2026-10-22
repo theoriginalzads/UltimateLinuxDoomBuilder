@@ -206,6 +206,7 @@ namespace ULDB.Shell
 			layers.Children.Add(gl);
 			layers.Children.Add(splashlayer);
 			layers.Children.Add(new ToastOverlay(display));
+			layers.Children.Add(new CommandPaletteOverlay(() => input?.Focus()));
 			input = layers;
 			Border frame = new Border { Child = layers, BorderThickness = new Thickness(1) };
 			frame.Classes.Add("uldb-display");
@@ -380,9 +381,10 @@ namespace ULDB.Shell
 			// a text field has focus.
 			AddHandler(KeyDownEvent, (s, e) =>
 			{
-				modifiers = KeyMapping.ToModifiers(e.KeyModifiers);
+				KeyModifiers mods = WithOwnModifier(e.Key, e.KeyModifiers, true);
+				modifiers = KeyMapping.ToModifiers(mods);
 				if(IsTextInput(e.Source)) return;
-				WF.Keys keys = KeyMapping.ToKeys(e.Key, e.KeyModifiers);
+				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
 				display.RaisePreviewKeyDown(new WF.PreviewKeyDownEventArgs(keys));
 				form.RaiseKeyDown(new WF.KeyEventArgs(keys));
@@ -391,15 +393,32 @@ namespace ULDB.Shell
 
 			AddHandler(KeyUpEvent, (s, e) =>
 			{
-				modifiers = KeyMapping.ToModifiers(e.KeyModifiers);
+				KeyModifiers mods = WithOwnModifier(e.Key, e.KeyModifiers, false);
+				modifiers = KeyMapping.ToModifiers(mods);
 				if(IsTextInput(e.Source)) return;
-				WF.Keys keys = KeyMapping.ToKeys(e.Key, e.KeyModifiers);
+				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
 				WF.KeyEventArgs args = new WF.KeyEventArgs(keys);
 				form.RaiseKeyUp(args);
 				if(!args.Handled) display.RaiseKeyUp(args);
 				e.Handled = true;
 			}, Avalonia.Interactivity.RoutingStrategies.Tunnel);
+		}
+
+		// Avalonia (Wayland in particular) reports the modifier state from before the event: pressing Shift says
+		// "no modifiers", releasing it says "Shift". UDB reads Shift/Ctrl/Alt from these events, so a Shift-drag
+		// selection replaced the selection and Shift then looked stuck down (issue #28). A modifier key's own
+		// press and release set and clear its flag.
+		internal static KeyModifiers WithOwnModifier(Key key, KeyModifiers mods, bool down)
+		{
+			KeyModifiers own = key switch
+			{
+				Key.LeftShift or Key.RightShift => KeyModifiers.Shift,
+				Key.LeftCtrl or Key.RightCtrl => KeyModifiers.Control,
+				Key.LeftAlt or Key.RightAlt => KeyModifiers.Alt,
+				_ => KeyModifiers.None,
+			};
+			return down ? mods | own : mods & ~own;
 		}
 
 		private static bool IsTextInput(object source) =>
@@ -575,6 +594,89 @@ namespace ULDB.Shell
 						case "texbrowser": // texbrowser:textures|flats[:name], the texture/flat browser
 							CodeImp.DoomBuilder.Windows.TextureBrowserForm.Browse(form, p.Length > 2 ? p[2] : "STARTAN3", p.Length > 1 && p[1] == "flats");
 							break;
+						case "window": // window:<width>x<height>, resizes the main window (to test saving its geometry)
+						{
+							string[] wh = p[1].Split('x');
+							Width = double.Parse(wh[0]); Height = double.Parse(wh[1]);
+							break;
+						}
+						case "closeapp": // closes the main window as the user would, after the pending geometry save
+							DispatcherTimer.RunOnce(Close, TimeSpan.FromSeconds(1.5));
+							break;
+						case "reportdialogs": // reportdialogs:<ms>, after that time prints each open window's place (run before a modal step)
+							DispatcherTimer.RunOnce(() =>
+							{
+								foreach(Window w in FormWindows.Open)
+									Console.WriteLine($"[devstep] open window '{w.Title}' visible={w.IsVisible} {w.Bounds.Width}x{w.Bounds.Height} at {w.Position.X},{w.Position.Y}");
+							}, TimeSpan.FromMilliseconds(int.Parse(p[1])));
+							break;
+						case "markchanged": General.Map.IsChanged = true; break; // makes the map count as edited (autosave only saves edited maps)
+						case "mapbackup": General.Map.SaveMapBackup(); break; // what Quit in the error dialog does
+						case "closetop": // closes the newest open window other than the main one, as the title bar's close button does
+						{
+							Window top = null;
+							foreach(Window w in FormWindows.Open) if(w != this && w.IsVisible) top = w;
+							Console.WriteLine("[devstep] closetop " + (top?.Title ?? "(no window)"));
+							top?.Close();
+							break;
+						}
+						case "clicktag": // clicktag:<tag>, clicks the toolbar or menu item with that Tag (like pressing the button)
+						{
+							WF.ToolStripItem found = null;
+							void Look(System.Collections.IEnumerable items)
+							{
+								foreach(WF.ToolStripItem item in items)
+							{
+									if(found == null && (item.Tag as string) == p[1] && item.Available) found = item;
+									if(item is WF.ToolStripDropDownItem d) Look(d.DropDownItems);
+								}
+							}
+							foreach(string bar in new[] { "toolbar", "modestoolbar", "modecontrolsloolbar", "menumain" }) Look(Field<WF.ToolStrip>(bar).Items);
+							Console.WriteLine("[devstep] clicktag " + p[1] + ": " + (found != null ? found.Text : "(not found)"));
+							found?.PerformClick();
+							break;
+						}
+						case "testengine": // testengine:<program or pseudo path>: sets it as this configuration's test engine and tests the map
+							General.Map.ConfigSettings.TestProgram = string.Join(":", p.Skip(1));
+							General.Map.Launcher.Test();
+							break;
+						case "reportwindow":
+							Console.WriteLine($"[devstep] window {Width}x{Height} at {Position.X},{Position.Y} state {WindowState}");
+							break;
+						case "runcommand": // Run External Command window, running a short shell script (output and an error line)
+						{
+							var info = new System.Diagnostics.ProcessStartInfo("sh", "-c \"echo compiling...; echo all fine; echo broken thing >&2; sleep 1; echo done\"");
+							new CodeImp.DoomBuilder.Windows.RunExternalCommandForm(info, new CodeImp.DoomBuilder.Config.ExternalCommandSettings { StdErrIsError = true }).ShowDialog(form);
+							break;
+						}
+						case "flagsdialogs": // flagsdialogs:flags|bitflags|bitoptions|customfields, with sample data
+						{
+							var sample = new CodeImp.DoomBuilder.Config.EnumList();
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("1", "First flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("2", "Second flag"));
+							sample.Add(new CodeImp.DoomBuilder.Config.EnumItem("4", "Third flag"));
+							switch(p[1])
+							{
+								case "flags": CodeImp.DoomBuilder.Windows.FlagsForm.ShowDialog(form, "a", new System.Collections.Generic.Dictionary<string, string> { ["a"] = "Alpha", ["b"] = "Beta", ["c"] = "Gamma" }); break;
+								case "bitflags": CodeImp.DoomBuilder.Windows.BitFlagsForm.ShowDialog(form, sample, 3); break;
+								case "bitoptions": CodeImp.DoomBuilder.Windows.BitFlagsAndOptionsForm.ShowDialog(form, sample, sample, 5); break;
+								case "customfields":
+									CodeImp.DoomBuilder.Windows.CustomFieldsForm.ShowDialog(form, () => { }, "Front side custom fields", "sidedef",
+										new System.Collections.Generic.List<CodeImp.DoomBuilder.Map.MapElement> { System.Linq.Enumerable.First(General.Map.Map.Sidedefs) }, General.Map.Config.SidedefFields);
+									break;
+							}
+							break;
+						}
+						case "plugform": // plugform:<plugin assembly>:<form type>, shown modally; a Thing parameter gets the first thing
+							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+							{
+								if(asm.GetName().Name != p[1]) continue;
+								Type ft = asm.GetTypes().First(t => t.Name == p[2]);
+								System.Reflection.ConstructorInfo ci = ft.GetConstructors().First();
+								object[] cargs = ci.GetParameters().Select(pi => pi.ParameterType == typeof(CodeImp.DoomBuilder.Map.Thing) ? (object)System.Linq.Enumerable.First(General.Map.Map.Things) : null).ToArray();
+								((WF.Form)ci.Invoke(cargs)).ShowDialog(form);
+							}
+							break;
 						case "call": // call:<plugin assembly>:<BuilderPlug method>, e.g. call:ThreeDFloorMode:ThreeDFloorEditor
 							foreach(System.Reflection.Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 							{
@@ -649,8 +751,12 @@ namespace ULDB.Shell
 				else closing = true;
 			};
 
-			Resized += (s, e) => SyncFormGeometry();
-			PositionChanged += (s, e) => SyncFormGeometry();
+			// Upstream's DelayedForm remembers the window's size and place from ResizeEnd (WinForms raises it when
+			// a resize or drag ends); here that's half a second after the last change.
+			DispatcherTimer geometrytimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+			geometrytimer.Tick += (s, e) => { geometrytimer.Stop(); SyncFormGeometry(); form.RaiseResizeEnd(); };
+			Resized += (s, e) => { SyncFormGeometry(); geometrytimer.Stop(); geometrytimer.Start(); };
+			PositionChanged += (s, e) => { SyncFormGeometry(); geometrytimer.Stop(); geometrytimer.Start(); };
 			PropertyChanged += (s, e) => { if(e.Property == WindowStateProperty) SyncFormGeometry(); };
 		}
 
@@ -658,6 +764,20 @@ namespace ULDB.Shell
 		public void Load()
 		{
 			form.RaiseLoad();
+
+			// DelayedForm.OnLoad has put the saved size and place on the form; the window takes them (only when
+			// something was saved, so a first start keeps ULDB's default size).
+			if(General.Settings.ReadSetting("windows.mainform.sizewidth", 0) > 0 && General.Settings.ReadSetting("windows.mainform.sizeheight", 0) > 0)
+			{
+				double scale = Screens.Primary?.Scaling ?? 1.0;
+				Width = Math.Max(MinWidth, form.Width / scale);
+				Height = Math.Max(MinHeight, form.Height / scale);
+			}
+			if(form.StartPosition == WF.FormStartPosition.Manual)
+			{
+				WindowStartupLocation = WindowStartupLocation.Manual;
+				Position = new PixelPoint(form.Location.X, form.Location.Y);
+			}
 			if(form.WindowState == WF.FormWindowState.Maximized) WindowState = WindowState.Maximized;
 		}
 

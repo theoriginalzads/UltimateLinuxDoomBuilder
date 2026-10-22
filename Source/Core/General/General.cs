@@ -648,7 +648,11 @@ namespace CodeImp.DoomBuilder
 			ParseCommandLineArgs(args);
 
 			// Setup directories
+#if ULDB
+			temppath = ULDB.Platform.Paths.TempDirectory; // ULDB: ~/.cache/UltimateLinuxDoomBuilder/tmp, a folder the engine can read when it runs outside ULDB (see Paths.TempDirectory)
+#else
 			temppath = Path.GetTempPath();
+#endif
 #if ULDB
 			// ULDB: XDG config directory (~/.config/UltimateLinuxDoomBuilder), separate from upstream UDB's settings.
 			settingspath = (portablemode ? apppath : ULDB.Platform.Paths.SettingsDirectory);
@@ -682,6 +686,10 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Remove the previous log file and start logging
+#if ULDB
+			// ULDB: keep the previous session's log next to the new one (a crash is usually reported after a restart)
+			try { if(File.Exists(logfile)) File.Copy(logfile, Path.ChangeExtension(logfile, ".previous.log"), true); } catch(Exception) { }
+#endif
 			if(File.Exists(logfile)) File.Delete(logfile);
             string platform = Environment.Is64BitProcess ? "x64" : "x86";
 			General.WriteLogLine("Ultimate Doom Builder R" + thisasm.GetName().Version.Revision + " (" + platform + ", " + commithash + ") startup"); //mxd

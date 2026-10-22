@@ -116,11 +116,19 @@ namespace System.Drawing
 			}
 		}
 
+		// Matching a family through the system font manager (fontconfig) takes milliseconds, and UDB measures a
+		// name for every texture it loads (ImageData.ComputeNamesWidth): faces are looked up once per family and style.
+		private static readonly System.Collections.Concurrent.ConcurrentDictionary<(string family, bool bold, bool italic), SKTypeface> faces
+			= new System.Collections.Concurrent.ConcurrentDictionary<(string, bool, bool), SKTypeface>();
+
 		internal SKFont CreateSkFont(float dpi)
 		{
-			SKFontStyle style = new SKFontStyle(Bold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal,
-				SKFontStyleWidth.Normal, Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
-			SKTypeface face = SKFontManager.Default.MatchFamily(FontFamily.Name, style) ?? SKTypeface.Default;
+			SKTypeface face = faces.GetOrAdd((FontFamily.Name, Bold, Italic), key =>
+			{
+				SKFontStyle style = new SKFontStyle(key.bold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal,
+					SKFontStyleWidth.Normal, key.italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
+				return SKFontManager.Default.MatchFamily(key.family, style) ?? SKTypeface.Default;
+			});
 			return new SKFont(face, PixelSize(dpi)) { Subpixel = true };
 		}
 

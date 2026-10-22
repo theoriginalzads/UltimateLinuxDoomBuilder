@@ -1,7 +1,29 @@
 # ULDB progress
 
 **Based on upstream:** UltimateDoomBuilder `master` @ `42c8b37` (17 Oct 2026)
-**Current phase:** Phase 3 (`phase-3/shell` merged to `master` via PR #2 on 20 Oct 2026; start follow-up work on a new `phase-3/...` branch from `master`). **Early preview v0.1.0 released** (below). Milestone reached on 20 Oct 2026 (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
+**Current phase:** Phase 3, finishing: see **START HERE** below. Early previews v0.1.0 and v0.2.0 are released. Milestone reached on 20 Oct 2026 (user tested: launch, File → Open, 2D/3D, pan, zoom, modes, save). Now porting the main windows to `.axaml`. Phases 0–2 are in PR theoriginalzads/UltimateLinuxDoomBuilder#1. Phase 0 steps marked *(user)* still need the user's machine.
+
+## START HERE (state at the end of the 21 Oct 2026 cloud sessions)
+
+**Where the project is.** ULDB is a working early preview (releases `v0.1.0-preview`, and `v0.2.0-preview` with the script editor and core dialogs). Every window the editor opens now has a real Avalonia view (the few placeholders left are on purpose: Update window, unused list-view helpers, `ButtonsNumericTextboxDesigner`). The main work left is **real-use testing by the user** and what that finds, then polish.
+
+**Branches and pull requests (read the 22 Oct section: PRs #22 to #24 landed on stacked branches, not `master`; the bug-fix branch carries everything).** `master` has everything up to PR #16 and #21. The user was merging the stack in this order (each is stacked on the one before; check which are merged with `gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/pulls?state=all`):
+1. #21 `phase-3/issues-17-19-20`: issues #17 (no minimise button on dialogs), #18 (28 menu icons), #19 (Game Configurations), #20 (Preferences: layout, live script preview, 8 colour presets, plugin tabs for Builder Modes and 3D Floor Mode).
+2. #22 `phase-3/plugin-windows`: ColorPicker and Sound Propagation windows.
+3. #23 `phase-3/leftovers`: Flags/BitFlags/CustomFields/Linedef Color Presets/Run External Command windows, command palette overlay, DebugConsole, main window size/position saving, dialogs centred on the main window, placeholder splash (`Source/ULDB/Assets/Overrides/Splash3_trans.png`).
+4. #24 `phase-3/robustness`: crash reports, startup failure report, previous log kept, faster map loading (#13), autosave/backup checked.
+After they're merged start new work on a new `phase-3/...` branch from `master`. **The user then builds a new preview (tag `v*` on `master` runs the Flatpak workflow, which creates the pre-release; `workflow_dispatch` with `release_tag` attaches to an existing one) and starts extended testing.** The cloud container can't merge PRs, push tags or edit releases (403 from the proxy); the user does those. Update `packaging/RELEASE_NOTES.md` for the release text.
+
+**What to do next, in order:**
+1. Read the user's new GitHub issues (`gh api repos/theoriginalzads/UltimateLinuxDoomBuilder/issues?state=open`); they are the real-use findings. Reproduce with the container tools (`tools/capture/capture.sh`, see below) where the bug is visual or in a dialog, and fix small ones directly.
+2. Things never checked on a real desktop (ask the user, don't assume): the installed Flatpak and `makepkg -si`; settings import with real UDB settings; the dialogs listed in each section below under "to try by hand"; mouse behaviour of the colour wheel; Wayland window position saving.
+3. Main window modernisation (plan section 4) **needs the user's sign-off with a screenshot first**.
+4. Start-up time (about 2 s: all 51 game configurations are parsed although 14 are shown; hide-and-skip them), the large-map read time (about 1 s), loading a map off the UI thread, a font list in Preferences (empty in the container; check on a real machine), Open Map dialog not offering `.autosave` files.
+5. Keep `docs/progress.md`, `port-map.md`, `ux-changes.md`, `upstream-edits.md` current as you go.
+
+**Container tools worth knowing** (details in the sections below and `CLAUDE.md`): `tools/capture/capture.sh OUT.png "STEPS" [MAP.wad]` renders a dialog or the main window headless (steps joined by `+`: `action:`, `select:`, `selectone:`, `docker:`, `call:<plugin>:<method>`, `plugform:<assembly>:<form>`, `flagsdialogs:<kind>`, `runcommand`, `window:WxH`, `closeapp`, `reportwindow`, `reportdialogs:<ms>`, `markchanged`, `mapbackup`, `about`, form names such as `sector`, `prefs:<tab>`, `config:<tab>`); `ULDB_KEEP_LOG=file` keeps the console output; `ULDB_DUMP_TOOLBARS=1` lists every menu/toolbar item with `icon=True/False`; `tools/iconsheet` previews icons; `tools/uistubgen/prune.py Builder|<Plugin>` regenerates placeholders (after adding a port, add the type to `uistubs-ported.txt`, the `.cs`/`.Designer.cs` to the csproj, and register the view in `Shell/FormViews.cs`, `ControlViews.cs` or `TabPageViews.cs`); `tools/resxgen/autoresx.py` writes form `.resx` files; ULDB's own pictures replace upstream's by file name from `Source/ULDB/Assets/Overrides/`. Map and plugin windows can only be judged for layout here, never for mouse feel. The map area of a capture is white (the GL view isn't part of the bitmap).
+
+**Limits seen:** no tag pushes, release edits or PR merges from the container (proxy 403); job logs and artifact downloads from Actions are blocked, so read failures through check-run annotations (`gh api repos/.../check-runs/<job id>/annotations`).
 
 ## Phase 0: Fork, toolchain, baseline
 
@@ -93,32 +115,23 @@ See `docs/architecture.md` for how it's built, and the Phase 1 section of the pl
 | Save | ✅ | Ctrl+S in the UI: ZDBSP runs, `TEXTMAP` + `ZNODES` written (user tested 20 Oct 2026) |
 | Input | ✅ | Keys, wheel, mouse buttons into upstream's handlers (via a hit-testable layer over the GL view). `ULDB_TRACE_INPUT=1` logs events and their actions. 3D mouselook: `Shell/X11Pointer.cs` (XQueryPointer/XWarpPointer) + screen mappers; user-tested on KDE Wayland (XWayland): "feels just like the original" |
 
-**Tests:** 188 passing.
+**Tests:** 203 passing (21 Oct 2026).
 
-### Remaining Phase 3 work (pick up here)
+### Phase 3 history (the old to-do list; superseded by START HERE)
 
-The user wants this done **on their machine**, with them watching the window. Work in this order and show them each step running:
+The items that used to be listed here (texture browser, icons, Doom/Hexen-format edit forms, Map Options, game configurations, preferences, script editor, BuilderModes dockers, window geometry) are all done; see the sections below. Still open from that list: modernising the main window further (needs the user's sign-off), a pointer grab for 3D mouse look if people report the pointer escaping, and a drop marker for the resource list. The notes on how the dialogs are built are kept here.
 
-**Session ended 20 Oct 2026 (evening); resume with item 1 below (texture browser).** All work is committed and pushed on `phase-3/shell`; 188 tests pass. Later cloud sessions (no screen) finished item 2 (the icons: show them to the user first) and work from Phases 6 and 7: see "Done ahead of order" below.
 
-**State on 20 Oct 2026 (user tested):** open via the Open Map dialog, edit, save; info panels (modern cards), dockers (Help docker; plugin dockers say "not ported"), and the edit dialogs Vertex, Thing (UDMF), Sector (UDMF), Linedef (UDMF), Edit Action and Edit Text all work as model ports with .axaml windows. The user reviewed the dialogs against UDB screenshots and approved the compact, aligned layout (shared label column per tab, 92 px number boxes, previews filling space, Linedef sides grouped by wall part like Sector surfaces, no action help button). First pass of Breeze-style toolbar icons (`Shell/BreezeIcons.cs`). Next, in order:
-1. **Texture browser** (`TextureBrowserForm`): clicking texture/flat pickers does nothing until it's ported (its placeholder returns null and the picker keeps its texture).
-2. ~~Remaining icons~~ ✅ done in a cloud session, 20 Oct 2026, **not yet seen on a real screen**: show the user the menus (Edit, View, Tools, Help, the lights/models dropdowns) and the Sector dialog's reset buttons, and adjust any they don't like. `Shell/ResourceImageNames.cs` matches any upstream image to its `Properties.Resources` name by pixel content (this also catches form .resx copies), so `BreezeIcons` has `res:<Name>` specs plus aliases to the action icons. `tools/iconsheet` renders all icons to light/dark preview sheets; `BreezeIconTests` checks the specs and the lookup. BuilderEffects' three menu icons are in place for Phase 6. Not converted on purpose: splash/About artwork, `ErrorLarge*`/`WarningLarge*` (Errors window), `Monster2/3` and engine icons (Test menu), thing/texture images.
-3. Non-UDMF edit forms (`LinedefEditForm`, `SectorEditForm`, `ThingEditForm`) for GZDoom's Doom/Hexen-format configs; Map Options, game configurations (`ConfigForm`, with `ScopeFilter`), preferences, script editor.
-4. BuilderModes' docker panels (Undo/Redo, Draw Settings, Edit Selection, Draw Grid...) register views in `ControlViews` (Phase 4).
-5. Window geometry persistence for the main window; startup polish (window shows empty for 1–2 s); resource list drop marker.
-6. Modernise the main window further (plan section 4; user wants it): toolbars, status bar, menus.
-7. 3D mouselook has no pointer grab for `Cursor.Clip`; add one if users report the pointer escaping.
 
 **How the dialogs are built (read before porting more):** `docs/architecture.md` ("Two ways to port a window", item 3, and "Language version"). Large layouts are generated by `tools/axamlgen` (see its README); check any dialog with `ULDB_SHOW_FORM=linedef:1` (form, tab) or `ULDB_SHOW_FORM=action:buildermodes_sectorsmode`, and add `ULDB_CAPTURE=file.png` to have ULDB render its own window to a PNG (`Shell/DevCapture.cs`). **Never use screen captures**: they can catch the user's other windows. **In a cloud container**, `tools/capture/capture.sh OUT.png [FORM]` opens a test map with Freedoom under Xvfb (`ULDB_RENDERING=egl`, Mesa llvmpipe) and captures the main window or a dialog; the Errors window is skipped, and ULDB exits after the capture (`ULDB_CAPTURE_EXIT=1`). The map area itself captures white (the GL view isn't part of Avalonia's render-to-bitmap); dialogs capture fully. `ULDB_DUMP_TOOLBARS=1` lists toolbar items and their tags (for icons). Headless tests (`EditFormTests`) construct each model-ported form and run its Setup on a real map: add one for every new form.
 
-App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. **About dialog (user request, 20 Oct 2026): when `AboutForm` is ported, show Cacky as its image/icon** (in place of UDB's logo artwork), alongside the UZDoom/GZDoom reference and the AI disclosure from `Branding`. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. Plugins aren't built yet except BuilderModes (Phase 4).
+App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source plus PNGs; 16 px is text-free), approved by the user. The About window (done) shows Cacky (in place of UDB's logo artwork), alongside the UZDoom/GZDoom reference and the AI disclosure from `Branding`. Avalonia sends one icon size, so the title bar shows the 256 px one scaled down; the `.desktop` file with hicolor sizes (packaging) fixes that. `WM_CLASS` is `uldb`; revisit with the `.desktop` file so it matches the app ID. All plugins are built and ported.
 
 **Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
 
 ## Issue fixes (branch `phase-3/issue-fixes`, 20 Oct 2026)
 
-GitHub issues #6–#15 worked through. #6, #8–#12, #14, #15 fixed and checked with ULDB's own captures, dev steps or a unit test (`PickingALevelInTheUndoPanelUndoesToIt`); the details are in `docs/ux-changes.md`. **#7** (exit on an unknown error) wasn't reproduced; `ExceptionDialog` is now ported, so an unhandled exception should show the real error instead. **#13**: opening a map takes ~3.7 s in Debug for both `small.wad` and `large.wad`, so the time is fixed start-up/resource loading, not map size; the window now shows an "Opening map..." overlay (`ULDB.Platform.Busy`). The map still loads on the UI thread (a real fix would move it off-thread). Release timing wasn't measured. New: `tests/maps/tags.wad`, dev steps in `MainWindow` (see the `ULDB_SHOW_FORM` handling), `~/.cache/uldb-shots/loadtime.sh` (not in the repo). To verify on the real desktop: toolbar » popups, tree expand/rename, Undo/Redo clicking, Find & Replace closing, Add Resource alignment, comment placeholder, link icons, the overlay, and whether #7 recurs.
+GitHub issues #6–#15 worked through. #6, #8–#12, #14, #15 fixed and checked with ULDB's own captures, dev steps or a unit test (`PickingALevelInTheUndoPanelUndoesToIt`); the details are in `docs/ux-changes.md`. **#7** (exit on an unknown error) wasn't reproduced; `ExceptionDialog` is now ported, so an unhandled exception should show the real error instead. **#13**: opening a map takes ~3.7 s in Debug for both `small.wad` and `large.wad`, so the time is fixed start-up/resource loading, not map size; the window now shows an "Opening map..." overlay (`ULDB.Platform.Busy`). The map still loads on the UI thread. **Fixed on 21 Oct 2026:** the "fixed cost" was UDB measuring every texture's name when it creates it (`ImageData.ComputeNamesWidth`), which looked up the font through fontconfig each time (about 2 ms x 3,500 names); the compat `Font` now caches the typeface. Opening `large.wad` with Freedoom 2 went from about 8 s to about 3 s in a container (Debug and Release are the same: it wasn't JIT). New: `tests/maps/tags.wad`, dev steps in `MainWindow` (see the `ULDB_SHOW_FORM` handling), `~/.cache/uldb-shots/loadtime.sh` (not in the repo). To verify on the real desktop: toolbar » popups, tree expand/rename, Undo/Redo clicking, Find & Replace closing, Add Resource alignment, comment placeholder, link icons, the overlay, and whether #7 recurs.
 
 ### Texture browser (branch `phase-3/issue-fixes`, 20 Oct 2026)
 
@@ -130,9 +143,64 @@ Ported (model ports unless noted): Map Options (hand port), Game Configurations,
 
 **Script editor (new engine).** Upstream's Linux build stubs the ScintillaNET API over a plain TextBox (`Controls/Scripting/TextEditorControl.cs`, `#if NO_SCINTILLA`), which is what draws the lines through the text and crashes in the search code. ULDB implements that API for real: `Source/ULDB/Builder/Scripting/` has the `ScintillaNET` types over an AvaloniaEdit document (`Scintilla.cs`, `ScintillaTypes.cs`), a lexer that gives every character upstream's Scintilla style numbers (`ScriptLexer.cs`), and the AvaloniaEdit view (`ScintillaView.cs`: JetBrains Mono, syntax colours from Preferences, line numbers, error markers, brace matching, word highlights, folding, autocompletion, call tips). Upstream's `ScriptEditorControl`, `ScriptHandler`, the document tabs, `ScriptEditorPanel` and `ScriptEditorForm` compile unchanged on top; views: `ScriptEditorControlView`, `ScriptEditorPanelView` (tabs with an unsaved-changes dot), the form, go-to-line and find/replace windows. See `docs/ux-changes.md`.
 
+## Bug fixes from the first real-use issues (branch `phase-3/bugfixes-22oct`, 22 Oct 2026, no screen)
+
+**Important:** PRs #22 to #24 were merged into their *stacked base branches*, not into `master` (only #21 reached it), so a build from `master` lacked the ColorPicker windows, the leftover windows, the robustness work and more. This branch is based on `origin/phase-3/leftovers`, which contains all of it; **one PR from `phase-3/bugfixes-22oct` into `master` brings everything**. Several of the issues below were just that (#30: the colour picker windows were still placeholders on `master`).
+
+| Issue | Cause and fix |
+|---|---|
+| #26 crash switching to Tag Explorer | Avalonia asks list templates for a null row when it clears a recycled row; `TreeViewView`, the Comments docker and the grid view now return nothing for null |
+| #32 Stair Sector Builder hang, #31 Map Analysis won't close | Their forms answer a close by cancelling the mode, which hides the form; the window's `Hide` was ignored while closing so the window stayed up (and the next close hung). `AvaloniaHost` now hides the window when a cancelled close left the form hidden. Checked with the new `closetop` dev step (the window hides and the app exits) |
+| #28 Shift-select | Avalonia reports the modifier state from before a key event: pressing Shift said "none", releasing it said "Shift", so UDB saw Shift one step late. A modifier key's own press/release now sets/clears its flag (`MainWindow.WithOwnModifier`, tested). **Check on the real machine (Wayland)** |
+| #30 colour picker does nothing | the windows were placeholders on `master` (see above); checked here that the toolbar button opens the sector colour picker |
+| #29 Preferences | slider thumbs cut off (fixed height removed), card bottoms cut off (bottom margin), toast list text (horizontal scrollbar, compact rows), colour preset didn't redraw the preview until clicked (script `Style` changes now schedule a redraw) |
+| #31 compact list | Map Analysis results use the compact row style |
+| #27 texture browser grid | with a set preview size every tile is the same width so tiles form columns; long names are trimmed |
+| #25 old bitmap icons | the Errors window's large error/warning pictures, the docker's unpin picture and the script editor's keyword/constant/property/snippet/palette/new/open/save pictures now have Breeze-style icons (`res:ErrorLarge` etc.). The issue's screenshot couldn't be read from the container, so **ask the reporter which corner icon they meant** if one is still bitmap |
+
+New dev steps: `closetop` (close the newest window), `clicktag:<tag>` (click the toolbar/menu item with that Tag), `reportdialogs` now shows visibility.
+
 ## Issues #17, #19, #20 (branch `phase-3/issues-17-19-20`, 21 Oct 2026, no screen)
 
 Dialogs lose the minimise button (#17); Game Configurations list/spacing/garbled checkbox (#19: the two Windows-only path options are hidden); Preferences (#20): colour name labels, live script editor preview, eight extra colour presets (`ULDB.Scripting.ScriptColorPresets`, hooked into `PreferencesForm` with `#if ULDB`), plugin tabs (Builder Modes "Editing", 3D Floor Mode) via `TabPageViews`. All checked with container captures; **to verify on the real machine:** the layouts at your window size (the cut-off texts in #20 didn't reproduce at 1040x760, so say if any remain), picking a preset and OK, the 3D Floor Mode tab, the Builder Modes tab's lower groups. Font combo lists are empty in the container (no installed fonts to list?): check yours. #18: 28 new menu icons (see `docs/ux-changes.md`); `ULDB_DUMP_TOOLBARS=1` (with `ULDB_KEEP_LOG=file` on `capture.sh`) now lists every menu item with `icon=True/False`, submenus included. Still open: the plugin windows left (ColorPicker, SoundPropagation), #13.
+
+## ColorPicker and Sound Propagation windows (branch `phase-3/plugin-windows`, 21 Oct 2026, no screen)
+
+Both plugins' remaining windows are ported (see `docs/port-map.md`): ColorPicker's wheel control, sliders and the light and sector pickers; Sound Propagation's colour configuration and reverbs picker. Compat `Control` gained `Invalidated` and `RaisePaint(Graphics, Rectangle)` so owner-drawn controls can be painted into a bitmap by their view. New dev step `plugform:<assembly>:<form type>` opens a plugin form. **To try on the real machine:** dragging in the colour wheel and brightness strip (mouse; only the static drawing was captured), typing hex/float values, OK/Cancel colours, the relative mode and secondary-intensity sliders on spot lights, picking a reverb from a real list. The plugin windows list in "Remaining Phase 3 work" is now done apart from the BuilderModes preferences (done in PR #21).
+
+## Leftover placeholders, window geometry, About centring (branch `phase-3/leftovers`, 21 Oct 2026, no screen)
+
+- **Ported** (captured in the container; see `docs/port-map.md`): Flags, BitFlags, BitFlags and Options, Custom Fields, Linedef Color Presets (with a new coloured checklist binder), Run External Command (error lines in red; `#if ULDB` edit for killing the process tree), the command palette (overlay), and `DebugConsole`'s static logging/profiler. **Not ported on purpose:** the Update window (hidden), `OptimizedListView`/`ResourceListView`/`ButtonsNumericTextboxDesigner` (nothing uses them), `AboutForm` (ULDB's own `AboutView`).
+- **Window position and size:** the main window restores what upstream's `DelayedForm` saved (size, place, maximised) and raises `ResizeEnd` half a second after a change so it's remembered; a first start keeps the default size. Checked by closing and restarting under Xvfb; **try on the real machine, incl. a second monitor and Wayland (the compositor may ignore the position)**.
+- **Dialogs** with no saved position open centred on the main window (the About window measured centred to within 1 px).
+- **Splash:** a placeholder picture at `Source/ULDB/Assets/Overrides/Splash3_trans.png` (725x354); drop your own PNG there to replace it (see `docs/ux-changes.md`).
+- **To try by hand:** the command palette (typing, arrows, Enter, Escape, clicking), Run External Command in a real before/after-save command, Linedef Color Presets (add/delete/move, colours, actions), Flags dialogs from Find & Replace and thing args, Custom Fields from the linedef dialog.
+
+## Robustness pass (branch `phase-3/robustness`, 21 Oct 2026, no screen)
+
+- **Crash reports:** the unexpected-error window's report (`UDBCrash.txt`, plus a dated `UDBCrash-<time>.txt`, last 10 kept) now has the full exception with inner exceptions, system info and the last 300 log lines; *Copy to clipboard* copies that whole report. The log of the previous session is kept as `UDBuilder.previous.log` (upstream deleted it at every start, so a crash report after a restart had nothing; `#if ULDB` edit in `General.cs`). A failure before the UI exists (no display, broken install) now prints the error and writes `UDBCrash.txt` instead of dying silently; unobserved task exceptions are logged. Settings folder: `~/.config/UltimateLinuxDoomBuilder/` (Flatpak: `~/.var/app/io.github.theoriginalzads.UltimateLinuxDoomBuilder/config/UltimateLinuxDoomBuilder/`).
+- **Map load time (#13):** see the Issue fixes section; the cause was font lookups, now cached. Start-up (about 2 s: 51 game configurations are parsed although 14 are shown) and the large map's own read time (about 1 s) are what's left.
+- **Autosave and recovery checked in a container:** with the interval at 0 an edited map writes `<map>.wad.MAP01.autosave1..N` next to the WAD (N = the *number of autosaves* setting, older ones shift up); the files are valid WADs that open (rename or open them as `.wad`; the Open Map dialog doesn't offer them by extension). Quit in the error dialog (and a crash that reaches it) saves a map backup to `<settings>/Restore/<map>.<hash>.restore`; opening the same map again asks whether to restore it (the question window appeared; **not clicked through here**). A force-kill (SIGKILL, power loss) saves nothing extra: you have the last autosave. Dev steps added: `markchanged`, `mapbackup`.
+- **To try by hand:** make a real crash if you can (the unexpected-error window, *Copy to clipboard*, the report folder link), kill ULDB while editing and look for the newest `.autosave` file, and answer the restore question.
+
+## Review for hidden bugs (22 Oct 2026, no screen)
+
+Checked: the whole test suite under a German culture (`LANG=de_DE.UTF-8`, decimal comma; passes, so map save/load isn't culture-dependent), a sweep of 29 editing-mode switches and the 3D visual mode on the 3D-floors test map (no exceptions; the slope modes ask for a slope sector first and block the sweep), shell-outs (`Process.Start` calls all go through `xdg-open` helpers), blocking waits on the UI thread, and NuGet vulnerabilities. **Fixed:** the folder picker got Windows-style start folders (`C:\dir\`; `ResourceOptionsForm` adds a trailing backslash) and now normalises them.
+
+**Findings left for the user to decide:**
+1. **Test Map in the Flatpak (probably broken for most engines).** `Launcher` starts the engine with `Process.Start` inside the sandbox. A native UZDoom/GZDoom binary under `$HOME` may or may not run against the Flatpak runtime's libraries, and a Flatpak-installed engine can't be started at all. The usual fix is `flatpak-spawn --host <engine> <args>` with the `--talk-name=org.freedesktop.Flatpak` permission, which opens a sandbox hole (Flathub reviews that); it's a decision for the user. Not tested here (no engine in the container).
+2. **SharpCompress 0.20.0** (the version upstream ships) has three moderate advisories (GHSA-6c8g-7p36-r338, -fxh6-w476-hgr4, -jp7f-grcv-6mjf; zip/bzip2 reading, mainly denial of service on hostile archives). Newer versions change the API (`BZip2Stream` constructor in `SharpCompressHelper.cs`, an upstream file) and still showed the first advisory at 0.37.2, so it isn't a quick bump; ULDB only reads the user's own PK3s and its own backups.
+3. Autosave files (`<map>.wad.MAP01.autosaveN`) aren't offered by Open Map's file filter, so recovering one means renaming it or typing its name.
+4. Modifier-only key presses in dialogs (not the main window) still use Avalonia's lagging modifier flags; nothing known depends on it.
+
+## Test Map from the Flatpak and engine presets (branch `phase-3/engine-presets`, 22 Oct 2026, no screen)
+
+User request: Test Map has to work from inside the Flatpak, and the engine settings should offer GZDoom and UZDoom presets with launch options (like DoomRunner, which the user uses; its approach was read, not copied).
+- **Starting engines** (`Source/ULDB/Builder/Platform/Engines.cs`): inside ULDB's Flatpak every engine is started with `flatpak-spawn --host` (the manifest now has `--talk-name=org.freedesktop.Flatpak`, the same permission DoomRunner's Flatpak asks for); an engine that is itself a Flatpak is started with `flatpak run --filesystem=<folder>:ro ... <app id>` for the folders named on the command line (not `/usr`, `/tmp` etc.). Engines that aren't plain files are stored in the game configuration as pseudo paths: `flatpak:<application id>` and `host:<command or path>`; `Launcher` checks them with `Engines.Exists` and starts them through `Engines.Prepare` (`#if ULDB` edits, listed in `docs/upstream-edits.md`).
+- **Temp folder:** the test map used to be written to `/tmp`, which a sandboxed ULDB doesn't share with the host and a Flatpak engine can't read. The temp folder is now `~/.cache/UltimateLinuxDoomBuilder/tmp` (the real home inside the Flatpak too).
+- **Presets:** `EnginePresets.cs` holds the launch options per family (GZDoom and UZDoom share the ZDoom switches); the Testing tab has a quick-setup card (installed engines found by `Engines.Detect`, in the background; engine type; option checkboxes that edit the parameters text, switching on *Customize parameters*). The family is read from the program's name, and an option is "on" when its switches are in the parameters, so nothing new is stored.
+- **Checked here:** unit tests (command building for native/host/Flatpak, inside and outside the sandbox; detection parsing; option editing; a fake engine started through `host:`), and a headless Test Map run with a fake engine script (both a plain path and `host:`): the engine received the right IWAD, skill, resources and the temp WAD. **Not testable in the container (needs the user's machine):** `flatpak-spawn --host`, `flatpak run` and a real GZDoom/UZDoom, installed natively and as a Flatpak; whether the Flatpak engines can read the folders granted (the app ids differ per engine; detection matches any Flatpak whose id contains `gzdoom` or `uzdoom`). First thing to try: install the new Flatpak, open Game Configurations → Testing, pick the engine, press Test Map.
+- Dev step `testengine:<program>` sets a test engine and runs Test Map.
 
 ## Early preview release (20 Oct 2026)
 
@@ -190,19 +258,18 @@ Work the user approved doing without their machine. All on `phase-3/shell`.
 
 ## Handoff notes (for the next session)
 
-- **Branches:**
-  - `phase-1/core` → `phase-2/renderer` → `phase-3/shell` (each builds on the previous).
-  - Phases 0–2 are in PR [#1](https://github.com/theoriginalzads/UltimateLinuxDoomBuilder/pull/1) into `master`; it may already be merged when you read this.
-  - Continue on `phase-3/shell`. If #1 has been merged, merge `master` into it first.
+- **Read the START HERE block at the top first.** Branches: `master` plus the stacked PRs #21 to #24 listed there; the old `phase-1/core` → `phase-2/renderer` → `phase-3/shell` chain is merged.
 - **User's machine checklist** (`docs/setup-cachyos.md`). Ask whether these are done:
   - install the toolchain
   - clone with `--recurse-submodules`
-  - `dotnet test Builder.Linux.sln`, expecting 149 passing
+  - `dotnet test Builder.Linux.sln`, expecting 203 passing
   - the Mono reference build, reference screenshots in `docs/reference-screenshots/`
   - own maps in `tests/maps/user/` (optional)
 - **On the user's machine the window is real:** the Avalonia app runs on their KDE Plasma (X11 backend; XWayland on Wayland sessions). Use `-p:UldbArch=znver4` for their builds if they want it.
-- **User's machine (CachyOS):** VS Code runs as a **Flatpak**, so the agent's shell is sandboxed: run `dotnet`, `git push` and the app through `flatpak-spawn --host sh -c "cd '$PWD' && …"`. The sandbox's `/tmp` is private; put files the host must write (screenshots: `spectacle -b -n -a -o ~/.cache/uldb-shots/x.png`) under `$HOME`. Freedoom is in `~/.local/share/doom/`.
+- **User's machine (CachyOS):** VS Code runs as a **Flatpak**, so the agent's shell is sandboxed: run `dotnet`, `git push` and the app through `flatpak-spawn --host sh -c "cd '$PWD' && …"`. The sandbox's `/tmp` is private; put files the host must write (screenshots: `spectacle -b -n -a -o ~/.cache/uldb-shots/x.png`) under `$HOME`. Freedoom is in `~/.local/share/doom/`. **Never use screen captures of the real desktop** (they can catch other windows); use ULDB's own capture (`ULDB_CAPTURE`).
 - **GitHub from cloud sessions:**
-  - `gh` GraphQL is blocked; use `gh api` (REST).
+  - `gh` GraphQL is blocked; use `gh api` (REST). The user's Projects board can't be reached.
   - The repo is a fork, so always target `theoriginalzads/UltimateLinuxDoomBuilder` explicitly when opening PRs, never upstream.
+  - PR bodies end with the 🤖 line and the session URL; commits carry the `Co-Authored-By: Claude` trailer.
+- **User preferences seen so far:** the UI should stay familiar to UDB users but look modern (Breeze icons, compact rows, no touch-sized spacing); ask for sign-off (with a screenshot) before layout changes to the main window; the user watches usage limits, so keep notes current as you go and wrap up when asked; non-critical bugs go in the GitHub issue tracker.
 - **Open decisions:** none. Everything is in `docs/ULDB-Plan.md` sections 0 and 7.

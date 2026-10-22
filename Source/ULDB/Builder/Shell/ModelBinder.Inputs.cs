@@ -245,6 +245,7 @@ namespace ULDB.Shell
 		/// <summary>A CheckedListBox: a checkbox (three-state) and text per row; a click goes to the model, whose ItemCheck may change it.</summary>
 		public ModelBinder BindCheckedListBox(ListBox view, WF.CheckedListBox m)
 		{
+			if(m is CodeImp.DoomBuilder.Controls.CheckedColoredListBox colored) return BindCheckedColoredListBox(view, colored);
 			string shown = null;
 			view.SelectionMode = SelectionMode.Single;
 			view.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<(int index, string text, bool? check)>((row, _) =>
@@ -272,6 +273,75 @@ namespace ULDB.Shell
 				view.IsVisible = m.Visible;
 				view.IsEnabled = m.Enabled;
 				ApplyTip(view, m);
+			}, m);
+		}
+
+		/// <summary>One row of a CheckedColoredListBox.</summary>
+		private sealed class ColoredRow
+		{
+			public int Index; public string Text; public bool? Check; public Avalonia.Media.Color Color; public bool Warning;
+		}
+
+		/// <summary>
+		/// A CheckedColoredListBox (Linedef Color Presets): per row a checkbox, the item's colour swatch (or a
+		/// warning mark) and its name. The box ticks; clicking elsewhere on the row selects it, both two-way.
+		/// </summary>
+		private ModelBinder BindCheckedColoredListBox(ListBox view, CodeImp.DoomBuilder.Controls.CheckedColoredListBox m)
+		{
+			string shown = null;
+			bool updating = false;
+			view.SelectionMode = SelectionMode.Single;
+			view.ItemTemplate = new Avalonia.Controls.Templates.FuncDataTemplate<ColoredRow>((row, _) =>
+			{
+				CheckBox box = new CheckBox { IsThreeState = true, IsChecked = row.Check, MinWidth = 0, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center };
+				box.AddHandler(InputElement.PointerPressedEvent, (s, e) =>
+				{
+					e.Handled = true;
+					m.ToggleFromView(row.Index);
+					Schedule(s, e);
+				}, RoutingStrategies.Tunnel);
+				Control marker = row.Warning
+					? new Avalonia.Controls.Shapes.Path { Data = Avalonia.Media.Geometry.Parse("M8,2 L14.5,14 H1.5 Z M8,6.5 V10 M8,11.5 V12.5"), Stroke = Avalonia.Media.Brushes.Orange, StrokeThickness = 1.4, Width = 16, Height = 16, Stretch = Avalonia.Media.Stretch.None }
+					: new Border { Width = 28, Height = 14, Background = new Avalonia.Media.SolidColorBrush(row.Color), BorderBrush = Avalonia.Media.Brushes.Black, BorderThickness = new Avalonia.Thickness(1) };
+				return new StackPanel
+				{
+					Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 6,
+					Children = { box, marker, new TextBlock { Text = row.Text, VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center } }
+				};
+			}, true);
+			view.SelectionChanged += (s, e) =>
+			{
+				if(updating) return;
+				m.SetSelectionFromView(view.SelectedIndex >= 0 ? new[] { view.SelectedIndex } : new int[0]);
+				Schedule(s, e);
+			};
+			// Upstream's colour and name changes call Invalidate (the owner-drawn list repainted itself).
+			m.Invalidated += (s, e) => { shown = null; Schedule(s, e); };
+			return Custom(() =>
+			{
+				updating = true;
+				try
+				{
+					List<ColoredRow> rows = new List<ColoredRow>();
+					for(int i = 0; i < m.Items.Count; i++)
+					{
+						WF.CheckState st = m.GetItemCheckState(i);
+						CodeImp.DoomBuilder.Controls.IColoredListBoxItem item = m.Items[i] as CodeImp.DoomBuilder.Controls.IColoredListBoxItem;
+						rows.Add(new ColoredRow
+						{
+							Index = i, Text = m.Items[i]?.ToString() ?? "",
+							Check = st == WF.CheckState.Indeterminate ? (bool?)null : st == WF.CheckState.Checked,
+							Color = item != null ? Avalonia.Media.Color.FromArgb(item.Color.A, item.Color.R, item.Color.G, item.Color.B) : default,
+							Warning = item != null && item.ShowWarning
+						});
+					}
+					string sig = string.Join("\n", rows.Select(r => r.Text + "|" + r.Check + "|" + r.Color + "|" + r.Warning));
+					if(sig != shown) { shown = sig; view.ItemsSource = rows; }
+					if(view.SelectedIndex != m.SelectedIndex) view.SelectedIndex = m.SelectedIndex;
+					view.IsVisible = m.Visible;
+					view.IsEnabled = m.Enabled;
+				}
+				finally { updating = false; }
 			}, m);
 		}
 

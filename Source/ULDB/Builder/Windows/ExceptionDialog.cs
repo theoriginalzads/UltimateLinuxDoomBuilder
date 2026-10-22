@@ -26,8 +26,11 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private const string CRASH_DUMP_FILE = "UDBCrash.txt";
+		private const int KEPT_REPORTS = 10;
+		private const int REPORT_LOG_LINES = 300;
 		private readonly bool isterminating;
 		private readonly string logpath;
+		private string report = "";
 
 		// Controls (ExceptionView.axaml)
 		private readonly ExceptionView view;
@@ -51,7 +54,8 @@ namespace CodeImp.DoomBuilder.Windows
 			string sysinfo = GetSystemInfo();
 			WriteReport(sysinfo + GetExceptionDescription(ex));
 
-			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;
+			// ToString includes inner exceptions, which the stack trace alone leaves out
+			errorMessage.Text = ex.ToString();
 			isterminating = e.IsTerminating;  // Recoverable?
 		}
 
@@ -66,8 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string sysinfo = GetSystemInfo();
 			WriteReport(sysinfo + GetExceptionDescription(e.Exception));
 
-			errorMessage.Text = sysinfo + "********EXCEPTION DETAILS********" + Environment.NewLine
-				+ e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
+			errorMessage.Text = sysinfo + "********EXCEPTION DETAILS********" + Environment.NewLine + e.Exception;
 		}
 
 		// ULDB: takes the controls from the view and connects upstream's handlers.
@@ -101,10 +104,21 @@ namespace CodeImp.DoomBuilder.Windows
 			bContinue.IsEnabled = !isterminating;
 		}
 
-		// The report is best effort: failing to write it mustn't hide the error itself.
+		// The report is best effort: failing to write it mustn't hide the error itself. It goes to
+		// UDBCrash.txt (the latest) and to a dated copy, of which the last few are kept, so a second
+		// crash doesn't overwrite the first. The clipboard gets the same text.
 		private void WriteReport(string text)
 		{
-			try { File.WriteAllText(logpath, text); }
+			report = text;
+			try
+			{
+				File.WriteAllText(logpath, text);
+				string dated = Path.Combine(Path.GetDirectoryName(logpath), "UDBCrash-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
+				File.WriteAllText(dated, text);
+				string[] old = Directory.GetFiles(Path.GetDirectoryName(logpath), "UDBCrash-*.txt");
+				Array.Sort(old, StringComparer.Ordinal);
+				for(int i = 0; i < old.Length - KEPT_REPORTS; i++) File.Delete(old[i]);
+			}
 			catch(Exception) { }
 		}
 
@@ -135,7 +149,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.WriteLogLine("***********************************************************");
 
 			string message = "********EXCEPTION DETAILS********"
-							 + Environment.NewLine + ex.Source + ": " + ex.Message + Environment.NewLine + ex.StackTrace;
+							 + Environment.NewLine + ex.Source + ": " + ex.Message + Environment.NewLine + ex;
 
 			if(File.Exists(General.LogFile))
 			{
@@ -143,7 +157,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					string[] lines = File.ReadAllLines(General.LogFile);
 					message += Environment.NewLine + Environment.NewLine + "***********ACTIONS LOG***********";
-					for(int i = lines.Length - 1; i > -1; i--)
+					for(int i = lines.Length - 1; i > -1 && i >= lines.Length - REPORT_LOG_LINES; i--)
 						message += Environment.NewLine + lines[i];
 				}
 				catch(Exception) { }
@@ -185,7 +199,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void bToClipboard_Click(object sender, RoutedEventArgs e)
 		{
-			Clipboard.SetDataObject(errorMessage.Text ?? "", true);
+			// The whole report (system info, details and the latest log lines), as in the report file
+			Clipboard.SetDataObject(string.IsNullOrEmpty(report) ? errorMessage.Text ?? "" : report, true);
 		}
 
 		#endregion
