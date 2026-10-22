@@ -201,6 +201,13 @@ namespace ULDB.Shell
 			["status:warning:dim"] = "fo.35 M8,1.5 L15,14 H1 Z",
 			["warns:on"] = "fo M8,1.5 L15,14 H1 Z;fi M7.25,5.5 H8.75 V10 H7.25 Z M7.25,11 H8.75 V12.5 H7.25 Z",
 			["warns:off"] = "si.4 M8,1.5 L15,14 H1 Z",
+			// The Errors window (issue #25)
+			["res:ScriptKeyword"] = "si M3.5,4 H12.5 M8,4 V13;sa M5.5,4 L2.5,4",
+			["res:ScriptConstant"] = "si " + C(8, 8, 5.5) + ";fa " + C(8, 8, 1.8),
+			["res:ScriptProperty"] = "si M3,5 H13 M3,8 H13 M3,11 H9;sa M11,10 L13,12 L11,14",
+			["res:ScriptSnippet"] = "si M3,2.5 H13 V13.5 H3 Z;sa M5.5,6 H10.5 M5.5,9 H8.5",
+			["res:ScriptPalette"] = "si " + C(8, 8, 6) + ";fr " + C(5.5, 6.5, 1.3) + ";fg " + C(9.5, 5.5, 1.3) + ";fa " + C(10.5, 9.5, 1.3),
+			["res:ErrorLarge"] = "fr " + C(8, 8, 6.8) + ";fw M7.2,4.3 H8.8 V9.2 H7.2 Z M7.2,10.4 H8.8 V12 H7.2 Z",
 
 			// Mode-specific buttons
 			["buildermodes_classiccopyproperties"] = "si M10.5,1.5 L14.5,5.5 L12.5,7.5 L8.5,3.5 Z M9.5,6.5 L3,13 L2,15 L4,14 L10.5,7.5;fa M2.8,13.2 L4.5,11.5 L5.5,12.5 L3.8,14.2 Z",
@@ -315,7 +322,11 @@ namespace ULDB.Shell
 			["res:ClassicRendering"] = "builder_toggleclassicrendering", ["res:InfoLine"] = "builder_gztoggleeventlines",
 			["res:VisualVertices"] = "builder_gztogglevisualvertices", ["res:Test"] = "builder_testmap",
 			["res:Zoom"] = "buttonzoom", ["res:Zoom_arrowup"] = "buttonzoom", ["res:Grid2_arrowup"] = "buttongrid",
-			["res:Warning"] = "warns:on", ["res:WarningOff"] = "warns:off", ["res:KnownTextureSet"] = "res:ImageStack",
+			["res:ErrorLargeMapObject"] = "res:ErrorLarge", ["res:ErrorLargeText"] = "res:ErrorLarge", ["res:ScriptError"] = "res:ErrorLarge",
+			["res:WarningLargeMapObject"] = "warns:on", ["res:WarningLargeText"] = "warns:on",
+			["res:OpenScript"] = "builder_openmap", ["res:SaveScript"] = "builder_savemap", ["res:ScriptNew"] = "builder_newmap",
+			["res:Unpin"] = "res:Pin",
+			["res:Warning"] = "warns:on", ["res:WarningLarge"] = "warns:on", ["res:WarningOff"] = "warns:off", ["res:KnownTextureSet"] = "res:ImageStack",
 			["res:ScriptHelp"] = "res:Question",
 			// BuilderModes
 			["res:Similar"] = "buildermodes_selectsimilar", ["res:PlaceThings"] = "buildermodes_placethings",

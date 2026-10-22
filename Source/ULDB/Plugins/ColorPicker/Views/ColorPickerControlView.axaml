@@ -1,0 +1,24 @@
+<!-- ULDB: the view of the ColorPicker plugin's ColorPickerControl (model-ported: upstream's code runs
+     unchanged). The colour wheel and brightness strip are drawn by upstream's ColorWheel into a bitmap
+     (the control's Paint) and shown in "surface"; mouse input goes back to upstream's handlers.
+     Positions follow upstream's designer, so the wheel's coordinates match. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CodeImp.DoomBuilder.ColorPicker.Controls.ColorPickerControlView"
+             Width="320" Height="190">
+  <Canvas>
+    <Image x:Name="surface" Canvas.Left="0" Canvas.Top="0" Width="205" Height="183" Stretch="None" Cursor="Cross"/>
+    <Button x:Name="btnOK" Canvas.Left="214" Canvas.Top="3" Width="94" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+    <Button x:Name="btnCancel" Canvas.Left="214" Canvas.Top="46" Width="94" Height="40" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+    <ComboBox x:Name="cbColorInfo" Canvas.Left="214" Canvas.Top="92" Width="94"/>
+    <TextBox x:Name="tbFloatVals" Canvas.Left="214" Canvas.Top="124" Width="104"/>
+    <Grid x:Name="pRGB" Canvas.Left="212" Canvas.Top="122" Width="108" Height="68" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="2" ColumnSpacing="6">
+      <TextBlock Text="Red:" Classes="uldb-field"/>
+      <NumericUpDown x:Name="nudRed" Grid.Column="1" Height="22" MinHeight="22" FormatString="0" ShowButtonSpinner="False"/>
+      <TextBlock Grid.Row="1" Text="Green:" Classes="uldb-field"/>
+      <NumericUpDown x:Name="nudGreen" Grid.Row="1" Grid.Column="1" Height="22" MinHeight="22" FormatString="0" ShowButtonSpinner="False"/>
+      <TextBlock Grid.Row="2" Text="Blue:" Classes="uldb-field"/>
+      <NumericUpDown x:Name="nudBlue" Grid.Row="2" Grid.Column="1" Height="22" MinHeight="22" FormatString="0" ShowButtonSpinner="False"/>
+    </Grid>
+  </Canvas>
+</UserControl>

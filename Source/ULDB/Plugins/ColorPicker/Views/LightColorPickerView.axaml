@@ -1,0 +1,14 @@
+<!-- ULDB: the window of the ColorPicker plugin's LightColorPicker (model-ported: upstream's code runs
+     unchanged). The sliders show or hide as upstream's code decides. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.ColorPicker.Windows.LightColorPickerView"
+        Title="Light color" SizeToContent="WidthAndHeight" CanResize="False" ShowInTaskbar="False">
+  <StackPanel Margin="8" Spacing="6">
+    <ContentControl x:Name="colorPickerControl1"/>
+    <CheckBox x:Name="cbRelativeMode" Margin="6,0,0,0"/>
+    <ContentControl x:Name="colorPickerSlider1"/>
+    <ContentControl x:Name="colorPickerSlider2"/>
+    <ContentControl x:Name="colorPickerSlider3"/>
+  </StackPanel>
+</Window>

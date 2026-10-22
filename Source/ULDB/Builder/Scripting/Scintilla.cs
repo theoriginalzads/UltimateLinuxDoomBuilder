@@ -72,6 +72,7 @@ namespace ScintillaNET
 		{
 			Lines = new LineCollection(this);
 			Styles = new StyleCollection();
+			Styles.StyleChanged += ScheduleChanged;
 			Margins = new MarginCollection();
 			Markers = new MarkerCollection();
 			Indicators = new IndicatorCollection();
@@ -87,6 +88,16 @@ namespace ScintillaNET
 
 		/// <summary>Raised when the view should redraw styles/indicators/markers.</summary>
 		internal event Action AppearanceChanged;
+
+		private bool changedscheduled;
+
+		// Style changes arrive one property at a time (a colour preset sets dozens): the view redraws once after them.
+		private void ScheduleChanged()
+		{
+			if(changedscheduled) return;
+			changedscheduled = true;
+			Avalonia.Threading.Dispatcher.UIThread.Post(() => { changedscheduled = false; Changed(); }, Avalonia.Threading.DispatcherPriority.Background);
+		}
 
 		internal void Changed()
 		{
