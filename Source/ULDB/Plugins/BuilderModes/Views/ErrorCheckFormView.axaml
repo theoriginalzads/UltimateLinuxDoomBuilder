@@ -21,7 +21,7 @@
         <TextBlock x:Name="resultinfo" TextWrapping="Wrap"/>
       </Border>
       <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
-        <ListBox x:Name="results" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+        <ListBox x:Name="results" Classes="uldb-checklist" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
       </Border>
     </DockPanel>
   </DockPanel>

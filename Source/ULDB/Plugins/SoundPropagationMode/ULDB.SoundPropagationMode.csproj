@@ -25,6 +25,7 @@
     <!-- Never shown: it only holds the plugin's menu items and toolbar buttons, which the main
          window displays. Compiles unchanged against ULDB.Compat (uistubs-ported.txt). -->
     <Compile Include="$(UpstreamPlugin)Windows/MenusForm.cs;$(UpstreamPlugin)Windows/MenusForm.designer.cs" />
+    <Compile Include="$(UpstreamPlugin)Windows/ColorConfiguration.cs;$(UpstreamPlugin)Windows/ColorConfiguration.designer.cs;$(UpstreamPlugin)Windows/ReverbsPickerForm.cs;$(UpstreamPlugin)Windows/ReverbsPickerForm.Designer.cs" />
     <!-- Model port (uistubs-ported.txt): the sound environments docker's tree, filled in by
          SoundEnvironmentMode. Its view is in Views/. -->
     <Compile Include="$(UpstreamPlugin)Interface/SoundEnvironmentPanel.cs;$(UpstreamPlugin)Interface/SoundEnvironmentPanel.Designer.cs" />

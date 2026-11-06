@@ -1,2 +1,4 @@
 CodeImp.DoomBuilder.SoundPropagationMode.MenusForm
 CodeImp.DoomBuilder.SoundPropagationMode.SoundEnvironmentPanel
+CodeImp.DoomBuilder.SoundPropagationMode.ColorConfiguration
+CodeImp.DoomBuilder.SoundPropagationMode.ReverbsPickerForm

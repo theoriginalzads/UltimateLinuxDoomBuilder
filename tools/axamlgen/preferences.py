@@ -25,7 +25,7 @@ def card(title, *children):
     return '<Border Classes="uldb-group"><StackPanel Spacing="6"><TextBlock Text="%s" Classes="uldb-group-title"/>%s</StackPanel></Border>' % (title, ''.join(children))
 
 def slider(name, label, width=170):
-    return '<StackPanel Orientation="Horizontal" Spacing="8"><Slider x:Name="%s" Width="%d" Height="30" MinHeight="30" IsSnapToTickEnabled="True" TickFrequency="1"/><TextBlock x:Name="%s" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel>' % (name, width, label)
+    return '<StackPanel Orientation="Horizontal" Spacing="8"><Slider x:Name="%s" Width="%d" MinHeight="32" VerticalAlignment="Center" IsSnapToTickEnabled="True" TickFrequency="1"/><TextBlock x:Name="%s" VerticalAlignment="Center" MinWidth="70" Opacity="0.85"/></StackPanel>' % (name, width, label)
 
 def chk(name):
     return '<CheckBox x:Name="%s"/>' % name
@@ -43,7 +43,7 @@ def num(name):
     return '<ContentControl x:Name="%s" Width="92" HorizontalAlignment="Left"/>' % name
 
 def scroll(inner):
-    return '<ScrollViewer HorizontalScrollBarVisibility="Disabled"><Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,0">%s</Grid></ScrollViewer>' % inner
+    return '<ScrollViewer HorizontalScrollBarVisibility="Disabled"><Grid Grid.IsSharedSizeScope="True" Margin="0,10,10,10">%s</Grid></ScrollViewer>' % inner
 
 def cols(*parts, widths=None):
     n = len(parts)
@@ -158,7 +158,7 @@ recovery = card('Autosave', chk('autosave'), '<Border x:Name="autosavedisabledwa
 toasts = stack(
     card('Toasts', chk('cbToastsEnabled'), rows([('Duration (seconds):', num('tbToastDuration'))], 'lbl7'),
          '<TextBlock Text="Toast position" Classes="uldb-field" Margin="0,6,0,0"/><UniformGrid Columns="2" Width="260" HorizontalAlignment="Left"><RadioButton x:Name="rbToastPosTL" GroupName="toastpos" Content="Top left"/><RadioButton x:Name="rbToastPosTR" GroupName="toastpos" Content="Top right"/><RadioButton x:Name="rbToastPosBL" GroupName="toastpos" Content="Bottom left"/><RadioButton x:Name="rbToastPosBR" GroupName="toastpos" Content="Bottom right"/></UniformGrid>'),
-    card('Show toasts for', '<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="340"><ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist"><ListBox.ItemTemplate><DataTemplate x:DataType="shell:ModelBinder+ListItem"><Grid ColumnDefinitions="*,*"><CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/><TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border>'),
+    card('Show toasts for', '<Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True" Height="340"><ListBox x:Name="lvToastActions" SelectionMode="Single" Classes="uldb-checklist" ScrollViewer.HorizontalScrollBarVisibility="Auto"><ListBox.ItemTemplate><DataTemplate x:DataType="shell:ModelBinder+ListItem"><Grid ColumnDefinitions="280,Auto"><CheckBox IsChecked="{Binding Checked, Mode=OneWay}" Content="{Binding Text}"/><TextBlock Grid.Column="1" Text="{Binding SubText}" Opacity="0.7" VerticalAlignment="Center"/></Grid></DataTemplate></ListBox.ItemTemplate></ListBox></Border>'),
     spacing=10)
 
 def tab(name, header, body, scrolling=True):

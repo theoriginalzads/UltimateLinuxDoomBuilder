@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			grid = (WF.DataGridView)typeof(CommentsDocker).GetField("grid", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(model);
 			grid.CellLocator = (x, y) => y >= 0 && y / RowHeight < grid.Rows.Count ? (y / RowHeight, 1) : (-1, -1);
 
-			list.ItemTemplate = new FuncDataTemplate<Row>((row, _) => BuildRow(row), true);
+			list.ItemTemplate = new FuncDataTemplate<Row>((row, _) => row == null ? null : BuildRow(row), true);
 			list.SelectionChanged += (s, e) =>
 			{
 				if(updating) return;

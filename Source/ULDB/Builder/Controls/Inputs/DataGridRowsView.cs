@@ -28,7 +28,7 @@ namespace ULDB.Controls
 			this.grid = grid;
 			header = new Grid { Margin = new Thickness(8, 4) };
 			list = new ListBox { SelectionMode = SelectionMode.Multiple };
-			list.ItemTemplate = new FuncDataTemplate<List<string>>((cells, _) => BuildRow(cells, false), true);
+			list.ItemTemplate = new FuncDataTemplate<List<string>>((cells, _) => cells == null ? null : BuildRow(cells, false), true);
 			list.SelectionChanged += (s, e) =>
 			{
 				if(updating) return;

@@ -132,7 +132,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/SkySphere.md3" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.SkySphere" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/SnapVerts.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.SnapVerts" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/Splash3_small.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.Splash3_small" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/Splash3_trans.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.Splash3_trans" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../Assets/Overrides/Splash3_trans.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.Splash3_trans" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/SplitSectors.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.SplitSectors" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/Status0.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.Status0" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)../../../Core/Resources/Status1.png" LogicalName="ULDB.Resources.CodeImp.DoomBuilder.Properties.Resources.Status1" />

@@ -216,7 +216,11 @@ namespace System.Windows.Forms
 		public Size MaximumSize { get; set; }
 
 		public virtual bool Focus() => false;
-		public virtual void Invalidate() { }
+		/// <summary>ULDB: raised by Invalidate(); owner-drawn controls' views redraw (RaisePaint) when it fires.</summary>
+		public event EventHandler Invalidated;
+		public virtual void Invalidate() => Invalidated?.Invoke(this, EventArgs.Empty);
+		/// <summary>ULDB: a view paints the control into a bitmap's Graphics, as WinForms raises Paint.</summary>
+		public void RaisePaint(Graphics g, Rectangle clip) => OnPaint(new PaintEventArgs(g, clip));
 		public void Invalidate(bool invalidateChildren) => Invalidate();
 		public void Invalidate(Rectangle rc) => Invalidate();
 		public void Invalidate(Rectangle rc, bool invalidateChildren) => Invalidate();

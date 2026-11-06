@@ -79,20 +79,36 @@ namespace ScintillaNET
 		public const int CallTip = 38;
 		public const int FoldDisplayText = 39;
 
-		public Color BackColor { get; set; }
-		public Color ForeColor { get; set; }
-		public string Font { get; set; }
-		public int Size { get; set; }
-		public bool Bold { get; set; }
-		public bool Italic { get; set; }
-		public bool Underline { get; set; }
-		public StyleCase Case { get; set; }
+		// Changing a style redraws the editor that shows it (Preferences' colour preview changes styles one by one).
+		internal event System.Action Changed;
+		private Color backcolor, forecolor;
+		private string font;
+		private int size;
+		private bool bold, italic, underline;
+		private StyleCase stylecase;
+
+		public Color BackColor { get { return backcolor; } set { backcolor = value; Changed?.Invoke(); } }
+		public Color ForeColor { get { return forecolor; } set { forecolor = value; Changed?.Invoke(); } }
+		public string Font { get { return font; } set { font = value; Changed?.Invoke(); } }
+		public int Size { get { return size; } set { size = value; Changed?.Invoke(); } }
+		public bool Bold { get { return bold; } set { bold = value; Changed?.Invoke(); } }
+		public bool Italic { get { return italic; } set { italic = value; Changed?.Invoke(); } }
+		public bool Underline { get { return underline; } set { underline = value; Changed?.Invoke(); } }
+		public StyleCase Case { get { return stylecase; } set { stylecase = value; Changed?.Invoke(); } }
 	}
 
 	public class StyleCollection
 	{
 		private readonly Style[] styles = new Style[256];
-		public StyleCollection() { for(int i = 0; i < styles.Length; i++) styles[i] = new Style(); }
+		internal event System.Action StyleChanged;
+		public StyleCollection()
+		{
+			for(int i = 0; i < styles.Length; i++)
+			{
+				styles[i] = new Style();
+				styles[i].Changed += () => StyleChanged?.Invoke();
+			}
+		}
 		public Style this[int index] { get { return styles[index]; } }
 	}
 

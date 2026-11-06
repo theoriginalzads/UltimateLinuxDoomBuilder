@@ -133,7 +133,9 @@ namespace ULDB.Controls
 				{
 					Size preview = imagesize > 0 ? new Size(imagesize, imagesize) : PreviewSize(ti);
 					double textwidth = Math.Max(ti.TextureNameWidth, 8);
-					double wid = Math.Max(preview.Width, textwidth) + padhorz * 2;
+					// With a set preview size every tile is the same width so the tiles line up in columns (issue #27);
+					// a long name is trimmed to it. At the textures' own sizes a tile is as wide as its picture or name.
+					double wid = (imagesize > 0 ? preview.Width : Math.Max(preview.Width, textwidth)) + padhorz * 2;
 					double hei = preview.Height + PadVert * 2 + FontHeight;
 					if(sizesbelow && ti.ItemType == ImageBrowserItemType.IMAGE) hei += FontHeight;
 
@@ -255,6 +257,7 @@ namespace ULDB.Controls
 				// Name
 				IBrush namebrush = used ? usedbrush : fore;
 				FormattedText name = Text(item.TextureName, namebrush, 12);
+				if(model.ImageSize > 0 && !classic) { name.MaxTextWidth = Math.Max(8, r.Width + 2); name.MaxLineCount = 1; name.Trimming = TextTrimming.CharacterEllipsis; }
 				double nx = classic ? r.X + (r.Width - name.Width) / 2 : r.X - 2;
 				context.DrawText(name, new Point(nx, r.Y + pic.Height + 2));
 

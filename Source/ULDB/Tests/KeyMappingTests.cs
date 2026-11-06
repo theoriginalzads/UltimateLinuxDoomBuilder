@@ -8,6 +8,17 @@ namespace ULDB.Tests
 {
 	public class KeyMappingTests
 	{
+		// Issue #28: the modifier state Avalonia reports on a modifier key's own press/release lags by one event.
+		[Theory]
+		[InlineData(AKey.LeftShift, AKeyModifiers.None, true, AKeyModifiers.Shift)]
+		[InlineData(AKey.RightShift, AKeyModifiers.None, true, AKeyModifiers.Shift)]
+		[InlineData(AKey.LeftShift, AKeyModifiers.Shift, false, AKeyModifiers.None)]
+		[InlineData(AKey.LeftCtrl, AKeyModifiers.Control | AKeyModifiers.Shift, false, AKeyModifiers.Shift)]
+		[InlineData(AKey.LeftAlt, AKeyModifiers.Shift, true, AKeyModifiers.Shift | AKeyModifiers.Alt)]
+		[InlineData(AKey.A, AKeyModifiers.Shift, true, AKeyModifiers.Shift)]
+		public void ModifierKeysSetAndClearTheirOwnFlag(AKey key, AKeyModifiers reported, bool down, AKeyModifiers expected)
+			=> Assert.Equal(expected, ULDB.Shell.MainWindow.WithOwnModifier(key, reported, down));
+
 		[Theory]
 		[InlineData(AKey.A, AKeyModifiers.None, Keys.A)]
 		[InlineData(AKey.S, AKeyModifiers.Control, Keys.Control | Keys.S)]

@@ -70,7 +70,9 @@ namespace System.Windows.Forms
 		public void AppendText(string text) => Text += text;
 		public void SelectAll() { SelectionStart = 0; SelectionLength = Text.Length; }
 		public void Select(int start, int length) { SelectionStart = start; SelectionLength = length; }
-		public void ScrollToCaret() { }
+		/// <summary>ULDB: raised by ScrollToCaret(); the view scrolls to the end.</summary>
+		public event EventHandler CaretScrollRequested;
+		public void ScrollToCaret() => CaretScrollRequested?.Invoke(this, EventArgs.Empty);
 	}
 
 	public class TextBox : TextBoxBase
@@ -98,7 +100,12 @@ namespace System.Windows.Forms
 		/// <summary>Inserts RTF at the caret (ULDB: appends; upstream only uses it after Clear()).</summary>
 		public string SelectedRtf { get => ""; set => Rtf = string.IsNullOrEmpty(rtf) ? value : rtf + value; }
 
-		public override string Text { get => base.Text; set { rtf = ""; base.Text = value; } }
+		public override string Text { get => base.Text; set { rtf = ""; runs.Clear(); base.Text = value; } }
+		private readonly System.Collections.Generic.List<(int start, int length, Color color)> runs = new System.Collections.Generic.List<(int, int, Color)>();
+		/// <summary>ULDB: text ranges coloured through SelectionColor (RunExternalCommand's error lines).</summary>
+		public System.Collections.Generic.IReadOnlyList<(int start, int length, Color color)> ColorRuns => runs;
+		public Color SelectionColor { get => Color.Empty; set { if(SelectionLength > 0) { runs.Add((SelectionStart, SelectionLength, value)); NotifyStylesChanged(); } } }
+		public new void AppendText(string text) { base.Text += text; }
 		public bool DetectUrls { get; set; } = true;
 		public RichTextBoxScrollBars ScrollBars { get; set; } = RichTextBoxScrollBars.Both;
 		public bool AutoWordSelection { get; set; }

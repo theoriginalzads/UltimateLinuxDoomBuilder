@@ -39,6 +39,12 @@ namespace ULDB.Shell
 			Register<ThingMultipleBrowserForm>(f => new ThingMultipleBrowserFormView(f));
 			Register<EffectBrowserForm>(f => new EffectBrowserFormView(f));
 			Register<AngleForm>(f => new AngleFormView(f));
+			Register<RunExternalCommandForm>(f => new RunExternalCommandFormView(f));
+			Register<LinedefColorPresetsForm>(f => new LinedefColorPresetsFormView(f));
+			Register<CustomFieldsForm>(f => new CustomFieldsFormView(f));
+			Register<BitFlagsAndOptionsForm>(f => new BitFlagsAndOptionsFormView(f));
+			Register<BitFlagsForm>(f => new BitFlagsFormView(f));
+			Register<FlagsForm>(f => new FlagsFormView(f));
 			Register<TextureSetForm>(f => new TextureSetFormView(f));
 			Register<ScriptEditorForm>(f => new ScriptEditorFormView(f));
 			Register<ScriptGoToLineForm>(f => new ScriptGoToLineFormView(f));

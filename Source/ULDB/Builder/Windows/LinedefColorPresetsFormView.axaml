@@ -1,0 +1,62 @@
+<!-- ULDB: the window of upstream's LinedefColorPresetsForm ("Linedef Color Presets", model-ported:
+     upstream's code runs unchanged). The list on the left (checkbox, colour, name), the selected
+     preset's settings on the right in tabs, as in UDB. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CodeImp.DoomBuilder.Windows.LinedefColorPresetsFormView"
+        Title="Linedef Color Presets" Width="900" Height="640" MinWidth="780" MinHeight="540" ShowInTaskbar="False">
+  <DockPanel Margin="14">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="0,12,0,0">
+      <Button x:Name="apply" IsDefault="True" MinWidth="100" HorizontalContentAlignment="Center" Classes="accent"/>
+      <Button x:Name="cancel" IsCancel="True" MinWidth="100" HorizontalContentAlignment="Center"/>
+    </StackPanel>
+    <Grid ColumnDefinitions="280,12,*">
+      <DockPanel>
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="6" Margin="0,8,0,0">
+          <Button x:Name="addpreset" MinWidth="64" HorizontalContentAlignment="Center"/>
+          <Button x:Name="deletepreset" Grid.Column="1" MinWidth="64" HorizontalContentAlignment="Center"/>
+          <Button x:Name="moveup" Grid.Column="3" Classes="uldb-tool"/>
+          <Button x:Name="movedown" Grid.Column="4" Classes="uldb-tool"/>
+        </Grid>
+        <Border Classes="uldb-grid" BorderThickness="1" CornerRadius="3" ClipToBounds="True">
+          <ListBox x:Name="colorpresets" Classes="uldb-checklist"/>
+        </Border>
+      </DockPanel>
+      <Border x:Name="curpresetgroup" Grid.Column="2" Classes="uldb-group">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Text="Selected Preset" Classes="uldb-group-title" Margin="0,0,0,6"/>
+          <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+            <Image x:Name="erroricon" Width="16" Height="16"/>
+            <TextBlock x:Name="errordescription" Foreground="#E8A317" TextWrapping="Wrap" VerticalAlignment="Center"/>
+          </StackPanel>
+          <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" RowSpacing="6" ColumnSpacing="10" Margin="0,0,0,8">
+            <TextBlock Text="Name:" Classes="uldb-field"/>
+            <TextBox x:Name="presetname" Grid.Column="1"/>
+            <ContentControl x:Name="presetcolor" Grid.Row="1" Grid.ColumnSpan="2"/>
+          </Grid>
+          <TabControl x:Name="presetsettings">
+            <TabItem x:Name="tabFlags">
+              <DockPanel Margin="0,8,0,0">
+                <CheckBox x:Name="useflags" DockPanel.Dock="Top" Margin="0,0,0,6"/>
+                <ScrollViewer><ContentControl x:Name="flags"/></ScrollViewer>
+              </DockPanel>
+            </TabItem>
+            <TabItem x:Name="tabAction">
+              <DockPanel Margin="0,8,0,0">
+                <CheckBox x:Name="useaction" DockPanel.Dock="Top" Margin="0,0,0,6"/>
+                <ContentControl x:Name="action"/>
+              </DockPanel>
+            </TabItem>
+            <TabItem x:Name="tabActivation">
+              <DockPanel Margin="0,8,0,0">
+                <CheckBox x:Name="useactivation" DockPanel.Dock="Top" Margin="0,0,0,6"/>
+                <ComboBox x:Name="activation" DockPanel.Dock="Top" HorizontalAlignment="Stretch"/>
+                <ScrollViewer><ContentControl x:Name="udmfactivates"/></ScrollViewer>
+              </DockPanel>
+            </TabItem>
+          </TabControl>
+        </DockPanel>
+      </Border>
+    </Grid>
+  </DockPanel>
+</Window>
