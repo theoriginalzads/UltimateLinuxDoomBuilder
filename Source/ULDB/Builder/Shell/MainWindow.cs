@@ -591,6 +591,16 @@ namespace ULDB.Shell
 							foreach(WF.ToolStripItem it in Field<WF.ToolStrip>(p[1]).Items)
 								Console.WriteLine("stripstate: " + (it is WF.ToolStripSeparator ? "---" : (string.IsNullOrEmpty(it.Text) ? it.ToolTipText : it.Text)) + (it.Available ? "" : " (hidden)"));
 							break;
+						case "openpopup": // openpopup:<index>, opens the drop-down of the <index>th split/drop-down button of the main window (to check where popups appear)
+						{
+							int n = int.Parse(p[1]);
+							foreach(Avalonia.Visual v in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
+							{
+								Avalonia.Controls.Primitives.FlyoutBase fly = (v as Avalonia.Controls.SplitButton)?.Flyout ?? (v as Avalonia.Controls.DropDownButton)?.Flyout;
+								if(fly != null && n-- == 0) { fly.ShowAt((Control)v); break; }
+							}
+							break;
+						}
 						case "testmenu": // testmenu[:<text of an item to click>], lists the Test button's drop-down (and clicks one)
 						{
 							WF.ToolStripDropDownItem test = Field<WF.ToolStripDropDownItem>("buttontest");
