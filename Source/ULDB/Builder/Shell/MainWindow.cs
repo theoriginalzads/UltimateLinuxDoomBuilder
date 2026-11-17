@@ -601,6 +601,13 @@ namespace ULDB.Shell
 							}
 							break;
 						}
+						case "openmenu": // openmenu:<n>, opens the <n>th menu of the menu bar (0 = File)
+						{
+							int n = int.Parse(p[1]);
+							foreach(Avalonia.Visual v in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
+								if(v is Avalonia.Controls.Menu bar) { ((Avalonia.Controls.MenuItem)System.Linq.Enumerable.ElementAt(System.Linq.Enumerable.OfType<Avalonia.Controls.MenuItem>(bar.Items), n)).IsSubMenuOpen = true; break; }
+							break;
+						}
 						case "testmenu": // testmenu[:<text of an item to click>], lists the Test button's drop-down (and clicks one)
 						{
 							WF.ToolStripDropDownItem test = Field<WF.ToolStripDropDownItem>("buttontest");

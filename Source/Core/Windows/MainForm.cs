@@ -2869,6 +2869,9 @@ namespace CodeImp.DoomBuilder.Windows
 					int number = i + 1;
 					recentitems[i].Text = "&" + number + "  " + GetDisplayFilename(filename);
 					recentitems[i].Tag = filename;
+#if ULDB
+					recentitems[i].ToolTipText = filename;
+#endif
 					recentitems[i].Visible = true;
 					anyitems = true;
 				}
@@ -2931,12 +2934,18 @@ namespace CodeImp.DoomBuilder.Windows
 				int number = i + 2;
 				recentitems[i + 1].Text = "&" + number + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
+#if ULDB
+				recentitems[i + 1].ToolTipText = recentitems[i].Tag.ToString();
+#endif
 				recentitems[i + 1].Visible = !string.IsNullOrEmpty(recentitems[i].Tag.ToString());
 			}
 
 			// Add new file at the top
 			recentitems[0].Text = "&1  " + GetDisplayFilename(filename);
 			recentitems[0].Tag = filename;
+#if ULDB
+			recentitems[0].ToolTipText = filename;
+#endif
 			recentitems[0].Visible = true;
 
 			// Hide the no recent item
@@ -2958,6 +2967,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// This returns the trimmed file/path string
 		private string GetDisplayFilename(string filename)
 		{
+#if ULDB
+			return ULDB.Platform.PathDisplay.Short(filename, 34);
+#else
 			// String doesnt fit?
 			if(MeasureString(filename, this.Font).Width > MAX_RECENT_FILES_PIXELS)
 			{
@@ -2977,6 +2989,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// The whole string fits
 				return filename;
 			}
+#endif
 		}
 		
 		// Exit clicked
