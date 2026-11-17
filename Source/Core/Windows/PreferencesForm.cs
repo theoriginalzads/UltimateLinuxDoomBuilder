@@ -140,6 +140,15 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(FontFamily ff in FontFamily.Families) scriptfontname.Items.Add(ff.Name);
 			scriptfontname.EndUpdate();
 			
+#if ULDB
+			// ULDB: the editor's own font (JetBrains Mono, bundled; not in the system's list) is what the editor uses
+			// when the setting is empty or one of UDB's Windows defaults, so that is what the list shows
+			if(!scriptfontname.Items.Contains("JetBrains Mono")) scriptfontname.Items.Insert(0, "JetBrains Mono");
+			string savedfont = General.Settings.ScriptFontName;
+			if(string.IsNullOrWhiteSpace(savedfont) || savedfont.Equals("Consolas", StringComparison.OrdinalIgnoreCase) || savedfont.Equals("Courier New", StringComparison.OrdinalIgnoreCase)) savedfont = "JetBrains Mono";
+			else if(!scriptfontname.Items.Contains(savedfont)) scriptfontname.Items.Insert(0, savedfont); // a font that isn't installed here: still the setting
+			scriptfontname.SelectedIndex = scriptfontname.Items.IndexOf(savedfont);
+#else
 			// Select script font name
 			for(int i = 0; i < scriptfontname.Items.Count; i++)
 			{
@@ -149,6 +158,7 @@ namespace CodeImp.DoomBuilder.Windows
 					break; //mxd
 				}
 			}
+#endif
 
 			// Select script font size
 			for(int i = 0; i < scriptfontsize.Items.Count; i++)
@@ -275,6 +285,9 @@ namespace CodeImp.DoomBuilder.Windows
 #endif
 			//mxd. Select "Current colors" preset
 			scriptcolorpresets.SelectedIndex = 0;
+#if ULDB
+			SelectMatchingScriptPreset();
+#endif
 
 			blackbrowsers.Checked = General.Settings.BlackBrowsers;
 			classicbilinear.Checked = General.Settings.ClassicBilinear;
@@ -1230,6 +1243,30 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(allowapplycontrol) scriptedit.FoldBackColor = colorfoldback.Color.ToColor();
 		}
+
+#if ULDB
+		// ULDB: opens with the preset whose colours the editor has now, not always "Current colors" (which looks as if
+		// the chosen theme was forgotten). Every preset is tried; the one that gives exactly the current colours stays.
+		private void SelectMatchingScriptPreset()
+		{
+			CodeImp.DoomBuilder.Controls.ColorControl[] colors = { colorscriptbackground, colorlinenumbers, colorplaintext, colorcomments, colorkeywords, colorproperties, colorliterals, colorconstants,
+				colorstrings, colorincludes, colorindicator, colorbrace, colorbracebad, colorwhitespace, colorfoldfore, colorfoldback, colorselectionfore, colorselectionback };
+			Func<string> signature = () => string.Join(",", colors.Select(c => c.Color.ToInt()));
+			string current = signature();
+			bool was = allowapplycontrol;
+			allowapplycontrol = true;
+			try
+			{
+				for(int i = 1; i < scriptcolorpresets.Items.Count; i++)
+				{
+					scriptcolorpresets.SelectedIndex = i;
+					if(signature() == current) return;
+				}
+				scriptcolorpresets.SelectedIndex = 0; // restores the current colours
+			}
+			finally { allowapplycontrol = was; }
+		}
+#endif
 
 		private void scriptcolorpresets_SelectedIndexChanged(object sender, EventArgs e)
 		{

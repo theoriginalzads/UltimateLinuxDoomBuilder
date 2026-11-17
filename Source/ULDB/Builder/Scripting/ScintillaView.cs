@@ -217,6 +217,7 @@ namespace ULDB.Scripting
 			editor.IsReadOnly = model.ReadOnly;
 			editor.ShowLineNumbers = model.Margins[1].Type == MarginType.Number && model.Margins[1].Width > 0;
 
+			ApplyFoldingBrushes();
 			SetMarkers();
 			editor.TextArea.TextView.Redraw();
 			markermargin.InvalidateVisual();
@@ -262,12 +263,28 @@ namespace ULDB.Scripting
 			if(wanted && folding == null)
 			{
 				folding = FoldingManager.Install(editor.TextArea);
+				ApplyFoldingBrushes();
 				ScheduleFolds();
 			}
 			else if(!wanted && folding != null)
 			{
 				FoldingManager.Uninstall(folding);
 				folding = null;
+			}
+		}
+
+		// The fold markers (boxes with + / -) in the colours of the text and background, so they read on a dark editor too.
+		private void ApplyFoldingBrushes()
+		{
+			Color fg = (editor.Foreground as ISolidColorBrush)?.Color ?? Colors.Gray;
+			Color bg = (editor.Background as ISolidColorBrush)?.Color ?? Colors.White;
+			foreach(Avalonia.Controls.Control margin in editor.TextArea.LeftMargins)
+			{
+				if(!(margin is FoldingMargin fm)) continue;
+				fm.FoldingMarkerBrush = new SolidColorBrush(Color.FromArgb(0xB0, fg.R, fg.G, fg.B));
+				fm.FoldingMarkerBackgroundBrush = new SolidColorBrush(bg);
+				fm.SelectedFoldingMarkerBrush = new SolidColorBrush(fg);
+				fm.SelectedFoldingMarkerBackgroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, (byte)((bg.R + fg.R) / 5), (byte)((bg.G + fg.G) / 5), (byte)((bg.B + fg.B) / 5)));
 			}
 		}
 
