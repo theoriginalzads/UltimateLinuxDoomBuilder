@@ -100,14 +100,41 @@ namespace System.Windows.Forms
 		/// <summary>ULDB: installed by the UI. Returns (bounds, working area) of the screen showing the control (null: primary).</summary>
 		public static Func<Control, (Rectangle bounds, Rectangle workingArea)> BoundsProvider { get; set; }
 
+		/// <summary>ULDB: installed by the UI. Every monitor (bounds, working area, whether it is the primary one), in desktop pixels.</summary>
+		public static Func<(Rectangle bounds, Rectangle workingArea, bool primary)[]> ScreensProvider { get; set; }
+
 		private static Screen For(Control c)
 		{
 			(Rectangle b, Rectangle w) = BoundsProvider?.Invoke(c) ?? (new Rectangle(0, 0, 1920, 1080), new Rectangle(0, 0, 1920, 1080));
 			return new Screen(b, w, c == null);
 		}
 
-		public static Screen PrimaryScreen => For(null);
-		public static Screen[] AllScreens => new[] { PrimaryScreen };
+		public static Screen PrimaryScreen
+		{
+			get
+			{
+				if(ScreensProvider?.Invoke() is { Length: > 0 } all)
+				{
+					foreach(var s in all) if(s.primary) return new Screen(s.bounds, s.workingArea, true);
+					return new Screen(all[0].bounds, all[0].workingArea, true);
+				}
+				return For(null);
+			}
+		}
+
+		public static Screen[] AllScreens
+		{
+			get
+			{
+				if(ScreensProvider?.Invoke() is { Length: > 0 } all)
+				{
+					Screen[] result = new Screen[all.Length];
+					for(int i = 0; i < all.Length; i++) result[i] = new Screen(all[i].bounds, all[i].workingArea, all[i].primary);
+					return result;
+				}
+				return new[] { PrimaryScreen };
+			}
+		}
 		public static Screen FromControl(Control control) => For(control);
 		public static Rectangle GetWorkingArea(Control ctl) => For(ctl).WorkingArea;
 		public static Rectangle GetBounds(Control ctl) => For(ctl).Bounds;

@@ -210,11 +210,20 @@ namespace ULDB.Shell
 				// A dialog that has never had a saved position opens centred on the main window: upstream's
 				// DelayedForm works out "centred" from the form's size, which isn't the window's size here.
 				bool savedposition = CodeImp.DoomBuilder.General.Settings.ReadSetting("windows." + form.GetType().Name.ToLowerInvariant() + ".positionx", int.MaxValue) != int.MaxValue;
-				if(ownerwindow != null && !savedposition && form is CodeImp.DoomBuilder.Windows.DelayedForm)
+				// A saved position is absolute: with several monitors it can be on another one than the main window
+				// (moved since, or the dialog was last used there). Then the dialog opens centred on the main window.
+				bool onownerscreen = true;
+				try
+				{
+					if(ownerwindow != null && ownerwindow.IsVisible && ownerwindow.Screens?.ScreenFromVisual(ownerwindow) is Avalonia.Platform.Screen ownerscreen)
+						onownerscreen = ownerscreen.Bounds.Contains(new Avalonia.PixelPoint(form.Location.X + 24, form.Location.Y + 24));
+				}
+				catch(Exception) { }
+				if(ownerwindow != null && (!savedposition || !onownerscreen) && form is CodeImp.DoomBuilder.Windows.DelayedForm)
 				{
 					window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 				}
-				else if(form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty)
+				else if(onownerscreen && (form.StartPosition == FormStartPosition.Manual || form.Location != System.Drawing.Point.Empty))
 				{
 					window.WindowStartupLocation = WindowStartupLocation.Manual;
 					window.Position = new Avalonia.PixelPoint(form.Location.X, form.Location.Y);
@@ -227,6 +236,7 @@ namespace ULDB.Shell
 				window.Opened += (s, e) =>
 				{
 					window.Activate(); // dialogs take the focus (KDE may otherwise leave it on the main window)
+					if(Environment.GetEnvironmentVariable("ULDB_REPORT_DIALOGS") == "1") Console.WriteLine($"[devstep] dialog '{window.Title}' opened at {window.Position.X},{window.Position.Y} size {window.Bounds.Width}x{window.Bounds.Height}");
 					form.RaiseShown();
 					DevCapture.Schedule(window, TimeSpan.FromSeconds(1.5), form);
 					// Development aid: ULDB_AUTOCLOSE=<ms> also closes modal windows, for scripted sweeps.
