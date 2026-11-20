@@ -129,6 +129,19 @@ App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source
 
 **Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
 
+## Dialogue builder (branch `phase-3/dialogue-builder`, 20 Nov 2026, no screen)
+
+A form view of the DIALOGUE lump (USDF), opened from the script editor's toolbar. **Waiting for the user's sign-off on the layout** (screenshots in `docs/screenshots/dialogue-builder-*.png`).
+- `Dialogue/UsdfDocument.cs`: reader (UDMF-style syntax with blocks; line numbers in errors) and writer (standard layout); conversations, pages, choices, item checks; fields it doesn't know are kept; comments are not. Strife (numbers) and ZDoom/GZDoom (class names, page names) namespaces.
+- `Dialogue/DialogueChecks.cs`: the problems listed at the bottom of the window.
+- `Dialogue/DialogueBuilderWindow.cs`: the window (code-built; lists and rows are dynamic). Moving/deleting/inserting pages renumbers numbered links. Class names for the item boxes: the map's thing types plus DECORATE/ZScript actors (`DataManager.zdoomclasses`, read by reflection). Things using a conversation: the UDMF `conversation` field.
+- `Controls/Inputs/ScriptEditorPanelView.cs`: the toolbar button (only on a USDF tab), the apply callback (`Scintilla.Document.Replace` in one undo action).
+- Dev: step `dialoguebuilder`; `ULDB_DIALOGUE_SELECT`, `_CHOICE`, `_SCROLL`, `_APPLY`.
+- Tests: `UsdfDocumentTests`, `DialogueChecksTests`.
+- Not done: a flow chart of pages and choices, an in-game preview.
+- **To try on the user's machine:** a real dialogue (with comments: the warning), Apply, save the map, talk to the actor in GZDoom/UZDoom; the action browser from a choice; "Give it to the selected things".
+- **Version 0.6.2-beta** (this branch): `Branding.VERSION`, `Version.cs`, release notes, metainfo, README banner, workflow example. To release: merge, tag `v0.6.2-beta` on `master`.
+
 ## ACS and dialogue gaps (branch `phase-3/acs-usdf-gaps`, 20 Nov 2026, no screen)
 
 Compared the script configs with what the engines/compiler define: ACS against ACC's `zspecial.acs` and `zdefs.acs` (the submodule ULDB builds, `e37b18e`), USDF against GZDoom's `specs/usdf*.txt` and `src/maploader/usdf.cpp`. ULDB-owned copies of both configs carry the additions (see `upstream-edits.md`). What is still left out on purpose: Zandronum's (-100 to -199, Skulltag specials 143-153, ZDaemon) and Eternity's (`SetAirFriction`) functions and `LUMP_*` constants. Based on `phase-3/zscript-editor` (needs its case-insensitive colouring fix).

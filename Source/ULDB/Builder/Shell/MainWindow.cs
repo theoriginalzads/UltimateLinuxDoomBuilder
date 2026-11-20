@@ -550,6 +550,18 @@ namespace ULDB.Shell
 							Console.WriteLine("[devstep] tabs: " + string.Join(", ", System.Linq.Enumerable.Select(System.Linq.Enumerable.Cast<WF.TabPage>(stabs.TabPages), tp => (tp == stabs.SelectedTab ? "*" : "") + tp.Text + "<" + tp.GetType().Name + ">")));
 							break;
 						}
+						case "dialoguebuilder": // opens the dialogue builder on the DIALOGUE tab (modal)
+						{
+							var panel = General.Map.ScriptEditor.Editor;
+							var stabs = (CodeImp.DoomBuilder.Controls.VSTabControl)typeof(CodeImp.DoomBuilder.Controls.ScriptEditorPanel).GetField("tabs", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(panel);
+							foreach(WF.TabPage tp in stabs.TabPages) if(tp.Text.TrimStart('\u25CF', ' ') == "DIALOGUE") stabs.SelectedTab = tp;
+							var win = FormWindows.WindowFor(General.Map.ScriptEditor);
+							var view = System.Linq.Enumerable.FirstOrDefault(System.Linq.Enumerable.OfType<ULDB.Controls.ScriptEditorPanelView>(Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(win)));
+							typeof(ULDB.Controls.ScriptEditorPanelView).GetMethod("OpenDialogueBuilder", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(view, null);
+							var dtab = (CodeImp.DoomBuilder.Controls.ScriptDocumentTab)stabs.SelectedTab;
+							Console.WriteLine("[devstep] dialogue after the builder (" + dtab.Text + "):\n" + dtab.Editor.Scintilla.Text);
+							break;
+						}
 						case "scriptsave": General.Map.ScriptEditor.Editor.ExplicitSaveCurrentTab(); break; // Ctrl+S in the script editor
 						case "wadlumps": // the lumps of the map's WAD file, with the start of the text ones
 						{
