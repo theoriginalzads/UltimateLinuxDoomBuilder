@@ -229,6 +229,8 @@
     <Compile Include="Windows/**/*.cs;Controls/**/*.cs" />
     <!-- Script editor: ScintillaNET-compatible editing model over AvaloniaEdit, lexer, views. -->
     <Compile Include="Scripting/**/*.cs" />
+    <!-- Dialogue builder: USDF (Strife dialogue) model and its window. -->
+    <Compile Include="Dialogue/**/*.cs" />
     <!-- Avalonia app: entry point, IWinFormsHost, main loop. -->
     <Compile Include="Shell/**/*.cs" />
   </ItemGroup>

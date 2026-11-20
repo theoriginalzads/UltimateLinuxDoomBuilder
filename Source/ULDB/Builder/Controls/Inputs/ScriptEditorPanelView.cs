@@ -41,6 +41,14 @@ namespace ULDB.Controls
 				if(item != null) item.Available = false;
 			}
 
+			// The dialogue builder, for the DIALOGUE lump (USDF)
+			WF.ToolStrip toolstrip = binder.Field<WF.ToolStrip>("toolbar");
+			WF.ToolStripButton builder = new WF.ToolStripButton("Dialogue Builder") { ToolTipText = "Edit the dialogue with forms instead of text", Available = false };
+			builder.Click += (s, e) => OpenDialogueBuilder();
+			toolstrip.Items.Add(new WF.ToolStripSeparator { Available = false });
+			toolstrip.Items.Add(builder);
+			dialoguebuttons = new WF.ToolStripItem[] { toolstrip.Items[toolstrip.Items.Count - 2], builder };
+
 			Menu menu = ToolStripViews.CreateMenuBar(binder.Field<WF.MenuStrip>("menustrip"));
 			Control toolbar = ToolStripViews.CreateToolBar(binder.Field<WF.ToolStrip>("toolbar"), Orientation.Horizontal);
 			Control status = ToolStripViews.CreateToolBar(binder.Field<WF.StatusStrip>("statusbar"), Orientation.Horizontal);
@@ -103,6 +111,10 @@ namespace ULDB.Controls
 			root.Children.Add(new Border { Child = tabs, Padding = new Thickness(6, 0, 6, 0) });
 			Content = root;
 
+			tabsmodel.SelectedIndexChanged += (s, e) => UpdateDialogueButton();
+			tabsmodel.TabPagesChanged += (s, e) => UpdateDialogueButton();
+			UpdateDialogueButton();
+
 			// Tabs follow the model
 			tabsmodel.TabPagesChanged += (s, e) => Dispatcher.UIThread.Post(RebuildTabs);
 			tabsmodel.SelectedIndexChanged += (s, e) => SyncSelection();
@@ -116,6 +128,51 @@ namespace ULDB.Controls
 
 			binder.UpdateNow();
 		}
+
+		#region ================== Dialogue builder
+
+		private WF.ToolStripItem[] dialoguebuttons;
+
+		private ScriptDocumentTab ActiveDialogueTab()
+		{
+			ScriptDocumentTab t = tabsmodel.SelectedTab as ScriptDocumentTab;
+			return t != null && t.Config != null && t.Config.ScriptType == CodeImp.DoomBuilder.Config.ScriptType.USDF ? t : null;
+		}
+
+		private void UpdateDialogueButton()
+		{
+			bool show = ActiveDialogueTab() != null;
+			foreach(WF.ToolStripItem item in dialoguebuttons) if(item.Available != show) item.Available = show;
+		}
+
+		private void OpenDialogueBuilder()
+		{
+			ScriptDocumentTab tab = ActiveDialogueTab();
+			if(tab == null) return;
+			ScintillaNET.Scintilla text = tab.Editor.Scintilla;
+			ULDB.Dialogue.UsdfDocument doc;
+			try { doc = ULDB.Dialogue.UsdfDocument.Parse(text.Text); }
+			catch(ULDB.Dialogue.UsdfException e)
+			{
+				WF.MessageBox.Show("The dialogue can't be read: " + e.Message + " (line " + (e.Line + 1) + ").\nFix it in the text first.", "Dialogue Builder", WF.MessageBoxButtons.OK, WF.MessageBoxIcon.Warning);
+				tab.MoveToLine(e.Line);
+				return;
+			}
+			bool comments = ULDB.Dialogue.UsdfDocument.HasComments(text.Text);
+			ULDB.Dialogue.DialogueBuilderWindow window = new ULDB.Dialogue.DialogueBuilderWindow(doc, comments, newtext =>
+			{
+				// One undo step in the script, which the map saves as usual
+				string eol = text.Text.Contains("\r\n") ? "\r\n" : "\n";
+				text.BeginUndoAction();
+				try { text.Document.Replace(0, text.TextLength, newtext.Replace("\n", eol)); }
+				finally { text.EndUndoAction(); }
+				return true;
+			});
+			Window owner = TopLevel.GetTopLevel(this) as Window;
+			Modal.ShowDialog(window, owner);
+		}
+
+		#endregion
 
 		// A stroked cross (PathIcon only fills, which would draw nothing for lines)
 		private static Control CloseGlyph()
