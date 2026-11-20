@@ -305,7 +305,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(UpstreamAssets)Common/**/*"
-          Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**"
+          Exclude="$(UpstreamAssets)Common/*.dll;$(UpstreamAssets)Common/*.pdb;$(UpstreamAssets)Common/*.xml;$(UpstreamAssets)Common/*.chm;$(UpstreamAssets)Common/Plugins/**;$(UpstreamAssets)Common/Scripting/ZDoom_ZSCRIPT.cfg"
           Link="%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     <!-- The Plugins folder and its load order; the plugins themselves are built from Phase 4 on.
          Jint/Esprima (Plugins/Dependencies) are only used by UDBScript, which is out of scope. -->

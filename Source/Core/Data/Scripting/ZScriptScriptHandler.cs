@@ -26,8 +26,17 @@ namespace CodeImp.DoomBuilder.Data.Scripting
             if (parser.Parse(data, false))
                 target.Items.AddRange(parser.Types.ToArray());
 
+#if ULDB
+            // ULDB: a check of the whole script (brackets, strings, States and Default blocks) instead of the
+            // navigator parser's own errors; errors name the script as its tab recognises them
+            stream.Seek(0, SeekOrigin.Begin);
+            string text = new StreamReader(stream, ScriptEditorControl.Encoding).ReadToEnd();
+            string name = (tab is ScriptWadLumpDocumentTab wadtab) ? wadtab.ErrorName : (tab != null ? tab.Filename : "ZSCRIPT");
+            result.AddRange(ULDB.Scripting.ZScriptChecker.Check(text, name));
+#else
             if (parser.HasError)
                 result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+#endif
 
             return result;
         }

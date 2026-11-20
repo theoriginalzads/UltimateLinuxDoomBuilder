@@ -543,6 +543,25 @@ namespace ULDB.Shell
 							area.RaiseEvent(new Avalonia.Input.KeyEventArgs { RoutedEvent = Avalonia.Input.InputElement.KeyDownEvent, Key = Enum.Parse<Avalonia.Input.Key>(p[1]), KeyModifiers = mods });
 							break;
 						}
+						case "scripttabs": // the script editor's tabs, the active one marked
+						{
+							var stabs = (CodeImp.DoomBuilder.Controls.VSTabControl)typeof(CodeImp.DoomBuilder.Controls.ScriptEditorPanel).GetField("tabs", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(General.Map.ScriptEditor.Editor);
+							if(p.Length > 1) foreach(WF.TabPage tp in stabs.TabPages) if(tp.Text.TrimStart('\u25CF', ' ') == p[1]) stabs.SelectedTab = tp; // scripttabs:<title> selects one
+							Console.WriteLine("[devstep] tabs: " + string.Join(", ", System.Linq.Enumerable.Select(System.Linq.Enumerable.Cast<WF.TabPage>(stabs.TabPages), tp => (tp == stabs.SelectedTab ? "*" : "") + tp.Text + "<" + tp.GetType().Name + ">")));
+							break;
+						}
+						case "scriptsave": General.Map.ScriptEditor.Editor.ExplicitSaveCurrentTab(); break; // Ctrl+S in the script editor
+						case "wadlumps": // the lumps of the map's WAD file, with the start of the text ones
+						{
+							using(var wad = new CodeImp.DoomBuilder.IO.WAD(General.Map.FilePathName, true))
+								foreach(var l in wad.Lumps)
+								{
+									string head = "";
+									if(l.Name == "ZSCRIPT" || l.Name == "ZSACTORS") { var ms = new System.IO.MemoryStream(); var st = l.GetSafeStream(); st.Seek(0, System.IO.SeekOrigin.Begin); st.CopyTo(ms); head = " \"" + System.Text.Encoding.ASCII.GetString(ms.ToArray()).Replace("\n", "|").Substring(0, Math.Min(60, (int)ms.Length)) + "\""; }
+									Console.WriteLine("[devstep] lump " + l.Name + " " + l.Length + head);
+								}
+							break;
+						}
 						case "scriptcaret": // scriptcaret:<offset>, moves the caret; scriptfold:<line> folds; scriptreport prints the state
 							General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.GotoPosition(int.Parse(p[1])); break;
 						case "scripterror": General.Map.ScriptEditor.Editor.ActiveTab.Editor.Scintilla.Lines[int.Parse(p[1])].MarkerAdd(2); break; // scripterror:<line>, marks a line as a compile error
