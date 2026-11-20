@@ -158,6 +158,27 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 
+#if ULDB
+			// ULDB: the map WAD's ZSCRIPT (and the lumps it includes), which upstream can't open
+			foreach(ScriptWadLumpDocumentTab t in ScriptWadLumpDocumentTab.CreateTabs(this))
+			{
+				if(General.Map.Options.ScriptDocumentSettings.ContainsKey(t.Filename))
+				{
+					t.SetViewSettings(General.Map.Options.ScriptDocumentSettings[t.Filename]);
+					if(General.Map.Options.ScriptDocumentSettings[t.Filename].IsActiveTab)
+						activetab = t;
+				}
+				else
+				{
+					t.SetDefaultViewSettings();
+				}
+
+				t.OnTextChanged += tabpage_OnLumpTextChanged;
+				t.Editor.Scintilla.UpdateUI += scintilla_OnUpdateUI;
+				tabs.TabPages.Add(t);
+			}
+#endif
+
 			//mxd. Reselect previously selected tab
 			if(activetab != null)
 			{
@@ -725,7 +746,11 @@ namespace CodeImp.DoomBuilder.Controls
 						General.Map.Options.ScriptDocumentSettings[settings.Filename] = settings;
 					}
 				}
+#if ULDB
+				else if(t is ScriptLumpDocumentTab || t is ScriptResourceDocumentTab || t is ScriptWadLumpDocumentTab)
+#else
 				else if(t is ScriptLumpDocumentTab || t is ScriptResourceDocumentTab)
+#endif
 				{
 					var settings = t.GetViewSettings();
 					General.Map.Options.ScriptDocumentSettings[settings.Filename] = settings;

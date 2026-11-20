@@ -680,7 +680,8 @@ namespace ScintillaNET
 
 		#region ================== Styles and keywords
 
-		public Lexer Lexer { get { return lexer; } set { lexer = value; docversion++; TextStyleChanged(); } }
+		// Upstream's lexer 35 is its case-insensitive C-like lexer (DECORATE, ZSCRIPT...); the keyword lists come lowercased then
+		public Lexer Lexer { get { return lexer; } set { lexer = value; casesensitive = (int)value != 35; docversion++; TextStyleChanged(); } }
 
 		public void ClearDocumentStyle() { docversion++; }
 		public void StyleResetDefault() { }
