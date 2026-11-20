@@ -129,6 +129,10 @@ App icon: **Cacky, the ULDB Cacodemon** (`Source/ULDB/Assets/Icons/`, SVG source
 
 **Milestone:** launch, open a test map (`tests/maps/*.wad` with Freedoom), see it in 2D and 3D, pan and zoom, switch modes, save. ✅ reached 20 Oct 2026.
 
+## ACS and dialogue gaps (branch `phase-3/acs-usdf-gaps`, 20 Nov 2026, no screen)
+
+Compared the script configs with what the engines/compiler define: ACS against ACC's `zspecial.acs` and `zdefs.acs` (the submodule ULDB builds, `e37b18e`), USDF against GZDoom's `specs/usdf*.txt` and `src/maploader/usdf.cpp`. ULDB-owned copies of both configs carry the additions (see `upstream-edits.md`). What is still left out on purpose: Zandronum's (-100 to -199, Skulltag specials 143-153, ZDaemon) and Eternity's (`SetAirFriction`) functions and `LUMP_*` constants. Based on `phase-3/zscript-editor` (needs its case-insensitive colouring fix).
+
 ## ZScript in the script editor (branch `phase-3/zscript-editor`, 20 Nov 2026, no screen)
 
 The user's ZScript lives in the map's WAD (not a PK3). Pieces 1 to 3 of the plan; piece 4 (a real compile through the engine's `-norun`) is not done.
