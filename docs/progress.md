@@ -140,6 +140,7 @@ A form view of the DIALOGUE lump (USDF), opened from the script editor's toolbar
 - Tests: `UsdfDocumentTests`, `DialogueChecksTests`.
 - Not done: a flow chart of pages and choices, an in-game preview.
 - **To try on the user's machine:** a real dialogue (with comments: the warning), Apply, save the map, talk to the actor in GZDoom/UZDoom; the action browser from a choice; "Give it to the selected things".
+- **Version 0.6.2-beta** (this branch): `Branding.VERSION`, `Version.cs`, release notes, metainfo, README banner, workflow example. To release: merge, tag `v0.6.2-beta` on `master`.
 
 ## ACS and dialogue gaps (branch `phase-3/acs-usdf-gaps`, 20 Nov 2026, no screen)
 

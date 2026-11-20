@@ -1,8 +1,8 @@
-# Ultimate Linux Doom Builder v0.6.1-beta
+# Ultimate Linux Doom Builder v0.6.2-beta
 
 An **unofficial** native Linux fork of [Ultimate Doom Builder](https://github.com/UltimateDoomBuilder/UltimateDoomBuilder), built on .NET 10 and Avalonia instead of Mono and WinForms. It targets **GZDoom / UZDoom** maps only. The port is **AI-coded** (Claude), and that is disclosed publicly. It isn't endorsed by the UDB team.
 
-This is a **beta**: every window the editor opens is ported, and the work is fixing and polishing. It has had little real-world use, so **back up your maps and save often.** v0.6.1 is a small update on v0.6.0: a clearer Test menu, better engine detection, a tidier main window and a few bug fixes.
+This is a **beta**: every window the editor opens is ported, and the work is fixing and polishing. It has had little real-world use, so **back up your maps and save often.** v0.6.2 brings ZScript editing into the script editor and a Dialogue Builder for Strife-style conversations.
 
 ## Why use ULDB instead of UDB on Linux
 
@@ -11,6 +11,7 @@ UDB is a Windows program; on Linux it runs on Mono's WinForms. ULDB is the same 
 - **A native Linux application.** .NET 10 and Avalonia, no Mono or Wine. Settings live in `~/.config`, it installs as a Flatpak or an Arch package, and the compilers (ACC, ZDBSP, ZT-BCC, BCC) are built from source and included.
 - **It looks like it belongs on your desktop.** It follows the system's light or dark theme, has Breeze-style icons, scales cleanly on high-resolution displays, and has its own interface scale option.
 - **A real script editor.** Syntax colours, folding, autocompletion, call tips, a find bar, hover help, error underlines, zoom, and line editing shortcuts (comment, move, duplicate, delete lines).
+- **ZScript and dialogue without another program.** Edit the WAD's ZSCRIPT next to your ACS, with colours, help and error checking, and build conversations with forms instead of hand-writing them.
 - **Testing maps without typing command lines.** ULDB finds the GZDoom and UZDoom you have installed, natively or as Flatpaks, and offers their launch options as tick boxes. It works from inside ULDB's own Flatpak too.
 - **Dialogs that fit your screen.** The big edit dialogs scroll and keep OK and Cancel in reach on small screens; upstream's are cut off at 1280x720.
 - **Long-standing UDB requests, done:**
@@ -24,26 +25,27 @@ UDB is a Windows program; on Linux it runs on Mono's WinForms. ULDB is the same 
 
 **What you give up:** ULDB only edits for GZDoom and UZDoom (other game configurations are hidden), it doesn't include UDBScript or the update window, and it is new, so it has had far less use than UDB. On Windows, use UDB.
 
-## New since v0.6.0-beta
+## New since v0.6.1-beta
 
-**Testing maps**
-- **A clearer Test menu** (the arrow beside the Test button). Upstream listed the five skill levels twice, once with monsters and once without. Now there is one **Skill level** list with the current one ticked, a single **Spawn monsters** switch (off adds `-nomonsters`), **Test with engine** (only when more than one engine is set up), **Extra parameters...** (command-line switches for this map's configuration, such as `+god`; upstream's text box in the menu, which didn't work here) and **Test engine settings...**, which opens Game Configurations on the Testing tab.
-- **GZDoom and UZDoom AppImages are found.** The Testing tab's quick setup now also looks for `*zdoom*.AppImage` files (executable) in your home folder, Downloads, `~/Applications`, `~/AppImages`, `~/Games`, `~/.local/bin`, `~/.local/share/AppImages` and `/opt`, as well as programs on the PATH and Flatpaks.
+**ZScript in the script editor**
+- A **ZSCRIPT** tab next to SCRIPTS and DIALOGUE, with a tab for each ZSCRIPT lump in the map's WAD and for each lump they `#include`. When the WAD has none, the tab starts empty so you can begin one.
+- **Ctrl+S saves it straight into the map's WAD**, so Test Map runs what you saved. If another program (SLADE) changed the lump meanwhile, you're asked first. A new map has to be saved once before its ZScript can be. Reload resources (F8) to see your actors in the thing list.
+- **Colours, autocompletion, call tips and hover help** from GZDoom's and UZDoom's own ZScript: about 2,400 functions with their signatures, plus keywords, types, classes and constants.
+- **Errors as you type**: unmatched brackets, unclosed strings and comments, code outside a class, a missing `;` in States and Default blocks, a state without a duration. The engine still has the last word on types and names.
 
-**Main window**
-- Map statistics (vertices, linedefs, sidedefs, sectors, things) are a row of tiles in the info panel; with nothing highlighted, the mode name is brighter and has an accent bar.
-- Clearer separators between groups of buttons in the toolbar and the edit modes strip.
-- Docker tabs are rounded, and the selected tab is bold with an accent bar.
-- The coordinate and zoom readouts in the status bar keep a fixed width, so the bar no longer shifts as you move the mouse.
-- **Help docker:** shortcuts are drawn as key caps and a small mouse with the pressed button lit (left, right, middle, wheel), instead of bold text.
+**Dialogue Builder**
+- A **Dialogue Builder** button in the script editor's toolbar on the DIALOGUE tab. Conversations and pages on the left; the page (speaker, dialogue, portrait, voice, goodbye, drop, skip conditions) and its choices (next page, costs, require/exclude, messages, item given, log, action with the action browser and named arguments) on the right.
+- Shows which things on the map use a conversation, and gives a conversation to the selected things.
+- Points out links to pages that don't exist, missing text, repeated IDs and page names, and unknown class names.
+- "Apply to script" writes the dialogue into the text (one undo step). Comments in the text are lost when it does; you're warned once.
 
-**Opening maps**
-- The "Opening map..." cover shows what the editor is doing ("Loading data resources", and so on) and keeps repainting, so the window no longer looks frozen. The load itself still runs on the main thread (issue #13 stays open for a full fix).
-- The Open Map dialog offers "Autosaves and backups" and "All files", so `map.wad.MAP01.autosave1` and `.backup1` files can be opened.
+**ACS and dialogue**
+- 45 more ACS specials and functions with signatures (the Eternity-style floor, ceiling and stairs specials GZDoom supports, Line_/Sector_SetHealth, ScriptCall, StrArg, Round, GetSectorHealth and more), 4 keywords and 27 constants.
+- The ZDoom and GZDoom dialogue fields (namespace, class, goodbye, userstring, pagename, specialname, require, exclude).
 
 **Fixes**
-- After pressing OK in **Game Configurations**, the plugins' buttons in the edit modes strip (Apply Directional Shading, Randomize, Pick Sector/Light Color) disappeared and their Mode menu items jumped to the top. They keep their place now (the same bug exists in UDB).
-- The check boxes in the Game Configurations list are no longer clipped.
+- In case-insensitive languages (DECORATE, ZScript) function and class names were only coloured when typed in lowercase.
+- After switching tabs in the script editor, the toolbar and status bar showed the previous tab's state.
 
 ## What works
 
@@ -56,17 +58,17 @@ UDB is a Windows program; on Linux it runs on Mono's WinForms. ULDB is the same 
 
 ## Known limits
 
-- Much of this release was checked in a headless test environment and not yet by eye on a real desktop. In particular: the new Test menu and its extra parameters, finding an AppImage engine, Test Map with a Flatpak engine, the script editor, dialogs on small or scaled screens, and the interface scale option. Reports on these are especially welcome.
+- Much of this release was checked in a headless test environment and not yet by eye on a real desktop. In particular: saving ZScript into the map's WAD, the Dialogue Builder, the Test menu, finding an AppImage engine, Test Map with a Flatpak engine, dialogs on small or scaled screens, and the interface scale option. Reports on these are especially welcome.
 - Only GZDoom and UZDoom game configurations are shown, on purpose.
 - The update window is not included: update through Flatpak or your package manager.
 - The splash picture is a placeholder, and the Help menu has no manual yet.
 
 ## Install (Flatpak)
 
-Download `ultimate-linux-doom-builder-v0.6.1-beta.flatpak` below (it appears once the build finishes), then:
+Download `ultimate-linux-doom-builder-v0.6.2-beta.flatpak` below (it appears once the build finishes), then:
 
 ```sh
-flatpak install --user ./ultimate-linux-doom-builder-v0.6.1-beta.flatpak
+flatpak install --user ./ultimate-linux-doom-builder-v0.6.2-beta.flatpak
 flatpak run io.github.theoriginalzads.UltimateLinuxDoomBuilder
 ```
 
