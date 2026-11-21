@@ -70,3 +70,5 @@ A user-facing list of every intentional UI or behaviour difference between ULDB 
 - **Help docker, key and mouse icons:** the shortcuts in the hints are drawn as key caps ("Ctrl" "D", "Space", "Del") and a small mouse with the pressed button lit (left, right, middle, wheel with an arrow for scroll direction) instead of bold text. Bold text that isn't a shortcut ("Colors (default):") stays bold. Line spacing is a little looser to fit the caps.
 
 - **Bug fix, paste happening twice (#46):** pasting asks the desktop clipboard for its text and waits for the answer, and the event loop runs meanwhile. A repeated Ctrl+V or a mouse move arriving then started a second paste in the middle of the first (two "Paste" undo steps, one copy left behind). Key presses, clicks, moves and the wheel that arrive while an input event is still running are now dropped; key and button releases run once it has finished (`MainWindow.Input`).
+
+- **Bug fix, freeze opening a map (Debug builds):** a background thread held the log lock while waiting for the UI thread (debug console), and the UI thread waited for the lock. Release builds didn't write to the debug console and weren't affected.
