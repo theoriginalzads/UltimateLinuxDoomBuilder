@@ -1804,6 +1804,23 @@ namespace CodeImp.DoomBuilder
 		// This outputs log information
 		public static void WriteLogLine(string line)
 		{
+#if ULDB
+			// ULDB: the debug console and the "Opening map..." cover are updated outside the lock. The debug console
+			// waits for the UI thread (Invoke), so a background thread logging in a Debug build held the lock while
+			// the UI thread waited for it to log too: the program froze (opening a map from the recent files list).
+			lock (random)
+			{
+#if DEBUG
+				Console.WriteLine(line);
+#endif
+				try { File.AppendAllText(logfile, line + Environment.NewLine); }
+				catch (Exception) { }
+			}
+#if DEBUG
+			DebugConsole.WriteLine(DebugMessageType.LOG, line); //mxd
+#endif
+			ULDB.Platform.Busy.Update(line); // shows the step on the "Opening map..." cover
+#else
 			lock (random)
 			{
 #if DEBUG
@@ -1811,18 +1828,30 @@ namespace CodeImp.DoomBuilder
 				Console.WriteLine(line);
 				DebugConsole.WriteLine(DebugMessageType.LOG, line); //mxd
 #endif
-#if ULDB
-				ULDB.Platform.Busy.Update(line); // shows the step on the "Opening map..." cover
-#endif
 				// Write to log file
 				try { File.AppendAllText(logfile, line + Environment.NewLine); }
 				catch (Exception) { }
 			}
+#endif
 		}
 
 		// This outputs log information
 		public static void WriteLog(string text)
 		{
+#if ULDB
+			// ULDB: the debug console outside the lock, as in WriteLogLine
+			lock (random)
+			{
+#if DEBUG
+				Console.Write(text);
+#endif
+				try { File.AppendAllText(logfile, text); }
+				catch (Exception) { }
+			}
+#if DEBUG
+			DebugConsole.Write(DebugMessageType.LOG, text);
+#endif
+#else
 			lock (random)
 			{
 #if DEBUG
@@ -1835,6 +1864,7 @@ namespace CodeImp.DoomBuilder
 				try { File.AppendAllText(logfile, text); }
 				catch (Exception) { }
 			}
+#endif
 		}
 		
 #endregion
