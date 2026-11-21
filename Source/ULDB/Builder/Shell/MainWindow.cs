@@ -38,6 +38,16 @@ namespace ULDB.Shell
 		public MainWindow(MainForm form)
 		{
 			this.form = form;
+
+			// Upstream asks "which monitors are there" to see whether a saved window position is on a screen, and
+			// where a window may go; answer with the real ones (every monitor, not just one).
+			System.Drawing.Rectangle Rect(PixelRect r) => new System.Drawing.Rectangle(r.X, r.Y, r.Width, r.Height);
+			WF.Screen.ScreensProvider = () => System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(Screens.All, sc => (Rect(sc.Bounds), Rect(sc.WorkingArea), sc.IsPrimary)));
+			WF.Screen.BoundsProvider = c =>
+			{
+				Avalonia.Platform.Screen sc = (c == null ? Screens.Primary : Screens.ScreenFromVisual(this) ?? Screens.Primary) ?? Screens.All[0];
+				return (Rect(sc.Bounds), Rect(sc.WorkingArea));
+			};
 			display = form.Display;
 
 			Title = form.Text;
@@ -148,7 +158,9 @@ namespace ULDB.Shell
 			System.Diagnostics.Stopwatch since = System.Diagnostics.Stopwatch.StartNew();
 			ULDB.Platform.Busy.Step = step =>
 			{
-				if(!busyoverlay.IsVisible || !Dispatcher.UIThread.CheckAccess() || since.ElapsedMilliseconds < 40) return;
+				// Thread check first: IsVisible itself throws off the UI thread (which broke the
+				// required-archives check, run on a worker, so it reported nothing found).
+				if(!Dispatcher.UIThread.CheckAccess() || !busyoverlay.IsVisible || since.ElapsedMilliseconds < 40) return;
 				since.Restart();
 				string line = step.Trim().TrimEnd('.');
 				busytext.Text = busymessage + "\n" + (line.Length > 80 ? line.Substring(0, 80) + "…" : line);
@@ -404,8 +416,13 @@ namespace ULDB.Shell
 				if(IsTextInput(e.Source)) return;
 				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
+				// As in WinForms, the key goes to the map view first (MainForm's display_PreviewKeyDown hands it to
+				// MainForm_KeyDown when the view or nothing is active). The form's own KeyDown runs only otherwise:
+				// MainForm overrides ProcessKeyPreview, so WinForms never raised both, and raising both made every key
+				// count twice; pasting changes the mode in between, so it pasted twice (issue #46).
+				bool viewtakesit = form.ActiveControl == null || form.ActiveControl == display;
 				display.RaisePreviewKeyDown(new WF.PreviewKeyDownEventArgs(keys));
-				form.RaiseKeyDown(new WF.KeyEventArgs(keys));
+				if(!viewtakesit) form.RaiseKeyDown(new WF.KeyEventArgs(keys));
 				e.Handled = true;
 			}, Avalonia.Interactivity.RoutingStrategies.Tunnel);
 
@@ -622,6 +639,36 @@ namespace ULDB.Shell
 							foreach(WF.ToolStripItem it in Field<WF.ToolStrip>(p[1]).Items)
 								Console.WriteLine("stripstate: " + (it is WF.ToolStripSeparator ? "---" : (string.IsNullOrEmpty(it.Text) ? it.ToolTipText : it.Text)) + (it.Available ? "" : " (hidden)"));
 							break;
+						case "openpopup": // openpopup:<index>, opens the drop-down of the <index>th split/drop-down button of the main window (to check where popups appear)
+						{
+							int n = int.Parse(p[1]);
+							foreach(Avalonia.Visual v in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
+							{
+								Avalonia.Controls.Primitives.FlyoutBase fly = (v as Avalonia.Controls.SplitButton)?.Flyout ?? (v as Avalonia.Controls.DropDownButton)?.Flyout;
+								if(fly != null && n-- == 0) { fly.ShowAt((Control)v); break; }
+							}
+							break;
+						}
+						case "openmenu": // openmenu:<n>, opens the <n>th menu of the menu bar (0 = File)
+						{
+							int n = int.Parse(p[1]);
+							foreach(Avalonia.Visual v in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
+								if(v is Avalonia.Controls.Menu bar) { ((Avalonia.Controls.MenuItem)System.Linq.Enumerable.ElementAt(System.Linq.Enumerable.OfType<Avalonia.Controls.MenuItem>(bar.Items), n)).IsSubMenuOpen = true; break; }
+							break;
+						}
+						case "screens": // the monitors Avalonia sees, where the main window is, and the window's own idea of its place
+							foreach(Avalonia.Platform.Screen sc in Screens.All)
+								Console.WriteLine($"[devstep] screen {sc.Bounds.X},{sc.Bounds.Y} {sc.Bounds.Width}x{sc.Bounds.Height} work {sc.WorkingArea.X},{sc.WorkingArea.Y} {sc.WorkingArea.Width}x{sc.WorkingArea.Height} scale {sc.Scaling} primary={sc.IsPrimary}");
+							Console.WriteLine($"[devstep] main window {WindowState} at {Position.X},{Position.Y} size {Width}x{Height} scale {RenderScaling} on screen {(Screens.ScreenFromVisual(this) is Avalonia.Platform.Screen cur ? cur.Bounds.X + "," + cur.Bounds.Y : "?")}");
+							break;
+						case "moveto": // moveto:<x>,<y> moves the main window (screen pixels), then prints where it ended up
+						{
+							string[] xy = p[1].Split(',');
+							Position = new PixelPoint(int.Parse(xy[0]), int.Parse(xy[1]));
+							await System.Threading.Tasks.Task.Delay(800);
+							Console.WriteLine($"[devstep] after moveto: main window at {Position.X},{Position.Y}");
+							break;
+						}
 						case "testmenu": // testmenu[:<text of an item to click>], lists the Test button's drop-down (and clicks one)
 						{
 							WF.ToolStripDropDownItem test = Field<WF.ToolStripDropDownItem>("buttontest");
@@ -881,6 +928,8 @@ namespace ULDB.Shell
 		public void Load()
 		{
 			form.RaiseLoad();
+			// (setting the position below raises PositionChanged, which copies the window's own state, still Normal, to the form)
+			bool wasmaximized = form.WindowState == WF.FormWindowState.Maximized;
 
 			// DelayedForm.OnLoad has put the saved size and place on the form; the window takes them (only when
 			// something was saved, so a first start keeps ULDB's default size).
@@ -895,7 +944,14 @@ namespace ULDB.Shell
 				WindowStartupLocation = WindowStartupLocation.Manual;
 				Position = new PixelPoint(form.Location.X, form.Location.Y);
 			}
-			if(form.WindowState == WF.FormWindowState.Maximized) WindowState = WindowState.Maximized;
+			// Maximised: after the window is open and on its saved monitor, so the window manager maximises it there
+			// (asked before it is shown, a saved position is lost and it opens on whichever monitor the manager picks).
+			if(wasmaximized)
+			{
+				EventHandler opened = null;
+				opened = (s, e) => { Opened -= opened; Dispatcher.UIThread.Post(() => WindowState = WindowState.Maximized); };
+				Opened += opened;
+			}
 		}
 
 		private void SyncFormGeometry()

@@ -5,6 +5,17 @@ namespace ULDB.Tests
 	public class PlatformTests
 	{
 		[Fact]
+		public void LongPathsKeepTheirFileNameForMenus()
+		{
+			Assert.Equal("~/iWads/theexit8v2.wad", PathDisplay.Short("/home/me/iWads/theexit8v2.wad", 44, "/home/me"));
+			Assert.Equal("…/tests/maps/small.wad", PathDisplay.Short("/home/me/VS/ULDB/UltimateLinuxDoomBuilder/tests/maps/small.wad", 24, "/home/me"));
+			Assert.Equal("/opt/a.wad", PathDisplay.Short("/opt/a.wad", 44, "/home/me"));
+			string longname = PathDisplay.Short("/home/me/" + new string('x', 80) + ".wad", 30, "/home/me");
+			Assert.EndsWith(".wad", longname);
+			Assert.True(longname.Length <= 30);
+		}
+
+		[Fact]
 		public void SettingsDirectoryFollowsXdgConfigHome()
 		{
 			string old = Environment.GetEnvironmentVariable("XDG_CONFIG_HOME");

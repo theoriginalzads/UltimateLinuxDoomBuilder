@@ -194,7 +194,7 @@ namespace ULDB.Shell
 		/// <summary>A popup menu (MenuFlyout) for a drop-down's items.</summary>
 		public static MenuFlyout CreateFlyout(WF.ToolStripDropDownItem dd)
 		{
-			MenuFlyout flyout = new MenuFlyout();
+			MenuFlyout flyout = new MenuFlyout { Placement = PlacementMode.BottomEdgeAlignedLeft }; // like a menu: its left edge under the button's
 			void Rebuild()
 			{
 				flyout.Items.Clear();

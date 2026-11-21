@@ -98,6 +98,11 @@ namespace ULDB.Shell
 		private static X11PlatformOptions X11Options()
 		{
 			X11PlatformOptions options = new X11PlatformOptions { WmClass = Branding.EXECUTABLE };
+			// Popups (menus, drop-down lists) are separate X11 windows by default. Under XWayland (a Wayland session,
+			// such as KDE's) at a fractional scale they appear far from where they belong, so there they are drawn
+			// inside the window instead. ULDB_POPUPS=native|overlay overrides.
+			string popups = Environment.GetEnvironmentVariable("ULDB_POPUPS")?.ToLowerInvariant();
+			options.OverlayPopups = popups == "overlay" || (popups != "native" && string.Equals(Environment.GetEnvironmentVariable("XDG_SESSION_TYPE"), "wayland", StringComparison.OrdinalIgnoreCase));
 			switch(Environment.GetEnvironmentVariable("ULDB_RENDERING")?.ToLowerInvariant())
 			{
 				case "glx": options.RenderingMode = new[] { X11RenderingMode.Glx }; break;
