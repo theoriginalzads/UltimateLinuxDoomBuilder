@@ -158,7 +158,9 @@ namespace ULDB.Shell
 			System.Diagnostics.Stopwatch since = System.Diagnostics.Stopwatch.StartNew();
 			ULDB.Platform.Busy.Step = step =>
 			{
-				if(!busyoverlay.IsVisible || !Dispatcher.UIThread.CheckAccess() || since.ElapsedMilliseconds < 40) return;
+				// Thread check first: IsVisible itself throws off the UI thread (which broke the
+				// required-archives check, run on a worker, so it reported nothing found).
+				if(!Dispatcher.UIThread.CheckAccess() || !busyoverlay.IsVisible || since.ElapsedMilliseconds < 40) return;
 				since.Restart();
 				string line = step.Trim().TrimEnd('.');
 				busytext.Text = busymessage + "\n" + (line.Length > 80 ? line.Substring(0, 80) + "…" : line);
