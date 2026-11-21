@@ -353,6 +353,33 @@ namespace ULDB.Shell
 			}
 		}
 
+		// Upstream code sometimes waits inside an input event: pasting asks the desktop clipboard for its text and waits
+		// for the answer (Modal.Wait runs the event loop meanwhile). Input arriving then must not start another action
+		// in the middle of the first: a repeated Ctrl+V or a mouse move pasted the geometry a second time (issue #46).
+		// Key presses, clicks, moves and the wheel that arrive while an input event is still running are dropped;
+		// releases are run once it has finished, so no key or button stays "held".
+		private int inputdepth;
+		private bool droppedpress;
+		private readonly System.Collections.Generic.List<System.Action> deferredinput = new System.Collections.Generic.List<System.Action>();
+
+		private void Input(System.Action handler, bool droppable)
+		{
+			if(inputdepth > 0)
+			{
+				if(!droppable) deferredinput.Add(handler);
+				return;
+			}
+			inputdepth++;
+			try { handler(); }
+			finally { inputdepth--; }
+			while(inputdepth == 0 && deferredinput.Count > 0)
+			{
+				System.Action next = deferredinput[0];
+				deferredinput.RemoveAt(0);
+				Input(next, false);
+			}
+		}
+
 		private void HookInput()
 		{
 			WF.Control.ModifierKeysProvider = () => modifiers;
@@ -371,9 +398,15 @@ namespace ULDB.Shell
 
 			input.PointerEntered += (s, e) => { Track(e); display.RaiseMouseEnter(); };
 			input.PointerExited += (s, e) => { Track(e); display.RaiseMouseLeave(); };
-			input.PointerMoved += (s, e) => display.RaiseMouseMove(MouseArgs(e, 0, 0));
+			input.PointerMoved += (s, e) => Input(() => display.RaiseMouseMove(MouseArgs(e, 0, 0)), true);
 
 			input.PointerPressed += (s, e) =>
+			{
+				e.Handled = true;
+				if(inputdepth > 0) { droppedpress = true; return; } // see Input()
+				Input(() => PointerDown(e), true);
+			};
+			void PointerDown(PointerPressedEventArgs e)
 			{
 				input.Focus();
 				e.Pointer.Capture(input);
@@ -381,18 +414,22 @@ namespace ULDB.Shell
 				Trace("down", args);
 				display.RaiseMouseDown(args);
 				if(e.ClickCount == 2) display.RaiseMouseDoubleClick(args);
-				e.Handled = true;
-			};
+			}
 
 			input.PointerReleased += (s, e) =>
+			{
+				e.Handled = true;
+				if(droppedpress) { droppedpress = false; e.Pointer.Capture(null); return; } // its press was dropped too
+				Input(() => PointerUp(e), false);
+			};
+			void PointerUp(PointerReleasedEventArgs e)
 			{
 				WF.MouseEventArgs args = MouseArgs(e, 1, 0, KeyMapping.ToMouseButton(e.InitialPressMouseButton));
 				Trace("up", args);
 				display.RaiseMouseUp(args);
 				if(new Rect(viewport.Bounds.Size).Contains(e.GetPosition(viewport))) display.RaiseMouseClick(args);
 				e.Pointer.Capture(null);
-				e.Handled = true;
-			};
+			}
 
 			// Upstream handles the wheel on the form (MainForm.OnMouseWheel), one notch = 120.
 			input.PointerWheelChanged += (s, e) =>
@@ -401,8 +438,8 @@ namespace ULDB.Shell
 				int delta = (int)Math.Round(e.Delta.Y * 120);
 				WF.MouseEventArgs wheel = MouseArgs(e, 0, delta);
 				Trace("wheel", wheel);
-				if(delta != 0) form.RaiseMouseWheel(wheel);
 				e.Handled = true;
+				if(delta != 0) Input(() => form.RaiseMouseWheel(wheel), true);
 			};
 
 			// Keys go to MainForm (it overrides WinForms' Tab/arrow focus handling), unless
@@ -414,9 +451,12 @@ namespace ULDB.Shell
 				if(IsTextInput(e.Source)) return;
 				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
-				display.RaisePreviewKeyDown(new WF.PreviewKeyDownEventArgs(keys));
-				form.RaiseKeyDown(new WF.KeyEventArgs(keys));
 				e.Handled = true;
+				Input(() =>
+				{
+					display.RaisePreviewKeyDown(new WF.PreviewKeyDownEventArgs(keys));
+					form.RaiseKeyDown(new WF.KeyEventArgs(keys));
+				}, true);
 			}, Avalonia.Interactivity.RoutingStrategies.Tunnel);
 
 			AddHandler(KeyUpEvent, (s, e) =>
@@ -426,10 +466,13 @@ namespace ULDB.Shell
 				if(IsTextInput(e.Source)) return;
 				WF.Keys keys = KeyMapping.ToKeys(e.Key, mods);
 				if((keys & WF.Keys.KeyCode) == WF.Keys.None) return;
-				WF.KeyEventArgs args = new WF.KeyEventArgs(keys);
-				form.RaiseKeyUp(args);
-				if(!args.Handled) display.RaiseKeyUp(args);
 				e.Handled = true;
+				Input(() =>
+				{
+					WF.KeyEventArgs args = new WF.KeyEventArgs(keys);
+					form.RaiseKeyUp(args);
+					if(!args.Handled) display.RaiseKeyUp(args);
+				}, false);
 			}, Avalonia.Interactivity.RoutingStrategies.Tunnel);
 		}
 
