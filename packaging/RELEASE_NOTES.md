@@ -46,6 +46,12 @@ UDB is a Windows program; on Linux it runs on Mono's WinForms. ULDB is the same 
 **Fixes**
 - In case-insensitive languages (DECORATE, ZScript) function and class names were only coloured when typed in lowercase.
 - After switching tabs in the script editor, the toolbar and status bar showed the previous tab's state.
+- **Pasting** no longer pastes twice when Ctrl+V repeats or the mouse moves while the paste is being made (#46).
+- **Menus and drop-down lists** open next to their button on KDE/Wayland at a scaled resolution (they appeared far away, for example the Test menu and the Engine list in Game Configurations).
+- **Several monitors:** the main window opens where you left it, also when maximised, and dialogs open on the main window's monitor.
+- **Recent files** in the File menu keep the whole file name ("…/tests/maps/small.wad", your home folder as `~`); the full path is the tooltip.
+- Script editor **fold markers** are readable on the dark theme.
+- **Preferences → Script Editor** shows the font in use (JetBrains Mono unless you chose another) and the colour preset in use, instead of a blank font and "Current colors".
 
 ## What works
 
