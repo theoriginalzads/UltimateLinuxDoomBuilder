@@ -62,6 +62,11 @@
   <content_rating type="oars-1.1" />
 
   <releases>
+    <release version="0.6.2~beta" date="2026-11-20" type="development">
+      <description>
+        <p>ZScript in the script editor (a ZSCRIPT tab saved into the map's WAD, colours and help from the engines' own ZScript, errors as you type), a Dialogue Builder for the DIALOGUE lump, more ACS and dialogue keywords, and fixes for keyword colouring and the script editor's toolbar after switching tabs.</p>
+      </description>
+    </release>
     <release version="0.6.1~beta" date="2026-11-17" type="development">
       <description>
         <p>A clearer Test menu, GZDoom/UZDoom AppImages are found, key and mouse icons in the Help docker, a tidier main window, a progress line while a map opens, and fixes for plugin tools disappearing after Game Configurations and clipped check boxes.</p>

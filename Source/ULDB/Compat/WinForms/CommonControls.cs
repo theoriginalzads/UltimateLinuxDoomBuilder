@@ -396,10 +396,13 @@ namespace System.Windows.Forms
 			set
 			{
 				if(value == selectedindex || value < -1 || value >= TabPages.Count) return;
+				// As WinForms (TCN_SELCHANGE): Selecting is raised once the new page is selected, so handlers that read
+				// SelectedTab see it; a cancel goes back to the previous page
+				int previous = selectedindex;
+				selectedindex = value;
 				TabControlCancelEventArgs selecting = new TabControlCancelEventArgs(value >= 0 ? TabPages[value] : null, value, false, TabControlAction.Selecting);
 				Selecting?.Invoke(this, selecting);
-				if(selecting.Cancel) return;
-				selectedindex = value;
+				if(selecting.Cancel) { selectedindex = previous; return; }
 				SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				Selected?.Invoke(this, new TabControlEventArgs(SelectedTab, value, TabControlAction.Selected));
 			}
